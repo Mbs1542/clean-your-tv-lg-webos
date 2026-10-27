@@ -12,6 +12,9 @@ import unittest
 from unittest.mock import patch
 from cytv import firmware_access
 
+if os.name != 'posix':
+    raise unittest.SkipTest('TV firmware registration requires POSIX locks and filesystem semantics')
+
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'root-edition'))
 LEGACY=types.ModuleType('legacy_firmware_provision')
