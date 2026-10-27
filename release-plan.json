@@ -45,6 +45,11 @@
       "pr": 124,
       "issues": [],
       "summary": "Move edition choice below README installation and replace the hero with a current international-app demo screenshot"
+    },
+    {
+      "pr": 125,
+      "issues": [],
+      "summary": "Add prominent native-language links to all twelve installation guides before the README demo and screenshot"
     }
   ],
   "excluded": [],
