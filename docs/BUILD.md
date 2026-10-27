@@ -1,5 +1,7 @@
 # Build
 
+[Developer references](development/README.md) · [Install without building](INSTALL.md)
+
 Requirements: Bash, Python 3.9+, Node.js 20.19+ with npm, webOS CLI,
 Zig 0.14.1, and a C compiler for tests. CI uses Node 22. These are source-build
 requirements; installed cytv packages carry their host runtime.
@@ -33,8 +35,8 @@ For the independent development updater package, run `scripts/build-updater.sh`.
 For current component versions, use `release-versions.json`. For Root bundles see
 [manual installation](MANUAL_INSTALL.md); for standalone installers see [CLI builds](CLI.md#build-from-source).
 
-The 1.1.0 payload also includes the fixed System Updater bootstrap and support
+The payload also includes the fixed System Updater bootstrap and support
 files. Use `python scripts/build-cytv.py --payload-only` for a payload check or
 `--desktop` for the host application. The optional TV Python archive is downloaded
 only when needed or explicitly cached with `cytv --prepare-python-runtime`; it
-is not embedded by this build. See [installation](INSTALL.md) and [release notes](RELEASE-1.1.0.md).
+is not embedded by this build. See [installation](INSTALL.md) and [release history](history/README.md).

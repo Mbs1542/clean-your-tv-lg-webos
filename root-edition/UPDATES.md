@@ -1,43 +1,17 @@
-# Root software updates and recovery
+# Update Root Edition
 
-Candidate correction #115: [Root OTA compatibility with the original 1.3.0 supervisor](../docs/development/ROOT-OTA-13-COMPATIBILITY.md). Published1.4.0 is incompatible with that original destination inventory. An aborted pre-replacement attempt installed nothing; retain its journal and do not change private pins. The next candidate preserves the old paths and permissions; physical update/rollback acceptance remains pending.
+**Original 1.3.0 supervisor → published 1.4.0 is currently blocked:** the
+published destination inventory is incompatible. An aborted pre-replacement
+attempt installed nothing. Keep the journal and private pins unchanged.
+The [#115 source correction](../docs/development/ROOT-OTA-13-COMPATIBILITY.md)
+preserves the original contract; physical signed update/rollback acceptance is pending.
+Use the supported installer/recovery flow after reviewing retained state.
 
-**[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)** updates a complete signed edition release set through
-an independent fixed **System Updater supervisor**. Root's set includes Root Home,
-Root Updater and the compatible Root recovery infrastructure. No-root's separate
-set includes Home, Helper and Home Updater. The editions are not interchangeable;
-third-party apps and TV firmware are outside the set.
-
-Current C3 checks covered supervisor bootstrap, installed-version menus and friendly feed-unavailable handling. A complete signed system upgrade and rollback remain untested. See [current acceptance](../docs/RELEASE-1.1.0-ACCEPTANCE.md); [earlier Root update evidence](../docs/development/ROOT-UPDATES-TV-VALIDATION.md) retains its original artifact and scenario scope.
-
-## Candidate: firmware configuration API permission
-
-The #110 correction keeps the original four recovery ACLs and snapshot unchanged,
-so retained updater registration checks keep their exact contract. Its separate
-API data is referenced by the SDK Root Home manifest. New runtime code reconciles
-that reference at boot and after complete updates without rewriting a completed
-grant on every wake. Host-side repair leaves old runtime bytes unchanged; rerun
-`cytv enable-firmware-access --edition root` after an app-only update if the old
-runtime cannot maintain the reference. Cached Homebrew API groups may require a
-normal Homebrew service restart. The saved blocking preference is never toggled
-by permission maintenance. See [delivery, revocation and device evidence](../docs/LG-FIRMWARE-UPDATES.md#candidate-root-home-configuration-api-access-110).
-
-## Candidate: Homebrew setup is separate from updates
-
-**Unpublished Homebrew Installer candidate:** CYTV Installer can install Root Home and Root
-Updater on a compatible rooted TV, optionally preparing System Updater after
-explicit selection. It does not obtain root or activate Home during setup.
-Homebrew upgrades Installer only; the existing signed product update/recovery
-contracts below remain authoritative. Installer's embedded versions may be older
-than a later project release. Deleting Installer leaves the product installed;
-complete-product removal restores LG and cleans owned startup/registration state,
-retaining required recovery evidence and interpreter bindings.
-
-Current verified installations share records/profiles with cytv without reinstall.
-Unknown older infrastructure still needs matching diagnosis/migration review.
-The [candidate setup guide](../docs/INSTALL.md#candidate-on-tv-root-installation)
-and [physical acceptance record](../docs/development/HOMEBREW-INSTALL-ACCEPTANCE.md)
-are separate from the historical C3 results above.
+Root updates use an independent **System Updater supervisor** for signed complete
+edition sets: Root Home, Root Updater and compatible recovery infrastructure.
+Third-party apps, TV firmware and No-root packages are outside that set.
+[1.4.0 acceptance](../docs/RELEASE-1.4.0-ACCEPTANCE.md) includes manual physical
+whole-product rollback on the C3; it does not validate automatic signed rollback.
 
 ## Computer-assisted bootstrap
 
@@ -74,41 +48,19 @@ See [Python delivery and limits](../docs/OPTIONAL-PYTHON.md), including cache
 preparation with `cytv --prepare-python-runtime`. Maintenance commands never
 download another interpreter.
 
-For a fresh manual Root installation, build fresh output directories. These
-commands do not migrate an existing retained updater:
+For manual source setup, use the [shared Root installation and bootstrap
+procedure](../docs/MANUAL_INSTALL.md#7-root-first-installation-checks-and-persistent-activation).
+Keep complete matching bundles. Submission is detached: preserve the original
+operation UUID and repeat only status until `state: complete` **and** `current: true`.
+Pending, recovery-required, conflicts or unknown outcomes stop supervisor setup
+and Home activation. Do not run both shared installation entry points or create
+a new operation ID to escape a pending request. `--component-only` is advanced
+component recovery, not normal setup or legacy migration.
 
-```sh
-python3 root-edition/build.py --version 0.4.0 --output build/root-candidate
-python3 root-edition/build_updater.py --output build/root-updater
-export CYTV_OPERATION=$(python3 -c 'import uuid; print(uuid.uuid4().hex)')
-python3 root-edition/setup_updater.py --bundle build/root-updater --baseline build/root-candidate --ssh my-tv --apply --operation "$CYTV_OPERATION"
-# Repeat this read-only status command until state=complete AND current=true.
-python3 build/root-candidate/setup.py status --ssh my-tv --bundle build/root-candidate --updater-bundle build/root-updater --operation "$CYTV_OPERATION"
-# Only after that verified completion:
-python3 system-updater/build.py --output build/system-updater
-python3 system-updater/setup.py --bundle build/system-updater --edition root --ssh my-tv --apply
-```
-
-`--apply` returns after submitting a detached worker; successful shell exit is
-not setup completion. Keep the original operation UUID and repeat only the shared
-status command above. `pending` means wait and inspect again; `recovery_required`,
-`conflict`, or `current: false` stops the sequence for diagnosis/recovery. Do not
-run supervisor setup or enable Home until `state: complete` and `current: true`.
-Never repeat installation automatically or generate a new UUID to escape a pending request.
-
-These are **unreleased source** commands: normal `setup_updater.py --apply` now
-submits the same shared Root + Root Updater request as `setup.py install` with
-`--updater-bundle`; do not run both for a fresh installation. The baseline must
-match the reviewed Root bundle exactly. `--component-only` is an advanced
-component/recovery bootstrap (`--component-only --resume` explicitly continues
-a known retained Root Updater bootstrap), not normal product setup or an old-infrastructure
-migration shortcut. Published tagged bundles retain their own matching procedure.
-Keep the whole bundles together; see [manual source setup](../docs/MANUAL_INSTALL.md#7-root-first-installation-checks-and-persistent-activation). The
-manual supervisor command defaults to `/usr/bin/python3`; `--python` accepts only
-approved system/managed interpreter paths. Use the verified installed binding
-when managed Python is required. It does not download Python itself. Omitting
-`--apply` prints a setup plan without changing the TV. OpenSSH uses strict host
-checking and batch authentication with an explicit alias such as `my-tv`.
+The manual supervisor command defaults to `/usr/bin/python3`; `--python` accepts
+only approved system/managed paths. Use the retained verified binding when needed;
+manual commands never download Python. Omit `--apply` for a read-only setup plan.
+Use strict OpenSSH host checking and a preconfigured authenticated alias.
 
 For a known interrupted standalone supervisor bootstrap, `system-updater/setup.py
 --resume` explicitly uses the retained baseline and exact package evidence, for
@@ -159,28 +111,24 @@ submitted twice automatically. See [CLI recovery](../docs/CLI.md#interrupted-ope
 
 ## Release preparation and validation
 
-Follow [the release process](../docs/RELEASE-PROCESS.md) and the
-[1.1.0 release scope](../docs/RELEASE-1.1.0.md). Legacy `root-update.json`
-application metadata alone does not describe a complete system release set.
-The fixed supervisor remains separate from the components it installs.
+Use the [release flow](../docs/RELEASE-FLOW.md),
+[current release scope](../docs/RELEASE-1.4.0.md) and
+[exact acceptance record](../docs/RELEASE-1.4.0-ACCEPTANCE.md).
+QEMU, package installation and host tests cannot establish TV compatibility.
 
-Remaining physical-hardware validation for the published release includes:
-first bootstrap and caller permissions, complete upgrade and explicit rollback,
-profile preservation, startup/remote input, normal and cold boot, failsafe and
-interruptions around terminal installer evidence. Helper 0.6.19 needs its own
-rollback approval; approval of 0.6.18 is insufficient. QEMU and automated tests
-cannot establish TV acceptance. Issue #37's UK6540PTD / firmware 05.50.70 remains
-unvalidated for the managed runtime; issue #24's unfinished removal is not claimed
-resolved by the Android receipt fix.
+## Candidate: firmware configuration API permission
 
+Firmware configuration access has a separate grant and lifecycle; it never
+toggles the saved blocking preference. For repair and revocation, see
+[firmware access](../docs/LG-FIRMWARE-UPDATES.md#candidate-root-home-configuration-api-access-110).
 
-Unreleased cold-boot correction: rooted SDK DATA may have ordinary `0777` modes.
-The corrected private readers require independent original package hashes; they
-do not repair shared permissions or execute shared source. Missing/conflicting
-current, transaction or own-package proof keeps automatic Home rearm inhibited,
-while independent private LG Home restoration remains available. Deliver the
-changed helper closure through checked fresh setup/rebootstrap, preserving
-existing recovery archives and unknown-operation records. Updating Installer
-alone does not replace retained private product code. Root remains disabled until
-an explicit activation through the normal setup/settings flow. See the
-[candidate authority and acceptance record](../docs/development/HOMEBREW-INSTALL-ACCEPTANCE.md#cold-boot-data-authority-correction).
+## Candidate: Homebrew setup is separate from updates
+
+[Homebrew Installer](../homebrew/README.md) remains unreleased. It installs the
+product through the shared coordinator; Homebrew updates the Installer client
+only. Removing Installer leaves Root and recovery installed. Retained private
+code requires checked delivery, not an Installer-only update.
+See [private runtime authority and hardware gates](../docs/development/HOMEBREW-INSTALL-ACCEPTANCE.md#cold-boot-data-authority-correction).
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="root-software-updates-and-recovery"></a>

@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Root Edition has no supported installer yet. Do not perform system changes just to fill this form.
+        Use the documented Root installer and recovery path. Do not perform system changes just to fill this form.
         Never attach credentials, pairing tokens, SSH keys, firmware, private backups or complete TV logs.
   - type: input
     id: hardware

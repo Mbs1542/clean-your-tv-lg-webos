@@ -1,6 +1,8 @@
 # Optional Root WAM cache cleanup
 
-**Unreleased 1.4.0 candidate behavior; absent from published installers.**
+[Documentation](README.md) · [Space and recovery](RECOVERY.md#private-python-and-low-var-space)
+
+Available in the published computer installer.
 This is a separate console/desktop maintenance action, not part of installation,
 diagnostics, Android UI or the on-TV Homebrew Installer. First check whether
 `/var` is actually short of space. A large app-storage total on another partition
@@ -8,8 +10,8 @@ does not establish that private Python has enough space in `/var/lib`.
 
 ## Review and confirm
 
-Close TV apps. In a matching candidate desktop build, open **Maintenance → Clear
-WAM caches (root required)**. In a matching console build, run:
+Close TV apps. In the desktop installer, open **Maintenance → Clear
+WAM caches (root required)**. In the console installer, run:
 
 ```sh
 cytv clean-wam-cache --edition root

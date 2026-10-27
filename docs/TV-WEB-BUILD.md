@@ -131,7 +131,7 @@ References: [LG engine versions](https://webostv.developer.lge.com/develop/speci
 
 ## Chinese UI fonts
 
-The 1.3.0 candidate adds `zh-Hans` (Simplified Chinese) and `zh-Hant`
+The UI supports `zh-Hans` (Simplified Chinese) and `zh-Hant`
 (Traditional Chinese). Explicit script tags take precedence over a region;
 `zh`, CN and SG default to Hans, while TW, HK and MO default to Hant.
 The preference is selectable and persisted using the existing language setting.

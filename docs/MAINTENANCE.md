@@ -1,17 +1,5 @@
 # Update, disable, rollback and uninstall
 
-## Whole-edition updates in 1.1.0
-
-The stable release adds signed complete edition release sets through an
-independent System Updater supervisor. On-TV updates need existing root/Homebrew
-services, TV Node.js 8+, suitable Python and an explicit computer bootstrap with
-`cytv enable-system-updates --edition root` for Root, or the manual supervisor
-bootstrap with a root SSH alias for No-root on a rooted TV. Unrooted TVs continue
-computer-assisted updates. See [update setup](../root-edition/UPDATES.md).
-Legacy app-only OTA does not install the new infrastructure. Unknown outcomes,
-conflicting installers and downgrades are refused. Keep recovery evidence and
-referenced managed Python slots; maintenance commands never download a runtime.
-
 For cytv installations of either edition, use its saved connection and maintenance
 actions: [desktop maintenance](DESKTOP_INSTALL.md), [CLI reference](CLI.md).
 For manual Root setup, follow [Root removal and replacement](../root-edition/ROLLOUT.md#remove-or-replace-root-edition)
@@ -35,6 +23,9 @@ The automatic device name is `clean-your-tv-<IP-with-dashes>` (for example
 actual device name. Manual installations below use the profile `lgtv`.
 
 ## Update
+
+For normal installations, start with [updates](UPDATES.md). The source procedure
+below is for installations without the independent System Updater.
 
 Read the release notes. Pause interception with triple Home before updating. Keep
 known-working packages locally. Do not uninstall first: that can remove app data.
@@ -83,3 +74,6 @@ Pause first, then reinstall your saved previous packages. Reconfigure pairing/in
 registration if necessary. Previous helper versions have different recovery behavior;
 read their instructions before manually starting the helper. This repository does
 not silently downgrade or reset your TV.
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="whole-edition-updates-in-110"></a>

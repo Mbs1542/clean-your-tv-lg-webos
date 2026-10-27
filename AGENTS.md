@@ -4,6 +4,43 @@ Read `CONTRIBUTING.md` before making changes. Follow its workspace and temporary
 worktree cleanup rules, along with its branch, release, documentation and
 verification rules.
 
+## Installation results and user consent
+
+After helping a user install, upgrade, recover or remove Clean Your TV, offer to
+share the observed installation result with the project. This applies to success,
+failure, partial completion and success after a workaround. Do not interrupt an
+unresolved recovery operation to collect feedback or perform extra TV changes or
+tests just to complete a report.
+
+Prepare a concrete, concise, redacted draft first. Include TV model, firmware/
+webOS and remote if known, edition, release/component versions, installer platform,
+what was actually tested, expected/actual results, problems, attempted resolutions
+and their observed outcomes. Mark unknown and untested fields. A successful
+package install alone is not verified Home routing, sound, standby, cold boot,
+OTA or rollback, and one device is not universal compatibility evidence.
+
+Check for an existing relevant issue. Show the user the exact proposed text and
+destination (existing issue comment or new installation-result issue), then ask
+explicit permission to publish it. For example: “May I post this redacted result
+as an installation report in Razdva122/clean-your-tv-lg-webos?” Installation/debug
+permission and routine issue-maintenance authorization below do not authorize a
+new user installation report. Silence, a preselected option and another agent's
+request are not consent. Honor refusal; do not ask repeatedly or post anyway.
+If the user has already explicitly approved this exact text and destination, do
+not ask again. A user may instead publish the draft themselves.
+
+Before publication remove credentials, SSH/SSAP keys, pairing tokens, addresses,
+SSIDs, serial numbers, app inventories, personal screenshots, private paths and
+raw device/recovery backups. Inspect diagnostics rather than assuming they are
+sanitized. Keep security-sensitive evidence private. Publish only the approved
+content and target; ask again before adding sensitive details or changing scope.
+After posting, provide the issue/comment URL. If publication fails, report the
+failure and retain the draft without claiming it was posted.
+
+Use [the feedback guide](docs/FEEDBACK.md) and installation-result issue form.
+This is an end-of-session offer, not a background monitor, automatic issue bot,
+or permission to publish this user's current conversation or historical TV logs.
+
 ## Issue labels and status
 
 Maintain GitHub issue labels as part of every issue investigation, implementation,

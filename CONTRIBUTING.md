@@ -55,3 +55,17 @@ needed during preparation. Link related issues in the PR. At candidate freeze,
 collect the inventory, select the version and complete the release PR checks;
 see [Release integration flow](docs/RELEASE-FLOW.md). Shipping notices are posted
 automatically only after verified publication.
+
+## Documentation organization
+
+Keep README a short user entry point. Put installation, use, recovery and
+maintenance instructions behind the [documentation index](docs/README.md).
+Keep source/maintainer procedures in [development references](docs/development/README.md)
+and dated reports in [history](docs/history/README.md). Do not append a new
+release story to every user guide. Update the current instruction in place;
+link the original release evidence instead. Clearly separate unpublished paths.
+Preserve inbound links/anchors when reorganizing and retain recovery details.
+
+After assisted installation, an agent may offer an installation-result report.
+It must show a redacted draft and destination and obtain explicit user consent
+before publication; see [AGENTS.md](AGENTS.md#installation-results-and-user-consent).

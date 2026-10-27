@@ -1,9 +1,8 @@
 # cytv standalone installer
 
-1.4.0: [release notes](RELEASE-1.4.0.md) and [C3 acceptance / limits](RELEASE-1.4.0-ACCEPTANCE.md). [Release #98](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/98) tracks publication; latest-download links follow the published release.
+[Documentation](README.md) · [Graphical installation](INSTALL.md) · [Help and feedback](FEEDBACK.md)
 
-**[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)** contains cytv **0.4.0**, Home **1.4.2**, Helper **0.6.19**, Root **0.4.0**, both edition Updaters **0.3.0**, Android **0.3.0-preview / code 11** and System Updater **1.1.0 / protocol 1**. The latest-download links follow the published stable release. Hardware evidence is limited to the documented configuration and checks; see [release notes](RELEASE-1.3.0.md) and [compatibility](COMPATIBILITY.md).
-
+This is an advanced reference. Use the graphical installer for the normal setup path.
 No-root and Root are equal options for different TV setups. Choose No-root for LG Developer Mode or Root for existing root SSH access. Compatibility and test coverage remain specific to each edition.
 
 For double-click setup without a terminal, use the [desktop application](DESKTOP_INSTALL.md).
@@ -465,7 +464,9 @@ as unknown, with Change Home hidden until a valid response. This avoids showing
 an unconfirmed off switch. It does not repair a firmware denial or unavailable
 request-file transport, prove that Helper stopped, or automatically start it.
 
-## Unreleased: optional WAM cache cleanup
+<a id="unreleased-optional-wam-cache-cleanup"></a>
+
+## Optional WAM cache cleanup
 
 `cytv clean-wam-cache --edition root` estimates Cache/Code Cache usage and available
 `/var/lib` space, offers manual guidance and requires default-No confirmation.

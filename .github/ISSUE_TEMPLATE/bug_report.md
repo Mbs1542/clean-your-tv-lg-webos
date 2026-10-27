@@ -10,5 +10,5 @@ assignees: ''
 **Expected / actual behavior:**
 **Steps to reproduce:**
 **Standby or cold boot (if startup-related):**
-**Does long Home restore control?**
+**Does triple-Home restore control (legacy Helper ≤0.6.13: long Home)?**
 **Redacted log excerpt (no pairing keys, SSIDs or IP addresses):**
