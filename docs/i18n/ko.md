@@ -1,5 +1,7 @@
 # Clean Your TV — 사용자 안내
 
+> 미공개 후보 1.4.1: Root OTA 호환성, 업데이트 표시, 펌웨어 API 접근 및 Windows 패키지/콘솔 수정입니다. TV 검증과 서명된 업데이트/롤백은 아직 완료되지 않았으며, 공개 다운로드가 아닙니다. [1.4.1](../RELEASE-1.4.1.md).
+
 [문서](../README.md) · [문제 신고](../FEEDBACK.md)
 
 이 안내서는 공개된 **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)** 기준입니다. C3 승인은 기록된 전원, Home, 포커스, 비활성 상태 유지 및 수동 롤백 시험에 한정됩니다. 다른 TV, eARC 오디오와 실제 Android 기기는 확인되지 않았습니다. 설치 성공만으로 호환성을 입증할 수 없습니다. [시험 범위(영어)](../RELEASE-1.4.0-ACCEPTANCE.md).

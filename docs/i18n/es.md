@@ -1,5 +1,7 @@
 # Clean Your TV — guía de uso
 
+> Candidato 1.4.1 no publicado: compatibilidad Root OTA, disponibilidad de actualizaciones, acceso a la API de firmware y correcciones de paquetes/consola en Windows. La aceptación en TV y la actualización/reversión firmada siguen pendientes; no es una descarga publicada. [1.4.1](../RELEASE-1.4.1.md).
+
 [Documentación](../README.md) · [Informar de un problema](../FEEDBACK.md)
 
 Esta guía describe la versión publicada **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**. La aceptación del C3 cubre las pruebas registradas de alimentación, Home, foco, estado desactivado y reversión manual. Otros televisores, audio eARC y dispositivos Android físicos siguen sin verificar; instalar correctamente no demuestra compatibilidad. [Alcance probado (inglés)](../RELEASE-1.4.0-ACCEPTANCE.md).

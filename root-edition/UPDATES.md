@@ -1,5 +1,7 @@
 # Update Root Edition
 
+> Unpublished 1.4.1 candidate: see the [release scope and pending acceptance](../docs/RELEASE-1.4.1.md). Published downloads and historical acceptance below remain scoped to 1.4.0.
+
 **Original 1.3.0 supervisor → published 1.4.0 is currently blocked:** the
 published destination inventory is incompatible. An aborted pre-replacement
 attempt installed nothing. Keep the journal and private pins unchanged.

@@ -1,5 +1,7 @@
 # Install Clean Your TV from Android
 
+> Unpublished 1.4.1 candidate: see the [release scope and pending acceptance](../docs/RELEASE-1.4.1.md). Published downloads and historical acceptance below remain scoped to 1.4.0.
+
 Use your phone to install either **No-root** (Developer Mode) or **Root**
 (existing root SSH) on an LG webOS TV. No PC, Termux, phone Python installation
 or cloud service is needed. The APK includes the offline interface and TV packages;

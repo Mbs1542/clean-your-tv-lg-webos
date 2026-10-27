@@ -1,5 +1,7 @@
 # Root Edition
 
+> Unpublished 1.4.1 candidate: see the [release scope and pending acceptance](../docs/RELEASE-1.4.1.md). Published downloads and historical acceptance below remain scoped to 1.4.0.
+
 Use Clean Your TV as the system Home on an **already rooted LG webOS TV**.
 Short Home opens Clean; confirmed Back exit returns through native Home routing.
 After setup, no computer, USB drive or router script is needed for normal use.

@@ -1,5 +1,7 @@
 # Update Clean Your TV
 
+> Unpublished 1.4.1 candidate: see the [release scope and pending acceptance](RELEASE-1.4.1.md). Published downloads and historical acceptance below remain scoped to 1.4.0.
+
 **Existing Root installations:** published 1.4.0 is incompatible with the original
 1.3.0 System Updater destination inventory. Do not force that update or edit
 private pins. An aborted pre-replacement attempt installed nothing; retain its
@@ -105,7 +107,7 @@ and recovery requirements. Deleting Installer alone leaves the product installed
 The next candidate checks the installed edition's supervisor and suppresses
 same-component-version offers. Network, permission and state failures preserve
 the last confirmed badge; they do not select another feed. Public delivery and
-physical-TV confirmation remain pending. See [candidate testing](RC-1.4.0-TESTING.md).
+physical-TV confirmation remain pending. See the [1.4.1 candidate scope and gates](RELEASE-1.4.1.md) and [current acceptance checklist](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
 
 ## Legacy Home-only updates (through v1.0.3)
 

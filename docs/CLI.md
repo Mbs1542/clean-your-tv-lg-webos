@@ -421,7 +421,7 @@ load errors fail the build with their original exception; these checks do not
 connect to a TV, read connection profiles or publish a release. GUI startup smoke
 remains a separate check. A focused Intel macOS PR workflow freezes both actual
 entrypoints without a TV payload and runs the same probe before integration.
-This is an unreleased fix for issue #93.
+This fix for issue #93 shipped in 1.4.0; the original device result remains unconfirmed.
 
 For source development, `python scripts/build-cytv.py --payload-only` prepares the
 embedded assets, then `python -m cytv` runs the same wizard. Public payload sources
@@ -459,7 +459,7 @@ then attach the generated JSON after reviewing it. Recording does not restart
 Helper or change the saved Home choice; standby and cold boot remain separate
 acceptance checks.
 
-Next-candidate Home settings (not published v1.2.0): a failed status read is shown
+Home settings diagnostics (published in 1.4.0): a failed status read is shown
 as unknown, with Change Home hidden until a valid response. This avoids showing
 an unconfirmed off switch. It does not repair a firmware denial or unavailable
 request-file transport, prove that Helper stopped, or automatically start it.
