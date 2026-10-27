@@ -39,6 +39,11 @@ final frozen-head platform builds and signed publication verification are pendin
   redirected legacy-console encodings without crashing. Final native Windows
   embedded-IPK identity and line-ending checks remain required. BX/webOS 5 routing,
   recovery and removal are unresolved; no new BX support is claimed.
+- #126: fix native Windows discovery of the POSIX firmware-registration fixture;
+  all thirteen POSIX cases remain enabled and the replacement platform build passed.
+- #127: add separately authorized maintainer-only signed candidate admission with
+  read-only preflight and the unchanged supervisor worker. No installed component
+  or public-feed behavior changes.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
@@ -66,8 +71,11 @@ for promotion (`homebrew/release.json` is absent).
 
 The current checklists and historical implementation evidence are in PR #114.
 Historical C3 acceptance of v1.4.0 does not establish acceptance of this candidate.
-`release-plan.json` deliberately keeps acceptance empty until actual results are
-available. Do not mark the candidate ready or merge to main before those gates pass.
+[Scoped C3 signed update/retained rollback acceptance](RELEASE-1.4.1-ACCEPTANCE.md)
+is now recorded for candidate source `3d5e0cb0`. Normal public-feed discovery,
+standby/cold boot, firmware blocking and the other stated limitations remain
+unverified. `release-plan.json` keeps overall acceptance empty until the remaining
+release gates are resolved; do not mark ready or merge to main from this scoped test alone.
 
 Review README, installation, updates/removal, troubleshooting, prerequisites,
 component/recovery guides and all twelve translations against this inventory.

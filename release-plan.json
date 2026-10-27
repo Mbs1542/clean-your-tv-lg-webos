@@ -57,6 +57,13 @@
         110
       ],
       "summary": "Fix Windows discovery of POSIX firmware registration tests"
+    },
+    {
+      "pr": 127,
+      "issues": [
+        115
+      ],
+      "summary": "Add private signed Root candidate acceptance admission"
     }
   ],
   "excluded": [],
