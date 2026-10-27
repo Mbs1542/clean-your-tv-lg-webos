@@ -40,6 +40,11 @@
       "pr": 123,
       "issues": [],
       "summary": "Reorganize user docs and all twelve guides around tasks, preserve historical evidence and links, and require explicit user consent for redacted installation-result issues"
+    },
+    {
+      "pr": 124,
+      "issues": [],
+      "summary": "Move edition choice below README installation and replace the hero with a current international-app demo screenshot"
     }
   ],
   "excluded": [],
