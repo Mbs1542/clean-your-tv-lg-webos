@@ -12,6 +12,13 @@ dock, without sponsored rows in this launcher. It runs on the TV; your computer
 can be switched off after setup. It does not remove advertisements from other
 LG screens or obtain root access.
 
+## Installation guide in your language
+
+[English](docs/i18n/en.md) · [Deutsch](docs/i18n/de.md) · [Español](docs/i18n/es.md) ·
+[Português (Brasil)](docs/i18n/pt-BR.md) · [Français](docs/i18n/fr.md) · [Italiano](docs/i18n/it.md) ·
+[한국어](docs/i18n/ko.md) · [हिन्दी](docs/i18n/hi.md) · [Polski](docs/i18n/pl.md) ·
+[Русский](docs/i18n/ru.md) · [简体中文](docs/i18n/zh-Hans.md) · [繁體中文](docs/i18n/zh-Hant.md).
+
 <a id="browser-preview"></a>
 
 [Try the browser demo](https://razdva122.github.io/clean-your-tv-lg-webos/) ·
