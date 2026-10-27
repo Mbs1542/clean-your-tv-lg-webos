@@ -50,6 +50,13 @@
       "pr": 125,
       "issues": [],
       "summary": "Add prominent native-language links to all twelve installation guides before the README demo and screenshot"
+    },
+    {
+      "pr": 126,
+      "issues": [
+        110
+      ],
+      "summary": "Fix Windows discovery of POSIX firmware registration tests"
     }
   ],
   "excluded": [],
