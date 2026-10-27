@@ -1,6 +1,7 @@
 name: Installation result — success or problem
 description: Share a tested setup, a failed attempt, or how a problem was resolved.
 title: '[Installation result] '
+labels: ['status:triage']
 body:
   - type: markdown
     attributes:
