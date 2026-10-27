@@ -17,21 +17,9 @@ LG screens or obtain root access.
 [Try the browser demo](https://razdva122.github.io/clean-your-tv-lg-webos/) ·
 [Installation guide](docs/INSTALL.md) · [Help and recovery](docs/RECOVERY.md)
 
-![Example app grid and dock](docs/launcher-menu.png)
+![Demo launcher with Netflix, YouTube, Prime Video, Disney+ and Apple TV](docs/launcher-international.png)
 
-*Example layout; apps are not bundled. The browser demo simulates TV behavior.*
-
-<a id="what-you-need"></a>
-
-## Choose your edition
-
-| Your TV setup | Edition |
-| --- | --- |
-| LG Developer Mode, without root | **No-root** — Home and the on-TV Home Helper. Keep Developer Mode active. |
-| Existing root access and trusted root SSH | **Root** — native Home routing and independent recovery. Do not enable Developer Mode over root. |
-
-Both use the same launcher. Compatibility depends on the model, firmware and
-remote: [check requirements and known limits](docs/COMPATIBILITY.md) first.
+*Six-column demo layout with international apps; apps are not bundled. TV functions are simulated.*
 
 <a id="install-with-cytv"></a>
 <a id="get-started"></a>
@@ -57,6 +45,18 @@ Current stable release: **[v1.4.0](https://github.com/Razdva122/clean-your-tv-lg
 Windows: extract the whole ZIP before opening the app. macOS: choose Apple Silicon
 or Intel to match your Mac. See [desktop instructions](docs/DESKTOP_INSTALL.md)
 or [Android requirements](android/README.md) for platform details.
+
+<a id="what-you-need"></a>
+
+## Choose your edition
+
+| Your TV setup | Edition |
+| --- | --- |
+| LG Developer Mode, without root | **No-root** — Home and the on-TV Home Helper. Keep Developer Mode active. |
+| Existing root access and trusted root SSH | **Root** — native Home routing and independent recovery. Do not enable Developer Mode over root. |
+
+Both use the same launcher. Compatibility depends on the model, firmware and
+remote: [check requirements and known limits](docs/COMPATIBILITY.md) first.
 
 <a id="remote-control-guide"></a>
 <a id="resume-after-an-emergency-exit"></a>
