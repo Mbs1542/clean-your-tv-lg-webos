@@ -6,8 +6,8 @@ verification rules.
 
 ## Installation results and user consent
 
-After helping a user install, upgrade, recover or remove Clean Your TV, offer to
-share the observed installation result with the project. This applies to success,
+After helping a user install Clean Your TV, including recovery from an
+interrupted installation, offer to share the observed result with the project. This applies to success,
 failure, partial completion and success after a workaround. Do not interrupt an
 unresolved recovery operation to collect feedback or perform extra TV changes or
 tests just to complete a report.
