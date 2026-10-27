@@ -1,6 +1,10 @@
 ![Clean Your TV — for LG webOS](assets/brand/readme-logo.png#gh-light-mode-only)
 ![Clean Your TV — for LG webOS](assets/brand/readme-logo-dark.png#gh-dark-mode-only)
 
+<a id="clean-your-tv--lg-webos"></a>
+<a id="what-it-does"></a>
+<a id="how-it-works"></a>
+
 # Clean Your TV
 
 A personal home screen for LG webOS: your apps, your order, and a configurable
@@ -8,12 +12,16 @@ dock, without sponsored rows in this launcher. It runs on the TV; your computer
 can be switched off after setup. It does not remove advertisements from other
 LG screens or obtain root access.
 
+<a id="browser-preview"></a>
+
 [Try the browser demo](https://razdva122.github.io/clean-your-tv-lg-webos/) ·
 [Installation guide](docs/INSTALL.md) · [Help and recovery](docs/RECOVERY.md)
 
 ![Example app grid and dock](docs/launcher-menu.png)
 
 *Example layout; apps are not bundled. The browser demo simulates TV behavior.*
+
+<a id="what-you-need"></a>
 
 ## Choose your edition
 
@@ -24,6 +32,9 @@ LG screens or obtain root access.
 
 Both use the same launcher. Compatibility depends on the model, firmware and
 remote: [check requirements and known limits](docs/COMPATIBILITY.md) first.
+
+<a id="install-with-cytv"></a>
+<a id="get-started"></a>
 
 ## Download and install
 
@@ -47,6 +58,9 @@ Windows: extract the whole ZIP before opening the app. macOS: choose Apple Silic
 or Intel to match your Mac. See [desktop instructions](docs/DESKTOP_INSTALL.md)
 or [Android requirements](android/README.md) for platform details.
 
+<a id="remote-control-guide"></a>
+<a id="resume-after-an-emergency-exit"></a>
+
 ## Everyday use
 
 - **Home** opens your launcher while Home control is enabled.
@@ -57,12 +71,18 @@ or [Android requirements](android/README.md) for platform details.
 [Remote controls](docs/CONTROLS.md) · [Arrange apps](docs/APP-MANAGEMENT.md) ·
 [Update or remove](docs/MAINTENANCE.md)
 
+<a id="candidate-install-root-from-the-tv"></a>
+<a id="developer-mode-auto-renewal--beta"></a>
+
 ## Before you rely on it
 
 - Test results are specific to devices and versions. Read [compatibility](docs/COMPATIBILITY.md); a successful install alone does not prove daily reliability.
 - The original **1.3.0 Root updater cannot install 1.4.0 through OTA**. Keep recovery records and read [the update limitations](docs/UPDATES.md) before attempting that transition.
 - No-root needs an active Developer Mode session. Automatic renewal is optional Beta; continue monitoring LG's official timer.
 - The on-TV **Homebrew Installer is unreleased**. Use the published computer/Android installer; [candidate details](homebrew/README.md) are for coordinated testing.
+
+<a id="languages"></a>
+<a id="software-updates"></a>
 
 ## Guides and help
 
@@ -72,8 +92,14 @@ or [Android requirements](android/README.md) for platform details.
 If an AI agent helps with installation, it should prepare a short, redacted result
 and ask your permission before posting an issue. See [instructions for agents](AGENTS.md#installation-results-and-user-consent).
 
+<a id="no-root-source-installation"></a>
+<a id="run-locally"></a>
+<a id="project-layout"></a>
+
 For contributors: [build and technical references](docs/development/README.md),
 [contributing](CONTRIBUTING.md), and [release history and test evidence](docs/history/README.md).
+
+<a id="current-components-and-hardware-evidence"></a>
 
 <details>
 <summary>Versions in the stable download</summary>
@@ -94,28 +120,10 @@ and [C3 acceptance and limits](docs/RELEASE-1.4.0-ACCEPTANCE.md).
 
 </details>
 
+<a id="credits"></a>
+
 ## Credits and license
 
 Built on [OmkarK97/webos-vibehack](https://github.com/OmkarK97/webos-vibehack)
 and [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv).
 Not affiliated with LG. [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).
-
-<!-- Anchors retained for links to earlier guide headings. -->
-<a id="clean-your-tv--lg-webos"></a>
-<a id="languages"></a>
-<a id="install-with-cytv"></a>
-<a id="candidate-install-root-from-the-tv"></a>
-<a id="what-you-need"></a>
-<a id="what-it-does"></a>
-<a id="how-it-works"></a>
-<a id="remote-control-guide"></a>
-<a id="resume-after-an-emergency-exit"></a>
-<a id="get-started"></a>
-<a id="no-root-source-installation"></a>
-<a id="browser-preview"></a>
-<a id="run-locally"></a>
-<a id="developer-mode-auto-renewal--beta"></a>
-<a id="current-components-and-hardware-evidence"></a>
-<a id="project-layout"></a>
-<a id="credits"></a>
-<a id="software-updates"></a>

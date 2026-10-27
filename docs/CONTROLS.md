@@ -35,11 +35,15 @@ remove stop files to force activation.
 
 ## Back, app exits and startup
 
-Holding Back uses webOS's app exit behavior; it is not the emergency-stop gesture.
+**Hold Back for about 1.2 seconds** to visit LG Home once. This preserves the
+saved Home choice and does not stop Home control; a later short Home returns to
+Clean. Use triple Home when you want to stop interception. Short Back remains
+the current app's normal navigation/exit action.
+
 The No-root Helper can return to the launcher after watched apps exit, and LG Home
 may briefly appear. Firmware-specific long-Back behavior still needs device
-confirmation. Root uses its own system routing; do not assume one edition's
-results prove the other.
+confirmation. Root uses its own system routing; one edition's test does not prove
+the other.
 
 Startup can initially show a black screen or LG Home. Standby/wake success does
 not prove cold-boot reliability or a fixed startup time. See [device limits](COMPATIBILITY.md).
