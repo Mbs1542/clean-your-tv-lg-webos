@@ -1,7 +1,8 @@
 # Manual installation of No-root and Root without cytv
 
-**[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)** contains cytv **0.4.0**, Home **1.4.2**, Helper **0.6.19**, Root **0.4.0**, both edition Updaters **0.3.0**, Android **0.3.0-preview / code 11** and System Updater **1.1.0 / protocol 1**. The latest-download links follow the published stable release. Hardware evidence is limited to the documented configuration and checks; see [release notes](RELEASE-1.3.0.md) and [compatibility](COMPATIBILITY.md).
+[Documentation](README.md) · [Graphical installation](INSTALL.md) · [Help and feedback](FEEDBACK.md)
 
+This is an advanced reference. Use the graphical installer for the normal setup path.
 No-root and Root are equal options for different TV setups. Choose No-root for LG Developer Mode or Root for existing root SSH access. Compatibility and test coverage remain specific to each edition.
 
 This guide uses commands from the source repository: the webOS CLI for No-root
@@ -9,9 +10,10 @@ and Python/OpenSSH for Root. You do not need to run `cytv` or `install.sh`.
 Run every command **on your computer** unless stated otherwise.
 The addresses and names below are examples; replace them with your own.
 
-Root has separate hardware validation. The main hardware
-checks used an LG OLED55C3RLA with firmware 43.21.71; they do not establish
-compatibility with other models. The historical Root 0.2.0 check passed standby/wake and everyday controls. True cold boot and complete signed upgrade/rollback remain untested: [validation scope](../root-edition/RELEASE-ACCEPTANCE.md).
+Hardware checks remain scoped to their actual devices and artifacts. Read
+[requirements and known limits](COMPATIBILITY.md) and [current release evidence](history/README.md)
+before using manual commands. Do not treat an old validation record as acceptance
+of your TV or a new source checkout.
 
 ## 1. Choose a path and prepare the tools
 

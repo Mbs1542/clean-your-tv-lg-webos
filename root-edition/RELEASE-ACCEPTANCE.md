@@ -1,6 +1,8 @@
 # Root Edition release acceptance
 
-Current distribution references reviewed 2026-10-26. Historical records below retain their own dates and artifact scope. Target: LG OLED55C3RLA, firmware 43.21.71.
+Historical acceptance records below retain their own dates and artifact scope.
+For the current published result use [1.4.0 acceptance and limits](../docs/RELEASE-1.4.0-ACCEPTANCE.md).
+These records are not installation instructions.
 
 ## 1.0.0 bounded verification
 
@@ -20,11 +22,13 @@ match those included in Root 0.1.5; this is not an acceptance run of every
 new installer binary or of direct AC power removal. A direct `systemctl reboot`
 can still be treated as an input fault and disable Home control.
 
-## Current release boundary
+## Historical 1.3.0 release boundary
+
+<a id="current-release-boundary"></a>
 
 The 1.3.0 distribution includes **Root 0.4.0 / Root Updater 0.3.0** and the
 separate **System Updater 1.1.0** bootstrap. See the
-[current acceptance record](../docs/RELEASE-1.3.0-ACCEPTANCE.md) for the supervised
+[1.3.0 acceptance record](../docs/RELEASE-1.3.0-ACCEPTANCE.md) for the supervised
 same-source setup, controls, triple-Home/off, repeated standby and AC-off Home-control
 results on OLED55C3RLA /43.21.71 /webOS11.2.0. One initial standby failed safely;
 [issue #90](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/90) remains open

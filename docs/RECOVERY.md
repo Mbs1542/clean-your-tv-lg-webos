@@ -1,124 +1,92 @@
-# No-root controls and recovery
+# Recover TV controls or an interrupted installation
+
+## Return to LG Home
+
+Press Home **three times within two seconds**, releasing between presses. This
+stops Home interception and opens LG Home; it preserves preferences. Helper
+through 0.6.13 uses holding Home for about two seconds instead.
+
+The emergency stop persists across startup. To resume No-root, open **Home Helper**,
+choose **Start Helper** and confirm. To resume Root, turn **Change Home** on in
+Home settings. Opening Home alone does not restart a stopped Helper.
+**Open LG Home** only visits LG Home once; it keeps the saved Home choice.
+
+If controls fail again, leave LG Home active and save diagnostics. Do not repeatedly
+clear stop flags after a fault. A Quick Access assignment to Home offers another
+way to open it, but does not restart Helper.
+
+## Interrupted setup or removal
+
+<a id="interrupted-setup-or-removal-in-110"></a>
+<a id="interrupted-no-root-installation-in-the-unpublished-140-candidate"></a>
+
+1. In cytv, select the **same saved TV connection** and choose **Check TV status**.
+2. For No-root, use **Recover and reinstall** if offered. Review the separate
+   removal confirmation; the default is No. Removal can reset Home preferences.
+3. For Root, use **Finish Root setup** only when offered for a verified installation.
+4. If recovery fails or the result is uncertain, choose **Save diagnostic report…**
+   and stop. Retain that attempt's report and recovery files.
+
+Recovery checks installer state and removal results before offering installation.
+An unknown package outcome is not automatically retried. Returning to LG Home
+alone does not finish removal. The removal confirmation cannot be bypassed with
+`--yes` or approved by noninteractive setup.
+
+Console users: run `cytv status` with the same profile, then
+`cytv doctor --report`. [CLI recovery details](CLI.md#interrupted-operations).
+Status, restore and removal do not download Python; referenced recovery runtimes
+are retained. For Root routing recovery, use the
+[Root restore commands](../root-edition/ROLLOUT.md#controls-and-recovery).
 
 ## Private Python and low /var space
 
-**Unreleased cytv change, related to issue #95:** private Python setup identifies
-ABI, directory safety and free-space failures separately. Low-space errors show
-available and required MiB; the issue-ready report retains bounded numeric facts,
-not raw directory listings. The normal initial threshold stays **320 MiB**.
-An existing private slot is still verified before reuse; low space does not
-authorize overwriting it. A later staging-space check can also stop installation.
+Root Python preparation checks ABI, directory safety and free space separately.
+The initial threshold is **320 MiB**; later staging can require more. Reusing an
+existing runtime still requires verification. Freeing space cannot fix ABI or
+ownership failures; do not lower thresholds or change ownership broadly.
 
-On an already rooted TV, these SSH commands inspect storage without deleting it:
+On an already rooted TV, these SSH commands inspect space without deleting data:
 
 ```sh
 df -Pk /var/lib
 du -xsk "/var/lib/wam/Default/Session Storage"
 ```
 
-Measure the filesystem containing `/var/lib`, not the sum of every mounted
-filesystem. In particular, `/var/palm` can be a separate mount; use `du -x` to
-avoid counting mounted data as `/var` usage. On the reported OLED65C2AUA,
-firmware 04.40.90 / webOS 22, the author measured large WAM Session Storage and
-reported recovering space after clearing it and caches, then rebooting. This is
-one reporter observation, not acceptance of installation or other TV models.
+Check the filesystem containing `/var/lib`. `/var/palm` can be a separate mount;
+`du -x` avoids counting other mounted filesystems. Removing apps may free a
+different partition.
 
-Session Storage contains app session state; it is not guaranteed disposable
-cache. Clearing it can lose sessions or unsaved state, even though this reporter
-was not logged out. Leave Local Storage, Service Worker, databases, managed
-Python slots and recovery records alone. For manual Session Storage deletion,
-review the exact path and establish a device-specific procedure that prevents WAM writers and respawns; closing visible
-apps alone is insufficient. A real restart may be needed afterwards because open
-deleted files can retain space until WAM exits. Recheck `df -Pk /var/lib` and
-retry setup explicitly;
-neither cleanup nor reboot proves Python or Root installation succeeded.
+For cache cleanup, use cytv's explicit Root maintenance action and read
+[WAM cleanup](WAM-CLEANUP.md). It only requests native `cache` and `codecache`
+cleanup; it does not clear Session Storage, reboot or resume installation.
+**Session Storage contains app session state**: deleting it can lose sessions or
+unsaved work. A safe manual procedure must prevent WAM writers and respawns;
+closing visible apps alone is insufficient. Leave Local Storage, Service Worker,
+databases, Python slots and recovery records alone. Recheck space after cleanup;
+reclaimed space does not prove Root or Python installation succeeded.
 
-The **unreleased 1.4.0 candidate** offers a separate console/desktop Root action
-for native WAM `cache` and `codecache` cleanup only, with default-No consent and
-manual guidance. It does not clear Session Storage, stop services, reboot or resume
-setup, and never falls back to root filesystem deletion. Cache rebuilding may slow
-the next app launch. Removing apps can free a different partition; always recheck
-`/var/lib`. See [WAM cache cleanup and manual Session Storage limits](WAM-CLEANUP.md).
+## No-root source installations
 
-If the ABI or ownership check fails, freeing space cannot resolve that failure.
-Do not disable those guards, change ownership broadly or lower the space threshold.
-Save the failed attempt's diagnostic report for investigation.
-
-## Interrupted setup or removal in 1.1.0
-
-Run `cytv status` with the same saved TV/profile before retrying. The installer
-can offer to finish a previous No-root removal through the retained verified
-flow with a separate default-No confirmation, including with `--yes`.
-An uncertain removal is not resubmitted automatically. Keep receipts and save
-`cytv doctor --report` diagnostics when verification cannot establish a safe step.
-Status, restore and removal never download new Python; Root recovery uses its
-verified interpreter binding and retains referenced managed runtime slots.
-See [CLI interrupted operations](CLI.md#interrupted-operations).
-
-**Since 1.3.0, desktop only:** an unfinished No-root removal found by status,
-connection diagnostics or Return to LG Home offers **Recover and reinstall** for
-the same TV. Complete the separate default-No recovery confirmation, then review
-the versions before installation. On error, **Save diagnostic report…** exports
-that failed attempt's report directly; a later doctor run is not a substitute for
-the original failure report. No terminal is needed. Existing removal guards and
-recovery evidence remain intact. This behavior is not in the published v1.2.0
-desktop downloads; see the [desktop recovery flow](DESKTOP_INSTALL.md#guided-no-root-recovery-and-reinstallation-in-130).
-
-For either edition installed with cytv, use its **Check TV status**, restore and
-diagnostics actions first; see [CLI recovery](CLI.md#interrupted-operations). Root
-routing recovery uses the [Root controls and restore commands](../root-edition/ROLLOUT.md#controls-and-recovery).
-The webOS CLI commands below apply to No-root source installations.
-
-For a **one-script installation**, run CLI commands from the repository folder.
-The CLI is local; expose it in your current terminal:
+For one-script installs, run commands from the repository folder and expose the
+local webOS CLI:
 
 ```sh
 export PATH="$PWD/build/tools/node_modules/.bin:$PATH"
 ```
 
-The automatic device name is `clean-your-tv-<IP-with-dashes>` (for example
-`clean-your-tv-192-168-1-50`), or the `DEVICE` override you supplied. Replace
-`-d lgtv` in the commands below with `-d clean-your-tv-192-168-1-50`, using your
-actual device name. Manual installations below use the profile `lgtv`.
+Replace `lgtv` below with your device name. The script default is
+`clean-your-tv-<IP-with-dashes>`, such as `clean-your-tv-192-168-1-50`, unless you
+set `DEVICE`. Manual installs use `lgtv`.
 
-- **Arrows / OK:** select and open apps. Hold OK on a tile to reorder it.
-- **Short Home:** return to the launcher while the helper is active.
-- **Press Home three times within two seconds:** release interception and open LG Home.
-
-Triple Home is an emergency stop, not a factory reset. It preserves preferences but
-leaves a persistent stop flag. Automatic startup respects that flag. To resume,
-open **Home Helper** manually from LG's app list, or run:
+To open Helper explicitly:
 
 ```sh
 ares-launch -d lgtv com.local.nativehome
 ```
 
-Opening the launcher alone does not clear the stop flag. If you trigger triple Home by
-accident, manually starting the helper restores interception. The current **Change Home** switch controls ordinary Home routing; **Open LG Home**
-only visits LG Home once. Neither replaces checking recovery state after a fault.
-Helper versions through 0.6.13 use holding Home for about two seconds instead
-of triple Home.
+If a quick power cycle leaves tiles unresponsive, use triple Home and check arrows
+on LG Home. Report the Helper version and whether it happens with Helper stopped.
+Test standby and cold boot separately. [Compatibility and known limits](COMPATIBILITY.md).
 
-If the helper fails, heartbeat timeouts and process cleanup release the physical
-remote. Do not repeatedly clear stop flags after a failure: use LG Home and report
-the issue. Keep the launcher assigned to a Quick Access key as another entry point.
-
-If a quick power cycle leaves tiles visible but unresponsive, try triple Home and
-check arrows on LG Home. Report the helper version and whether it reproduces with
-the helper stopped. Version 0.6.12 avoids a duplicate launch after system restoration.
-
-Opening Home does not start or restart Home Helper. This avoids a native launch
-that can cause webOS to close the visible Home on some TVs. The existing boot
-activity still starts the helper automatically when permitted. After a helper
-exit (including exit code 25 without a stop flag), open **Home Helper** manually
-to restore control; merely reopening Home will not restart it.
-
-After standby, Home recovery watches for LG Home for up to 30 seconds. It makes
-at most two additional launch attempts, only after LG Home has stayed visible
-for 1.5 seconds and the previous launch has settled for at least 5 seconds.
-Opening another app, explicitly visiting LG Home, disabling Home control, or
-turning the TV off cancels this recovery.
-
-### Interrupted No-root installation in the unpublished 1.4.0 candidate
-
-In the unpublished 1.4.0 candidate, an interrupted No-root installation also offers **Recover and reinstall** after **Check TV status**. Confirm removal only if you want to remove the Clean Your TV apps, then review the versions before reinstalling. If recovery fails, save its diagnostic report and stop. This does not yet identify or fix the original TV package rejection (#21). Removing the apps may reset Home preferences. The default is No, including with `--yes`; noninteractive setup cannot approve this step. The existing TV-installer-idle, removal readback and unknown-outcome guards remain in force. Published v1.3.0 offers this button for unfinished removal only.
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="no-root-controls-and-recovery"></a>

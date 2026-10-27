@@ -1,0 +1,51 @@
+# Release history and device evidence
+
+[Current user documentation](../README.md) · [Developer references](../development/README.md)
+
+These are historical records, not current setup instructions. They retain their
+original versions, dates, failed attempts and test limits. A recorded success on
+one model or artifact does not certify later releases or a different TV.
+
+## Release notes
+
+- [1.4.0](../RELEASE-1.4.0.md)
+- [1.3.0](../RELEASE-1.3.0.md)
+- [1.2.0](../RELEASE-1.2.0.md)
+- [1.1.0](../RELEASE-1.1.0.md)
+- [1.0.3](../RELEASE-1.0.3.md)
+- [1.0.2](../RELEASE-1.0.2.md)
+- [1.0.1](../RELEASE-1.0.1.md)
+- [1.0.0](../RELEASE-1.0.0.md)
+- [0.10.10](../RELEASE-0.10.10.md)
+- [0.10.9](../RELEASE-0.10.9.md)
+- [0.10.8](../RELEASE-0.10.8.md)
+- [0.10.7](../RELEASE-0.10.7.md)
+- [0.10.6](../RELEASE-0.10.6.md)
+- [0.10.5](../RELEASE-0.10.5.md)
+- [0.10.4](../RELEASE-0.10.4.md)
+- [0.10.3](../RELEASE-0.10.3.md)
+- [0.10.1](../RELEASE-0.10.1.md)
+- [0.10.0](../RELEASE-0.10.0.md)
+- [0.9.0](../RELEASE-0.9.0.md)
+
+## Acceptance and validation
+
+- [1.4.0-ACCEPTANCE](../RELEASE-1.4.0-ACCEPTANCE.md)
+- [1.3.0-ACCEPTANCE](../RELEASE-1.3.0-ACCEPTANCE.md)
+- [1.2.0-ACCEPTANCE](../RELEASE-1.2.0-ACCEPTANCE.md)
+- [1.1.0-ACCEPTANCE](../RELEASE-1.1.0-ACCEPTANCE.md)
+- [Root release acceptance](../../root-edition/RELEASE-ACCEPTANCE.md), [earlier Root status](../../root-edition/HISTORY.md), [Root recovery metadata history](../../root-edition/HISTORY-RECOVERY.md).
+- [Earlier compatibility reports and C4 details](COMPATIBILITY.md).
+- [1.4.0 test matrix](../RC-1.4.0-TESTING.md), [1.1.0 test matrix](../RC-1.1.0-TESTING.md), [1.0.0 validation](../RELEASE-1.0.0-VALIDATION.md).
+- [Root initial stable record](../../root-edition/ROOT-STABLE-0.1.0.md), [Root 0.1.1](../../root-edition/ROOT-0.1.1.md), [earlier Root stable acceptance](../development/ROOT-STABLE-ACCEPTANCE.md), [RC19](../development/ROOT-RC19-VALIDATION.md), [update TV validation](../development/ROOT-UPDATES-TV-VALIDATION.md).
+
+## Audits, investigations and original plans
+
+- [Earlier documentation audit](../DOCUMENTATION-AUDIT.md), [1.2.0 documentation audit](../DOCUMENTATION-AUDIT-1.2.0.md), [issue-status audit](../ISSUE-STATUS-AUDIT.md).
+- [Research records](../research/), [design specifications](../superpowers/specs/), [implementation plans](../superpowers/plans/).
+- [Changelog](../../CHANGELOG.md).
+
+Historical files stay at their existing paths so release and issue links continue
+to work. Current guidance lives in the user/developer indexes rather than being
+appended to these records. Private logs and device backups are not part of this
+public documentation.

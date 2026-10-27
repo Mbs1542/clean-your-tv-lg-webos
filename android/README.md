@@ -1,32 +1,29 @@
-# CYTV for Android — 0.4.0 (versionCode 13)
+# Install Clean Your TV from Android
 
-1.4.0: [release notes](../docs/RELEASE-1.4.0.md) and [C3 acceptance / limits](../docs/RELEASE-1.4.0-ACCEPTANCE.md). [Release #98](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/98) tracks publication; latest-download links follow the published release.
+Use your phone to install either **No-root** (Developer Mode) or **Root**
+(existing root SSH) on an LG webOS TV. No PC, Termux, phone Python installation
+or cloud service is needed. The APK includes the offline interface and TV packages;
+optional TV Python is a separate verified download.
 
-Previous published baseline: **[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)** includes cytv **0.4.0**, Home **1.4.2**, Helper **0.6.19**, Root **0.4.0** and both edition Updaters **0.3.0**, and Android **0.3.0-preview / code 11**. Android remains a preview within the stable distribution. Latest-download links follow the published release; see [release notes](../docs/RELEASE-1.3.0.md) and [scoped hardware acceptance](../docs/RELEASE-1.1.0-ACCEPTANCE.md).
+Release **1.4.0** includes **Android 0.4.0 / versionCode 13**.
+[Download the signed APK](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest) ·
+[Full installation guide](../docs/INSTALL.md) · [Recovery](#recovery-and-private-data) ·
+[Report a problem](../docs/FEEDBACK.md)
 
-No-root and Root are equal options for different TV environments: Developer Mode or existing root SSH. Neither edition is preferred generally. After the connection check, CYTV highlights the edition matching an unambiguous detected SSH endpoint; root privileges still require verification after sign-in.
+Requires a **64-bit ARM phone, Android 7.0+ and WebView/Chrome 108+**.
+Android 15 / API 35 ARM64 with WebView 124 was verified in an emulator.
+Physical phone-to-TV installation/recovery and the minimum Android/WebView
+configuration remain unverified. See [acceptance and limits](STABLE-READINESS.md).
+Update over your existing APK without uninstalling or clearing data; the
+application ID and signing certificate are retained.
 
-The interface uses the approved B1 house mark in its original colours, with quiet warm charcoal surfaces and muted controls. Orange is confined to the identity rather than large button/background fills.
+The interface supports twelve languages and follows the phone language on first
+launch, with English fallback. Tap the top-right language control to choose and
+save another language. Root and No-root are equal options for different TV access.
 
-A self-contained Android installer for the existing No-root and Root editions of Clean Your TV. Historical v1.2.0 supports the original ten desktop languages: English, German, Spanish, Brazilian Portuguese, French, Italian, Korean, Hindi, Polish and Russian, with the Android system font, a bundled Noto Sans fallback, readable text sizes, offline UI and TV packages. The optional TV Python runtime archive is a separate
-verified on-demand download, rather than part of the APK. On first launch it follows the phone language (English for unsupported languages). The top-right control shows the current language; tap it to open a list with native language names and a checkmark. Your choice is saved on this phone. No PC, Termux, Python installation on the phone, or cloud service is required to run the APK.
-
-Version 1.3.0 adds Simplified Chinese (`zh-Hans`, 简体中文) and
-Traditional Chinese (`zh-Hant`, 繁體中文), including native operation notifications
-and WebView guidance. Explicit script tags override regional defaults; CN/SG
-use Simplified and TW/HK/MO use Traditional. Earlier v1.2.0 APKs do not include this support.
-
-## Release 1.4.0
-
-This release selects **Android 0.4.0 / versionCode 13**, without `preview`, after
-maintainer-approved emulator verification. Latest-download links follow the
-published release; #98 tracks publication. Tested: Android 15 / API 35 ARM64,
-WebView 124; physical-phone and live phone-to-TV recovery checks remain community
-follow-up. Android 7 / WebView 108 is the minimum requirement, not a verified
-phone configuration. See [acceptance and limits](STABLE-READINESS.md).
-Update over the existing APK without uninstalling or clearing app data; the
-application ID and signing certificate are retained. Report problems with phone,
-Android/WebView and TV/firmware details, edition and failed step, without secrets.
+<a id="release-140"></a>
+Current versions and evidence are in the [1.4.0 release notes](../docs/RELEASE-1.4.0.md)
+and [Android acceptance](STABLE-READINESS.md).
 
 ## Install and connect
 
@@ -42,101 +39,38 @@ Android/WebView and TV/firmware details, edition and failed step, without secret
    a compatible TV loader/libc is still required. Working system Python skips this download.
    See [runtime limits](../docs/OPTIONAL-PYTHON.md). CYTV does not root or flash the TV.
 
-The historical **v1.2.0 APK was a preview/debug build**. A user confirmed successful Android setup with v1.1.0 after the operation-receipt fix in [issue #24](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/24#issuecomment-6400650506). The comment does not identify the phone, Android version or TV configuration; do not attribute the original issue author's TV to this separate reporter. Full physical-phone acceptance for **both editions**, including recovery, remains outstanding. The 1.3.0 preview uses a non-debuggable release build with the existing pinned signing identity; [acceptance and evidence](STABLE-READINESS.md) records the scoped decision for the next candidate. Older 32-bit phones and x86 devices are not included in this APK. The initial UI includes install, status and restore; it does not expose uninstall or automatic discovery. The full TV app inventory is imported automatically. Compatible whole-edition TV updates require separate computer-assisted System
+Older 32-bit phones and x86 devices are not included in this APK. The UI includes install, status and restore; it does not expose uninstall or automatic discovery. The full TV app inventory is imported automatically. Compatible whole-edition TV updates require separate computer-assisted System
 Updater bootstrap with root/Homebrew services. Unrooted TVs use the installer.
 The APK does not expose that bootstrap action; see [updates](../root-edition/UPDATES.md).
 
 ## Recovery and private data
 
-Use **Status and recovery** from the start screen. The selected action stays visible while you choose the TV connection method; status and restore show their own progress without installation steps. The Android notification describes an ongoing TV operation. After an interrupted operation, check status before reinstalling. CYTV retains the existing durable operation receipts and never automatically repeats installation after process death. Activity recreation replays the current operation and pending question. Pending questions time out after ten minutes; the foreground wake lock is bounded to 25 minutes. OS process/service termination can still interrupt networking; retained receipts remain authoritative. An unfinished No-root removal is resumed
-only through its existing verified flow and a separate confirmation; unknown removal
-outcomes stay blocked. The preview has no uninstall action, so use desktop/CLI
-with the retained connection and evidence when removal is required. Status and
-restore do not download a new Python. Referenced runtime slots remain for recovery.
+Open **Status and recovery** from the start screen. After an interruption,
+check status before reinstalling. The app retains operation receipts and does
+not automatically repeat installation after process death. Keep the same TV,
+edition and SSH port; pending or unknown outcomes need inspection.
+
+Android exposes install, status and restore. For removal, use desktop/CLI with
+the retained connection and evidence. An interrupted No-root removal needs its
+verified continuation and separate confirmation; an unknown removal outcome stays
+blocked. Status and restore do not download Python. Keep runtime slots needed
+for recovery.
 
 Three short Home presses within two seconds request the existing TV emergency exit. Older No-root Helper versions through 0.6.13 instead use holding Home for two seconds. Root cold-power behavior and model compatibility retain the limitations documented by the TV project.
 
 Profiles, imported keys and pairing data live in the app-private directory. Android backup is disabled. Passwords are requested on demand and are not written to the UI log or preferences. Imported keys persist for later use; uninstalling Android CYTV removes them and the local recovery receipts. Raw logs remain local and can contain TV addresses; no automatic sharing/export is implemented. The Android package needs Internet/network access for local TV sockets, foreground-service/notification permissions and a bounded wake lock. Cleartext is enabled for the TV's Developer Mode Key Server; the WebView itself blocks all network navigation and serves only bundled files.
 
-## Build
+## Build and verification
 
-Run builds from the maintained project root. Requires JDK 17, Python 3.12, Android SDK platform 35/build-tools 35.0.0/platform-tools and accepted SDK licenses. Gradle 8.13 is pinned by the wrapper; Android Gradle Plugin 8.9.2 and Chaquopy 17.1.0 are pinned in the build.
+See [Android development](DEVELOPMENT.md) for prerequisites, signing, test commands
+and the limits of emulator/browser evidence.
 
-From the repository root, prepare a public TV payload using the existing build flow (or use an already built, hash-verified `build/cytv/payload`):
+<a id="build"></a>
+See [build instructions](DEVELOPMENT.md#build).
+<a id="checks-and-screenshots"></a>
+See [checks and screenshots](DEVELOPMENT.md#checks-and-screenshots).
+<a id="maintenance-connection-continuity-in-130-issue-12"></a>
+See [connection continuity](DEVELOPMENT.md#maintenance-connection-continuity-in-130-issue-12).
 
-```sh
-python3.12 -m venv android/.build-venv
-android/.build-venv/bin/pip install -r cytv/requirements.txt ziglang==0.14.1
-android/.build-venv/bin/python scripts/build-cytv.py --payload-only
-export CYTV_BUILD_PYTHON="$PWD/android/.build-venv/bin/python"
-export ANDROID_HOME=/path/to/android-sdk
-export JAVA_HOME=/path/to/jdk-17
-cd android
-./gradlew :app:assembleDebug :app:lintDebug :app:assembleDebugAndroidTest
-```
-
-Output: `android/app/build/outputs/apk/debug/app-debug.apk` relative to the repository root. No release signing material is stored in the repository. The first build downloads dependencies; runtime installation uses the embedded payload. Runtime extraction is cached by the bundled manifest SHA-256, so reinstalling a preview with the same versionCode cannot reuse a different older payload. Staging validates every payload hash and copies only public source modules, excluding Qt/desktop entry points, caches and local profiles. It does not automatically rebuild TV payloads during Gradle execution.
-
-For a release APK, supply the private `CYTV_ANDROID_KEYSTORE` through the protected
-build environment and run `:app:assembleRelease :app:lintRelease`. Output is
-`android/app/build/outputs/apk/release/app-release.apk`. Release packaging fails
-without the keystore. CI uses the existing persistent signer; never replace that
-key or the pinned certificate just to remove the preview label. Local builds may
-use a disposable test key, but their APKs are not public release artifacts and
-must fail the pinned-certificate verifier. Run `android/verify_release.py` against
-the final signed APK in the trusted environment. Release WebView debugging is
-disabled through `BuildConfig.DEBUG`; debug instrumentation is not bundled into
-the public APK.
-
-Python dependencies are resolved normally against PyPI and the official Chaquopy wheel index: Paramiko 3.5.1, websockets 15.0.1, cryptography 42.0.8, bcrypt 3.2.2 and PyNaCl 1.5.0. Python 3.12/arm64 is used because its available bcrypt wheel satisfies Paramiko's minimum version; dependency constraints are not bypassed. These versions are the available Android package combination, not a claim that all packages are the latest upstream versions.
-
-## Checks and screenshots
-
-```sh
-# Repository Python dependencies must be installed in the chosen interpreter.
-python3 -m unittest discover -s android/tests
-bash scripts/test.sh
-# Requires Playwright and a local Chrome; CYTV_CHROME can override its executable.
-node android/tests/ui.cjs
-node android/tests/localization.cjs
-node android/tests/maintenance.cjs
-node android/tests/screenshots.cjs
-```
-
-Native operation fixtures run separately on an emulator after installing the
-debug APK and `android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk`:
-
-```sh
-python3 android/tests/native.py --serial emulator-5554
-```
-
-This checks both edition contexts, duplicate-operation rejection, bounded replay,
-pending-question retention and stale-answer rejection. It also checks that secret
-answers are absent from replay. `--upgrade seed` and `--upgrade verify` exercise
-synthetic private-data and unfinished-operation retention across an APK update;
-see [the upgrade procedure](STABLE-READINESS.md). These fixtures do not connect to
-a TV and cannot establish physical installation compatibility.
-
-The localization suite checks all twelve complete candidate catalogs, system-language resolution, the current-language picker, saved selection, preserving connection fields, localized native requests and progress, and returning from recovery to a fresh installation. Operation logs and the foreground notification use the language selected when the operation starts; changing the interface language does not rewrite earlier logs.
-
-The browser suite covers both editions, IP/port/key validation, explicit trust, secret isolation, error recovery and widths 320/375/412/768/1024. Files `screenshots/01-*` through `05-*` show the same offline UI in browser demonstration mode, clearly labeled; progress and completion there are simulated.
-
-The `screenshots/android-language-*` files and `android-languages-overview.png` show the actual APK language picker and Russian, German, Korean and Hindi screens. Run `node android/tests/languages-emulator.cjs` against the same forwarded debug WebView to check all twelve candidate languages and recreate them.
-
-Files `screenshots/android-*` are screenshots of the actual debug APK on an Android 15 ARM64 emulator. Native smoke checks reached the real Python No-root code/passphrase request, then tested the recovery result for an unavailable synthetic Key Server. The Root negative SSH fixture checked the real fingerprint confirmation and hidden password callback, then rejected an intentionally invalid synthetic password. It never executes TV commands. These checks do not establish successful hardware installation.
-
-For native smoke tests, forward the APK's debug WebView socket (`adb shell cat /proc/net/unix` identifies `webview_devtools_remote_PID`) with `adb forward tcp:9228 localabstract:webview_devtools_remote_PID`. Run `node android/tests/emulator.cjs` with `CYTV_ADB` set to adb's path. For the Root negative fixture, run `python android/tests/root-handshake.py` first, then set `CYTV_TEST_ROOT=1` for the Node command. To avoid an older fixture’s remembered host key, set a fresh `CYTV_TEST_SSH_PORT` in both commands. Start the app on its Russian welcome screen with no operation running. WebView debugging is enabled only in debug builds; it is disabled in release builds.
-
-## Maintenance connection continuity in 1.3.0 (issue #12)
-
-Since 1.3.0: after Done returns to the start screen, Tools retains the
-selected TV, edition and SSH port. No-root keeps port 9922; a custom Root port is
-also retained. Status, restore and Home button diagnostics no longer inherit the
-start screen's old hard-coded port 22. Home Helper recording remains No-root only.
-This UI change is not in the published v1.2.0 APK.
-
-Regression coverage drives a full install-result → Done → Tools → action flow
-for No-root and custom-port Root. A TCP connection failure does not establish
-that the Developer Mode passphrase was wrong. The report attached to issue #12
-records action status and phase ssh-connect; the exact reporter path/port still
-needs device confirmation.
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="cytv-for-android--040-versioncode-13"></a>

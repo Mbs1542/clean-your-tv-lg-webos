@@ -1,0 +1,65 @@
+name: Installation result — success or problem
+description: Share a tested setup, a failed attempt, or how a problem was resolved.
+title: '[Installation result] '
+labels: ['status:triage']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report only what was observed. Do not run extra TV changes just for this form.
+        Never include keys, tokens, IP/MAC addresses, SSIDs, serial numbers, app inventories or raw backups.
+        If an agent is posting for someone, obtain the user's permission for the redacted text and destination first.
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options:
+        - Installed and checked
+        - Installed, but not yet checked
+        - Succeeded after resolving a problem
+        - Partially completed or still failing
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: TV model, webOS/firmware and remote
+      placeholder: 'Model / firmware / remote, no serial number; unknown is OK'
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      options:
+        - No-root
+        - Root
+        - Unknown
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Release, component and installer versions
+      description: Include Windows/macOS/Linux/Android and its version; mark unknown fields.
+    validations:
+      required: true
+  - type: textarea
+    id: checks
+    attributes:
+      label: Steps, expected result and actual checks
+      description: Distinguish install, app launch, Home/Back, emergency exit, standby/wake, cold boot, OTA and rollback. Mark untested paths.
+    validations:
+      required: true
+  - type: textarea
+    id: resolution
+    attributes:
+      label: Problems, attempted resolutions and remaining limitations
+      description: Say whether each attempted fix worked. If there were no problems, say so. Link an existing issue when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Optional reviewed and redacted diagnostics
+      description: A short relevant summary is enough. Do not attach private profiles, keys or full device logs.

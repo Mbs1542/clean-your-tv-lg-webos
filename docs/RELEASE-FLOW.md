@@ -97,6 +97,14 @@ release PR ready. Release notes alone do not replace updated usage instructions.
   record why. Resolve stale instructions before marking the PR ready; document
   deliberate remaining limitations rather than checking an unfinished item.
 
+Keep current user guides task-first and reachable from [the documentation index](README.md).
+Keep README short; place commands/build internals in [developer references](development/README.md)
+and dated evidence in [history](history/README.md). Update a current instruction
+in place instead of appending another release story. Avoid copying the complete
+component version table into every guide. Preserve old links/anchors when moving
+material. Installer feedback guidance must retain explicit user consent before
+an agent publishes a report; see [feedback](FEEDBACK.md).
+
 The README's `release:downloads` and `release:components` sections must match
 `release-versions.json`, including the release tag/notes links and Android
 versionCode. Update these visible sections when selecting versions at freeze;

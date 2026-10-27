@@ -1,4 +1,4 @@
-# Root candidate runtime
+# Root runtime contract
 
 Install these Python files under `/var/lib/clean-your-tv-root/runtime` as root-owned files without group/world write permission. Python 3.9+ and `/usr/bin/luna-send` are required; Root setup also requires TV Node.js 8+,
 Homebrew services and supported ARM32 input. With system Python, invoke
@@ -86,7 +86,8 @@ Trial preflight refuses an existing controller PID marker or running known No-ro
 During hardware acceptance, use three short Home presses within two seconds to
 disable the current No-root helper first (through 0.6.13: hold Home about two seconds). After Root restoration, verify stock routing and explicitly use the existing helper button to re-enable No-root if desired. Neither runtime nor uninstaller removes stale controller markers automatically; investigate stale state rather than blindly deleting it.
 
-## RC15 persistent candidate
+<a id="rc15-persistent-candidate"></a>
+## Persistent activation
 
 Settings exposes Turn on Home control. Activation automatically records durable
 intent after readiness checks; it does not disable watchdog protection. The
@@ -100,9 +101,9 @@ intent before restoring original routing. A fault does the same. No-root helper
 is never automatically resumed. A later explicit enable is required after a fault,
 failsafe or emergency exit. Installation alone does not enable Root mode.
 
-Permanent operation is implemented in RC15 but final-bundle on-TV confirmation,
-reboot, failsafe and fault-injection acceptance remain pending. Build metadata
-continues to say `hardware_validated: false` and `public_release_ready: false`.
+Permanent activation was introduced in RC15. Current model/build evidence is in
+[1.4.0 acceptance](../../docs/RELEASE-1.4.0-ACCEPTANCE.md); source bundle metadata
+is not a cross-model compatibility certificate.
 The historical provisioning schema name `recovery-only` remains an integrity
 receipt format, not a promise that a confirmed boot intent cannot activate Home.
 
@@ -128,3 +129,6 @@ read-only status and mutating enable methods, preserving original LS2 grants.
 The optional policy stays off by default; Home off/emergency cancellation is
 unchanged. [Compatibility and rollback evidence](../../docs/development/ROOT-OTA-13-COMPATIBILITY.md)
 describes the authenticated retained-rollback anchor receipt and offline limits.
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="root-candidate-runtime"></a>

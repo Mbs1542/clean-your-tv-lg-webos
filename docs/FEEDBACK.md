@@ -1,0 +1,42 @@
+# Share an installation result
+
+[Documentation](README.md) · [Recover first](RECOVERY.md)
+
+Reports of successful installations help identify tested devices. Reports of
+failures help reproduce problems. Both are useful; neither proves compatibility
+with every TV using the same model name.
+
+## What to include
+
+- TV model, webOS/firmware version and remote type, if known. Do not include a serial number.
+- No-root or Root; the published release and installed component versions, if available.
+- Installer platform and version: Windows, macOS, Linux or Android.
+- What you tried, what you expected and what actually happened.
+- What you checked: installation only, app launch, Home/Back, emergency exit, standby/wake, true cold boot, updates or rollback. Mark anything not tested.
+- Problems encountered, steps that resolved them, and any remaining problem. Distinguish observed results from a suspected cause.
+
+A good title is **Installation result: TV model / firmware / edition**.
+Use the [installation result form](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/new?template=installation-result.yml).
+For an existing problem, add new evidence to its issue instead of opening a duplicate.
+
+## Keep private data private
+
+Review a draft before posting. Prefer the installer's redacted diagnostic summary
+and a few relevant lines over a full log. Remove SSH/SSAP keys, passphrases,
+pairing tokens, IP/MAC addresses, SSIDs, serial numbers, app inventories, private
+paths, screenshots with personal content and recovery backups. A filename saying
+“diagnostic” does not guarantee that its contents are safe to share.
+
+If a log reveals credentials or a security weakness, do not publish it in a public
+issue. Keep it private and ask the maintainer for a private reporting channel.
+
+## If an AI agent helped
+
+The agent should offer a short, redacted draft after the installation attempt,
+whether it succeeded, failed or succeeded after recovery. It must ask your
+permission to publish that draft to the named issue or repository. You may edit
+it, decline or keep it locally. Permission to install or debug is not permission
+to publish. No response is not consent.
+
+The agent must not run extra TV tests, retry a failed installation or change
+settings just to fill in a report. See [the agent instructions](../AGENTS.md#installation-results-and-user-consent).

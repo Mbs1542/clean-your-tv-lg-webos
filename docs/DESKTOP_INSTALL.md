@@ -1,21 +1,12 @@
 # Install cytv without a terminal
 
-1.4.0: [release notes](RELEASE-1.4.0.md) and [C3 acceptance / limits](RELEASE-1.4.0-ACCEPTANCE.md). [Release #98](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/98) tracks publication; latest-download links follow the published release.
+Download the desktop package from the
+[published release](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest).
+The wizard includes its runtime and TV packages. No developer tools are needed.
+Root setup may download a separate verified TV Python runtime when eligible.
 
-**[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)** contains cytv **0.4.0**, Home **1.4.2**, Helper **0.6.19**, Root **0.4.0**, both edition Updaters **0.3.0**, Android **0.3.0-preview / code 11** and System Updater **1.1.0 / protocol 1**. The latest-download links follow the published stable release. Hardware evidence is limited to the documented configuration and checks; see [release notes](RELEASE-1.3.0.md) and [compatibility](COMPATIBILITY.md).
-
-No-root and Root are equal options for different TV setups. Choose No-root for LG Developer Mode or Root for existing root SSH access. Compatibility and test coverage remain specific to each edition.
-
-The desktop wizard opens in its own window. The sidebar follows the four setup
-steps; Root and No-root are shown with descriptions before you choose. Expand
-**Maintenance action** on the start screen for status, diagnostics, restore and removal.
-It includes the computer Python runtime and the TV packages; the optional
-TV Python archive is a separate verified download during eligible Root setup;
-you do not need developer tools or terminal commands.
-
-Download the macOS, Windows or Linux desktop package from the
-[latest release](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest).
-The older v0.9.0 macOS/Linux files are console programs, not the desktop app.
+Prepare the TV using [the installation guide](INSTALL.md), then follow your
+computer's steps below. For Android, use the [Android guide](../android/README.md).
 
 ## macOS
 
@@ -100,9 +91,6 @@ software manager; this does not uninstall TV apps or delete saved recovery data.
 The installer chooses the computer’s language automatically.
 Use the language selector to save another language, or choose **Auto** to follow
 system settings. On the TV, use **Settings → Language**; this is a separate preference.
-These language controls are included in v0.10.3 and later downloads.
-Version 1.3.0 adds Simplified and Traditional Chinese with script-specific
-bundled fonts; earlier v1.2.0 downloads retain ten languages.
 See the [twelve localized installation, use and recovery guides](LANGUAGES.md).
 
 ## In the wizard
@@ -136,10 +124,11 @@ save the diagnostic report instead of deleting recovery files.
 The start page also offers status, diagnostics, return to LG Home and uninstall.
 Existing console commands remain available in the separately distributed CLI.
 
-### Guided No-root recovery and reinstallation in 1.3.0
+<a id="guided-no-root-recovery-and-reinstallation-in-130"></a>
 
-This recovery flow is included in 1.3.0; it is absent from earlier v1.2.0 downloads.
-If a No-root removal remains unfinished after **Check TV status**, connection
+### Recover and reinstall No-root
+
+If a No-root installation or removal remains unfinished after **Check TV status**, connection
 diagnostics or **Return to LG Home**, click **Recover and reinstall**. The wizard
 keeps the same TV, edition and SSH port, even when several connections are saved.
 It reconnects, checks the current state and asks you to finish removal with a
@@ -154,10 +143,6 @@ terminal or later `doctor` run is needed. Cancelling the file dialog or choosing
 an unwritable destination keeps the original report available. If report creation
 failed, the window says so; include the visible error instead. Unknown outcomes
 still stop the process, with no automatic retry or deletion of recovery evidence.
-
-This improves the desktop recovery journey for issue #65. It does not establish
-the cause or resolution of the original OLED77G55LW / firmware 43.21.71 failure;
-the requested reporter diagnostics and physical-TV acceptance are still needed.
 
 ## Remove the project from a rooted TV
 
@@ -178,45 +163,23 @@ runtime slots remain for diagnostics and recovery.
 They have no active service or startup registration. The Mac application and its
 local reports remain installed on your computer.
 
+## Clear WAM caches on a rooted TV
+
+Choose **Maintenance → Clear WAM caches (root required)**. Review the estimated
+size, available space and slower-next-launch warning before confirming; the
+default is No. This requests only native WAM `cache` and `codecache` cleanup.
+It does not clear Session Storage or other app data, reboot or resume setup.
+See [WAM cleanup and manual Session Storage risks](WAM-CLEANUP.md).
+
+<a id="unreleased-optional-wam-cache-cleanup"></a>
+<a id="interrupted-no-root-installation-in-the-unpublished-140-candidate"></a>
+
+These actions are included in published 1.4.0. Unfinished installation recovery
+can reset Home preferences when apps are removed; review the removal confirmation.
+
 ## Build and validation
 
-Install `cytv/build-requirements.txt`, then run:
+Developer commands and offline screenshots: [desktop build reference](development/DESKTOP-BUILD.md).
 
-```sh
-python scripts/build-cytv.py --desktop
-```
-
-Build natively on each target. macOS creates `dist/desktop/cytv.app` and an
-architecture-specific ZIP. Linux x64 creates `dist/cytv-linux-x64.deb` with a
-`Terminal=false` application-menu entry. Windows creates
-`dist/cytv-windows-x64-desktop.zip`, containing `cytv-desktop/cytv-desktop.exe`
-and its `_internal` runtime. It uses a native PyInstaller windowed directory build;
-the console build remains separate. Windows CI extracts the ZIP and runs its
-offline smoke check; release assembly includes the desktop ZIP.
-
-Every desktop build verifies its embedded payload and launches the frozen window
-with an offline `--smoke-test`; this does not contact a TV. Widget tests cover
-selection, secret entry, safe cancellation and destructive confirmation defaults.
-The Qt libraries remain separate dynamic files in the app/package.
-
-### Offline interface previews
-
-With desktop dependencies installed, `python scripts/preview-installer.py --language ru`
-saves screenshots of the real Qt widgets to `build/installer-preview/`. These use
-sample TV data and do not discover, connect to, or modify a TV. Add `--all-locales`
-to capture every supported language at the minimum window size.
-
-## Unreleased: optional WAM cache cleanup
-
-A matching candidate adds **Maintenance → Clear WAM caches (root required)**.
-Review the estimated Cache/Code Cache size, free space, slower-next-launch warning
-and manual alternative before the default-No prompt. Only the native WAM API types
-`cache` and `codecache` are requested. Session Storage and other app data are
-excluded; no root filesystem deletion, service stop, reboot, retry or setup resume
-is performed. Existing Root SSH is required; TV Python/Node are not. See
-[WAM cache cleanup](WAM-CLEANUP.md) for manual Session Storage risks and the limited
-C3 API evidence. Published downloads do not include this action yet.
-
-### Interrupted No-root installation in the unpublished 1.4.0 candidate
-
-In the unpublished 1.4.0 candidate, an interrupted No-root installation also offers **Recover and reinstall** after **Check TV status**. Confirm removal only if you want to remove the Clean Your TV apps, then review the versions before reinstalling. If recovery fails, save its diagnostic report and stop. This does not yet identify or fix the original TV package rejection (#21). Removing the apps may reset Home preferences. The default is No, including with `--yes`; noninteractive setup cannot approve this step. The existing TV-installer-idle, removal readback and unknown-outcome guards remain in force. Published v1.3.0 offers this button for unfinished removal only.
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="offline-interface-previews"></a>

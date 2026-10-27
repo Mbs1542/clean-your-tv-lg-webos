@@ -1,15 +1,11 @@
 # Companion application entry flows
 
-## 1.1.0 update ownership
+[Documentation](README.md) · [Everyday controls](CONTROLS.md) · [Updates](UPDATES.md)
 
-Home 1.4.0 / Helper 0.6.19 and Root 0.2.0 / Root Updater 0.2.0 belong to the
-v1.1.0 stable release. The independent System Updater supervisor owns complete
-signed edition release sets after explicit root/Homebrew computer bootstrap;
-legacy standalone app updates do not install that infrastructure. Recovery
-restores the saved compatible components and pre-update profile. Unknown outcomes
-remain blocked. See [current update setup and limits](../root-edition/UPDATES.md).
-The C3 check covered installed-version menus and friendly feed-unavailable handling; a complete signed system upgrade and rollback remain untested. The dated inspection below
-retains its original artifact scope.
+This technical reference explains companion entry points. For normal use, follow
+the controls and update guides above. Whole-edition updates require separately
+prepared compatible System Updater infrastructure; a launcher IPK does not install
+it. Unknown outcomes stay blocked, and emergency stops remain off.
 
 Home Helper's tile opens an explanatory panel inside Home. It reads controller
 status and the saved Home choice without starting input capture or clearing the
@@ -57,3 +53,6 @@ needed. It stages the actual Root Updater package, uses deterministic device API
 responses and checks manual Helper entry, emergency restart confirmation, remote
 navigation, both Updaters, missing service, restore confirmation and relaunch.
 Screenshots are written to `build/companion-ui/`.
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="110-update-ownership"></a>

@@ -4,12 +4,11 @@ Choose a complete user guide for installation, everyday controls, recovery,
 updates and removal. Technical/developer references remain in English and are
 linked at the end of each guide.
 
-These twelve guides describe **[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)**, with candidate-only behavior identified separately. Latest-download links follow the published release. Hardware evidence and outstanding tests remain scoped to the recorded devices and components; see [compatibility](COMPATIBILITY.md) and [release notes](RELEASE-1.3.0.md).
+[Documentation](README.md) · [Requirements and known limits](COMPATIBILITY.md)
 
-The 1.3.0 release supports all twelve languages below, adding Simplified and
-Traditional Chinese across Home, Root Home, both
-updaters and the desktop/console, Android and Homebrew installers. The Android preview
-supports language selection. It follows the phone language on first launch (English fallback); tap the current language code at the top right to choose and save another language.
+The published installer and TV interface offer these twelve languages. Technical
+references remain in English. Localized guides describe the current user flow;
+unpublished paths are identified separately.
 
 | Language | Code | User guide |
 | --- | --- | --- |
@@ -36,4 +35,4 @@ application identifiers, file names and command verbs are not translated.
 For Chinese, an explicit Hans/Hant script takes precedence over the region.
 Bare `zh`, CN and SG use Simplified; TW, HK and MO use Traditional. You can
 override the automatic result in the existing language picker. Chinese TV
-rendering on the final candidate still needs physical-device acceptance.
+rendering remains subject to the recorded device-specific acceptance limits.
