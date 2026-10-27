@@ -35,6 +35,11 @@
       "pr": 122,
       "issues": [],
       "summary": "Correct published 1.4.0 README metadata and Android download labeling; enforce stable release links/component versions in candidate policy and required README CI checks"
+    },
+    {
+      "pr": 123,
+      "issues": [],
+      "summary": "Reorganize user docs and all twelve guides around tasks, preserve historical evidence and links, and require explicit user consent for redacted installation-result issues"
     }
   ],
   "excluded": [],
