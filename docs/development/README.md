@@ -26,6 +26,7 @@ before using a low-level recovery or installation procedure.
 
 - [Release integration flow](../RELEASE-FLOW.md), [release checklist](../RELEASE_CHECKLIST.md), [packaging/signing/publication](../RELEASE-PROCESS.md).
 - [Current update guidance](../UPDATES.md), [Root updater](../../root-edition/UPDATES.md), [legacy Home-only updater procedures](LEGACY-HOME-UPDATES.md).
+- [Private signed Root candidate acceptance](SIGNED-ROOT-CANDIDATE-ACCEPTANCE.md): explicit pre-publication admission without changing the installed supervisor or stable feed.
 - [Original 1.3.0 OTA contract correction](ROOT-OTA-13-COMPATIBILITY.md), [update lab runbook](UPDATE-LAB-RUNBOOK.md), [remaining transaction work](UPDATE-TRANSACTION-REMAINING.md).
 - [Root cold-boot investigation](ROOT-COLD-BOOT.md), [Home readback boundary](ROOT-HOME-READBACK.md), [Homebrew acceptance matrix](HOMEBREW-INSTALL-ACCEPTANCE.md).
 
