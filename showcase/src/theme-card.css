@@ -1,4 +1,5 @@
 /* Shared by the community catalog and the local live theme picker. */
+.ctv-theme-card, .ctv-theme-card * { box-sizing: border-box; }
 .ctv-theme-card { display: block; min-width: 0; overflow: hidden; background: #1b1d19; color: #eeeae1; border: 1px solid #41463a; border-radius: 8px; text-align: left; text-decoration: none; font: inherit; padding: 0; }
 .ctv-theme-card__preview { display: block; position: relative; aspect-ratio: 16/9; overflow: hidden; background: #24271f; }
 .ctv-theme-card__image { display: block; position: relative; width: 100%; height: 100%; aspect-ratio: 16/9; object-fit: cover; }
