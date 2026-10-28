@@ -770,6 +770,7 @@
       setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
+      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', (row * columnCount + 1) + '–' + Math.min((row + 1) * columnCount, tiles.length) + ' / ' + tiles.length);
       var ceiling = layoutGeometry.scrollTop;
       var floor = moveState ? 850 : layoutGeometry.scrollBottom;
       if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);

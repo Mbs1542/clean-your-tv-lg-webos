@@ -32,6 +32,14 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
       };
       await check();
       for(let i=0;i<4;i++){await page.keyboard.press('ArrowDown');await check();}
+      if(preset==='scenic-grid') {
+       for(let i=0;i<15;i++)await page.keyboard.press('ArrowUp');
+       await page.keyboard.press('ArrowDown');
+       await page.keyboard.down('Enter');await page.waitForTimeout(700);await page.keyboard.up('Enter');
+       const box=await page.locator('#tiles .moving .card').boundingBox();
+       assert(box.y>=600 && box.y+box.height<=850,'reorder row clears trusted controls');
+       await page.keyboard.press('Escape');
+      }
       await page.evaluate(()=>HomeLayoutState.setColumns(2));
       assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),2);
       if(preset==='side-grid') {
