@@ -93,6 +93,13 @@
         110
       ],
       "summary": "Add explicit authenticated Root SDK package permission repair before firmware-access registration; retain strict default/automatic checks and require private package byte authority; no automatic SDK chmod or published delivery"
+    },
+    {
+      "pr": 135,
+      "issues": [
+        110
+      ],
+      "summary": "Distinguish authorized maintainer QA records from other-user installation report consent; preserve privacy and record scoped C3 update-control/geometry/firmware follow-up without finalizing release acceptance"
     }
   ],
   "excluded": [],

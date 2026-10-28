@@ -76,6 +76,12 @@ final frozen-head platform builds and signed publication verification are pendin
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
 
+- #135: allow authorized maintainer/project-owned test-device QA records without
+  per-report confirmation, while retaining exact draft/destination consent for
+  other users and shared privacy limits. Record scoped C3 follow-up for the
+  eeb4b8b0 app and streamed #132 helper; final frozen artifacts and the stated
+  untested cases remain separate.
+
 No exclusions. The inventory is recorded in `release-plan.json` and candidate
 [PR #114](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
 
@@ -100,9 +106,10 @@ for promotion (`homebrew/release.json` is absent).
 The current checklists and historical implementation evidence are in PR #114.
 Historical C3 acceptance of v1.4.0 does not establish acceptance of this candidate.
 [Scoped C3 signed update/retained rollback acceptance](RELEASE-1.4.1-ACCEPTANCE.md)
-is now recorded for candidate source `3d5e0cb0`. Normal public-feed discovery,
-standby/cold boot, firmware blocking and the other stated limitations remain
-unverified. `release-plan.json` keeps overall acceptance empty until the remaining
+is now recorded for candidate source `3d5e0cb0`. The same record now includes a maintainer follow-up for update controls,
+column geometry and firmware access/blocking with its exact tested sources and
+limits. Normal public-feed discovery and final frozen-artifact acceptance remain
+unverified; the earlier-source paragraphs retain their historical scope. `release-plan.json` keeps overall acceptance empty until the remaining
 release gates are resolved; do not mark ready or merge to main from this scoped test alone.
 
 Review README, installation, updates/removal, troubleshooting, prerequisites,
