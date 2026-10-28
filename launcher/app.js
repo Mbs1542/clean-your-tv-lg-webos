@@ -10,14 +10,25 @@
     return window.HomeI18n ? HomeI18n.html(markup) : markup;
   }
   // Shared layout, focus and remote-control state.
-  var DOCK_TOP = 680,
-    DOCK_HEIGHT = 258,
-    CARD_HEIGHT = 202,
-    TILE_BASE = DOCK_TOP + Math.round((DOCK_HEIGHT - CARD_HEIGHT) / 2),
+  var GRID_LEFT = 112,
+    GRID_WIDTH = 1696,
+    MAX_CARD_WIDTH = 360,
+    MAX_CARD_HEIGHT = 202,
+    FOCUS_SCALE = 1.1,
+    FOCUS_PADDING = 12,
+    CARD_GAP = 24,
+    ROW_GAP = 90,
+    DOCK_PADDING = 28,
+    DOCK_TOP = 680,
+    columnCount = Math.max(1, CONFIG.columns || 4),
+    columnWidth = GRID_WIDTH / columnCount,
+    // Leave CARD_GAP between an enlarged focus frame and its idle neighbour.
+    CARD_WIDTH = Math.min(MAX_CARD_WIDTH, Math.floor((columnWidth - FOCUS_PADDING - CARD_GAP) / ((FOCUS_SCALE + 1) / 2))),
+    CARD_HEIGHT = Math.round(CARD_WIDTH * MAX_CARD_HEIGHT / MAX_CARD_WIDTH),
+    DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2,
+    TILE_BASE = DOCK_TOP + DOCK_PADDING,
     HERO_OFFSET = 176;
   var toastTimer,
-    columnCount = Math.max(1, CONFIG.columns || 4),
-    columnWidth = 1696 / columnCount,
     KEY_OK = 13,
     KEY_BACK = 461,
     greetings = [[5, tr("Good night")], [12, tr("Good morning")], [17, tr("Good afternoon")], [22, tr("Good evening")], [24, tr("Good night")]],
@@ -629,15 +640,17 @@
     return Math.floor(index / columnCount);
   }
   function tileLeft(index) {
-    return 112 + index % columnCount * columnWidth + (columnWidth - 360) / 2;
+    return GRID_LEFT + index % columnCount * columnWidth + (columnWidth - CARD_WIDTH) / 2;
   }
   function tileTop(index) {
     var row = rowFor(index);
-    return TILE_BASE + 292 * row + (row > 0 ? 36 : 0);
+    return TILE_BASE + (CARD_HEIGHT + ROW_GAP) * row + (row > 0 ? 36 : 0);
   }
   function layoutTiles() {
     tiles.forEach(function (e, t) {
       tilesContainer.appendChild(e.el);
+      e.el.style.width = CARD_WIDTH + "px";
+      e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
       e.el.classList.toggle("dock", 0 === rowFor(t));
@@ -645,9 +658,9 @@
     var dockBand = getElement("dockBand"),
       dockCount = Math.min(columnCount, tiles.length);
     dockBand.style.display = dockCount ? "block" : "none";
-    dockBand.style.left = tileLeft(0) - 28 + "px";
+    dockBand.style.left = tileLeft(0) - DOCK_PADDING + "px";
     dockBand.style.top = DOCK_TOP + "px";
-    dockBand.style.width = (dockCount - 1) * columnWidth + 360 + 56 + "px";
+    dockBand.style.width = (dockCount - 1) * columnWidth + CARD_WIDTH + DOCK_PADDING * 2 + "px";
     dockBand.style.height = DOCK_HEIGHT + "px";
   }
   function animateTiles() {
@@ -704,15 +717,15 @@
       tiles[index].el.classList.add("focused");
       var top = tileTop(index),
         row = rowFor(index);
-      0 === row && !moveState ? scrollOffset = 0 : (top - scrollOffset + 202 + 70 > (moveState ? 850 : 1060) && (scrollOffset = top + 202 + 70 - (moveState ? 850 : 1060)), top - scrollOffset - 24 < 80 && (scrollOffset = top - 24 - 80));
+      0 === row && !moveState ? scrollOffset = 0 : (top - scrollOffset + CARD_HEIGHT + 70 > (moveState ? 850 : 1060) && (scrollOffset = top + CARD_HEIGHT + 70 - (moveState ? 850 : 1060)), top - scrollOffset - 24 < 80 && (scrollOffset = top - 24 - 80));
       stage.style.transform = "translateY(" + -scrollOffset + "px)";
       var header = document.querySelector("header"),
         headerBottom = header.offsetTop + header.offsetHeight;
       document.body.classList.toggle("scrolled", DOCK_TOP - scrollOffset < headerBottom + 24);
-      var glassWidth = 1.1 * 360 + 24,
-        glassHeight = 1.1 * 202 + 24,
-        glassLeft = tileLeft(index) + 180 - glassWidth / 2,
-        glassTop = top + 101 - glassHeight / 2;
+      var glassWidth = FOCUS_SCALE * CARD_WIDTH + FOCUS_PADDING * 2,
+        glassHeight = FOCUS_SCALE * CARD_HEIGHT + FOCUS_PADDING * 2,
+        glassLeft = tileLeft(index) + CARD_WIDTH / 2 - glassWidth / 2,
+        glassTop = top + CARD_HEIGHT / 2 - glassHeight / 2;
       focusGlass.style.width = glassWidth + "px";
       focusGlass.style.height = glassHeight + "px";
       focusGlass.style.transform = "translate(" + glassLeft + "px," + glassTop + "px)";
@@ -941,7 +954,7 @@
         } else if (39 === key) {
           column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
         } else if (38 === key) {
-          0 === rowFor(focusedTile) ? focusTopButton((tileCenter = tileLeft(focusedTile) + 180, nearestButton = 0, nearestDistance = 1 / 0, topButtons.forEach(function (e, t) {
+          0 === rowFor(focusedTile) ? focusTopButton((tileCenter = tileLeft(focusedTile) + CARD_WIDTH / 2, nearestButton = 0, nearestDistance = 1 / 0, topButtons.forEach(function (e, t) {
             var n = e.getBoundingClientRect(),
               a = Math.abs(n.left + n.width / 2 - tileCenter);
             a < nearestDistance && (nearestDistance = a, nearestButton = t);

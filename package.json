@@ -4,7 +4,8 @@
   "scripts": {
     "lint:compat": "node scripts/check-tv-web.cjs",
     "test:compat": "node tests/web-build.cjs",
-    "test:legacy-ui": "node tests/legacy-launcher.cjs"
+    "test:legacy-ui": "node tests/legacy-launcher.cjs",
+    "test:geometry": "node tests/launcher-geometry.cjs"
   },
   "browserslist": [
     "Chrome 38"
