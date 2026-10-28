@@ -171,7 +171,20 @@
     undoBar,
     undoButton,
     pointerTimer = null,
+    pointerNavigation = true,
     suppressClick = false;
+  // A scrolling list can cross a stationary cursor and generate mouseover.
+  // Remote input owns focus until the pointer actually moves or is clicked.
+  document.addEventListener('mousemove', function () { pointerNavigation = true; }, true);
+  document.addEventListener('keydown', function (event) {
+    if (layoutPreset === 'channel-list' && [13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
+  }, true);
+  document.addEventListener('mousedown', function () { pointerNavigation = true; }, true);
+  function bindPointerFocus(element, action) {
+    function hover() { if (layoutPreset !== 'channel-list' || pointerNavigation) action(); }
+    element.addEventListener('mouseover', hover);
+    element.addEventListener('mousemove', function () { if (layoutPreset === 'channel-list') hover(); });
+  }
   function screenIds() {
     return tiles.filter(function (item) {
       return !item.add;
@@ -204,8 +217,8 @@
       el: el,
       color: [100, 110, 125]
     };
-    el.addEventListener('mouseover', function () {
-      if (!moveState && !pickerOpen && !undoState) {
+    bindPointerFocus(el, function () {
+      if (!moveState && !pickerOpen && !undoState && (focusZone !== 'grid' || tiles[focusedTile] !== item)) {
         focusTile(tiles.length - 1);
       }
     });
@@ -466,7 +479,7 @@
     hideButton.id = 'hideApp';
     hideButton.hidden = true;
     hideButton.innerHTML = ht('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10 5.2c5.5-1 10 6.8 10 6.8a20 20 0 0 1-3 3M6 6C3.4 8 2 12 2 12s4 7 10 7c1.4 0 2.7-.4 4-1M9 9a4.2 4.2 0 0 0 6 6"/></svg><span>Hide from Home</span>');
-    hideButton.addEventListener('mouseover', selectHide);
+    bindPointerFocus(hideButton, function () { if (!hideSelected) selectHide(); });
     hideButton.addEventListener('click', hideApp);
     document.body.appendChild(hideButton);
     editHint = document.createElement('div');
@@ -653,8 +666,8 @@
     card.appendChild(image);
     element.appendChild(card);
     var label = document.createElement("div");
-    return label.className = "name ctv-label", label.textContent = app.title, element.appendChild(label), element.addEventListener("mouseover", function () {
-      "inputs" === focusZone || pickerOpen || undoState || (moveState ? pointerMove(tile) : focusTile(tiles.indexOf(tile)));
+    return label.className = "name ctv-label", label.textContent = app.title, element.appendChild(label), bindPointerFocus(element, function () {
+      "inputs" === focusZone || pickerOpen || undoState || (moveState ? pointerMove(tile) : (focusZone !== 'grid' || tiles[focusedTile] !== tile) && focusTile(tiles.indexOf(tile)));
     }), element.addEventListener("click", function () {
       tileClick(tile);
     }), bindHold(tile), tilesContainer.appendChild(element), tile;
@@ -886,8 +899,8 @@
     element.innerHTML = ht('<svg viewBox="0 0 24 24"><path d="') + iconPath + '"/></svg>';
     element.appendChild(document.createTextNode(label));
     var index = inputRows.length;
-    element.addEventListener("mouseover", function () {
-      focusInput(index);
+    bindPointerFocus(element, function () {
+      if (focusedInput !== index) focusInput(index);
     });
     element.addEventListener("click", function () {
       closeInputs();
@@ -1050,8 +1063,8 @@
     }
   });
   topButtons.forEach(function (e, t) {
-    e.addEventListener("mouseover", function () {
-      "inputs" !== focusZone && !moveState && !pickerOpen && !undoState && focusTopButton(t);
+    bindPointerFocus(e, function () {
+      "inputs" !== focusZone && !moveState && !pickerOpen && !undoState && (focusZone !== 'top' || focusedTopButton !== t) && focusTopButton(t);
     });
     e.addEventListener("click", function () {
       if (!moveState && !pickerOpen && !undoState) {

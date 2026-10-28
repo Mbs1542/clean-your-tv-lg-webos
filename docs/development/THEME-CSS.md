@@ -228,3 +228,11 @@ multiple columns, and a separate selected-app image/title for its single-column
 view. The header clips scrolling rows below its controls. Brand background
 colors are retained separately and restored for Classic; list themes can paint
 the selected row so labels stay readable during reorder when the glass is hidden.
+
+Channel navigation uses the selected row itself as the stable focus surface;
+the enlarged travelling glass is hidden in `channel-list`. Its row/stage
+transitions are immediate. Remote keys suppress hover-driven focus until actual
+pointer movement or a click; layout-generated mouseover at a stationary cursor
+cannot override the selected row. This input ownership is transient, not stored.
+`tests/themes/channel-navigation.cjs` keeps animations enabled and parks the
+pointer over row eight while moving Up through the scrolling boundary.

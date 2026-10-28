@@ -546,7 +546,11 @@ body.editing .item.moving .name {
 /* The label and number share row coordinates; selected/moving icons stay aligned. */
 #homeSurface[data-layout="channel-list"] .item.focused .card,
 #homeSurface[data-layout="channel-list"] .item.moving .card { transform: none; animation: none; }
-#homeSurface[data-layout="channel-list"] #glass { transition: opacity 120ms ease, transform 160ms ease-out; }
+/* A single immediate row highlight: no smaller border followed by a travelling glass. */
+#homeSurface[data-layout="channel-list"] #glass { visibility: hidden; transition: none; }
+#homeSurface[data-layout="channel-list"] #stage,
+#homeSurface[data-layout="channel-list"] .item,
+#homeSurface[data-layout="channel-list"] .card { transition: none; }
 /* Keep candidate skins flat and leave selected-frame room before labels. */
 .ctv-theme-active .card::after { border-radius: inherit; box-shadow: none; }
 #homeSurface[data-layout="side-grid"] .name,

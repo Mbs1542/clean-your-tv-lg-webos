@@ -24,7 +24,7 @@ const {compileThemeCss}=require('../../theme-api/compile.cjs');
    await page.evaluate(()=>HomeLayoutState.setColumns(null));
    await page.waitForFunction(()=>{const img=document.getElementById('channelArtwork');return img&&img.complete&&img.naturalWidth>0;});
    const count=await page.locator('#tiles .item').count();
-   await page.locator('.add-app').dispatchEvent('mouseover');await page.locator('.add-app').click();
+   await page.locator('.add-app').hover();await page.locator('.add-app').click();
    await page.locator('#appPicker .app-choice').waitFor();
    assert.equal(await page.locator('.ctv-library-panel').evaluate(el=>getComputedStyle(el).backgroundColor),'rgb(18, 28, 133)');
    await page.locator('.ctv-library-close').focus();
@@ -43,7 +43,7 @@ const {compileThemeCss}=require('../../theme-api/compile.cjs');
    await page.evaluate(({manifest,rules})=>ThemeRuntime.apply({manifest,rules,assetHandles:{}}),{manifest,rules});
    await page.waitForFunction(()=>{const img=document.getElementById('channelArtwork');return img&&img.complete&&img.naturalWidth===0;});
    await page.locator('#btnInputs').click();await page.keyboard.press('Escape');
-   await page.locator('#tiles .item').first().dispatchEvent('mouseover');
+   await page.locator('#tiles .item').first().hover();
    assert.equal(await page.locator('#channelArtwork').evaluate(el=>getComputedStyle(el).visibility),'hidden','refocusing a failed image does not expose a broken preview');
    assert.deepEqual(errors,[]);console.log('PASS Channel moving contrast, dense columns and Classic reset: '+edition);
   }finally{await page.close();}
