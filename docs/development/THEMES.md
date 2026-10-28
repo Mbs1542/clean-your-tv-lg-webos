@@ -19,7 +19,7 @@ The complete design remains in the [theme ecosystem specification](../superpower
   unchanged. Legacy backups preserve the effective number, not the By theme mode;
   preserving that mode with installed theme state belongs to the storage gate below.
 - A data-only reviewed showcase registry, pinned per-theme detail pages, static
-  catalog, moderation states and read-only PR checks. The initial catalog is empty.
+  catalog, moderation states and read-only PR checks. The initial candidate catalog contains pinned Alpine and Channel distributions.
 - A separate candidate author toolkit with templates, multi-theme repositories,
   actual-renderer browser preview, validation/build, screenshots and PR drafts.
   The main project exports its renderer/compiler with file hashes and provenance.
@@ -70,8 +70,7 @@ explicit `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` for an existing system Chrome.
 The Pages workflow creates one artifact with the existing preview plus `/themes/`:
 
 ```sh
-python3 scripts/preview.py --build build/theme-pages
-node scripts/build-showcase.cjs build/theme-pages/themes
+python3 scripts/preview.py --build build/theme-pages --showcase
 ```
 
 Use an empty showcase output directory. Build rejects a nonempty directory so

@@ -45,8 +45,7 @@ jobs:
         run: scripts/test.sh preview
       - name: Build preview and theme showcase in one Pages artifact
         run: |
-          python3 scripts/preview.py --build build/preview
-          node scripts/build-showcase.cjs build/preview/themes
+          python3 scripts/preview.py --build build/preview --showcase
       - uses: actions/upload-pages-artifact@v4
         with:
           path: build/preview

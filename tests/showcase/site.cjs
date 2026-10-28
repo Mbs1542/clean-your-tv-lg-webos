@@ -3,7 +3,8 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('nod
 const {buildShowcase,escape}=require('../../scripts/build-showcase.cjs'), fixture=require('./fixture.cjs');
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'cytv-site-'));
 try {
- const empty=path.join(root,'empty');buildShowcase(empty);
+ const emptySource=path.join(root,'empty-source');fs.mkdirSync(path.join(emptySource,'registry'),{recursive:true});
+ const empty=path.join(root,'empty');buildShowcase(empty,{showcaseRoot:emptySource});
  const html=fs.readFileSync(path.join(empty,'index.html'),'utf8');assert.match(html,/No community themes listed yet/);assert.match(html,/BUILT-IN THEMES \/ UPCOMING/);assert.doesNotMatch(html,/data-theme|data-copy|vote|applause|shrug/i);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(empty,'catalog.json'))).themes,[]);
  assert.ok(fs.existsSync(path.join(empty,'theme-card.css')),'gallery card styles are shipped');

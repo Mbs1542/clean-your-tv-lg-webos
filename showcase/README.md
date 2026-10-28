@@ -1,8 +1,8 @@
 # Community theme showcase (candidate)
 
 The static showcase is part of the next theme candidate, after 1.4.1. URL theme
-installation is not available in the current published Home. An empty catalog is
-intentional until a real theme and its review artifacts pass these checks.
+installation is not available in the current published Home. The initial candidate catalog contains Alpine and Channel from the project
+author toolkit, pinned to separately committed distributions.
 There are no votes, popularity counts or automatic built-in promotions.
 
 ## Submit one fixed theme version
@@ -36,7 +36,9 @@ Names/descriptions are bounded plain text. Profiles must match the repository
 owner and the manifest. Tags are `dark`, `light`, `minimal`, `colorful`,
 `photographic`, `high-contrast`. Supported license identifiers are `MIT`,
 `Apache-2.0`, `BSD-2-Clause`, `BSD-3-Clause`, `ISC`, `CC0-1.0`, `CC-BY-4.0`,
-`CC-BY-SA-4.0`. Individual asset permissions still need review. Public license and
+`CC-BY-SA-4.0`, and the specifically reviewed composite
+`MIT AND CC-BY-SA-3.0` used by Alpine (MIT styling and CC BY-SA 3.0 wallpaper).
+This is an exact allowlisted value, not a general SPDX-expression parser. Individual asset permissions still need review. Public license and
 credits files use `.txt`; images use their actual PNG/JPEG/WebP extension. Other
 licenses require a reviewed policy change, not a misleading identifier.
 
@@ -86,8 +88,9 @@ synthetic app inventory/fixed clock and external network blocked. Produce Home,
 library, Inputs and standard Settings isolation screenshots plus policy/resource
 reports. Compare submitted preview bytes to that exact reviewed version. The
 static builder validates/copies review artifacts; it does not generate these
-screenshots or certify device acceptance. No record is initially included because
-those artifacts have not yet been generated and approved.
+screenshots or certify device acceptance. Initial Alpine/Channel evidence is recorded in [the catalog review](review/initial-themes.md).
+These are candidate browser-reviewed versions; the normal PR review/merge is
+still required and no physical-TV compatibility is claimed.
 
 Review outcomes are needs changes, approved fixed version, unavailable source or
 removed listing. Approval is represented by the reviewed merge and fixed digest;
@@ -112,7 +115,7 @@ Moderated records retain local review evidence but skip live remote checks. Do n
 `scripts/build-showcase.cjs`; `destination` is the generated `/themes` directory,
 not the shared site root. The caller supplies a fresh staging directory. The
 builder exports relative links, `catalog.json`, per-ID pages and reviewed assets.
-Compose it with `scripts/preview.py --build` in one Pages artifact, preserving the
+Use `scripts/preview.py --build OUTPUT --showcase` to compose one Pages artifact, preserving the
 existing root preview, `/launcher/`, `/root-launcher/` and `/preview/` paths.
 
 Publication follows registry PR → `release/next` → normal main release → existing
@@ -127,8 +130,7 @@ local builder.
 Catalog cards and the local author-tool picker share `src/theme-card.css`.
 A card uses an actual 16:9 Home capture and a visible theme name. The local
 picker adds an `aria-pressed` selection marker; the community catalog keeps its
-review metadata and links to the pinned theme detail. Empty catalogs still show
-no approved community entries. Built-in Classic is shown separately using the
+review metadata and links to the pinned theme detail. An empty registry still produces an honest empty state. Built-in Classic is shown separately using the
 synthetic renderer capture in `assets/classic-preview.png`, with credits and
 capture provenance alongside it. A built-in preview is not a reviewed installable
 community descriptor or a hardware acceptance claim.
