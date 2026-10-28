@@ -129,14 +129,14 @@ if ! env -u PYTHONHOME -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=
         self._selected_python = '/usr/bin/python3'
         return self._selected_python
 
-    def configure_firmware_access(self, enabled=True):
+    def configure_firmware_access(self, enabled=True, repair=False):
         if self.profile['edition']!='root' or not self.remote.root:
             raise UserError('Homebrew API access requires an existing Root installation.')
         if self.store.pending(self.profile):
             raise UserError('Previous operation is unresolved. Run cytv status or cytv restore; do not retry installation.')
         from .firmware_access import program
         try:
-            source=program(self.payload/'root',enabled)
+            source=program(self.payload/'root',enabled,repair=True) if repair else program(self.payload/'root',enabled)
             reply=json.loads(self.remote.run(self._python_command([self._python(ROOT_STATE),'-I','-']),data=source.encode(),timeout=60))
             if not isinstance(reply,dict) or reply.get('returnValue') is not True or reply.get('permissions_installed') is not enabled:raise ValueError('Unconfirmed firmware permission action')
             return reply

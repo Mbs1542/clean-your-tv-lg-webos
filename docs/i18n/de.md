@@ -81,6 +81,8 @@ Home-Einstellungen → Software-Updates öffnen und angebotene Versionen vor der
 
 Root-HDMI-Tonwiederherstellung ist experimentell und **standardmäßig aus**; nur bei Bedarf aktivieren. Sie kann funktionierenden Ton unterbrechen und bestätigt keine eARC-Kompatibilität. [Tonwiederherstellung (Englisch)](../development/ROOT-AUDIO-RECOVERY.md). Der separate **CYTV Installer für Homebrew ist noch unveröffentlicht**; den veröffentlichten Computer-/Android-Installer verwenden.
 
+Nur unveröffentlichter Kandidat: Bei verweigertem Firmware-API-Zugriff wegen alter beschreibbarer Root-Verzeichnisse prüft `cytv enable-firmware-access --edition root --repair-package-permissions` das aktuelle Paket anhand vertrauenswürdiger privater Daten und entfernt Schreibrechte für Gruppe/andere nur aus Root-eigenen Pfaden. Unbekannte oder veränderte Dateien stoppen die Reparatur. Profil, Home-Auswahl und Firmware-Sperre bleiben erhalten; [Details (Englisch)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
 ## Hilfe und weitere Anleitungen
 
 Nach Fehlern oder Unterbrechungen Status prüfen und den Diagnosebericht dieses Versuchs speichern. Geführte Wiederherstellung fragt Entfernung und Neuinstallation getrennt ab. Bei unklarem Ergebnis aufhören und private Protokolle, Journale und Wiederherstellungsdateien behalten; niemals für einen neuen Versuch löschen. [Wiederherstellung (Englisch)](../RECOVERY.md). Für Hilfe Modell, Firmware, Edition, Installer-Version, fehlgeschlagenen Schritt und erwartetes/tatsächliches Verhalten angeben; Bericht vor dem Teilen prüfen und Geheimnisse entfernen.

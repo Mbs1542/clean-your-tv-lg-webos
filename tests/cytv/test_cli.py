@@ -22,6 +22,17 @@ class CLITests(unittest.TestCase):
                 code,_,calls=self.run_cli(['enable-firmware-access','--host','192.0.2.10','--edition',edition,'--data-dir',tmp,'--yes'])
                 self.assertEqual(code,2);self.assertFalse(calls);installer.return_value.configure_firmware_access.assert_not_called()
 
+    def test_sdk_permission_repair_flag_is_explicit_and_enable_only(self):
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer,patch('cytv.cli.package.verify_payload',return_value={}):
+            code,output,_=self.run_cli(['enable-firmware-access','--repair-package-permissions','--host','192.0.2.10','--edition','root','--data-dir',tmp,'--yes'],remote=MagicMock())
+            self.assertEqual(code,0,output)
+            installer.return_value.configure_firmware_access.assert_called_once_with(True,repair=True)
+        for command in ['install','disable-firmware-access','status']:
+            with tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer:
+                code,output,calls=self.run_cli([command,'--repair-package-permissions','--host','192.0.2.10','--edition','root','--data-dir',tmp,'--yes'])
+                self.assertEqual(code,2,output);self.assertFalse(calls)
+
     def test_wam_cache_cleanup_has_default_no_consent_even_with_yes(self):
         from unittest.mock import MagicMock
         for choice, cleared in [('n', False), ('', False), ('y', True)]:

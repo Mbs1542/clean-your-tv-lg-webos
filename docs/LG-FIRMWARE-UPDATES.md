@@ -185,3 +185,38 @@ supported Home update/rollback and that the preference remains Homebrew-owned.
 See the [1.2.0 acceptance record](RELEASE-1.2.0-ACCEPTANCE.md) for the
 maintainer confirmation and its evidence limits. Original-device checks remain
 separate.
+
+
+## Explicit package permission repair (candidate)
+
+The unpublished candidate adds an explicit maintenance option for an installed
+Root package whose own SDK directories retained group/other write permissions:
+
+```sh
+cytv enable-firmware-access --edition root --repair-package-permissions
+```
+
+This is not part of ordinary enable, boot reconciliation or revocation. Under
+the existing product and firmware-permission locks, the helper first validates
+pending-operation exclusions, protected recovery code/ACLs, the exact LS2 manifest
+and permission receipt. The current private updater publication and checked cache
+select the expected installed package; SDK metadata never selects that authority.
+All expected files must match, be singly linked and belong to root. Unknown
+entries, symlinks, special modes, foreign owners, unsupported or incomplete private
+proofs and conflicting versions stop repair before permissions change.
+
+The helper holds directory/file descriptors, checks path identities and narrows
+only group/other write bits on the package's own app/service/package leaves.
+Shared SDK containers are excluded. It rechecks bytes, paths and the private
+publication afterward, then applies the original strict SDK identity check before
+ordinary API registration. Existing file contents, ownership, executable bits,
+profile, Home intent/emergency-off, recovery data and Homebrew preferences are
+preserved. No retained executable is replaced: checked bundled helper/dependency
+sources run from stdin in the pinned isolated Python.
+
+If interrupted after a permission change, some own paths may already be hardened.
+The command does not restore unsafe permissions or report success; retry the same
+explicit command after checking state. Changed bytes or paths still prevent a
+grant. Cached Homebrew API groups may require its normal service lifecycle refresh
+as described above; this option never restarts the TV or changes firmware blocking.
+A source/test result is not device lifecycle acceptance or published delivery.

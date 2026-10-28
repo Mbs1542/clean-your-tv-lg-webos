@@ -54,6 +54,56 @@ class Tests(unittest.TestCase):
         self.api=self.root/'permissions/homebrew-configuration.api.json';self.receipt=self.root/'firmware-permissions.json';self.events=[]
     def grant(self,enable=True,lock_product=True):
         return self.function(self.root,self.bus,self.apps,self.install,enable=enable,lock_product=lock_product,refresh=lambda:self.events.append('scan'),uid=os.getuid())
+    def test_explicit_repair_runs_only_after_protected_checks_then_strict_readback(self):
+        info=self.apps/'applications'/APP/'appinfo.json';info.parent.chmod(0o777)
+        before=self.manifest.read_bytes();calls=[]
+        def repair(version):
+            calls.append(version);info.parent.chmod(0o755)
+        damaged=dict(self.normal,apiPermissionFiles=['foreign']);self.manifest.write_bytes(encode(damaged))
+        with self.assertRaises(ValueError):
+            self.function(self.root,self.bus,self.apps,self.install,repair=repair,uid=os.getuid(),refresh=lambda:None)
+        self.assertEqual(calls,[]);self.assertEqual(info.parent.stat().st_mode&0o777,0o777)
+        self.manifest.write_bytes(before)
+        result=self.function(self.root,self.bus,self.apps,self.install,repair=repair,uid=os.getuid(),refresh=lambda:self.events.append('scan'))
+        self.assertEqual(calls,['0.4.0']);self.assertTrue(result['permissions_installed'])
+        info.parent.chmod(0o777)
+        with self.assertRaises(ValueError):
+            self.function(self.root,self.bus,self.apps,self.install,repair=lambda version:None,uid=os.getuid(),refresh=lambda:None)
+
+    def test_repair_is_never_automatic_or_part_of_revocation(self):
+        for enable,automatic in [(False,False),(True,True)]:
+            calls=[]
+            with self.assertRaises(ValueError):
+                self.function(self.root,self.bus,self.apps,self.install,enable=enable,automatic=automatic,repair=lambda version:calls.append(version),uid=os.getuid())
+            self.assertFalse(calls);self.assertFalse(self.receipt.exists())
+
+    def test_repair_stream_authenticates_and_executes_real_private_inventory_modules(self):
+        import subprocess,sys
+        from cytv.package import ipk
+        modules={'updater/store.py','updater/package.py','package_data.py','package_identity.py','installation.py'}
+        manifest=json.loads((self.bundle/'bundle.json').read_text())
+        for name in modules:
+            target=self.bundle/name;target.parent.mkdir(exist_ok=True);raw=(ROOT/'root-edition'/name).read_bytes();target.write_bytes(raw);manifest['files'][name]=sha(raw)
+        (self.bundle/'bundle.json').write_bytes(encode(manifest))
+        sdk=self.base/'sdk';prefix='usr/palm/applications/'+APP+'/'
+        files={prefix+'appinfo.json':encode({'id':APP,'version':'0.4.0','type':'web'}),prefix+'index.html':b'owned',
+               'usr/palm/packages/'+APP+'/packageinfo.json':encode({'id':APP,'app':APP,'version':'0.4.0'}),
+               'usr/palm/services/'+SERVICE+'/service.js':b'owned'}
+        raw=ipk(APP,'0.4.0',files);updater=self.base/'clean-your-tv-root-updater';(updater/'cache').mkdir(parents=True,mode=0o700)
+        (updater/'cache'/(sha(raw)+'.ipk')).write_bytes(raw);(updater/'cache'/(sha(raw)+'.ipk')).chmod(0o600)
+        (updater/'current.json').write_bytes(encode({'version':'0.4.0','sha256':sha(raw),'size':len(raw),'local':True}));(updater/'current.json').chmod(0o600)
+        for name,data in files.items():
+            target=sdk/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data);target.chmod(0o777);target.parent.chmod(0o777)
+        source=firmware_access.program(self.bundle,repair=True)
+        states={APP:str(self.root),'com.cleanyourtv.root.updater':str(updater),'com.cleanyourtv.system.updater':str(self.base/'clean-your-tv-system-updater')}
+        source=source.replace('repair_sdk_permissions(version=version)', 'repair_sdk_permissions(installed='+repr(str(sdk))+',states='+repr(states)+',uid='+str(os.getuid())+',version=version)')
+        source=source.replace('firmware_access(repair=lambda', 'firmware_access(root='+repr(str(self.root))+',base='+repr(str(self.bus))+',installed='+repr(str(sdk/'usr/palm'))+',installation='+repr(str(self.install))+',uid='+str(os.getuid())+',refresh=lambda:None,repair=lambda')
+        result=subprocess.run([sys.executable,'-I','-'],input=source,text=True,capture_output=True)
+        self.assertEqual(result.returncode,0,result.stderr);self.assertTrue(json.loads(result.stdout)['permissions_installed'])
+        self.assertFalse((sdk/prefix/'appinfo.json').stat().st_mode&0o022)
+        dependency=self.bundle/'package_identity.py';dependency.write_bytes(b'changed')
+        with self.assertRaises(ValueError):firmware_access.program(self.bundle,repair=True)
+
     def test_only_configuration_api_and_legacy_updater_bytes_unchanged(self):
         before={p:p.read_bytes() for p in [self.snapshot,self.proof,*self.paths.values()]}
         self.grant();self.grant()

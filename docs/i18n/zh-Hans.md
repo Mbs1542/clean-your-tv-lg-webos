@@ -81,6 +81,8 @@ No-root: 要重新启动 Home 控制，请打开 Home Helper，选择启动 Help
 
 Root HDMI 声音恢复是实验功能，**默认关闭**，仅在需要时自行启用。它可能中断正常音频，并不证明 eARC 兼容性。[声音恢复（英文）](../development/ROOT-AUDIO-RECOVERY.md)。独立的 **Homebrew CYTV Installer 尚未发布**；请使用已发布的电脑或 Android 安装程序。
 
+仅限未发布候选版：如果旧 Root 目录的可写权限导致固件 API 访问被拒绝，可显式运行 `cytv enable-firmware-access --edition root --repair-package-permissions`。该命令先用可信的私有软件包记录验证当前文件，再仅移除 Root 自有路径的组及其他用户写权限。遇到未知或已修改文件就停止；保留个人配置、Home 选择和固件屏蔽设置。[修复详情（英文）](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate)。
+
 ## 帮助与详细说明
 
 操作失败或中断后，先检查状态并保存该次尝试的诊断报告。引导恢复会分别确认移除和重新安装。结果不确定时请停止，保留私有日志及恢复文件；切勿删除它们来强制重试。参阅[恢复（英文）](../RECOVERY.md)。求助时请提供型号、固件、版本类别、安装程序版本、失败步骤及预期/实际表现；分享前检查报告并删除秘密信息。

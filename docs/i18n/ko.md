@@ -81,6 +81,8 @@ Home 설정 → 소프트웨어 업데이트에서 제시된 버전을 확인한
 
 Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다**. 필요할 때만 켜세요. 정상적인 소리를 끊을 수 있으며 eARC 호환성이 확인된 것은 아닙니다. [소리 복구(영어)](../development/ROOT-AUDIO-RECOVERY.md). 별도 **Homebrew CYTV Installer는 아직 출시되지 않았습니다**. 공개된 컴퓨터 또는 Android 설치 프로그램을 사용하세요.
 
+미출시 후보 전용: 이전 Root 디렉터리의 쓰기 권한 때문에 펌웨어 API 접근이 거부되면 `cytv enable-firmware-access --edition root --repair-package-permissions` 명령이 신뢰할 수 있는 비공개 패키지 기록으로 현재 파일을 검증한 뒤 Root 소유 경로의 그룹 및 기타 사용자 쓰기 권한만 제거합니다. 알 수 없거나 변경된 파일이 있으면 중단합니다. 프로필, Home 선택 및 펌웨어 차단 설정은 유지됩니다. [세부 정보(영어)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
 ## 도움말과 자세한 안내
 
 실패나 중단 후에는 상태를 확인하고 해당 시도의 진단 보고서를 저장하세요. 안내 복구는 삭제와 재설치를 각각 확인합니다. 결과가 불확실하면 멈추고 비공개 로그와 복구 파일을 보관하세요. 재시도를 강제하려고 삭제하지 마세요. [복구(영어)](../RECOVERY.md). 도움을 요청할 때 모델, 펌웨어, 에디션, 설치 프로그램 버전, 실패 단계, 예상 및 실제 동작을 적고 보고서의 비밀 정보를 제거한 뒤 공유하세요.
