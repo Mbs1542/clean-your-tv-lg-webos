@@ -51,16 +51,24 @@ policy except `.ctv-tile`, which remains an engine-reserved interaction hook.
 | `.ctv-label` | App, Add app and library-row label text |
 | `.ctv-focus` | Focus frame appearance; bounds, motion and visibility remain engine-owned |
 | `.ctv-library` | Add app library overlay inside Home; modal layout, scrolling and controls remain trusted |
+| `.ctv-library-panel` | Library inner panel appearance; modal size, position and scroll bounds remain engine-owned |
+| `.ctv-library-close` | Library close-button appearance; action and focus behavior remain engine-owned |
 | `.ctv-library-row` | Available app row in the library; native button focus is mirrored |
 | `.ctv-inputs` | Inputs dropdown; anchoring, width and visibility are engine-owned |
 | `.ctv-input-row` | Selectable input/source row; selection action and navigation remain trusted |
 
 `.is-focused` mirrors remote/pointer focus on tiles, their visual cards and labels,
-header shortcuts, library rows and input rows. `.is-moving` mirrors reorder state on a
+header shortcuts, library rows, the library close button and input rows. `.is-moving` mirrors reorder state on a
 tile and its card. `.is-selected` is a policy vocabulary token reserved for
 selection states; do not assume that every part receives it or that focus means
 selection. Existing `.focused` and `.moving` classes remain internal compatibility
 hooks. Theme authors must not add state classes or manipulate focus.
+
+The candidate also exposes the library's inner panel and close control so a theme
+can make the whole app library visually consistent. These are appearance hooks
+inside Home, not access to standard Settings or recovery. They accept the same
+validated visual properties; hiding, positioning, sizing and modal behavior
+remain unavailable to author CSS.
 
 ## Initial validated CSS subset
 
@@ -214,3 +222,9 @@ standard dialogs at 1/4/5/8 columns. Compare the Classic baseline, wait for font
 and keep screenshot time fixed. Record actual browser/package checks separately
 from model/firmware/remote-specific hardware tests. Installation alone verifies
 none of Home routing, audio, standby, cold boot, OTA or rollback.
+
+The `channel-list` preset uses readable full-width cells when the user selects
+multiple columns, and a separate selected-app image/title for its single-column
+view. The header clips scrolling rows below its controls. Brand background
+colors are retained separately and restored for Classic; list themes can paint
+the selected row so labels stay readable during reorder when the glass is hidden.

@@ -4,7 +4,7 @@
 })(this, function () {
   'use strict';
 
-  var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'dock', 'focus', 'card', 'icon', 'label', 'library', 'library-row', 'inputs', 'input-row'];
+  var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'dock', 'focus', 'card', 'icon', 'label', 'library', 'library-panel', 'library-close', 'library-row', 'inputs', 'input-row'];
   var states = ['focused', 'selected', 'moving'];
   var properties = {
     'color': 'color',

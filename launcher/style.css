@@ -511,34 +511,43 @@ body.editing .item.moving .name {
 #homeSurface[data-layout="side-grid"] #viewport { left: 500px; }
 #homeSurface[data-layout="side-grid"] #stage { left: -500px; }
 
-#homeSurface[data-layout="channel-list"] header { top: 48px; align-items: center; }
-#homeSurface[data-layout="channel-list"] #clock { font-size: 46px; }
-#homeSurface[data-layout="channel-list"] #ampm { font-size: 22px; margin-bottom: 5px; }
+/* Channel uses readable rows, a fixed header and a separate selection detail. */
+#homeSurface[data-layout="channel-list"] header { top: 52px; align-items: center; }
+#homeSurface[data-layout="channel-list"] #timeRow { display: block; }
+#homeSurface[data-layout="channel-list"] #clock { font-size: 52px; }
+#homeSurface[data-layout="channel-list"] #ampm { font-size: 24px; margin-bottom: 5px; }
 #homeSurface[data-layout="channel-list"] #greeting,
-#homeSurface[data-layout="channel-list"] .divider,
-#homeSurface[data-layout="channel-list"] #date { display: none; }
-#homeSurface[data-layout="channel-list"] .pill { height: 64px; font-size: 25px; padding: 0 24px; }
-#homeSurface[data-layout="channel-list"] .pill svg { width: 32px; height: 32px; }
-#homeSurface[data-layout="channel-list"] #hero { left: 1270px; right: 72px; white-space: normal; overflow-wrap: break-word; font-size: 64px; line-height: 1.2; }
-#homeSurface[data-layout="channel-list"] .card { background: transparent !important; }
+#homeSurface[data-layout="channel-list"] .divider { display: none; }
+#homeSurface[data-layout="channel-list"] #date { display: block; font-size: 22px; margin: 10px 0 0; }
+#homeSurface[data-layout="channel-list"] .pill { height: 76px; font-size: 30px; padding: 0 28px; }
+#homeSurface[data-layout="channel-list"] .pill svg { width: 36px; height: 36px; }
+#homeSurface[data-layout="channel-list"] #viewport { top: 200px; }
+#homeSurface[data-layout="channel-list"] #stage { top: -200px; }
+#homeSurface[data-layout="channel-list"] #hero { left: 1270px; right: 80px; white-space: normal; overflow-wrap: break-word; font-size: 52px; line-height: 1.25; max-height: 420px; overflow: hidden; }
+#homeSurface[data-layout="channel-list"] #hero::before { content: attr(data-position); display: block; font-size: 24px; line-height: 1; font-weight: 400; margin-bottom: 24px; }
+#channelArtwork { display: none; position: absolute; left: 1270px; top: 250px; width: 480px; height: 240px; object-fit: contain; background: #141414; pointer-events: none; }
+#homeSurface[data-layout="channel-list"] #channelArtwork { display: block; }
+#homeSurface.ctv-channel-multi #channelArtwork,
+#homeSurface.ctv-channel-multi #hero { display: none; }
+#homeSurface[data-layout="channel-list"] .card { background: transparent; }
 #homeSurface[data-layout="channel-list"] .card::after { box-shadow: none; }
-#homeSurface[data-layout="channel-list"] .card img { left: 46px; top: 8px; width: 48px; height: 48px; object-fit: contain; transform: none; background: #181818; }
-#homeSurface[data-layout="channel-list"] .name { position: absolute; top: 0; left: 112px; right: 8px; height: 64px; line-height: 64px; margin: 0; opacity: 1; transform: none; text-align: left; pointer-events: none; }
-#homeSurface[data-layout="channel-list"] .item::before { content: attr(data-channel); position: absolute; left: 6px; top: 0; line-height: 64px; font: 22px/64px monospace; color: #69beed; z-index: 3; pointer-events: none; }
+#homeSurface[data-layout="channel-list"] .card img { left: 60px; top: 12px; width: 64px; height: 64px; object-fit: contain; transform: none; background: #181818; }
+#homeSurface[data-layout="channel-list"] .name { position: absolute; top: 0; left: 148px; right: 16px; height: 88px; line-height: 88px; font-size: 32px; margin: 0; opacity: 1; transform: none; text-align: left; pointer-events: none; }
+#homeSurface[data-layout="channel-list"] .item::before { content: attr(data-channel); position: absolute; left: 12px; top: 0; font: 26px/88px monospace; color: #69beed; z-index: 3; pointer-events: none; }
 #homeSurface[data-layout="channel-list"] .item.focused::before { color: #181818; }
-#homeSurface[data-layout="channel-list"] .card.missing-icon::after { font-size: 42px; left: 46px; right: auto; }
-#homeSurface[data-layout="channel-list"] .add-app svg { width: 48px; height: 48px; left: 46px; }
-/* A large column override uses compact labelled cells instead of clipping list text. */
-#homeSurface.ctv-channel-compact .card img { left: 50%; top: 4px; width: 32px; height: 32px; transform: translateX(-50%); }
-#homeSurface.ctv-channel-compact .name { left: 6px; right: 6px; top: 38px; height: 24px; font-size: 18px; line-height: 24px; text-align: center; }
+#homeSurface[data-layout="channel-list"] .card.missing-icon::after { font-size: 44px; left: 60px; top: 12px; right: auto; width: 64px; height: 64px; }
+#homeSurface[data-layout="channel-list"] .add-app svg { position: absolute; top: 12px; left: 60px; width: 64px; height: 64px; }
+/* Large column choices keep a useful 48px glyph and a 24px label. */
+#homeSurface.ctv-channel-compact .card img { left: 50%; top: 8px; width: 48px; height: 48px; transform: translateX(-50%); }
+#homeSurface.ctv-channel-compact .name { left: 8px; right: 8px; top: 62px; height: 32px; font-size: 24px; line-height: 32px; text-align: center; }
 #homeSurface.ctv-channel-compact .item::before { display: none; }
-#homeSurface[data-layout="channel-list"] #hero { max-height: 680px; overflow: hidden; }
+#homeSurface.ctv-channel-compact .add-app svg { top: 8px; left: 50%; width: 48px; height: 48px; transform: translateX(-50%); }
+#homeSurface.ctv-channel-compact .card.missing-icon::after { left: 0; top: 6px; right: 0; width: auto; height: 50px; font-size: 36px; }
+/* The label and number share row coordinates; selected/moving icons stay aligned. */
+#homeSurface[data-layout="channel-list"] .item.focused .card,
+#homeSurface[data-layout="channel-list"] .item.moving .card { transform: none; animation: none; }
+#homeSurface[data-layout="channel-list"] #glass { transition: opacity 120ms ease, transform 160ms ease-out; }
 /* Keep candidate skins flat and leave selected-frame room before labels. */
 .ctv-theme-active .card::after { border-radius: inherit; box-shadow: none; }
 #homeSurface[data-layout="side-grid"] .name,
 #homeSurface[data-layout="icon-grid"] .name { margin-top: 34px; }
-#homeSurface[data-layout="channel-list"] .add-app svg { position: absolute; top: 8px; }
-#homeSurface.ctv-channel-compact .add-app svg { top: 4px; left: 50%; width: 32px; height: 32px; transform: translateX(-50%); }
-#homeSurface.ctv-channel-compact .card.missing-icon::after { left: 0; top: 0; right: 0; height: 36px; font-size: 28px; }
-/* List text/number and icon share a row; selection must not shift its icon onto the number. */
-#homeSurface[data-layout="channel-list"] .item.focused .card { transform: none; }

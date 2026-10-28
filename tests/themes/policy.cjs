@@ -52,4 +52,14 @@ for (const property of ['position','left','top','width','height','transform','op
  const x=structuredClone(focusRule);x.rules[0].declarations[0].property=property;
  assert.throws(()=>p.validateRules(x),/css-property/);
 }
+// The library panel and close control expose appearance, never modal geometry.
+for (const part of ['library-panel', 'library-close']) {
+ const rule=structuredClone(valid);rule.rules[0].selector[0].part=part;
+ if (part==='library-close') rule.rules[0].selector[0].states=['focused'];
+ assert.match(p.compileRules(rule,{}),new RegExp('\\.ctv-'+part));
+ for (const property of ['display','position','width','height','opacity','visibility']) {
+  const invalid=structuredClone(rule);invalid.rules[0].declarations[0].property=property;
+  assert.throws(()=>p.validateRules(invalid),/css-property/);
+ }
+}
 console.log('Theme policy checks passed');

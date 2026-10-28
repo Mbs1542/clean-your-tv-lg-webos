@@ -20,12 +20,12 @@
       g.left = 560; g.width = 1248; g.maxWidth = 300; g.maxHeight = 190;
       g.dockTop = 210; g.padding = 0; g.rowGap = 90; g.rowExtra = 0; g.scrollTop = 200;
     } else if (preset === 'channel-list') {
-      g.left = 96; g.width = 1024; g.maxWidth = 1024; g.maxHeight = 64;
-      g.dockTop = 200; g.padding = 0; g.rowGap = 22; g.rowExtra = 0; g.scrollTop = 200;
+      g.left = 96; g.width = columns === 1 ? 1024 : 1728; g.maxWidth = g.width; g.maxHeight = columns >= 5 ? 104 : 88;
+      g.dockTop = 240; g.padding = 0; g.rowGap = 18; g.rowExtra = 0; g.scrollTop = 200;
     }
     g.columnWidth = g.width / columns;
     g.cardWidth = Math.min(g.maxWidth, Math.floor((g.columnWidth - 36) / 1.05));
-    g.cardHeight = preset === 'channel-list' ? 64 : Math.round(g.cardWidth * g.maxHeight / g.maxWidth);
+    g.cardHeight = preset === 'channel-list' ? g.maxHeight : Math.round(g.cardWidth * g.maxHeight / g.maxWidth);
     g.top = g.dockTop + g.padding;
     return g;
   }

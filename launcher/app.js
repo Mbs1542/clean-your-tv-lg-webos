@@ -36,7 +36,8 @@
     TILE_BASE = layoutGeometry.top; ROW_GAP = layoutGeometry.rowGap;
     DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2;
     document.getElementById('homeSurface').setAttribute('data-layout', layoutPreset);
-    document.getElementById('homeSurface').classList.toggle('ctv-channel-compact', layoutPreset === 'channel-list' && CARD_WIDTH < 260);
+    document.getElementById('homeSurface').classList.toggle('ctv-channel-multi', layoutPreset === 'channel-list' && columns > 1);
+    document.getElementById('homeSurface').classList.toggle('ctv-channel-compact', layoutPreset === 'channel-list' && columns >= 5);
   }
   updateGeometry(columnCount);
   var toastTimer,
@@ -65,6 +66,7 @@
     inputRows = [],
     scrollOffset = 0,
     heroVisible = false,
+    channelArtwork = null,
     focusGlassVisible = false,
     moveState = null,
     activeBridges = [];
@@ -490,13 +492,15 @@
     picker.setAttribute('role', 'dialog');
     picker.setAttribute('aria-modal', 'true');
     picker.setAttribute('aria-labelledby', 'appPickerTitle');
-    picker.innerHTML = ht('<div class="app-picker-card"><h2 id="appPickerTitle">Add app</h2><p id="appPickerStatus" role="status"></p><div id="appPickerList"></div><button id="appPickerClose">Back to Home</button></div>');
+    picker.innerHTML = ht('<div class="app-picker-card ctv-library-panel"><h2 id="appPickerTitle">Add app</h2><p id="appPickerStatus" role="status"></p><div id="appPickerList"></div><button id="appPickerClose" class="ctv-library-close">Back to Home</button></div>');
     picker.className = 'ctv-library';
     getElement('homeSurface').appendChild(picker);
     pickerList = getElement('appPickerList');
     pickerStatus = getElement('appPickerStatus');
     pickerClose = getElement('appPickerClose');
     pickerClose.addEventListener('click', closePicker);
+    pickerClose.addEventListener('focus', function () { pickerIndex = pickerButtons.indexOf(pickerClose); setPartState(pickerClose, 'focused', true); });
+    pickerClose.addEventListener('blur', function () { setPartState(pickerClose, 'focused', false); });
     document.addEventListener('mouseup', function () {
       clearTimeout(pointerTimer);
       pointerTimer = null;
@@ -614,6 +618,8 @@
         } catch (e) {}
         var r = null;
         a && a[3] > 200 ? e.card.style.background = "rgb(" + a[0] + "," + a[1] + "," + a[2] + ")" : (e.card.classList.add("glyph"), e.card.style.background = tileBackground(e.app.iconColor), r = "#2c2c2e" === tileBackground(e.app.iconColor) ? null : parseHexColor(e.app.iconColor));
+        e.brandBackground = e.card.style.background;
+        if (layoutPreset === 'channel-list') e.card.style.background = '';
         e.color = r || (n ? function (e) {
           for (var t = null, n = -1, a = [0, 0, 0], i = 0, o = 0; o < e.length; o += 4) if (!(e[o + 3] < 128)) {
             var r = [e[o], e[o + 1], e[o + 2]];
@@ -668,6 +674,7 @@
       tilesContainer.appendChild(e.el);
       e.el.style.width = CARD_WIDTH + "px";
       e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
+      if (e.card && typeof e.brandBackground === 'string') e.card.style.background = layoutPreset === 'channel-list' ? '' : e.brandBackground;
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
       e.el.classList.toggle("dock", layoutGeometry.dock && 0 === rowFor(t));
@@ -769,9 +776,23 @@
       focusGlass.style.height = glassHeight + "px";
       focusGlass.style.transform = "translate(" + glassLeft + "px," + glassTop + "px)";
       focusGlassVisible || (focusGlass.style.transition = "none", focusGlass.offsetWidth, focusGlass.style.transition = "", focusGlass.style.opacity = "1", focusGlassVisible = true);
+      if (layoutPreset === 'channel-list') {
+        if (!channelArtwork) {
+          channelArtwork = document.createElement('img'); channelArtwork.id = 'channelArtwork';
+          channelArtwork.className = 'ctv-icon'; channelArtwork.alt = ''; channelArtwork.setAttribute('aria-hidden', 'true');
+          channelArtwork.onload = function () { channelArtwork.style.visibility = channelArtwork.naturalWidth > 0 ? 'visible' : 'hidden'; };
+          channelArtwork.onerror = function () { channelArtwork.style.visibility = 'hidden'; };
+          getElement('homeSurface').appendChild(channelArtwork);
+        }
+        if (tiles[index].app.icon) {
+          channelArtwork.style.visibility = channelArtwork.complete && channelArtwork.naturalWidth > 0 && channelArtwork.getAttribute('src') === tiles[index].app.icon ? 'visible' : 'hidden';
+          if (channelArtwork.getAttribute('src') !== tiles[index].app.icon) channelArtwork.src = tiles[index].app.icon;
+        } else { channelArtwork.style.visibility = 'hidden'; channelArtwork.removeAttribute('src'); }
+        heroTitle.setAttribute('data-position', (index + 1) + ' / ' + tiles.length);
+      }
       (layoutPreset === "channel-list" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
         var t = e.app.title;
-        heroTitle.style.top = (layoutPreset === "channel-list" ? 250 : TILE_BASE - HERO_OFFSET) + "px";
+        heroTitle.style.top = (layoutPreset === "channel-list" ? 548 : TILE_BASE - HERO_OFFSET) + "px";
         heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
           heroTitle.textContent = t;
           heroTitle.style.transition = "none";

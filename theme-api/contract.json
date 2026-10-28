@@ -18,6 +18,8 @@
     "icon",
     "label",
     "library",
+    "library-panel",
+    "library-close",
     "library-row",
     "inputs",
     "input-row"
