@@ -76,6 +76,11 @@
         110
       ],
       "summary": "Keep owned firmware grants revocable without SDK app metadata (partial #110; strict enabling and original access/lifecycle work remain unresolved)"
+    },
+    {
+      "pr": 130,
+      "issues": [],
+      "summary": "Refresh synthetic browser acceptance fixtures for current profile/System updater contracts and both packaged recovery apps; no product changes"
     }
   ],
   "excluded": [],

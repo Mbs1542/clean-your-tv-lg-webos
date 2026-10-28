@@ -53,6 +53,10 @@ final frozen-head platform builds and signed publication verification are pendin
   protected manifest and private receipt; enabling retains strict SDK checks.
   This does not repair an unsafe SDK tree or resolve the remaining access and
   lifecycle work. Physical revocation and final package acceptance remain pending.
+- #130: refresh app-library, renewal and companion browser fixtures for the
+  current profile/System updater contracts. Build both recovery apps through
+  production builders and cover present/absent supervisors, focus and cancellation
+  without update mutations. Product behavior and component targets are unchanged.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
