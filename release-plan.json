@@ -100,6 +100,13 @@
         110
       ],
       "summary": "Distinguish authorized maintainer QA records from other-user installation report consent; preserve privacy and record scoped C3 update-control/geometry/firmware follow-up without finalizing release acceptance"
+    },
+    {
+      "pr": 137,
+      "issues": [
+        136
+      ],
+      "summary": "Add explicit verified Root System rollback readiness recovery with genuine launcher health, a bounded audited attempt and explicit post-expiry audit-preserving retry; scoped C3 maintenance accepted, ordinary update/rollback and release gates remain separate"
     }
   ],
   "excluded": [],

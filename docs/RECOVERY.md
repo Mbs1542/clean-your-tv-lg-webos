@@ -78,6 +78,37 @@ repeatedly retry. The original completion path preserves
 an explicit Home-off choice. Successful readiness recovery does not prove
 controls, audio, standby or cold boot; check actual behavior separately. [Connection flags and CLI details](CLI.md#candidate-root-system-rollback-readiness).
 
+## Replace the Root System Updater (candidate)
+
+**Unpublished 1.4.1 candidate only.** Root on-TV updates require System Updater
+1.1.1. The original 1.1.0 can reject a launcher's one-shot readiness response while
+its worker holds the installation lock; this can cause an unnecessary rollback.
+New signed Root offers require the fixed version and are rejected by the old
+supervisor. Historical signed baselines remain valid for rollback.
+
+After any current update or rollback has completed, use the same trusted Root
+connection and a complete candidate installer:
+
+```sh
+cytv replace-system-updater --edition root
+```
+
+The confirmation defaults to No. This replaces only the System Updater package;
+it preserves Root, Root Updater, launcher storage, the full profile and the saved
+Home choice. It verifies the finished old transaction and installed bytes,
+captures a durable baseline, preserves the old service state in a private archive,
+and provisions the verified replacement from that baseline. It refuses foreign
+pending work and unknown installer outcomes. Any existing legacy Root Updater
+transaction or backup also blocks replacement, even if marked complete; preserve
+it for review rather than deleting it to force replacement. It does not patch
+retained pinned code in place or replay an uncertain remove/install request.
+
+An interrupted replacement retains its operation and archive. Continue only with
+the same command and installer bundle, or save diagnostics and stop if its outcome
+is uncertain. Do not remove journals or archives to force setup. A failed readiness
+transaction must be recovered first; replacement does not bypass it. Verify the
+new System Updater version and actual Home/controls after completion.
+
 ## Private Python and low /var space
 
 Root Python preparation checks ABI, directory safety and free space separately.

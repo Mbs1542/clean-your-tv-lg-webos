@@ -13,6 +13,7 @@ function signFeeds(manifests,privateKey,publicKey=fs.readFileSync(path.join(__di
  const result={'root-update.json':root,'update.json':{...home,previous},'previous-update.json':previous};
  if(manifests.system){for(const edition of ['root','no-root']){
   if(!manifests.system[edition]||manifests.system[edition].edition!==edition||manifests.system[edition].release!==manifests.root.release)throw Error('system-release-set-required');
+  if(edition==='root'&&manifests.system[edition].minimumSupervisorVersion!=='1.1.1')throw Error('root-minimum-supervisor-required');
   result['system-update-'+edition+'.json']=sign(manifests.system[edition],systemPolicy);
  }}
  return result;

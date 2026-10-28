@@ -113,3 +113,44 @@ Public stable remains 1.4.0.
 - [Candidate scope and remaining gates](RELEASE-1.4.1.md).
 
 The earlier-source signing draft was removed. The latest signing draft remains unpublished; signed package evidence remains private locally. Public stable remains 1.4.0. These scoped records do not finalize overall release acceptance or satisfy final-head platform/publication gates.
+
+## System 1.1.1: automatic upgrade and ordinary rollback
+
+C3 maintainer acceptance, 2026-10-28: OLED55C3RLA, firmware 43.21.71 / webOS
+11.2.0; macOS ARM64 source installer; remote model unknown. With the owner's
+explicit authorization, the installer replaced only System Updater 1.1.0 with
+1.1.1, archiving the original supervisor. Root 0.4.0, Root Updater 0.3.0,
+Home-off intent and the full live profile were independently unchanged.
+The first two preflight attempts stopped before any replacement journal or TV
+mutation because the prototype used a component-only version lookup for the
+supervisor itself. The corrected helper uses authenticated owner identity;
+a real-API regression covers the refusal and all 24 replacement tests pass.
+
+The fixed supervisor then processed the existing production-signed candidate
+from source `686d7eee` (signing run 40661994355, `publish=false`). Root 0.5.1,
+Root Updater 0.3.2 and infrastructure 0.5.1 installed and reached `complete`
+with matching `homeResumePhase`. An ordinary retained rollback reached
+`rolled-back` with matching `homeResumePhase`, restoring Root 0.4.0 and Root
+Updater 0.3.0. Both genuine launcher health receipts were independently read
+back. Neither stage needed manual launcher restart, fabricated health,
+journal/deadline edits or the maintenance recovery command. The complete live
+profile matched before replacement, after upgrade and after rollback.
+All installed fixed-supervisor code hashes matched its retained authenticated
+bundle; operation ownership was terminal. Final Root intent was disabled and
+Home routed to LG Home. System Updater 1.1.1 remains installed.
+
+The tested Root IPK SHA-256 is
+`6f05ea92fc14ddfa766fa035849a2f22da5b54c53838f2d70e5791e6b810d152`;
+Root Updater is
+`0a5a9d7b481ea7db513a1494994d16e09a4dbc73e87be132395667de0221d943`;
+infrastructure is
+`285ef2a76f2df2fd81d6232278affab7196b88f52a2939770dd5476338895cb6`.
+These are byte-identical to the current candidate payload. Earlier recorded
+controls/audio, emergency Home, cold boot, geometry and firmware tests retain
+their stated scope; they were not repeated as physical-button tests here.
+The new bounded health wait and signed minimum-supervisor gate are covered by
+host regressions and independent review. This accepts the owner's requested
+single fixed-supervisor upgrade/ordinary-rollback cycle. Forced timeout/fault
+recovery on the fixed supervisor, other device/network matrices and seamless
+standby remain unverified. Final exact-head platform builds, package identity
+comparison and public signing/feed verification remain pending. Stable is 1.4.0.

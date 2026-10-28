@@ -66,7 +66,7 @@ def build(output):
     output.mkdir(parents=True,exist_ok=False)
     for name,raw in code.items():
         target=output/name;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(raw)
-    (output/'bundle.json').write_text(json.dumps({'schema':1,'supervisor':1,'files':{n:digest(b) for n,b in sorted(code.items())}},indent=2)+'\n')
+    (output/'bundle.json').write_text(json.dumps({'schema':1,'supervisor':1,'health_lock_wait_seconds':10,'files':{n:digest(b) for n,b in sorted(code.items())}},indent=2)+'\n')
     return output/'system-updater.ipk'
 
 def component(name,raw,local=True,release=None):
@@ -120,7 +120,9 @@ def release_set(payload,edition,release,local=True,notes='Computer-provisioned b
         if local:item.update(local=True,files=files,absent=[])
         else:item['url']='https://github.com/Razdva122/clean-your-tv-lg-webos/releases/download/'+release+'/root-infrastructure_'+item['version']+'.tar.gz'
         components.append(item)
-    return {'schema':1,'edition':edition,'release':release,'supervisor':1,'notes':notes,'components':components},raws
+    manifest={'schema':1,'edition':edition,'release':release,'supervisor':1,'notes':notes,'components':components}
+    if edition=='root' and not local:manifest['minimumSupervisorVersion']='1.1.1'
+    return manifest,raws
 
 def prepare_baseline(payload,edition,output,release=None):
     release=release or 'v'+json.loads((ROOT/'release-versions.json').read_text())['release']

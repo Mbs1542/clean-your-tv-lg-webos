@@ -1,4 +1,5 @@
 """Fixed operation CLI. JSON input cannot select paths, URLs or commands."""
+from contextlib import contextmanager, ExitStack
 import fcntl
 import json
 import os
@@ -80,6 +81,48 @@ def worker(store,device):
     finally:os.close(fd)
 
 
+@contextmanager
+def healthy_operation(payload,store,device):
+    """Wait only for context acquisition; never replay a handler or context exit."""
+    from installation import Ownership, Busy, device_operation, pending_journals
+    ownership=Ownership();lease=ownership.status();manager=Manager(store,device)
+    if not lease or lease['terminal'] or (lease['owner'],lease['journal'])!=('system-update','transaction.json'):
+        raise ValueError('Matching active System update ownership required')
+    stop=time.monotonic()+10;health=None
+    def eligible():
+        nonlocal health
+        current=ownership.status();tx=manager._load()
+        if not current or current['id']!=lease['id'] or current['terminal'] or (current['owner'],current['journal'])!=('system-update','transaction.json'):
+            raise ValueError('System update ownership changed')
+        if not tx or tx['phase'] not in ('verifying','verifying-rollback') or (tx['id'],tx['edition'])!=(payload['transaction'],payload['edition']):
+            raise ValueError('Stale health transaction')
+        if manager._launcher_version(tx,tx['phase']=='verifying-rollback')!=payload['version']:
+            raise ValueError('Stale health version')
+        observed=(tx['id'],tx['edition'],tx['phase'],payload['version'],tx['launched'],tx['deadline'])
+        if health is None:health=observed
+        elif health!=observed:raise ValueError('Health window changed during ownership wait')
+        now=manager._now()
+        if not tx['launched']<=now<tx['deadline']:raise ValueError('Stale health deadline')
+        pending_journals('system-update')  # Foreign journals never grant a wait.
+        return tx['deadline']-now
+    while True:
+        remaining=eligible()
+        if time.monotonic()>=stop:raise Busy()
+        stack=ExitStack()
+        try:stack.enter_context(device_operation('system-update',recovery=True))
+        except Busy:
+            stack.close();remaining=eligible()
+            delay=min(.05,remaining,max(0,stop-time.monotonic()))
+            if delay<=0:raise
+            time.sleep(delay)
+            continue
+        with stack:
+            eligible()
+            if time.monotonic()>=stop:raise Busy()
+            yield
+        return
+
+
 def main():
     if os.geteuid()!=0:raise PermissionError('Root System Updater service required')
     if len(sys.argv)!=2:raise ValueError('Expected one supervisor operation')
@@ -95,7 +138,8 @@ def main():
         if method in ('rollback','reconcile'):return None
         raise ValueError('Stale health signal')
     from installation import device_operation
-    with device_operation('system-update', recovery=True):
+    operation=healthy_operation(payload,store,device) if method=='healthy' else device_operation('system-update',recovery=True)
+    with operation:
         result=handle(method,payload,store,device,wake=lambda:None)
     spawn_worker()
     return result
