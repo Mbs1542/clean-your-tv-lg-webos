@@ -81,6 +81,11 @@
       "pr": 130,
       "issues": [],
       "summary": "Refresh synthetic browser acceptance fixtures for current profile/System updater contracts and both packaged recovery apps; no product changes"
+    },
+    {
+      "pr": 131,
+      "issues": [],
+      "summary": "Fix launcher card/focus geometry for one through eight columns; preserve sparse layouts and add compiled-browser navigation/scroll regressions; physical-TV acceptance pending"
     }
   ],
   "excluded": [],

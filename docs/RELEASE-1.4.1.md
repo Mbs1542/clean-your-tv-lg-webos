@@ -57,6 +57,12 @@ final frozen-head platform builds and signed publication verification are pendin
   current profile/System updater contracts. Build both recovery apps through
   production builders and cover present/absent supervisors, focus and cancellation
   without update mutations. Product behavior and component targets are unchanged.
+- #131: size launcher cards for one through eight columns with space for the
+  enlarged focus frame. Share dimensions across placement, dock, scrolling and
+  top-button navigation, including Add app; preserve sparse-layout maximum size
+  and existing icon processing. Compiled-browser geometry and navigation checks
+  passed on Linux; the full Linux/macOS CI passed. Physical-TV acceptance is
+  pending. Earlier feedback packages do not include this geometry correction.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
