@@ -57,6 +57,7 @@ def parser():
     result.add_argument('--migrate-home', action='store_true', help=i18n.translate('Root install: explicitly import existing Home packaged/profile data'))
     result.add_argument('--check-payload', action='store_true', help=i18n.translate('Verify embedded release assets without contacting a TV'))
     result.add_argument('--prepare-python-runtime', action='store_true', help=i18n.translate('Download and verify the optional TV Python for offline setup'))
+    result.add_argument('--new-recovery-attempt', action='store_true', help=i18n.translate('recover-system-rollback: explicitly start a new audited attempt after the old deadline'))
     result.add_argument('--repair-package-permissions', action='store_true', help=i18n.translate('enable-firmware-access: explicitly repair verified Root package permissions'))
     result.add_argument('--report', action='store_true', help=i18n.translate('doctor: save an issue-ready diagnostic report without private connection data'))
     return result
@@ -164,6 +165,8 @@ def main(argv=None, ask=input, write=print, connect=None, secret=getpass.getpass
     remote = None
     store, profile, phase, tv_info = state.Store(args.data_dir), None, 'select-tv', {}
     try:
+        if args.new_recovery_attempt and (args.command != 'recover-system-rollback' or args.edition == 'no-root'):
+            raise UserError('--new-recovery-attempt applies only to Root rollback recovery.')
         if args.repair_package_permissions and (args.command!='enable-firmware-access' or args.edition=='no-root'):
             raise UserError('--repair-package-permissions applies only to Root enable-firmware-access.')
         if args.prepare_python_runtime:
@@ -431,7 +434,10 @@ def main(argv=None, ask=input, write=print, connect=None, secret=getpass.getpass
                     write('Keep Developer Mode active: open it before the timer runs out and press EXTEND while the TV is online. If it expires, LG can remove these apps.')
             elif args.command == 'recover-system-rollback':
                 phase = args.command
-                installer.recover_system_rollback()
+                if args.new_recovery_attempt:
+                    installer.recover_system_rollback(new_attempt=True)
+                else:
+                    installer.recover_system_rollback()
                 write('Previous Root components and profile verified. Rollback recovery is complete.')
             elif args.command == 'enable-system-updates':
                 phase = 'enable-system-updates'

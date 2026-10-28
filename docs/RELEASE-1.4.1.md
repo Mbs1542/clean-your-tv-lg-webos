@@ -86,6 +86,17 @@ final frozen-head platform builds and signed publication verification are pendin
   eeb4b8b0 app and streamed #132 helper; final frozen artifacts and the stated
   untested cases remain separate.
 
+Candidate maintenance [PR #137](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/137)
+adds explicit `cytv recover-system-rollback --edition root` and
+`--new-recovery-attempt` for a completed package rollback whose readiness expired.
+It verifies retained evidence and requires genuine launcher health; unknown
+installer outcomes remain blocked. Ordinary retries never extend the attempt;
+an explicit new attempt requires expiry and preserves the entire prior audit
+under its UUID/hash. Packages and pinned supervisor code/keys stay unchanged.
+[Scoped C3 maintenance acceptance](RELEASE-1.4.1-ACCEPTANCE.md#scoped-maintenance-acceptance-explicit-rollback-readiness-recovery)
+records the exact streamed helper bytes, initial failure and successful recovery;
+final committed-source checks and release inventory integration remain separate.
+
 No exclusions. The inventory is recorded in `release-plan.json` and candidate
 [PR #114](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
 
@@ -107,7 +118,15 @@ for promotion (`homebrew/release.json` is absent).
 
 ## Acceptance and documentation
 
-Retained rollback is currently blocked by [#136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136): a later ordinary C3 rollback restored packages/profile but lost one-shot readiness and reached `recovery-required`. Explicit recovery is under implementation; do not freeze or publish while it is unresolved.
+A later ordinary C3 rollback restored packages/profile but lost one-shot readiness
+and reached `recovery-required` ([#136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136)).
+Explicit streamed maintenance recovery subsequently completed that transaction:
+fresh real Root health, terminal System rollback, preserved full profile and
+original hashes, and disabled Root/LG Home routing were independently verified.
+The first maintenance prototype failed; its complete audit was preserved before
+the separately authorized new attempt. This scoped recovery does not fix the
+ordinary readiness race or replace changed-product OTA/rollback acceptance.
+Do not freeze or publish while the remaining gates are unresolved.
 
 The current checklists and historical implementation evidence are in PR #114.
 Historical C3 acceptance of v1.4.0 does not establish acceptance of this candidate.

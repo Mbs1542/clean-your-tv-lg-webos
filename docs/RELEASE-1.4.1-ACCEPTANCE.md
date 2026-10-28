@@ -18,7 +18,7 @@ With LG auto-update off and no pending installation reported by the owner, the a
 
 [Maintainer QA report](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/110#issuecomment-6464370670). [Explicit repair PR #132](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/132). This follow-up covers the stated installed app and streamed maintenance helper; it does not freeze or publish the release.
 
-## New blocking result: retained rollback readiness
+## Retained rollback readiness failure and maintenance recovery
 
 On 2026-10-28 the next ordinary retained rollback of the installed `eeb4b8b0`
 candidate restored Root 0.4.0 and Root Updater 0.3.0 but did not complete System
@@ -39,14 +39,71 @@ the same health request succeeded after releasing that lock. Root's actual
 profile code attempted health once and opened recovery without retrying. This
 matches the observed symptoms but does not prove the exact device contention
 timing. No health receipt was fabricated, deadline extended, journal cleared or
-package installation retried. An explicit, narrowly scoped recovery command is
-approved for implementation; device recovery and changed-product acceptance
-remain pending. See [blocking issue #136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136).
+package installation retried in that investigation. The explicit maintenance
+recovery below subsequently completed this device transaction; the ordinary
+one-shot readiness race and changed-product acceptance remain unresolved. See
+[issue #136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136).
 
 Before this rollback, candidate `686d7eee` passed private artifact verification,
 native macOS ARM64 smoke and production signing with `publish=false`
 ([run 40661994355](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40661994355)).
-It has not been admitted on this TV. Public stable remains 1.4.0.
+At that point it had not been admitted on this TV. Public stable remains 1.4.0.
+
+## Scoped maintenance acceptance: explicit rollback readiness recovery
+
+C3 maintenance acceptance, 2026-10-28: OLED55C3RLA, firmware 43.21.71 / webOS
+11.2.0; macOS ARM64 source installer; remote model unknown. The expected result
+was completion of the already installed prior Root 0.4.0 / Root Updater 0.3.0
+rollback through retained System Updater 1.1.0, preserving the saved profile,
+original recovery evidence and explicit Home-off choice.
+
+The first maintenance prototype stopped after arming; its window then expired
+without fresh launcher health. Review identified a Root-restart API mismatch and
+real-clock audit gaps; the first raw RPC rejection was not captured. Its
+unsuccessful audit was retained. After the owner's explicit authorization
+for a new attempt, the corrected streamed helper archived the entire old audit
+under its UUID/hash before creating a fresh UUID and bounded readiness window.
+The tested helper SHA-256 was
+`972ce04334c669831d863fe880e807c35d530e3bd9f68085a294d3930168be2a`,
+from uncommitted source based on `addf5673500b06a09ae40ba6cb3269852f79f232`;
+final source identity and CI are tracked in PR #137; this source test is not
+frozen-artifact acceptance.
+
+The restored real Root launcher supplied fresh authenticated 0.4.0 health. Independent
+readback verified `rolled-back`, matching `homeResumePhase`, completed audit and
+terminal System ownership, with the old audit preserved exactly in history.
+The full saved profile digest matched. All 27 original supervisor hashes, 40 Root
+recovery hashes, recovery proof, baseline and finalized current descriptor matched
+the earlier verified original rollback. No package installer leg was replayed;
+packages, pinned code and keys were unchanged. Final readback showed verified
+recovery integrity, Root intent disabled and all three destinations at LG Home.
+Controls/audio were not newly accepted in this maintenance run.
+
+This accepts the explicit streamed maintenance recovery for this failed C3
+transaction. It does not establish that ordinary rollback's readiness race is
+fixed, complete new-candidate OTA/rollback acceptance, automatic timeout rollback,
+frozen-renderer/observer recovery, other devices or public delivery. Candidate
+`686d7eee` OTA/rollback and final frozen-source/platform verification remain
+separate gates. Public stable remains 1.4.0.
+
+## Subsequent signed candidate round: readiness still blocks release
+
+Candidate `686d7eee`, production signing run 40661994355 (`publish=false`),
+passed original-controller admission on the restored C3 and the unchanged System
+worker installed all three candidate components. Its launcher readiness deadline
+expired without accepted candidate health, so the original worker automatically
+restored the prior packages. During `verifying-rollback`, the actual Root 0.4.0
+UI had rendered and restored this new transaction's profile, but displayed
+`installation_operation_retained`.
+
+A normal `closeByAppId`/launch of the restored Root inside the unchanged original
+rollback window produced genuine launcher health; the original worker completed
+`rolled-back` with matching `homeResumePhase`. No receipt was fabricated and no
+journal/deadline was edited. The rendered full profile matched the saved digest.
+This round is failed forward-OTA acceptance with package rollback and a manual
+launcher restart, not successful unattended timeout rollback or release approval.
+The original readiness/ownership race remains a release blocker under #136.
+Public stable remains 1.4.0.
 
 ## Earlier-source evidence references
 

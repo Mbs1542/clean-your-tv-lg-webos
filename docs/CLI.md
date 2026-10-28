@@ -337,8 +337,14 @@ not an installation retry. It verifies retained evidence, requires the restored
 launcher's genuine authenticated readiness within a fresh 120-second window, and
 keeps a durable audit. Unknown installer results or changed/conflicting state stop
 recovery. Packages, pinned supervisor code/keys and an explicit Home-off choice
-are preserved. Failed attempts keep their evidence; only the same unexpired
-attempt can resume. See [the recovery procedure and limits](RECOVERY.md#root-system-rollback-readiness-candidate).
+are preserved. Ordinary retries resume the same unexpired attempt without
+extending its deadline. After diagnosis, `--new-recovery-attempt` explicitly opens
+a new audited attempt only after the old 120-second deadline expires, with no
+accepted health receipt and no unknown installer outcome. It archives the entire
+old audit under its UUID and hash before creating a fresh UUID/window; it never
+automatically chains attempts. Completed recovery is idempotent and does not roll
+over. The normal confirmation defaults to No; state checks still apply. See
+[the recovery procedure and limits](RECOVERY.md#root-system-rollback-readiness-candidate).
 
 ## Report a problem
 

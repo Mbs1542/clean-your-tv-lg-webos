@@ -81,8 +81,8 @@ class Tests(unittest.TestCase):
         if self.interrupt:raise KeyboardInterrupt('lost SSH')
         if self.health:self.manager.healthy('root',self.original['id'],'1.0.0')
     def sleep(self,seconds):self.io.time+=seconds
-    def recover(self):
-        return self.module.recover(self.manager,self.io,self.store,self.ownership,self.mutation,self.launch,self.sleep)
+    def recover(self,new_attempt=False):
+        return self.module.recover(self.manager,self.io,self.store,self.ownership,self.mutation,self.launch,self.sleep,new_attempt=new_attempt)
     def test_real_health_completes_original_manager_without_installing(self):
         calls=len([c for c in self.io.calls if c.startswith('install:')]);result=self.recover()
         self.assertEqual(result['phase'],'rolled-back');self.assertEqual(result['homeResumePhase'],'rolled-back')
@@ -246,5 +246,141 @@ class Tests(unittest.TestCase):
         self.io._root_integrity=damaged
         with self.assertRaises(ValueError):self.recover()
         self.assertEqual(self.store.read('transaction'),self.original);self.assertIsNone(self.store.read('readiness-recovery-'+self.original['id']))
+
+    def test_restart_uses_tv_close_by_app_id_then_original_launch_outside_ownership(self):
+        self.assertTrue(hasattr(self.module,'restart_launcher'),'TV restart boundary missing')
+        calls=[]
+        def rpc(uri,payload):
+            self.assertFalse(self.locked);calls.append((uri,payload))
+            self.assertEqual(uri,'luna://com.webos.applicationManager/closeByAppId')
+            self.assertEqual(payload,{'id':'com.cleanyourtv.root.preview'})
+            return {'returnValue':True}
+        def launch(edition):
+            self.assertFalse(self.locked);calls.append(('launch',edition))
+            self.manager.healthy('root',self.original['id'],'1.0.0')
+            return {'returnValue':True}
+        self.io.rpc=rpc;self.io.launch=launch;self.launch=lambda:self.module.restart_launcher(self.io)
+        self.assertEqual(self.recover()['phase'],'rolled-back')
+        self.assertEqual(calls,[('luna://com.webos.applicationManager/closeByAppId',{'id':'com.cleanyourtv.root.preview'}),('launch','root')])
+    def test_restart_close_failure_never_launches_or_fabricates_health(self):
+        self.assertTrue(hasattr(self.module,'restart_launcher'),'TV restart boundary missing')
+        calls=[];self.io.rpc=lambda *args: {'returnValue':False,'errorText':'close failed'}
+        self.io.launch=lambda edition:calls.append(edition)
+        with self.assertRaises(ValueError):self.module.restart_launcher(self.io)
+        self.assertEqual(calls,[]);self.assertIsNone(self.store.read('healthy-rollback-'+self.original['id']))
+    def test_restart_launch_failure_is_not_success(self):
+        self.assertTrue(hasattr(self.module,'restart_launcher'),'TV restart boundary missing')
+        self.io.rpc=lambda *args: {'returnValue':True}
+        self.io.launch=lambda edition: {'returnValue':False,'errorText':'launch failed'}
+        with self.assertRaises(ValueError):self.module.restart_launcher(self.io)
+        self.assertIsNone(self.store.read('healthy-rollback-'+self.original['id']))
+    def test_launcher_error_retains_audited_failure_without_new_deadline(self):
+        def failed():raise ValueError('Root launcher close unconfirmed')
+        self.launch=failed
+        with self.assertRaises(ValueError):self.recover()
+        audit=self.store.read('readiness-recovery-'+self.original['id']);tx=self.store.read('transaction')
+        self.assertEqual(audit['state'],'failed');self.assertEqual(audit['failure'],'launcher-error')
+        self.assertEqual(tx['phase'],'verifying-rollback');self.assertEqual(tx['deadline'],audit['armed']['deadline'])
+        self.assertFalse(self.ownership.status()['terminal']);self.assertIsNone(self.store.read('healthy-rollback-'+self.original['id']))
+
+    def expire_attempt(self):
+        self.interrupt=True
+        with self.assertRaises(KeyboardInterrupt):self.recover()
+        self.interrupt=False;self.io.time+=121
+        return self.store.read('readiness-recovery-'+self.original['id'])
+    def test_explicit_new_attempt_archives_expired_audit_and_uses_real_health(self):
+        old=self.expire_attempt();result=self.recover(new_attempt=True)
+        new=self.store.read('readiness-recovery-'+self.original['id'])
+        self.assertEqual(result['phase'],'rolled-back');self.assertNotEqual(new['id'],old['id'])
+        history=self.store.read('readiness-recovery-history-'+old['id'])
+        self.assertEqual(history['audit'],old);self.assertEqual(history['sha256'],self.module.digest(self.module.encode(old)))
+        self.assertEqual(new['previous']['name'],'readiness-recovery-history-'+old['id']);self.assertEqual(new['previous']['sha256'],history['sha256'])
+        self.assertEqual(result['deadline'],new['armed']['launched']+120)
+    def test_new_flag_does_not_replace_unexpired_or_completed_attempt(self):
+        self.interrupt=True
+        with self.assertRaises(KeyboardInterrupt):self.recover()
+        old=self.store.read('readiness-recovery-'+self.original['id']);self.interrupt=False
+        result=self.recover(new_attempt=True);self.assertEqual(result['deadline'],old['armed']['deadline'])
+        complete=self.store.read('readiness-recovery-'+self.original['id']);self.recover(new_attempt=True)
+        self.assertEqual(self.store.read('readiness-recovery-'+self.original['id']),complete)
+        self.assertEqual(list(Path(self.store.root).glob('readiness-recovery-history-*')),[])
+    def test_failed_launcher_requires_expiry_even_with_new_flag(self):
+        launch=self.launch;self.launch=lambda:(_ for _ in ()).throw(ValueError('close rejected'))
+        with self.assertRaises(ValueError):self.recover()
+        old=self.store.read('readiness-recovery-'+self.original['id']);self.launch=launch
+        with self.assertRaises(ValueError):self.recover(new_attempt=True)
+        self.assertEqual(self.store.read('transaction')['deadline'],old['armed']['deadline'])
+        self.io.time+=121;self.assertEqual(self.recover(new_attempt=True)['phase'],'rolled-back')
+    def test_new_attempt_refuses_existing_health_or_archive_conflict(self):
+        old=self.expire_attempt();self.store.write('healthy-rollback-'+self.original['id'],{'transaction':self.original['id'],'version':'1.0.0','at':old['armed']['launched']})
+        with self.assertRaises(ValueError):self.recover(new_attempt=True)
+        self.assertEqual(self.store.read('readiness-recovery-'+self.original['id']),old)
+        (Path(self.store.root)/('healthy-rollback-'+self.original['id']+'.json')).unlink()
+        name='readiness-recovery-history-'+old['id'];self.store.write(name,{'foreign':'evidence'})
+        with self.assertRaises(ValueError):self.recover(new_attempt=True)
+        self.assertEqual(self.store.read(name),{'foreign':'evidence'})
+        self.assertEqual(self.store.read('readiness-recovery-'+self.original['id']),old)
+    def test_archive_before_pointer_interruption_retains_identical_history(self):
+        old=self.expire_attempt();name='readiness-recovery-'+self.original['id'];write=self.store.write
+        def interrupt(key,value):
+            if key==name and value['id']!=old['id']:raise KeyboardInterrupt('history durable, pointer unchanged')
+            write(key,value)
+        self.store.write=interrupt
+        with self.assertRaises(KeyboardInterrupt):self.recover(new_attempt=True)
+        self.assertEqual(self.store.read(name),old);history=self.store.read('readiness-recovery-history-'+old['id'])
+        self.store.write=write;self.assertEqual(self.recover(new_attempt=True)['phase'],'rolled-back')
+        self.assertEqual(self.store.read('readiness-recovery-history-'+old['id']),history)
+    def test_new_prepared_interruption_resumes_same_persisted_window(self):
+        old=self.expire_attempt();name='readiness-recovery-'+self.original['id'];write=self.store.write
+        def interrupt(key,value):
+            write(key,value)
+            if key==name and value['id']!=old['id'] and value['state']=='prepared':raise KeyboardInterrupt('new pointer durable, old journal')
+        self.store.write=interrupt
+        with self.assertRaises(KeyboardInterrupt):self.recover(new_attempt=True)
+        prepared=self.store.read(name);self.store.write=write
+        result=self.recover(new_attempt=True);self.assertEqual(result['deadline'],prepared['armed']['deadline'])
+        self.assertEqual(self.store.read(name)['id'],prepared['id'])
+    def test_expired_new_prepared_attempt_can_be_explicitly_archived(self):
+        old=self.expire_attempt();name='readiness-recovery-'+self.original['id'];write=self.store.write
+        def interrupt(key,value):
+            write(key,value)
+            if key==name and value['id']!=old['id'] and value['state']=='prepared':raise KeyboardInterrupt('prepared only')
+        self.store.write=interrupt
+        with self.assertRaises(KeyboardInterrupt):self.recover(new_attempt=True)
+        prepared=self.store.read(name);self.store.write=write;self.io.time+=121
+        self.assertEqual(self.recover(new_attempt=True)['phase'],'rolled-back')
+        self.assertEqual(self.store.read('readiness-recovery-history-'+prepared['id'])['audit'],prepared)
+    def test_new_attempt_api_requires_literal_boolean(self):
+        from cytv.system_rollback_recovery import program
+        for value in ['true',1,None]:
+            with self.assertRaises(ValueError):program(new_attempt=value)
+        self.assertIn('entry(new_attempt=True)',program(new_attempt=True))
+
+    def test_advancing_clock_keeps_persisted_armed_record_exact(self):
+        def ticking():self.io.time+=.001;return self.io.time
+        self.io.now=ticking
+        self.assertEqual(self.recover()['phase'],'rolled-back')
+        audit=self.store.read('readiness-recovery-'+self.original['id'])
+        self.assertEqual(audit['armed']['updated'],audit['armed']['launched'])
+        self.assertEqual(self.recover()['phase'],'rolled-back')
+    def test_existing_real_clock_updated_delta_is_preserved_in_archive(self):
+        old=self.expire_attempt();old['armed']['updated']+=.01
+        name='readiness-recovery-'+self.original['id'];self.store.write(name,old)
+        tx=self.store.read('transaction');tx['updated']=old['armed']['updated'];self.store.write('transaction',tx)
+        self.assertEqual(self.recover(new_attempt=True)['phase'],'rolled-back')
+        self.assertEqual(self.store.read('readiness-recovery-history-'+old['id'])['audit'],old)
+    def test_clock_reversal_between_observations_cannot_persist_invalid_armed_time(self):
+        deadline=self.original['deadline'];values=iter([deadline+1,deadline-1])
+        self.io.now=lambda:next(values,deadline+1)
+        try:self.recover()
+        except ValueError:pass
+        audit=self.store.read('readiness-recovery-'+self.original['id'])
+        self.assertGreaterEqual(audit['armed']['launched'],deadline)
+    def test_restart_reports_which_bus_stage_was_rejected(self):
+        def rejected(*args):raise ValueError('Bus operation rejected')
+        self.io.rpc=rejected
+        with self.assertRaisesRegex(ValueError,'Root closeByAppId rejected'):self.module.restart_launcher(self.io)
+        self.io.rpc=lambda *args:{'returnValue':True};self.io.launch=rejected
+        with self.assertRaisesRegex(ValueError,'Root launcher relaunch rejected'):self.module.restart_launcher(self.io)
 
 if __name__=='__main__':unittest.main()

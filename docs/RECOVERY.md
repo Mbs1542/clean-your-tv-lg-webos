@@ -58,10 +58,23 @@ not reinstall packages or replace pinned code or keys. It opens the restored Roo
 launcher and gives it a fresh, bounded **120-second** window to send its genuine
 authenticated readiness signal; no health receipt is manufactured.
 
-A private durable audit records the attempt and its outcome. Only the same
-unexpired attempt can be resumed; a failed or uncertain attempt keeps its evidence.
-If recovery cannot finish, stop and retain diagnostics and journals for review;
-do not delete state or repeatedly retry. The original completion path preserves
+A private durable audit records the attempt and its outcome. Retrying the normal
+command resumes only the same unexpired attempt and never extends its deadline.
+A failed or uncertain attempt keeps its evidence. After diagnosis, an explicit
+new attempt is available only after the previous **120-second deadline has
+expired**, with no accepted health receipt and no unknown installer outcome:
+
+```sh
+cytv recover-system-rollback --edition root --new-recovery-attempt
+```
+
+Before opening a fresh UUID and readiness window, this action archives the entire
+previous audit under its UUID and hash. It does not delete the failure or start
+serial retries automatically. A completed recovery stays idempotent; the flag
+does not roll it over into another attempt. The normal confirmation defaults to
+No; accepting it does not bypass the state checks. If recovery cannot finish,
+stop and retain diagnostics and journals for review; do not delete state or
+repeatedly retry. The original completion path preserves
 an explicit Home-off choice. Successful readiness recovery does not prove
 controls, audio, standby or cold boot; check actual behavior separately. [Connection flags and CLI details](CLI.md#candidate-root-system-rollback-readiness).
 

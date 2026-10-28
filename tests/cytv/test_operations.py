@@ -76,6 +76,17 @@ class Remote:
 
 
 class OperationTests(unittest.TestCase):
+    def test_new_recovery_attempt_reaches_only_explicit_program(self):
+        from unittest.mock import MagicMock, patch
+        remote = MagicMock(); remote.root = True
+        remote.run.return_value = json.dumps({'returnValue':True, 'result':{'phase':'rolled-back', 'homeResumePhase':'rolled-back'}})
+        store = MagicMock(); store.pending.return_value = None
+        installer = operations.Installer(remote, store, {'edition':'root'}, Path('/unused'), {}, lambda *_:None)
+        with patch.object(installer, '_python', return_value='/verified/python'), patch('cytv.system_rollback_recovery.program', return_value='explicit new attempt') as program:
+            installer.recover_system_rollback(new_attempt=True)
+        program.assert_called_once_with(new_attempt=True)
+        self.assertEqual(remote.run.call_args.kwargs['data'], b'explicit new attempt')
+
     def test_system_rollback_recovery_streams_trusted_program_and_requires_complete_reply(self):
         from unittest.mock import MagicMock, patch
         from cytv.errors import UserError
