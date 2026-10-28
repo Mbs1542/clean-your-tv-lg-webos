@@ -71,7 +71,7 @@ No-root: Para reiniciar o controle de Home, abra Home Helper, escolha Iniciar He
 
 Após uma interrupção, execute primeiro `status` e preserve os registros. `restore` restaura LG Home sem remover aplicativos; `uninstall` restaura antes de remover. Os dados de recuperação Root são mantidos de propósito: não os apague para forçar a reinstalação. Revise relatórios antes de compartilhar; não publique chaves nem pastas de perfis.
 
-Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. A seleção de temas e a instalação por URL ainda não estão disponíveis. Temas com disposição fixa ocultam a opção Colunas e usam o valor do autor. Sua escolha salva volta a valer ao mudar para um tema que ofereça esse ajuste.
+Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. A seleção de temas e a instalação por URL ainda não estão disponíveis. Temas com disposição fixa ocultam a opção Colunas e usam o valor do autor. Sua escolha salva volta a valer ao mudar para um tema que ofereça esse ajuste. Na prévia candidata Glasshouse, os apps ficam em uma única faixa horizontal circular: Esquerda/Direita rola, Cima abre os atalhos e Baixo volta ao mesmo app.
 
 Nas prévias de temas do candidato ainda não publicado com barra lateral opcional, Cima/Baixo seleciona um item do menu, Direita vai para os aplicativos e Esquerda na primeira coluna de aplicativos volta ao menu.
 

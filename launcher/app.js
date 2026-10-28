@@ -24,9 +24,10 @@
     columnWidth, CARD_WIDTH, CARD_HEIGHT, DOCK_HEIGHT,
     TILE_BASE = DOCK_TOP + DOCK_PADDING,
     HERO_OFFSET = 176,
-    layoutPreset = "dock-grid", layoutGeometry;
+    layoutPreset = "dock-grid", layoutGeometry, ribbonStart = 0;
   function updateGeometry(columns, preset) {
     layoutPreset = preset || 'dock-grid';
+    ribbonStart = 0;
     layoutGeometry = HomeLayout.geometry(layoutPreset, columns);
     columnCount = columns;
     GRID_LEFT = layoutGeometry.left; GRID_WIDTH = layoutGeometry.width;
@@ -672,11 +673,19 @@
       tileClick(tile);
     }), bindHold(tile), tilesContainer.appendChild(element), tile;
   }
+  function ribbonSlot(index) { return ((index - ribbonStart) % tiles.length + tiles.length) % tiles.length; }
+  function stepRibbon(direction) {
+    var index = (focusedTile + direction + tiles.length) % tiles.length;
+    if (tiles.length > columnCount && ribbonSlot(index) >= columnCount) {
+      ribbonStart = direction < 0 ? index : (index - columnCount + 1 + tiles.length) % tiles.length;
+    }
+    focusTile(index);
+  }
   function rowFor(index) {
-    return Math.floor(index / columnCount);
+    return layoutPreset === 'scenic-grid' ? 0 : Math.floor(index / columnCount);
   }
   function tileLeft(index) {
-    return GRID_LEFT + index % columnCount * columnWidth + (columnWidth - CARD_WIDTH) / 2;
+    return GRID_LEFT + (layoutPreset === 'scenic-grid' ? ribbonSlot(index) : index % columnCount) * columnWidth + (columnWidth - CARD_WIDTH) / 2;
   }
   function tileTop(index) {
     var row = rowFor(index);
@@ -688,6 +697,10 @@
       e.el.style.width = CARD_WIDTH + "px";
       e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
       if (e.card && typeof e.brandBackground === 'string') e.card.style.background = layoutPreset === 'channel-list' ? '' : e.brandBackground;
+      var slot = layoutPreset === 'scenic-grid' ? ribbonSlot(t) : null;
+      var previousSlot = Number(e.el.getAttribute('data-ribbon-slot'));
+      e.el.style.transition = slot === null ? '' : e.el.hasAttribute('data-ribbon-slot') && Math.abs(previousSlot - slot) === 1 && previousSlot <= columnCount && slot <= columnCount ? 'left 160ms ease-out' : 'none';
+      if (slot === null) e.el.removeAttribute('data-ribbon-slot'); else e.el.setAttribute('data-ribbon-slot', slot);
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
       e.el.classList.toggle("dock", layoutGeometry.dock && 0 === rowFor(t));
@@ -768,10 +781,15 @@
       setFocusZone("grid");
       tiles[focusedTile] && setPartState(tiles[focusedTile].el, 'focused', false);
       focusedTile = index;
+      if (layoutPreset === 'scenic-grid') {
+        ribbonStart = ribbonStart % tiles.length;
+        if (ribbonSlot(index) >= Math.min(columnCount, tiles.length)) ribbonStart = (index - columnCount + 1 + tiles.length) % tiles.length;
+        layoutTiles();
+      }
       setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
-      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', (row * columnCount + 1) + '–' + Math.min((row + 1) * columnCount, tiles.length) + ' / ' + tiles.length);
+      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', '← ' + (index + 1) + ' / ' + tiles.length + ' →');
       var ceiling = layoutGeometry.scrollTop;
       var floor = moveState ? 850 : layoutGeometry.scrollBottom;
       if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);
@@ -988,11 +1006,11 @@
     } else {
       if (key === KEY_OK && (okPressed = true), moveState) {
         if (37 === key) {
-          moveTile(focusedTile - 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile - 1 + tiles.length - 1) % (tiles.length - 1) : focusedTile - 1);
         } else if (39 === key) {
-          moveTile(focusedTile + 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile + 1) % (tiles.length - 1) : focusedTile + 1);
         } else if (38 === key) {
-          moveTile(focusedTile - columnCount);
+          if (layoutPreset !== 'scenic-grid') moveTile(focusedTile - columnCount);
         } else if (40 === key) {
           if (rowFor(focusedTile) >= rowFor(tiles.length - 2)) {
             selectHide();
@@ -1046,10 +1064,12 @@
         var column = focusedTile % columnCount,
           lastIndex = tiles.length - 1;
         if (37 === key) {
-          if (column > 0) focusTile(focusedTile - 1);
+          if (layoutPreset === 'scenic-grid') stepRibbon(-1);
+          else if (column > 0) focusTile(focusedTile - 1);
           else if (layoutPreset === 'side-grid') focusTopButton(focusedTopButton);
         } else if (39 === key) {
-          column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
+          if (layoutPreset === 'scenic-grid') stepRibbon(1);
+          else column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
         } else if (38 === key) {
           0 === rowFor(focusedTile) ? focusTopButton((tileCenter = tileLeft(focusedTile) + CARD_WIDTH / 2, nearestButton = 0, nearestDistance = 1 / 0, topButtons.forEach(function (e, t) {
             var n = e.getBoundingClientRect(),

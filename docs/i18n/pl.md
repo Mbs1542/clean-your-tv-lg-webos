@@ -71,7 +71,7 @@ No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Help
 
 Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore` przywraca LG Home bez usuwania aplikacji; `uninstall` przywraca je przed usunięciem. Dane odzyskiwania Root pozostają celowo: nie kasuj ich, by wymusić ponowną instalację. Sprawdź raporty przed udostępnieniem; nie publikuj kluczy ani katalogów profili.
 
-Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Wybór motywów i instalacja przez URL nie są jeszcze dostępne. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie.
+Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Wybór motywów i instalacja przez URL nie są jeszcze dostępne. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Glasshouse aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji.
 
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 

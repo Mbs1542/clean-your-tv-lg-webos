@@ -137,7 +137,7 @@ Spacing, text and focus scales still require the Classic values `1`, `1`, and
 | `dock-grid` | Classic wide app cards, dock band near the bottom and selected app title above it |
 | `icon-grid` | Compact square icon grid with labels and a smaller header |
 | `side-grid` | Fixed clock/menu sidebar on the left and labelled app grid on the right |
-| `scenic-grid` | Large light clock over wallpaper, compact square icons in a bottom row; Down/Up pages rows while the clock stays fixed |
+| `scenic-grid` | Large light clock over wallpaper, one looping horizontal ribbon of square icons; Left/Right wraps, Up opens shortcuts, Down returns |
 | `channel-list` | Numbered app rows on the left and selected app title on the right; narrow multi-column overrides use compact labelled cells |
 
 In `side-grid`, the sidebar menu uses Up/Down to select a shortcut, Right enters
@@ -242,7 +242,7 @@ The Channel selection title also updates synchronously in place. Pending title
 swap timers are cancelled; fade/slide transitions remain disabled for this preset.
 
 The `scenic-grid` preset defaults to eight columns in the Glasshouse-inspired
-example. User overrides remain authoritative. Rows snap without title motion;
+example. User overrides remain authoritative. The ribbon loops horizontally without title motion;
 reorder temporarily lifts the row above its trusted Hide/Place controls.
 The reference is https://github.com/rorygallagher2024/glasshouse; no third-party
 application code is loaded. Settings and emergency UI remain trusted.
@@ -273,5 +273,16 @@ There is no new preference key, permission or network endpoint.
 
 This flag protects a composition from user reflow; it does not permit untrusted
 positioning CSS or arbitrary HTML. Card coordinates and remote hit areas still
-belong to the trusted preset. New compositions, including a looping horizontal
-ribbon, require their own renderer implementation and navigation verification.
+belong to the trusted preset. The looping horizontal ribbon is implemented by `scenic-grid`; other new
+compositions still require renderer implementation and navigation verification.
+
+### Scenic ribbon navigation
+
+`scenic-grid` is the candidate preset name retained for compatibility, but now
+renders every app on one horizontal row. Left/Right wraps at either end. The
+window shifts horizontally when selection reaches an edge; recycled off-screen
+nodes reposition without flying across the screen. There are no duplicate app
+nodes, including in short lists. Up opens the shortcuts and Down returns to the
+same app; Down within the ribbon never pages vertically. Rearrangement wraps
+through real apps only; Add app remains a single terminal library action, and
+Down during rearrangement selects Hide. Clock and wallpaper remain fixed.

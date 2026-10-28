@@ -35,6 +35,7 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
       if(preset==='scenic-grid') {
        for(let i=0;i<15;i++)await page.keyboard.press('ArrowUp');
        await page.keyboard.press('ArrowDown');
+       for(let i=0;i<20 && await page.locator('#tiles .item').evaluateAll(nodes=>nodes.findIndex(n=>n.classList.contains('focused')))!==0;i++)await page.keyboard.press('ArrowLeft');
        await page.keyboard.down('Enter');await page.waitForTimeout(700);await page.keyboard.up('Enter');
        const box=await page.locator('#tiles .moving .card').boundingBox();
        assert(box.y>=600 && box.y+box.height<=850,'reorder row clears trusted controls');

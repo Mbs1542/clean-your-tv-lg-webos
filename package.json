@@ -7,7 +7,7 @@
     "test:legacy-ui": "node tests/legacy-launcher.cjs",
     "test:geometry": "node tests/launcher-geometry.cjs",
     "test:themes": "node tests/themes/columns.cjs && node tests/themes/layouts.cjs && node tests/themes/policy.cjs && node tests/themes/compiler.cjs && node tests/themes/runtime.cjs && python3 tests/themes/export-runtime.py",
-    "test:themes:browser": "node tests/themes/baseline.cjs && node tests/themes/isolation.cjs && node tests/themes/columns-ui.cjs && node tests/themes/layouts-ui.cjs && node tests/themes/channel-ui.cjs && node tests/themes/channel-navigation.cjs"
+    "test:themes:browser": "node tests/themes/baseline.cjs && node tests/themes/isolation.cjs && node tests/themes/columns-ui.cjs && node tests/themes/layouts-ui.cjs && node tests/themes/channel-ui.cjs && node tests/themes/channel-navigation.cjs && node tests/themes/ribbon-ui.cjs"
   },
   "browserslist": [
     "Chrome 38"
