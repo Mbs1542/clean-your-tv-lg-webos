@@ -86,6 +86,13 @@
       "pr": 131,
       "issues": [],
       "summary": "Fix launcher card/focus geometry for one through eight columns; preserve sparse layouts and add compiled-browser navigation/scroll regressions; physical-TV acceptance pending"
+    },
+    {
+      "pr": 132,
+      "issues": [
+        110
+      ],
+      "summary": "Add explicit authenticated Root SDK package permission repair before firmware-access registration; retain strict default/automatic checks and require private package byte authority; no automatic SDK chmod or published delivery"
     }
   ],
   "excluded": [],

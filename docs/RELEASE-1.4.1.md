@@ -63,6 +63,15 @@ final frozen-head platform builds and signed publication verification are pendin
   and existing icon processing. Compiled-browser geometry and navigation checks
   passed on Linux; the full Linux/macOS CI passed. Physical-TV acceptance is
   pending. Earlier feedback packages do not include this geometry correction.
+- #132 / #110: add explicit `--repair-package-permissions` to Root
+  `enable-firmware-access`. The current private updater package/cache selects
+  every installed byte before only owned SDK write bits are narrowed; unknown
+  entries, links, owners, drift and pending operations stop repair. Default enable,
+  automatic maintenance and revoke retain strict behavior. SDK modes are not
+  enforced across platform lifecycle changes; repeat explicit maintenance when
+  required. Host tests and exact PR CI pass; final candidate artifact/lifecycle
+  acceptance remains separate. Earlier feedback packages omit this installer and
+  runtime helper change.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
