@@ -17,7 +17,7 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
        if(preset==='scenic-grid') {
         assert(g.card.y>=760 && g.card.y+g.card.h<=1080,'scenic row stays in bottom viewport');
         assert.equal(await page.locator('#clock').evaluate(el=>getComputedStyle(el).fontSize),'176px');
-        assert.equal(await page.locator('#hero').evaluate(el=>getComputedStyle(el).display),'none');
+        assert.equal(await page.locator('#hero').evaluate(el=>getComputedStyle(el).display),'block');
         return g;
        }
        assert(g.glass.x>=0&&g.glass.x+g.glass.w<=1920,'frame fits horizontally '+preset+columns);

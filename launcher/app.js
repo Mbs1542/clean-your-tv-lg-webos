@@ -24,7 +24,7 @@
     columnWidth, CARD_WIDTH, CARD_HEIGHT, DOCK_HEIGHT,
     TILE_BASE = DOCK_TOP + DOCK_PADDING,
     HERO_OFFSET = 176,
-    layoutPreset = "dock-grid", layoutGeometry, ribbonStart = 0;
+    layoutPreset = "dock-grid", layoutGeometry, ribbonStart = 0, ribbonWheelTime = 0;
   function updateGeometry(columns, preset) {
     layoutPreset = preset || 'dock-grid';
     ribbonStart = 0;
@@ -693,13 +693,15 @@
   }
   function layoutTiles() {
     tiles.forEach(function (e, t) {
-      tilesContainer.appendChild(e.el);
+      if (layoutPreset !== 'scenic-grid') tilesContainer.appendChild(e.el);
+      else if (tilesContainer.children[t] !== e.el) tilesContainer.insertBefore(e.el, tilesContainer.children[t] || null);
       e.el.style.width = CARD_WIDTH + "px";
       e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
       if (e.card && typeof e.brandBackground === 'string') e.card.style.background = layoutPreset === 'channel-list' ? '' : e.brandBackground;
       var slot = layoutPreset === 'scenic-grid' ? ribbonSlot(t) : null;
       var previousSlot = Number(e.el.getAttribute('data-ribbon-slot'));
       e.el.style.transition = slot === null ? '' : e.el.hasAttribute('data-ribbon-slot') && Math.abs(previousSlot - slot) === 1 && previousSlot <= columnCount && slot <= columnCount ? 'left 160ms ease-out' : 'none';
+      e.el.style.pointerEvents = slot !== null && slot >= columnCount ? 'none' : '';
       if (slot === null) e.el.removeAttribute('data-ribbon-slot'); else e.el.setAttribute('data-ribbon-slot', slot);
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
@@ -719,6 +721,7 @@
     scrollOffset = 0;
     layoutTiles();
     focusTile(focusedTile);
+    updateClock();
     var event = document.createEvent('Event'); event.initEvent('home-layout-change', false, false); document.dispatchEvent(event);
   };
   function animateTiles() {
@@ -824,10 +827,11 @@
         } else { channelArtwork.style.visibility = 'hidden'; channelArtwork.removeAttribute('src'); }
         heroTitle.setAttribute('data-position', (index + 1) + ' / ' + tiles.length);
       }
-      (layoutPreset === "channel-list" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
+      (layoutPreset === "channel-list" || layoutPreset === "scenic-grid" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
         var t = e.app.title;
-        heroTitle.style.top = (layoutPreset === "channel-list" ? 548 : TILE_BASE - HERO_OFFSET) + "px";
-        if (layoutPreset === 'channel-list') {
+        heroTitle.style.fontSize = layoutPreset === "scenic-grid" && t.length > 100 ? (t.length > 160 ? "20px" : "26px") : "";
+        heroTitle.style.top = (layoutPreset === "channel-list" ? 548 : layoutPreset === "scenic-grid" ? TILE_BASE - 142 : TILE_BASE - HERO_OFFSET) + "px";
+        if (layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') {
           clearTimeout(heroTitle.swap);
           heroTitle.textContent = t;
           heroTitle.style.transform = 'none';
@@ -888,8 +892,9 @@
       break;
     }
     if (window.HomeI18n) {
-      getElement("clock").textContent = HomeI18n.formatTime(now);
-      getElement("ampm").textContent = "";
+      var time = HomeI18n.formatTime(now), period = layoutPreset === 'scenic-grid' ? time.match(/\s+(AM|PM)$/i) : null;
+      getElement("clock").textContent = period ? time.slice(0, period.index) : time;
+      getElement("ampm").textContent = period ? period[1] : "";
       getElement("date").textContent = HomeI18n.formatDate(now);
     } else {
       getElement("clock").textContent = (hour % 12 || 12) + ":" + ("0" + now.getMinutes()).slice(-2);
@@ -1101,6 +1106,16 @@
       }
     });
   });
+  getElement('viewport').addEventListener('wheel', function (event) {
+    if (layoutPreset !== 'scenic-grid' || focusZone !== 'grid' || moveState || pickerOpen || undoState ||
+        window.ThemeRuntime && ThemeRuntime.isSuspended && ThemeRuntime.isSuspended()) return;
+    var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    if (!delta) return;
+    event.preventDefault();
+    if (ribbonWheelTime && event.timeStamp - ribbonWheelTime < 140) return;
+    ribbonWheelTime = event.timeStamp; pointerNavigation = false;
+    stepRibbon(delta > 0 ? 1 : -1);
+  }, false);
   document.addEventListener("webOSRelaunch", restoreFocus);
   document.addEventListener("visibilitychange", function () {
     if (window.ThemeRuntime) {

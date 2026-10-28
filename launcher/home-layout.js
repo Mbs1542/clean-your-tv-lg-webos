@@ -20,7 +20,7 @@
       g.left = 560; g.width = 1248; g.maxWidth = 300; g.maxHeight = 190;
       g.dockTop = 210; g.padding = 0; g.rowGap = 90; g.rowExtra = 0; g.scrollTop = 200;
     } else if (preset === 'scenic-grid') {
-      g.maxWidth = 128; g.maxHeight = 128; g.dockTop = 810; g.padding = 0;
+      g.maxWidth = 128; g.maxHeight = 128; g.dockTop = 790; g.padding = 0;
       g.rowGap = 100; g.rowExtra = 0; g.scrollTop = 760;
     } else if (preset === 'channel-list') {
       g.left = 96; g.width = columns === 1 ? 1024 : 1728; g.maxWidth = g.width; g.maxHeight = columns >= 5 ? 104 : 88;

@@ -58,7 +58,7 @@
     }
     /* A trusted minimum remains visible even against higher-specificity author states.
        Author CSS cannot emit !important; this narrow engine-owned border may. */
-    appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:2px!important;}');
+    appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:' + (manifest.layout.preset === 'scenic-grid' ? '3' : '2') + 'px!important;}');
     /* All untrusted input is checked before either geometry or styles are changed. */
     if (root.HomeLayoutState && root.HomeLayoutState.setThemeLayout) root.HomeLayoutState.setThemeLayout(manifest.layout);
     else if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(manifest.layout.columns);
@@ -87,5 +87,5 @@
     release(previous && previous.handles, null);
     return {themeId: 'builtin:classic', themeVersion: null};
   }
-  root.ThemeRuntime = {apply: apply, suspend: suspend, resume: resume, reset: reset};
+  root.ThemeRuntime = {isSuspended: suspended, apply: apply, suspend: suspend, resume: resume, reset: reset};
 }(this));

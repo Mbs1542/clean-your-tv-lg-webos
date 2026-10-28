@@ -105,7 +105,8 @@ shorthands such as `background` are not accepted typed properties. The compiler
 must reject unsupported source declarations or normalize only documented forms.
 
 Theme focus-frame appearance can use `.ctv-focus`, but a focused app card also
-receives an engine-owned solid 2 px border in the effective accent color. This
+receives an engine-owned solid border in the effective accent color: 2 px
+for standard layouts and 3 px for the scenic ribbon. This
 narrow trusted fallback uses `!important` so higher-specificity author states
 cannot remove it. Authors still cannot emit `!important`. The runtime marks a
 successfully applied surface with `ctv-theme-active`; reset removes that marker.
@@ -286,3 +287,22 @@ nodes, including in short lists. Up opens the shortcuts and Down returns to the
 same app; Down within the ribbon never pages vertically. Rearrangement wraps
 through real apps only; Add app remains a single terminal library action, and
 Down during rearrangement selects Hide. Clock and wallpaper remain fixed.
+
+### Scenic readability and pointer input
+
+The scenic ribbon shows a static full selected name above the icons. Captions
+use 28px text with a wider area than the icon; Add app can wrap to two lines.
+Very long selected names use a smaller trusted size to retain the full detail.
+There is one renderer-owned 3px focus border, with no second wrapper outline.
+AM/PM in Latin 12-hour time is rendered as a smaller period label; other locale
+formats are preserved. The geometry leaves room for captions above the bottom
+safe area and lifts the row for rearrangement.
+
+Wheel/touchpad input over the ribbon steps in either direction, throttled with
+the event's monotonic timestamp. It is ignored during editing, app selection,
+undo and trusted modal/visibility suspension. Reduced-motion overrides remain
+honored. Ordinary selection updates do not detach/reinsert the app DOM nodes.
+No new permission, endpoint or persistent preference is introduced.
+
+The clipped next-card preview is noninteractive until revealed; this prevents
+stationary-pointer hover from repeatedly dragging the ribbon under the cursor.
