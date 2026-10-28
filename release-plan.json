@@ -1,7 +1,13 @@
 {
   "schema": 1,
   "version": null,
-  "changes": [],
+  "changes": [
+    {
+      "pr": 134,
+      "issues": [],
+      "summary": "Reuse verified candidate builds and unchanged PR runtime checks, scope physical acceptance and refresh release gates automatically."
+    }
+  ],
   "excluded": [],
   "acceptance": ""
 }
