@@ -1,5 +1,7 @@
+// Start scripts/preview.py first; PREVIEW_URL overrides its default port 8876.
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const assert=require('node:assert/strict');
+const base=process.env.PREVIEW_URL||'http://127.0.0.1:8876';
 (async()=>{
  const browser=await chromium.launch({headless:true,channel:'chrome'});
  try {
@@ -9,15 +11,18 @@ const assert=require('node:assert/strict');
   window.calls=[]; window.offline=false;
   window.PalmServiceBridge=function(){this.cancel=()=>{};this.call=(uri,raw)=>{calls.push({uri,p:JSON.parse(raw)});setTimeout(()=>{
    let r={returnValue:false};
+   if(uri==='luna://com.cleanyourtv.system.updater.service/restoreProfile')r={returnValue:true,result:null};
    if(uri.endsWith('/listApps')&&!window.offline)r={returnValue:true,apps:[{id:'a',title:'Alpha'},{id:'b',title:'Beta'},{id:'c',title:'Gamma'}]};
    if(uri.endsWith('/listApps')&&window.inventoryOverride)r={returnValue:true,apps:window.inventoryOverride};
    if(uri.endsWith('/launch'))r={returnValue:true};
    this.onservicecallback(JSON.stringify(r));
   },10);};};
  });
+ // Keep this app-library fixture in control of RPCs instead of the demo bridge.
+ await page.route('**/preview/bridge.js',r=>r.fulfill({body:'',contentType:'application/javascript'}));
  await page.route('**/apps.js',r=>r.fulfill({body:'window.TV_APPS={apps:[{id:"a",title:"Alpha",icon:"brand-v2-icon.png"},{id:"b",title:"Beta",icon:"brand-v2-icon.png"}],inputs:[]};'}));
  // Home Helper polling has its own tests; isolate app editing from its startup RPCs.
- await page.goto('file://'+require('path').resolve(__dirname,'../../launcher/index.html'));
+ await page.goto(base+'/launcher/index.html');
  await page.locator('#tiles .item').first().waitFor();
  assert.equal(await page.locator('#tiles .add-app').count(),1,'last tile adds apps');
  const ids=()=>page.locator('#tiles .item').evaluateAll(els=>els.map(e=>e.dataset.appId||'+'));
@@ -43,7 +48,9 @@ const assert=require('node:assert/strict');
  await page.reload();await page.locator('.add-app').waitFor();assert.deepEqual(await ids(),['b','a','c','+']);
  // Releasing a pointer hold over another tile must not swallow the next placement click.
  await page.locator('[data-app-id="b"]').hover();await page.mouse.down();await page.waitForTimeout(680);
- await page.locator('[data-app-id="c"]').hover();await page.mouse.up();await page.waitForTimeout(50);
+ // One pointer move reorders immediately; locator.hover would chase the displaced tile.
+ const target=await page.locator('[data-app-id="c"]').boundingBox();
+ await page.mouse.move(target.x+target.width/2,target.y+target.height/2);await page.mouse.up();await page.waitForTimeout(50);
  await page.locator('.moving').click();assert.equal(await page.locator('.moving').count(),0);
  // Restore the test order with a fresh persisted layout before the remaining scenarios.
  await page.evaluate(()=>{let state=JSON.parse(localStorage.getItem('tvhome.layout'));state.ids=['b','a','c'];localStorage.setItem('tvhome.layout',JSON.stringify(state));});
