@@ -1,8 +1,9 @@
 # Community theme showcase (candidate)
 
-The static showcase is part of the next theme candidate, after 1.4.1. URL theme
-installation is not available in the current published Home. The initial candidate catalog contains Alpine and Channel from the project
-author toolkit, pinned to separately committed distributions.
+The static showcase is part of the next theme candidate, after 1.4.1. URL installation and the Themes picker are implemented in the preparation branch;
+published packages may not contain them yet. Classic and Alpine are app-bundled choices. Channel is the initial external
+listing, pinned to its separately committed toolkit distribution. The historical
+external Alpine record is archived; it is not an additional download.
 There are no votes, popularity counts or automatic built-in promotions.
 
 ## Submit one fixed theme version

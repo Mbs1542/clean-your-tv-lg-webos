@@ -18,6 +18,8 @@ LAUNCHER_FILES = {
     'user-data.js', 'release-notes.js', 'system-updates.js', 'update-panel.js', 'renewal-panel.js', 'helper-control.js', 'profile-bootstrap.js',
     'native-bootstrap.js', 'i18n.js', 'catalogs.js', 'i18n.css', 'fonts/outfit-300.ttf', 'fonts/outfit-400.ttf', 'fonts/outfit-500.ttf', 'fonts/outfit-700.ttf', 'fonts/NotoSans.ttf', 'fonts/NotoSans-OFL.txt', 'fonts/NotoSansDevanagari.ttf', 'fonts/NotoSansDevanagari-OFL.txt', 'fonts/NotoSansKR.ttf', 'fonts/NotoSansKR-OFL.txt', 'fonts/NotoSansSC.ttf', 'fonts/NotoSansSC-OFL.txt', 'fonts/NotoSansTC.ttf', 'fonts/NotoSansTC-OFL.txt', 'fonts/OFL.txt',
 }
+THEME_FILES = ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())
+LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
 DEMO_APPS = [
     ('youtube', 'YouTube', '#ffffff'),
     ('netflix', 'Netflix', '#ffffff'),
@@ -37,6 +39,9 @@ ROOT_LAUNCHER_FILES = {
     'root-profile-data.js', 'root-profile.js', 'release-notes.js', 'system-updates.js', 'root-updates.js',
 }
 ICON_FILES = {app_id + '.svg' for app_id, _, _ in DEMO_APPS}
+
+
+ROOT_LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
 
 
 def inventory():
@@ -72,7 +77,7 @@ def launcher_html():
 
 def root_launcher():
     # Reuse the isolated Root UI staging, without any installer or runtime services.
-    staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare']()
+    staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare'](json.loads((ROOT / 'launcher/appinfo.json').read_text())['version'])
     files = {name: staged[name] for name in ROOT_LAUNCHER_FILES}
     files['apps.js'] = ('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode()
     files['index.html'] = files['index.html'].replace(

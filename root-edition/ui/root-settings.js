@@ -80,7 +80,7 @@
       refreshMode().then(function () { message.textContent = t(error); });
     });
   }
-  var order = [3, 1, 8, 5, 4, 0, 7, 6, 2];
+  var order = [3, 1, 9, 8, 5, 4, 0, 7, 6, 2];
   function focus(index) {
     selected = index;
     if (!buttons[selected].disabled && !buttons[selected].hidden) buttons[selected].focus();
@@ -102,6 +102,7 @@
     if (busy || buttons[index].disabled) return;
     if (index === 2) return close();
     if (index === 5) { if (window.HomeI18n) window.HomeI18n.openLanguagePicker(); return; }
+    if (index === 9) { if (window.HomeThemePanel) window.HomeThemePanel.open(); return; }
     if (index === 8) { if (window.HomeLayoutPanel) window.HomeLayoutPanel.open(); return; }
     if (index === 3) return changeMode();
     if (index === 7) {
@@ -144,6 +145,7 @@
     message = text(home, 'p', '', 'settings-status'); message.setAttribute('aria-live','polite');
     var homeActions = document.createElement('div'); homeActions.className = 'renewal-actions home-routing-actions'; home.appendChild(homeActions);
     var more = document.createElement('section'); more.className = 'settings-section'; card.appendChild(more);
+    var themes = document.createElement('div'); themes.className = 'renewal-actions settings-layout'; more.appendChild(themes);
     var layout = document.createElement('div'); layout.className = 'renewal-actions settings-layout'; more.appendChild(layout);
     var links = document.createElement('div'); links.className = 'renewal-actions settings-links'; more.appendChild(links);
     var firmware = document.createElement('div'); firmware.className = 'renewal-actions settings-firmware'; more.appendChild(firmware);
@@ -152,10 +154,11 @@
     var back = document.createElement('div'); back.className = 'renewal-actions'; footer.appendChild(back);
     buttons = [];
     order.forEach(function (i) {
-      var labels = ['TV settings','Open LG Home','Back to Home','Change Home','Software updates','Language','LG firmware updates','HDMI sound','Columns'];
+      var labels = ['TV settings','Open LG Home','Back to Home','Change Home','Software updates','Language','LG firmware updates','HDMI sound','Columns','Themes'];
       var b = document.createElement('button'); b.textContent = t(labels[i]);
       if (i === 3) { b.className = 'home-routing-switch'; b.setAttribute('role','switch'); b.setAttribute('aria-checked','false'); }
-      var target = i === 8 ? layout : i === 6 || i === 7 ? firmware : i === 3 || i === 1 ? homeActions : i === 4 || i === 0 || i === 5 ? links : back;
+      var target = i === 9 ? themes : i === 8 ? layout : i === 6 || i === 7 ? firmware : i === 3 || i === 1 ? homeActions : i === 4 || i === 0 || i === 5 ? links : back;
+      if (i === 9) b.id = 'homeThemes';
       if (i === 8) b.id = 'homeColumns';
       if (i === 1) {
         b.className = 'home-visit-button';

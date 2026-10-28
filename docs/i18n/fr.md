@@ -100,3 +100,12 @@ Après un échec ou une interruption, vérifiez l’état et enregistrez le rapp
 <a id="nouveautés-de-130--12"></a>
 <a id="candidat-non-publié--installer-root-avec-homebrew"></a>
 <a id="candidat-non-publié--récupération-du-son-hdmi-root"></a>
+
+
+## Thèmes : candidat en développement
+
+Dans le candidat compatible : **Paramètres → Thèmes**. **Classic** et **Alpine** sont intégrés, sans téléchargement du thème ; Classic reste le choix initial. **Channel** est un thème externe du showcase. Choisissez le thème puis **Conserver le thème** sous **20 secondes**. **Rétablir**, Back ou le délai expiré restaure le précédent. Une prévisualisation interrompue relance Home avec Classic.
+
+Collez le lien fixe du showcase dans **Ajouter par URL → URL du thème** avec le clavier du téléviseur, choisissez **Charger**, l’entrée, puis la version téléchargée pour la tester et la confirmer. Une collection exige un choix explicite. Les fichiers enregistrés permettent une relance hors ligne. Supprimez les versions inactives ou effacez les téléchargements après confirmation ; **Rétablir Classic** restaure l’apparence d’origine. Les anciennes sauvegardes de profil ne contiennent pas les fichiers des thèmes ; une restauration complète sélectionne Classic.
+
+Les versions publiées peuvent ne pas encore proposer ces commandes. Les tests navigateur ne prouvent pas la compatibilité TV. [Guide complet](../THEMES.md).

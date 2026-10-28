@@ -1141,4 +1141,5 @@
   focusZone = "none";
   focusTile(0);
   window.RootLauncherRendered = true;
+  if (window.ThemeManager) ThemeManager.start();
 }();

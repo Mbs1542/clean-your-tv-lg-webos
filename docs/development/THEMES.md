@@ -19,7 +19,7 @@ The complete design remains in the [theme ecosystem specification](../superpower
   unchanged. Legacy backups preserve the effective number, not the By theme mode;
   preserving that mode with installed theme state belongs to the storage gate below.
 - A data-only reviewed showcase registry, pinned per-theme detail pages, static
-  catalog, moderation states and read-only PR checks. The initial candidate catalog contains pinned Alpine and Channel distributions.
+  catalog, moderation states and read-only PR checks. Classic and Alpine are bundled; Channel is the first pinned external theme. The historical external Alpine listing is archived.
 - A separate candidate author toolkit with templates, multi-theme repositories,
   actual-renderer browser preview, validation/build, screenshots and PR drafts.
   The main project exports its renderer/compiler with file hashes and provenance.
@@ -32,19 +32,16 @@ uses an explicitly exported candidate, with dirty snapshots labelled as such.
 
 ## Release gates and remaining work
 
-- Built-in theme sources/selection and accepted-theme persistence are not wired
-  into Home yet. `ThemeRuntime.apply` is exercised by the author preview and tests.
+- Implemented: built-in Classic/Alpine selection, external URL/collection install, app-origin IndexedDB, offline restore and durable 20-second trials. See [lifecycle/storage details](TV-THEMES.md).
 - Runtime accepts five trusted composition presets (`dock-grid`, `icon-grid`,
   `side-grid`, `channel-list`, `scenic-grid`) with a configurable column count. Spacing/text/focus
   scales still require the Classic values; other combinations are explicitly
   rejected rather than silently disagreeing with navigation geometry.
-- Before activating downloaded images, require successful bounded decode in
-  addition to the compiler's image structure/dimension checks.
+- Implemented: file hashes, image headers/dimensions and bounded native decode before activation.
 - Validate app-owned theme storage and service permissions on actual Root and
   No-root TVs, including quota, interruption, update and rollback preservation.
-  DB8 remains a candidate, not a confirmed implementation.
-- External URL installation, durable staging/trials/offline assets and recovery
-  are workstream B. The current public application has no external theme installer.
+  IndexedDB is implemented and browser-tested; its TV-origin availability/quota remains a hardware gate.
+- The theme-enabled candidate implements transport/storage/trials; published Home packages may not include it yet. Confirm the Themes control is present before following the candidate guide.
 - Generate complete real-renderer review scenarios and obtain separate device
   evidence before accepting the full community-theme release. Browser screenshots
   are not remote, standby, cold-boot, OTA or rollback acceptance.

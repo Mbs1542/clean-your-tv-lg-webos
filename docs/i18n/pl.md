@@ -101,3 +101,12 @@ Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej pró
 <a id="nowości-w-130--12"></a>
 <a id="nieopublikowany-kandydat-instalacja-root-przez-homebrew"></a>
 <a id="nieopublikowany-kandydat-odzyskiwanie-dźwięku-hdmi-root"></a>
+
+
+## Motywy – kandydat rozwojowy
+
+W kandydacie z obsługą motywów otwórz **Ustawienia → Motywy**. **Classic** i **Alpine** są wbudowane i nie wymagają pobierania motywu; domyślny pozostaje Classic. **Channel** jest zewnętrznym motywem ze showcase. Wybierz motyw i **Zachowaj motyw** w ciągu **20 sekund**. **Przywróć**, Back lub upływ czasu przywraca poprzedni. Przerwana próba uruchomi Home z Classic.
+
+Wklej stały link ze showcase w **Dodaj przez URL → URL motywu**, używając klawiatury TV, wybierz **Wczytaj**, pozycję i pobraną wersję, następnie potwierdź próbę. Kolekcje wymagają jawnego wyboru. Zapisane pliki umożliwiają ponowne uruchomienie offline. Usuń nieaktywne wersje lub wyczyść pobrane motywy po potwierdzeniu. **Przywróć Classic** przywraca wygląd domyślny. Stare kopie profilu nie zawierają plików motywów; pełne przywrócenie profilu wybiera Classic.
+
+Opublikowane pakiety mogą jeszcze nie mieć tych opcji. Test przeglądarki nie potwierdza zgodności z fizycznym TV. [Pełny poradnik](../THEMES.md).

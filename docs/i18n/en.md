@@ -100,3 +100,12 @@ After a failed or interrupted operation, check status and save its diagnostic re
 <a id="new-in-130--12"></a>
 <a id="unreleased-candidate-root-setup-through-homebrew"></a>
 <a id="unreleased-candidate-hdmi-sound-recovery-root"></a>
+
+
+## Themes (development candidate)
+
+In the theme-enabled candidate, open **Settings → Themes**. **Classic** and **Alpine** are included and work without downloading a theme; Classic remains the default. **Channel** is an external showcase theme. Choose a theme, then **Keep theme** within **20 seconds**. **Revert**, Back or timeout restores the previous appearance. If Home closes during an unconfirmed preview, the next launch returns to Classic.
+
+To add Channel, copy its pinned link from showcase, open **Add by URL**, type/paste it in **Theme URL** using the TV keyboard, select **Load**, choose the entry, then choose the downloaded version and confirm. Repository roots can offer several themes; selection is explicit. Accepted files are cached for offline relaunch. Remove inactive versions or use **Clear downloaded themes** (confirmation required). **Restore Classic** is always available. Theme files are not part of legacy profile backups; authoritative profile restore resets the choice to Classic.
+
+Published packages may not contain these controls yet. Browser tests are not physical-TV acceptance. See the [complete theme guide](../THEMES.md) for supported URLs, storage limits and recovery.

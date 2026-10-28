@@ -1,6 +1,6 @@
 # Theme ecosystem design
 
-Status: planning only. Product decisions were clarified with the maintainer on
+Status: original planning record; implementation status is maintained in docs/development/THEMES.md. Latest maintainer direction: bundle Classic + Alpine; Channel stays external. Product decisions were clarified with the maintainer on
 2026-10-28. No theme engine, repository, catalog, deployment or voting service was
 created by this planning task. Hardware-dependent feasibility gates below are
 requirements, not verified capabilities.

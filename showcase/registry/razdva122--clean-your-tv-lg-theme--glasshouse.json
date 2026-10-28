@@ -27,12 +27,17 @@
     "minimal"
   ],
   "addedAt": "2026-10-28",
-  "reviewedAt": "2026-10-28",
+  "reviewedAt": "2026-10-29",
   "evidence": [
     {
       "kind": "browser",
       "summary": "Candidate browser review: actual Home renderer, looping ribbon, column policy, library wallpaper/focus, shortcut icons, Inputs and standard Settings isolation. Toolkit 21 tests passed. Synthetic apps and fixed-clock images; no physical-TV acceptance.",
       "url": "https://github.com/razdva122/clean-your-tv-lg-webos/pull/139"
+    },
+    {
+      "kind": "browser",
+      "summary": "Promoted to app-bundled Alpine under builtin:alpine in this candidate; the historical external listing is archived. Classic and Alpine require no theme download."
     }
-  ]
+  ],
+  "availability": "removed"
 }

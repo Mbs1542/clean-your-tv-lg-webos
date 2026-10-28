@@ -100,3 +100,12 @@ Nach Fehlern oder Unterbrechungen Status prüfen und den Diagnosebericht dieses 
 <a id="neu-in-130--12"></a>
 <a id="unveröffentlichter-kandidat-root-über-homebrew-einrichten"></a>
 <a id="unveröffentlichter-kandidat-hdmi-ton-wiederherstellen-root"></a>
+
+
+## Designs – Entwicklungskandidat
+
+Im Kandidaten mit Design-Unterstützung: **Einstellungen → Designs**. **Classic** und **Alpine** sind integriert und benötigen keinen Design-Download; Classic bleibt Standard. **Channel** ist ein externes Showcase-Design. Nach der Auswahl innerhalb von **20 Sekunden** **Design behalten** wählen. **Zurücksetzen**, Back oder Zeitablauf stellt das vorherige Design wieder her. Ein unterbrochener Versuch startet beim nächsten Home-Aufruf mit Classic.
+
+Den festen Link aus dem Showcase unter **Per URL hinzufügen → Design-URL** mit der TV-Tastatur eingeben, **Laden** wählen, den Eintrag und anschließend die heruntergeladene Version auswählen und bestätigen. Bei Sammlungen ist die Auswahl ausdrücklich. Gespeicherte Designs funktionieren beim Neustart offline. Inaktive Versionen können entfernt werden; Löschen aller Downloads erfordert Bestätigung. **Classic wiederherstellen** setzt das Aussehen zurück. Alte Profilsicherungen enthalten keine Design-Dateien; eine vollständige Profilwiederherstellung wählt Classic.
+
+Veröffentlichte Pakete enthalten diese Funktion möglicherweise noch nicht. Browserprüfungen sind kein TV-Kompatibilitätsnachweis. [Vollständige Anleitung](../THEMES.md).

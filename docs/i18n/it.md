@@ -102,3 +102,12 @@ Dopo un errore o un’interruzione, controlla lo stato e salva il rapporto diagn
 <a id="novità-della-130--12"></a>
 <a id="candidato-non-pubblicato-installazione-root-tramite-homebrew"></a>
 <a id="candidato-non-pubblicato-ripristino-audio-hdmi-root"></a>
+
+
+## Temi: candidato in sviluppo
+
+Nel candidato compatibile: **Impostazioni → Temi**. **Classic** e **Alpine** sono integrati e non richiedono il download del tema; Classic resta predefinito. **Channel** è esterno, dallo showcase. Scegli il tema e **Mantieni tema** entro **20 secondi**. **Ripristina**, Back o la scadenza ripristinano il precedente. Una prova interrotta avvia nuovamente Home con Classic.
+
+Incolla il link fisso dello showcase in **Aggiungi tramite URL → URL del tema** usando la tastiera TV, seleziona **Carica**, scegli la voce e poi la versione scaricata per provarla e confermarla. Le raccolte richiedono una scelta esplicita. I file salvati permettono il riavvio offline. Rimuovi le versioni inattive o elimina i download con conferma; **Ripristina Classic** ripristina l’aspetto originale. I vecchi backup del profilo non includono i file dei temi; il ripristino completo seleziona Classic.
+
+I pacchetti pubblicati potrebbero non avere ancora questi comandi. I test nel browser non provano la compatibilità TV. [Guida completa](../THEMES.md).
