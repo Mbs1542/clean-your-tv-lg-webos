@@ -214,6 +214,11 @@ profile, Home intent/emergency-off, recovery data and Homebrew preferences are
 preserved. No retained executable is replaced: checked bundled helper/dependency
 sources run from stdin in the pinned isolated Python.
 
+If the platform later restores writable SDK modes, ordinary enable still refuses
+them. Recheck state and use the same explicit repair option when needed; it
+authenticates the current private package again. This option does not enforce
+SDK modes across platform lifecycle changes or automatically chmod on boot.
+
 If interrupted after a permission change, some own paths may already be hardened.
 The command does not restore unsafe permissions or report success; retry the same
 explicit command after checking state. Changed bytes or paths still prevent a
