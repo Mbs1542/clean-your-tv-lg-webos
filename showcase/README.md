@@ -121,3 +121,14 @@ but must not deploy. Faster independent catalog delivery needs an explicitly
 approved release-policy change. Verify the deployed site and copied descriptor
 before claiming it is available. No publication is authorized by running this
 local builder.
+
+## Preview cards
+
+Catalog cards and the local author-tool picker share `src/theme-card.css`.
+A card uses an actual 16:9 Home capture and a visible theme name. The local
+picker adds an `aria-pressed` selection marker; the community catalog keeps its
+review metadata and links to the pinned theme detail. Empty catalogs still show
+no approved community entries. Built-in Classic is shown separately using the
+synthetic renderer capture in `assets/classic-preview.png`, with credits and
+capture provenance alongside it. A built-in preview is not a reviewed installable
+community descriptor or a hardware acceptance claim.

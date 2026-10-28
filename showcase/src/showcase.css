@@ -265,3 +265,5 @@ footer {
     scroll-behavior: auto;
   }
 }
+
+.builtin-card { max-width: 420px; }

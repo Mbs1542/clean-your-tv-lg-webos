@@ -77,6 +77,9 @@ def export(destination, allow_dirty=False):
                 content = content.replace('<script src="theme-runtime.js">', '<script src="theme-policy.js"></script>\n<script src="theme-runtime.js">')
             index.write_text(content)
         compile_preview(stage)
+        (stage / 'preview/theme-card.css').write_bytes(checked_read(ROOT, 'showcase/src/theme-card.css'))
+        for name in ('classic-preview.png', 'classic-preview.json', 'CLASSIC-CREDITS.txt'):
+            (stage / 'preview' / name).write_bytes(checked_read(ROOT, 'showcase/assets/' + name))
         files = []
         for file in sorted(stage.rglob('*')):
             if file.is_file():

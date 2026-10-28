@@ -6,8 +6,11 @@ try {
  const empty=path.join(root,'empty');buildShowcase(empty);
  const html=fs.readFileSync(path.join(empty,'index.html'),'utf8');assert.match(html,/No community themes listed yet/);assert.match(html,/BUILT-IN THEMES \/ UPCOMING/);assert.doesNotMatch(html,/data-theme|data-copy|vote|applause|shrug/i);
  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(empty,'catalog.json'))).themes,[]);
+ assert.ok(fs.existsSync(path.join(empty,'theme-card.css')),'gallery card styles are shipped');
+ assert.match(html,/classic-preview.png/,'built-in Classic has an actual preview');
  const data=path.join(root,'data'),out=path.join(root,'pages','repo','themes');const {record}=fixture(data);fixture(data,'day');
  assert.equal(buildShowcase(out,{showcaseRoot:data}).count,2);
+ const listing=fs.readFileSync(path.join(out,'index.html'),'utf8');assert.match(listing,/ctv-theme-card/);assert.match(listing,/theme-card.css/);
  const catalog=JSON.parse(fs.readFileSync(path.join(out,'catalog.json')));assert.equal(catalog.themes.length,2);
  for(const r of catalog.themes) { const detail=fs.readFileSync(path.join(out,r.page),'utf8');assert.match(detail,/Copy TV link/);assert.ok(detail.includes(record.sourceCommit));assert.match(detail,/Browser review/);assert.match(detail,/Candidate feature/);assert.ok(fs.existsSync(path.join(out,r.previewFiles[0]))); }
  assert.equal(escape('<script>"&\''),'&lt;script&gt;&quot;&amp;&#39;');
