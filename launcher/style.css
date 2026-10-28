@@ -548,6 +548,7 @@ body.editing .item.moving .name {
 #homeSurface[data-layout="channel-list"] .item.moving .card { transform: none; animation: none; }
 /* A single immediate row highlight: no smaller border followed by a travelling glass. */
 #homeSurface[data-layout="channel-list"] #glass { visibility: hidden; transition: none; }
+#homeSurface[data-layout="channel-list"] #hero,
 #homeSurface[data-layout="channel-list"] #stage,
 #homeSurface[data-layout="channel-list"] .item,
 #homeSurface[data-layout="channel-list"] .card { transition: none; }

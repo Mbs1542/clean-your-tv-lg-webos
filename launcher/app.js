@@ -806,7 +806,13 @@
       (layoutPreset === "channel-list" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
         var t = e.app.title;
         heroTitle.style.top = (layoutPreset === "channel-list" ? 548 : TILE_BASE - HERO_OFFSET) + "px";
-        heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
+        if (layoutPreset === 'channel-list') {
+          clearTimeout(heroTitle.swap);
+          heroTitle.textContent = t;
+          heroTitle.style.transform = 'none';
+          heroTitle.style.opacity = '1';
+          heroVisible = true;
+        } else heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
           heroTitle.textContent = t;
           heroTitle.style.transition = "none";
           heroTitle.style.transform = "translateX(24px)";

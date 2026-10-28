@@ -11,6 +11,7 @@ const {compileThemeCss}=require('../../theme-api/compile.cjs');
    await page.evaluate(({manifest,rules})=>ThemeRuntime.apply({manifest,rules,assetHandles:{}}),{manifest,rules});
    const selected=()=>page.locator('#tiles .item').evaluateAll(items=>items.findIndex(el=>el.classList.contains('focused')));
    await page.keyboard.press('ArrowDown');
+   assert.equal(await page.locator('#hero').textContent(),await page.locator('#tiles .focused').getAttribute('aria-label'),'Channel title updates immediately with focus');
    await page.locator('#tiles .item').nth(4).hover();
    assert.equal(await selected(),4,'the first real pointer movement after keyboard startup restores hover');
    await page.locator('.add-app').click();await page.locator('#appPicker .app-choice').first().click();
@@ -24,6 +25,7 @@ const {compileThemeCss}=require('../../theme-api/compile.cjs');
     await page.keyboard.press('ArrowUp');await page.waitForTimeout(500);
     assert.equal(await selected(),expected,'Up must select exactly the previous row with a stationary pointer');
    }
+   assert.equal(await page.locator('#hero').evaluate(el=>getComputedStyle(el).transitionDuration),'0s','Channel title has no fade or slide');
    assert.equal(await page.locator('#glass').evaluate(el=>getComputedStyle(el).visibility),'hidden','Channel uses one row highlight, not an animated enlarged glass');
    await page.locator('#tiles .item').nth(4).hover();await page.waitForTimeout(200);
    assert.equal(await selected(),4,'real pointer movement re-enables hover');

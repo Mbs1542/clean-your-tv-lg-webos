@@ -236,3 +236,6 @@ pointer movement or a click; layout-generated mouseover at a stationary cursor
 cannot override the selected row. This input ownership is transient, not stored.
 `tests/themes/channel-navigation.cjs` keeps animations enabled and parks the
 pointer over row eight while moving Up through the scrolling boundary.
+
+The Channel selection title also updates synchronously in place. Pending title
+swap timers are cancelled; fade/slide transitions remain disabled for this preset.
