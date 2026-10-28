@@ -36,6 +36,7 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
    await page.keyboard.press('ArrowDown');assert.equal(await selected(),previous,'menu returns to the same app');
    while(await selected()!==0)await page.keyboard.press('ArrowRight');
    await page.keyboard.down('Enter');await page.waitForTimeout(700);await page.keyboard.up('Enter');
+   assert.equal(await page.locator('#tiles .moving').evaluate(el=>getComputedStyle(el,'::after').content),'none','scenic reorder has no decorative arrow cluster');
    await page.keyboard.press('ArrowLeft');assert.equal(await selected(),ids.length-2,'reorder also wraps, excluding Add app');
    await page.keyboard.press('Escape');
    assert.deepEqual(await items.evaluateAll(nodes=>nodes.map(n=>n.dataset.appId||'add')),ids,'cancel restores order and no clones are introduced');
@@ -62,7 +63,8 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
    assert.equal(await selected(),8);
    assert.equal(await page.locator('#tiles .focused').evaluate(el=>getComputedStyle(el).pointerEvents),'auto','a fully revealed card becomes interactive');
    // Horizontal touchpad input moves the ribbon and is ignored inside Settings.
-   await page.mouse.move(500,900);let beforeWheel=await selected();
+   const wheelTarget=await page.locator('#tiles .focused .card').boundingBox();
+   await page.mouse.move(wheelTarget.x+wheelTarget.width/2,wheelTarget.y+wheelTarget.height/2);let beforeWheel=await selected();
    await page.mouse.wheel(120,0);await page.waitForTimeout(200);
    assert.equal(await selected(),(beforeWheel+1)%ids.length);
    await page.mouse.wheel(-120,0);await page.waitForTimeout(200);

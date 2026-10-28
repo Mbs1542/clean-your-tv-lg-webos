@@ -34,8 +34,8 @@ uses an explicitly exported candidate, with dirty snapshots labelled as such.
 
 - Built-in theme sources/selection and accepted-theme persistence are not wired
   into Home yet. `ThemeRuntime.apply` is exercised by the author preview and tests.
-- Runtime accepts four trusted composition presets (`dock-grid`, `icon-grid`,
-  `side-grid`, `channel-list`) with a configurable column count. Spacing/text/focus
+- Runtime accepts five trusted composition presets (`dock-grid`, `icon-grid`,
+  `side-grid`, `channel-list`, `scenic-grid`) with a configurable column count. Spacing/text/focus
   scales still require the Classic values; other combinations are explicitly
   rejected rather than silently disagreeing with navigation geometry.
 - Before activating downloaded images, require successful bounded decode in

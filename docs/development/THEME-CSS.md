@@ -44,6 +44,7 @@ policy except `.ctv-tile`, which remains an engine-reserved interaction hook.
 | `.ctv-clock`, `.ctv-period`, `.ctv-date` | Localized time, period and date text |
 | `.ctv-divider` | Decorative time/date separator |
 | `.ctv-shortcut` | Inputs, network and Settings shortcut appearance; actions and hit areas are engine-owned |
+| `.ctv-input-icon`, `.ctv-network-icon`, `.ctv-settings-icon` | Decorative header SVG artwork; use a listed raster `background-image` and `color: transparent` to replace its inherited fill. Bounds, actions and labels remain engine-owned. |
 | `.ctv-dock` | Dock band appearance; bounds and visibility follow the grid engine |
 | `.ctv-tile` | App and Add app interaction wrapper; position, width, hit area and ordering are engine-owned |
 | `.ctv-card` | Visual child of an app/Add app tile; height and focus/moving transforms remain engine-owned |

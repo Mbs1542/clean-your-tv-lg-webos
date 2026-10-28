@@ -123,6 +123,9 @@ body.scrolled header {
   transition: background 160ms ease, color 160ms ease, transform 200ms ease;
 }
 .pill svg {
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
   width: 44px;
   height: 44px;
   margin-right: 18px;
@@ -587,3 +590,6 @@ body.editing #homeSurface[data-layout="scenic-grid"] #viewport::before { display
 #homeSurface[data-layout="scenic-grid"] #hero { display: block; left: 112px; right: 400px; font-size: 34px; line-height: 1.2; font-weight: 400; letter-spacing: 0; white-space: normal; word-wrap: break-word; max-height: 132px; overflow: hidden; transition: none; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
 #homeSurface[data-layout="scenic-grid"] .add-app .name { white-space: normal; height: 64px; }
 #homeSurface[data-layout="scenic-grid"] .item.focused .card { border: 3px solid #ece7df; }
+
+/* Reorder controls remain in the trusted footer; the ribbon needs no arrow cluster. */
+#homeSurface[data-layout="scenic-grid"] .item.moving::after { content: none; }

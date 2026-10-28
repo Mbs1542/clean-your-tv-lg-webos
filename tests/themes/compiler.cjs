@@ -4,6 +4,10 @@ assert.ok(fs.existsSync('theme-api/compile.cjs'),'author CSS compiler exists');
 const c=require('../../theme-api/compile.cjs');
 const p=require('../../launcher/theme-policy.js');
 (async()=>{
+ for (const part of ['input-icon','network-icon','settings-icon']) {
+  const out=await c.compileThemeCss('.ctv-'+part+'{color:transparent;background-image:url(icon.png)}',{assets:[{id:'glyph',path:'icon.png',mediaType:'image/png',data:Buffer.from([1])}]});
+  assert.match(out.css,new RegExp('ctv-'+part));
+ }
  let expansion=':root{--v0:red;';
  for(let i=1;i<=10;i++)expansion+='--v'+i+':'+('var(--v'+(i-1)+')').repeat(10)+';';
  expansion+='}.ctv-card{color:var(--v10)}';
