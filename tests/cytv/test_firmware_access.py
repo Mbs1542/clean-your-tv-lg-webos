@@ -118,6 +118,64 @@ class Tests(unittest.TestCase):
         self.function(self.root,self.bus,self.apps,self.install,automatic=True,lock_product=False,refresh=lambda:self.events.append('scan'),uid=os.getuid())
         self.assertFalse(self.api.exists());self.assertEqual(json.loads(self.manifest.read_bytes()),self.normal)
         self.grant();self.assertTrue(self.api.exists())
+
+    def test_revoke_does_not_trust_or_require_installed_appinfo(self):
+        info=self.apps/'applications'/APP/'appinfo.json';original=info.read_bytes()
+        protected=[self.snapshot,self.proof,*self.paths.values()]
+        intent=self.root/'persistent-intent.json';intent.write_bytes(b'{"enabled":false}');intent.chmod(0o600);protected.append(intent)
+        before={p:p.read_bytes() for p in protected};metadata=self.manifest.stat()
+        for damage in ('writable-directory','missing-info','invalid-info'):
+            with self.subTest(damage=damage):
+                info.parent.chmod(0o755);info.write_bytes(original);info.chmod(0o600)
+                self.grant()
+                if damage=='writable-directory':info.parent.chmod(0o777)
+                elif damage=='missing-info':info.unlink()
+                else:info.write_bytes(b'not trusted metadata')
+                self.grant(False)
+                self.assertFalse(self.api.exists());self.assertEqual(self.manifest.read_bytes(),encode(self.normal))
+                self.assertEqual(json.loads(self.receipt.read_bytes())['phase'],'disabled')
+                after=self.manifest.stat();self.assertEqual((after.st_uid,after.st_gid,after.st_mode),(metadata.st_uid,metadata.st_gid,metadata.st_mode))
+                for path,raw in before.items():self.assertEqual(path.read_bytes(),raw)
+                disabled=self.receipt.read_bytes()
+                with self.assertRaises((ValueError,OSError)):self.grant()
+                with self.assertRaises((ValueError,OSError)):
+                    self.function(self.root,self.bus,self.apps,self.install,automatic=True,lock_product=False,refresh=lambda:None,uid=os.getuid())
+                self.assertFalse(self.api.exists());self.assertEqual(self.receipt.read_bytes(),disabled)
+                info.parent.chmod(0o755);info.write_bytes(original);info.chmod(0o600)
+
+    def test_revoke_regenerated_manifest_uses_protected_version_without_sdk_metadata(self):
+        self.grant();normal=dict(self.normal,version='0.4.1')
+        granted=dict(normal,apiPermissionFiles=[str(self.paths['api']),str(self.api)])
+        self.manifest.write_bytes(encode(granted));(self.apps/'applications'/APP/'appinfo.json').unlink()
+        self.grant(False)
+        self.assertEqual(json.loads(self.manifest.read_bytes()),normal);self.assertFalse(self.api.exists())
+
+    def test_interrupted_revoke_resumes_without_sdk_metadata(self):
+        self.grant();(self.apps/'applications'/APP/'appinfo.json').unlink()
+        def fail():raise OSError('scan failed')
+        with self.assertRaises(OSError):
+            self.function(self.root,self.bus,self.apps,self.install,enable=False,refresh=fail,uid=os.getuid())
+        self.assertEqual(json.loads(self.receipt.read_bytes())['phase'],'disabling')
+        self.assertEqual(json.loads(self.manifest.read_bytes()),self.normal);self.assertTrue(self.api.exists())
+        self.grant(False)
+        self.assertEqual(json.loads(self.receipt.read_bytes())['phase'],'disabled');self.assertFalse(self.api.exists())
+
+    def test_revoke_keeps_manifest_receipt_and_api_guards_without_sdk_metadata(self):
+        self.grant();(self.apps/'applications'/APP/'appinfo.json').unlink()
+        original={p:p.read_bytes() for p in (self.manifest,self.receipt,self.api)}
+        for damage in ('version','shape','unsafe-manifest','missing-receipt','api-drift','enabling'):
+            with self.subTest(damage=damage):
+                if damage in ('version','shape'):
+                    value=json.loads(original[self.manifest]);value['version' if damage=='version' else 'foreign']='invalid';self.manifest.write_bytes(encode(value))
+                elif damage=='unsafe-manifest':self.manifest.chmod(0o666)
+                elif damage=='missing-receipt':self.receipt.unlink()
+                elif damage=='api-drift':self.api.write_bytes(b'foreign')
+                else:self.receipt.write_bytes(encode(dict(json.loads(original[self.receipt]),phase='enabling')))
+                before={p:p.read_bytes() if p.exists() else None for p in original}
+                with self.assertRaises((ValueError,OSError)):self.grant(False)
+                self.assertEqual({p:p.read_bytes() if p.exists() else None for p in original},before)
+                for path,raw in original.items():path.write_bytes(raw)
+                self.manifest.chmod(0o640);self.receipt.chmod(0o600)
     def test_runtime_registration_failure_never_blocks_home_or_update_finish(self):
         raw=(ROOT/'root-edition/runtime/cli.py').read_text();tree=ast.parse(raw)
         selected=[n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name in ('execute','reconcile_firmware_access')]

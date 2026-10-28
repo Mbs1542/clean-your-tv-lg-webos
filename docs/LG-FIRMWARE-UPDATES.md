@@ -133,6 +133,13 @@ client ACL, revoking Root Home's control group; SDK package removal removes the
 referencing manifest. Remaining inert permission data stays with archived Root
 recovery evidence. No external permission manifest is left behind.
 
+Revocation authenticates the private receipt, recovery proof and exact protected
+LS2 manifest; it does not require installed SDK `appinfo.json`. It can therefore
+remove an owned grant when that metadata is missing, malformed or in a writable
+application directory. Enabling access retains the strict SDK identity and
+permission checks. This does not repair an unsafe SDK tree or make enabling
+access supported there; use Homebrew itself while that installation needs review.
+
 The candidate runtime reconciles the reference on boot and after a complete
 update, under the existing product/control locks. Failures never prevent Home,
 emergency or rollback recovery. It uses the existing `runtime/cli.py` path, so
