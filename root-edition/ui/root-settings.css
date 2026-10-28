@@ -88,19 +88,20 @@
 @media(max-width:1000px){.settings-main .settings-links button{font-size:22px;padding:14px 16px}.settings-main .settings-status{font-size:22px}.renewal-summary{font-size:20px}}
 @media(max-width:700px){.settings-main .settings-links{flex-direction:column}.settings-heading{flex-wrap:wrap}.settings-footer{flex-wrap:wrap}}
 @media(max-height:800px) and (min-width:701px){
- .settings-main{padding:24px 32px}
+ .settings-main{padding:16px 32px}
  .renewal-card.settings-main h2,.root-settings .settings-main h1{font-size:34px}
- .settings-main .settings-home{margin-top:18px}
+ .settings-main .settings-home{margin-top:12px}
  .renewal-card.settings-main h3,.root-settings .settings-main h2{font-size:26px}
  .settings-main .settings-status{font-size:21px;margin:8px 0 12px;min-height:30px}
  .settings-main .home-routing-actions button{min-height:72px;font-size:22px;padding-top:12px;padding-bottom:12px}
  .settings-main .home-visit-hint{font-size:19px;margin-top:10px}
- .settings-main .settings-section{margin-top:18px;padding-top:14px}
+ .settings-main .settings-section{margin-top:10px;padding-top:10px}
  .settings-main .settings-links button,.settings-main .settings-developer button,.settings-main .settings-footer button{font-size:22px;padding:12px 18px}
  .settings-main .settings-developer{margin-top:16px}
  .settings-main .renewal-summary{font-size:19px;margin-top:6px}
- .settings-main .settings-footer{margin-top:18px;padding-top:14px}
+ .settings-main .settings-footer{margin-top:10px;padding-top:10px}
  .settings-main .settings-footer p{font-size:19px}
+ .settings-main .renewal-actions>button{margin-bottom:0}
 }
 
 /* Companion apps lead with returning to Home; recovery is a secondary action. */
