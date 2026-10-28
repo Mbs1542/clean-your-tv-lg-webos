@@ -10,5 +10,6 @@ const turn=()=>new Promise(r=>setImmediate(r));
  f=fixture(null);await f.m.start();await f.m.begin({id:'builtin:alpine',title:'Alpine'});f.state.failSave=true;await assert.rejects(()=>f.m.confirm(),/quota/);assert.equal(f.state.visual,'builtin:classic');assert.equal(f.values.has(f.m.trialKey),false);
  f=fixture(null);await f.m.start();const cancelled=f.m.begin({id:'builtin:alpine',title:'Alpine'});await f.m.cancel();await assert.rejects(()=>cancelled,/Cancelled/);assert.equal(f.state.visual,'builtin:classic','cancel before preparation never applies');
  f=fixture();f.ctx.CYTV_THEME_AUTHOR_PREVIEW=true;await f.m.start();assert.equal(f.state.visual,'builtin:classic','trusted author mode ignores persisted TV selection');
+ f=fixture();let marked=false;f.state.prepare=pack=>{marked=f.values.has(f.m.trialKey);return {manifest:{id:pack.id,title:'External'},assetHandles:{}};};await f.m.start();assert.equal(marked,true,'boot recovery marker must precede native cached-image decode');
  console.log('Theme lifecycle: stale rollback success/failure and confirmation save failure passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
