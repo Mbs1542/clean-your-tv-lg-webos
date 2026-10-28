@@ -73,6 +73,8 @@ Après interruption, lancez d’abord `status` et conservez les journaux. `resto
 
 Uniquement dans la version candidate non publiée, dans les deux éditions : ouvrez **Paramètres de Home → Colonnes** et choisissez de 1 à 8 colonnes, ou **Selon le thème** pour utiliser sa valeur (Classic : 5). Un nombre explicite est prioritaire sur le thème. La sélection de thèmes et leur installation par URL ne sont pas encore disponibles.
 
+Dans les aperçus de thèmes du candidat non publié avec barre latérale facultative, Haut/Bas sélectionne une entrée du menu, Droite passe aux applications et Gauche depuis leur première colonne revient au menu.
+
 ## Mises à jour et suppression
 
 Gardez les paquets fonctionnels et des sauvegardes privées des paramètres. Pour remplacer les paquets No-root depuis l’ordinateur, arrêtez d’abord Helper et mettez à jour sans désinstaller : la désinstallation peut effacer les réglages. Supprimer l’application de bureau ne supprime pas les applications TV. Ne remplacez pas un environnement Root actif par une IPK isolée ; utilisez le parcours explicite de récupération ou de réinstallation de cytv.

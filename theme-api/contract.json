@@ -13,6 +13,7 @@
     "date",
     "shortcut",
     "dock",
+    "focus",
     "card",
     "icon",
     "label",
@@ -75,6 +76,12 @@
     "focusScale": [
       1.05,
       1.15
+    ],
+    "presets": [
+      "dock-grid",
+      "icon-grid",
+      "side-grid",
+      "channel-list"
     ]
   },
   "defaults": {

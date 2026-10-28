@@ -73,6 +73,8 @@ Após uma interrupção, execute primeiro `status` e preserve os registros. `res
 
 Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. A seleção de temas e a instalação por URL ainda não estão disponíveis.
 
+Nas prévias de temas do candidato ainda não publicado com barra lateral opcional, Cima/Baixo seleciona um item do menu, Direita vai para os aplicativos e Esquerda na primeira coluna de aplicativos volta ao menu.
+
 ## Atualização e remoção
 
 Após conectar, cytv mostra versão instalada → incluída e diferencia primeira instalação, reinstalação e retorno a uma versão anterior. Confira o resumo antes de confirmar; `--yes` mantém as verificações de compatibilidade. Guarde pacotes funcionais e cópias privadas das configurações. Ao atualizar pelo computador, pare o No-root Helper antes de substituir os pacotes; não desinstale primeiro. Não instale uma IPK isolada sobre Root ativo: use o procedimento adequado do cytv. Remover o aplicativo do computador não remove os aplicativos da TV.

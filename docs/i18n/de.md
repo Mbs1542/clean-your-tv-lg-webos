@@ -73,6 +73,8 @@ Nach einer Unterbrechung zuerst `status` ausführen und Protokolle behalten. `re
 
 Nur im unveröffentlichten Kandidaten, in beiden Editionen: Öffne **Home-Einstellungen → Spalten** und wähle 1–8 Spalten oder **Nach Theme**, um dessen Wert zu verwenden (Classic: 5). Eine feste Zahl hat Vorrang vor dem Theme. Theme-Auswahl und Installation per URL sind noch nicht verfügbar.
 
+In Theme-Vorschauen des unveröffentlichten Kandidaten mit optionaler Seitenleiste wählst du mit Oben/Unten einen Menüpunkt, wechselst mit Rechts zu den Apps und kehrst mit Links aus der ersten App-Spalte zum Menü zurück.
+
 ## Aktualisierung und Entfernung
 
 Funktionierende Pakete und private Einstellungssicherungen behalten. Bei No-root-Paketersatz vom Computer zuerst Helper stoppen und ohne vorherige Deinstallation aktualisieren, da diese Einstellungen löschen kann. Das Entfernen der Desktop-App entfernt keine TV-Apps. Keine einzelne IPK über eine aktive Root-Laufzeit installieren; den ausdrücklichen Wiederherstellungs- oder Neuinstallationsablauf von cytv verwenden.

@@ -14,8 +14,6 @@
   window.HomeLayoutState = layoutState;
   var GRID_LEFT = 112,
     GRID_WIDTH = 1696,
-    MAX_CARD_WIDTH = 360,
-    MAX_CARD_HEIGHT = 202,
     FOCUS_SCALE = 1.1,
     FOCUS_PADDING = 12,
     CARD_GAP = 24,
@@ -25,14 +23,20 @@
     columnCount = Math.max(1, Math.min(8, CONFIG.columns || 5)),
     columnWidth, CARD_WIDTH, CARD_HEIGHT, DOCK_HEIGHT,
     TILE_BASE = DOCK_TOP + DOCK_PADDING,
-    HERO_OFFSET = 176;
-  function updateGeometry(columns) {
+    HERO_OFFSET = 176,
+    layoutPreset = "dock-grid", layoutGeometry;
+  function updateGeometry(columns, preset) {
+    layoutPreset = preset || 'dock-grid';
+    layoutGeometry = HomeLayout.geometry(layoutPreset, columns);
     columnCount = columns;
-    columnWidth = GRID_WIDTH / columnCount;
-    // Leave CARD_GAP between an enlarged focus frame and its idle neighbour.
-    CARD_WIDTH = Math.min(MAX_CARD_WIDTH, Math.floor((columnWidth - FOCUS_PADDING - CARD_GAP) / ((FOCUS_SCALE + 1) / 2)));
-    CARD_HEIGHT = Math.round(CARD_WIDTH * MAX_CARD_HEIGHT / MAX_CARD_WIDTH);
+    GRID_LEFT = layoutGeometry.left; GRID_WIDTH = layoutGeometry.width;
+    columnWidth = layoutGeometry.columnWidth;
+    CARD_WIDTH = layoutGeometry.cardWidth; CARD_HEIGHT = layoutGeometry.cardHeight;
+    DOCK_TOP = layoutGeometry.dockTop; DOCK_PADDING = layoutGeometry.padding;
+    TILE_BASE = layoutGeometry.top; ROW_GAP = layoutGeometry.rowGap;
     DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2;
+    document.getElementById('homeSurface').setAttribute('data-layout', layoutPreset);
+    document.getElementById('homeSurface').classList.toggle('ctv-channel-compact', layoutPreset === 'channel-list' && CARD_WIDTH < 260);
   }
   updateGeometry(columnCount);
   var toastTimer,
@@ -657,7 +661,7 @@
   }
   function tileTop(index) {
     var row = rowFor(index);
-    return TILE_BASE + (CARD_HEIGHT + ROW_GAP) * row + (row > 0 ? 36 : 0);
+    return TILE_BASE + (CARD_HEIGHT + ROW_GAP) * row + (row > 0 ? layoutGeometry.rowExtra : 0);
   }
   function layoutTiles() {
     tiles.forEach(function (e, t) {
@@ -666,18 +670,20 @@
       e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
-      e.el.classList.toggle("dock", 0 === rowFor(t));
+      e.el.classList.toggle("dock", layoutGeometry.dock && 0 === rowFor(t));
+      e.el.setAttribute("data-channel", t < 9 ? "0" + (t + 1) : String(t + 1));
     });
     var dockBand = getElement("dockBand"),
       dockCount = Math.min(columnCount, tiles.length);
-    dockBand.style.display = dockCount ? "block" : "none";
+    dockBand.style.display = dockCount && layoutGeometry.dock ? "block" : "none";
     dockBand.style.left = tileLeft(0) - DOCK_PADDING + "px";
     dockBand.style.top = DOCK_TOP + "px";
     dockBand.style.width = (dockCount - 1) * columnWidth + CARD_WIDTH + DOCK_PADDING * 2 + "px";
     dockBand.style.height = DOCK_HEIGHT + "px";
   }
   if (layoutState) layoutState.onchange = function (state) {
-    updateGeometry(state.columns);
+    updateGeometry(state.columns, state.preset);
+    scrollOffset = 0;
     layoutTiles();
     focusTile(focusedTile);
   };
@@ -730,6 +736,8 @@
     if (!element) return;
     element.classList.toggle(state, enabled);
     element.classList.toggle('is-' + state, enabled);
+    var label = element.querySelector('.ctv-label');
+    if (label) label.classList.toggle('is-' + state, enabled);
     var card = element.querySelector('.ctv-card');
     if (card) card.classList.toggle('is-' + state, enabled);
   }
@@ -742,11 +750,17 @@
       setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
-      0 === row && !moveState ? scrollOffset = 0 : (top - scrollOffset + CARD_HEIGHT + 70 > (moveState ? 850 : 1060) && (scrollOffset = top + CARD_HEIGHT + 70 - (moveState ? 850 : 1060)), top - scrollOffset - 24 < 80 && (scrollOffset = top - 24 - 80));
+      var ceiling = layoutGeometry.scrollTop;
+      var floor = moveState ? 850 : layoutGeometry.scrollBottom;
+      if (row === 0 && !moveState) scrollOffset = 0;
+      else {
+        if (top - scrollOffset + CARD_HEIGHT + 70 > floor) scrollOffset = top + CARD_HEIGHT + 70 - floor;
+        if (top - scrollOffset - 24 < ceiling) scrollOffset = Math.max(0, top - 24 - ceiling);
+      }
       stage.style.transform = "translateY(" + -scrollOffset + "px)";
       var header = document.querySelector("header"),
         headerBottom = header.offsetTop + header.offsetHeight;
-      document.body.classList.toggle("scrolled", DOCK_TOP - scrollOffset < headerBottom + 24);
+      document.body.classList.toggle("scrolled", layoutPreset === "dock-grid" && DOCK_TOP - scrollOffset < headerBottom + 24);
       var glassWidth = FOCUS_SCALE * CARD_WIDTH + FOCUS_PADDING * 2,
         glassHeight = FOCUS_SCALE * CARD_HEIGHT + FOCUS_PADDING * 2,
         glassLeft = tileLeft(index) + CARD_WIDTH / 2 - glassWidth / 2,
@@ -755,9 +769,9 @@
       focusGlass.style.height = glassHeight + "px";
       focusGlass.style.transform = "translate(" + glassLeft + "px," + glassTop + "px)";
       focusGlassVisible || (focusGlass.style.transition = "none", focusGlass.offsetWidth, focusGlass.style.transition = "", focusGlass.style.opacity = "1", focusGlassVisible = true);
-      0 === row ? function (e) {
+      (layoutPreset === "channel-list" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
         var t = e.app.title;
-        heroTitle.style.top = (TILE_BASE - HERO_OFFSET) + "px";
+        heroTitle.style.top = (layoutPreset === "channel-list" ? 250 : TILE_BASE - HERO_OFFSET) + "px";
         heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
           heroTitle.textContent = t;
           heroTitle.style.transition = "none";
@@ -778,7 +792,17 @@
       if (color !== ambientColor) {
         ambientColor = color;
         var nextLayer = ambientLayers[1 - ambientIndex];
-        nextLayer.style.background = "radial-gradient(circle 1190px at 32% 42%, rgba(" + color + ",0.36) 0%, rgba(" + color + ",0.15) 50%, rgba(" + color + ",0) 100%)";
+        var ambientSheet = getElement('ctv-ambient-style');
+        if (!ambientSheet) {
+          ambientSheet = document.createElement('style'); ambientSheet.id = 'ctv-ambient-style';
+          document.head.appendChild(ambientSheet);
+        }
+        // A scoped author rule can override this trusted default; inline CSS could not.
+        var previousAmbient = ambientSheet.textContent.split('\n').filter(function (rule) {
+          return rule.indexOf('#' + nextLayer.id + '{') !== 0;
+        });
+        previousAmbient.push('#' + nextLayer.id + '{background-image:radial-gradient(circle 1190px at 32% 42%, rgba(' + color + ',0.36) 0%, rgba(' + color + ',0.15) 50%, rgba(' + color + ',0) 100%);}');
+        ambientSheet.textContent = previousAmbient.join('\n');
         nextLayer.style.opacity = "1";
         ambientLayers[ambientIndex].style.opacity = "0";
         ambientIndex = 1 - ambientIndex;
@@ -960,7 +984,11 @@
           closeInputs();
         }
       } else if ("top" === focusZone) {
-        if (37 === key) {
+        if (layoutPreset === 'side-grid' && (38 === key || 40 === key)) {
+          focusTopButton(focusedTopButton + (40 === key ? 1 : -1));
+        } else if (layoutPreset === 'side-grid' && 39 === key) {
+          focusTile(focusedTile);
+        } else if (37 === key) {
           focusTopButton(focusedTopButton - 1);
         } else if (39 === key) {
           focusTopButton(focusedTopButton + 1);
@@ -975,7 +1003,8 @@
         var column = focusedTile % columnCount,
           lastIndex = tiles.length - 1;
         if (37 === key) {
-          column > 0 && focusTile(focusedTile - 1);
+          if (column > 0) focusTile(focusedTile - 1);
+          else if (layoutPreset === 'side-grid') focusTopButton(focusedTopButton);
         } else if (39 === key) {
           column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
         } else if (38 === key) {

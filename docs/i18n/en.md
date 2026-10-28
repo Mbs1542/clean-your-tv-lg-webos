@@ -73,6 +73,8 @@ After interruption, run `status` before retrying; retain journals and recovery f
 
 Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Theme selection and installation by URL are not available yet.
 
+In candidate theme previews with the optional sidebar layout, Up/Down selects a menu item, Right enters the apps, and Left from the first app column returns to the menu.
+
 ## Updates and removal
 
 Keep known-working packages and private settings backups. For computer-assisted No-root package replacement, stop Helper first and update without uninstalling, which may erase settings. Removing the desktop app does not remove TV apps. Do not replace a live Root runtime with a standalone IPK; use cytv's explicit recovery/reinstallation flow.

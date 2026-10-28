@@ -4,7 +4,7 @@
 })(this, function () {
   'use strict';
 
-  var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'dock', 'card', 'icon', 'label', 'library', 'library-row', 'inputs', 'input-row'];
+  var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'dock', 'focus', 'card', 'icon', 'label', 'library', 'library-row', 'inputs', 'input-row'];
   var states = ['focused', 'selected', 'moving'];
   var properties = {
     'color': 'color',
@@ -112,7 +112,7 @@
     version(m.requires.minimumHomeVersion);
     list(m.requires.capabilities, 0, 'api-unsupported', 'capabilities');
     object(m.layout, ['preset', 'columns', 'spacingScale', 'textScale', 'focusScale'], 'layout-invalid', 'layout');
-    if (m.layout.preset !== 'dock-grid') fail('layout-invalid', 'preset');
+    if (['dock-grid', 'icon-grid', 'side-grid', 'channel-list'].indexOf(m.layout.preset) < 0) fail('layout-invalid', 'preset');
     number(m.layout.columns, 1, 8, 'layout-invalid', 'columns');
     if (m.layout.columns % 1) fail('layout-invalid', 'columns');
     number(m.layout.spacingScale, .8, 1.2, 'layout-invalid', 'spacingScale');

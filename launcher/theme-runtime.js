@@ -34,8 +34,9 @@
     var policy = root.ThemePolicy;
     if (!policy) fail('api-unsupported', 'ThemePolicy');
     var manifest = policy.validateManifest(input.manifest), rules = policy.validateRules(input.rules);
-    /* Existing navigation currently implements only the Classic scale presets. */
+    /* Trusted layouts currently implement only the Classic scale values. */
     if (manifest.layout.spacingScale !== 1 || manifest.layout.textScale !== 1 || manifest.layout.focusScale !== 1.1) fail('layout-invalid', 'unsupported scale preset');
+    if (manifest.layout.preset !== 'dock-grid' && (!root.HomeLayoutState || !root.HomeLayoutState.setThemeLayout)) fail('layout-invalid', 'unsupported renderer preset');
     var handles = input.assetHandles || {}, overrides = input.overrides || {}, own = Object.prototype.hasOwnProperty;
     Object.keys(overrides).forEach(function (key) { if (['accent', 'dim', 'wallpaperAssetId'].indexOf(key) < 0) fail('manifest-invalid', 'overrides'); });
     var accent = own.call(overrides, 'accent') ? overrides.accent : manifest.defaults.accent;
@@ -54,9 +55,12 @@
       var wallpaperCss = policy.compileRules(wallpaperBundle, handles);
       appendCss('\n' + wallpaperCss.replace('background-image:', 'background-image:linear-gradient(rgba(0,0,0,' + dim + '),rgba(0,0,0,' + dim + ')),'));
     }
-    appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + ';}');
+    /* A trusted minimum remains visible even against higher-specificity author states.
+       Author CSS cannot emit !important; this narrow engine-owned border may. */
+    appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:2px!important;}');
     /* All untrusted input is checked before either geometry or styles are changed. */
-    if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(manifest.layout.columns);
+    if (root.HomeLayoutState && root.HomeLayoutState.setThemeLayout) root.HomeLayoutState.setThemeLayout(manifest.layout);
+    else if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(manifest.layout.columns);
     var current = sheet(), previous = accepted;
     if (!current) { current = root.document.createElement('style'); current.id = 'ctv-theme-style'; current.disabled = true; root.document.head.appendChild(current); }
     current.disabled = true; current.textContent = css;
@@ -66,14 +70,19 @@
     var ownedHandles = Object.create(null);
     Object.keys(handles).forEach(function (key) { ownedHandles[key] = handles[key]; });
     accepted = {themeId: manifest.id, themeVersion: manifest.themeVersion, handles: ownedHandles};
+    var surface = root.document.getElementById('homeSurface');
+    if (surface) surface.classList.add('ctv-theme-active');
     release(previous && previous.handles, ownedHandles);
     return {themeId: manifest.id, themeVersion: manifest.themeVersion};
   }
   function reset() {
     var current = sheet(), previous = accepted;
-    if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(5);
+    if (root.HomeLayoutState && root.HomeLayoutState.setThemeLayout) root.HomeLayoutState.setThemeLayout({preset: 'dock-grid', columns: 5, spacingScale: 1, textScale: 1, focusScale: 1.1});
+    else if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(5);
     if (current && current.parentNode) current.parentNode.removeChild(current);
     accepted = null; heldSheet = null; wasEnabled = false; surfaceState(false);
+    var surface = root.document.getElementById('homeSurface');
+    if (surface) surface.classList.remove('ctv-theme-active');
     release(previous && previous.handles, null);
     return {themeId: 'builtin:classic', themeVersion: null};
   }

@@ -204,7 +204,8 @@ type ThemeManifest = {
   source: { repository: string; commit: string };
   requires: { minimumHomeVersion: string; capabilities: string[] };
   layout: {
-    preset: 'dock-grid'; columns: number; spacingScale: number;
+    preset: 'dock-grid' | 'icon-grid' | 'side-grid' | 'channel-list';
+    columns: number; spacingScale: number;
     textScale: number; focusScale: number;
   };
   defaults: { wallpaperAssetId: string | null; dim: number; accent: string };
@@ -226,7 +227,12 @@ documents. They are not misrepresented as image assets.
 
 Initial numeric ranges: columns 1–8, spacingScale 0.8–1.2, textScale 0.9–1.25,
 focusScale 1.05–1.15, dim 0–0.85. These bounds still require combined geometry and
-contrast checks. The engine's exact Classic defaults remain the baseline.
+contrast checks. The engine's exact Classic defaults remain the baseline. Following the maintainer's
+visual review, the candidate supports four trusted compositions: the original
+low shelf, a square icon grid, a fixed clock/menu sidebar with a grid, and a
+numbered channel-style list. Authors choose a preset; external CSS cannot
+reposition hit areas. Every preset retains the user's 1–8 column override.
+Spacing/text/focus scales remain fixed at Classic values in this candidate.
 
 Distribution descriptor fields:
 

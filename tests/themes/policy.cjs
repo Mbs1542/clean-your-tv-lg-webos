@@ -37,4 +37,19 @@ assert.throws(()=>p.compileRules(repeatedImages,{preview:imageHandle}),/css-budg
 const smallImageCss=p.compileRules({schemaVersion:1,rules:[imageRule]},{preview:'data:image/png;base64,AA=='});
 assert.match(smallImageCss,/data:image\/png;base64,AA==/,'small trusted data images remain supported');
 assert(p.compileRules(repeatedImages,{preview:'blob:verified-image'}).length<=p.limits.emittedCssBytes);
+// Layout choices remain a finite trusted set; themes still cannot set geometry CSS.
+for (const preset of ['dock-grid', 'icon-grid', 'side-grid', 'channel-list']) {
+ const m=structuredClone(fixture);m.layout.preset=preset;
+ assert.equal(p.validateManifest(m).layout.preset,preset);
+}
+for (const preset of ['custom', '../side-grid', '', null]) {
+ const m=structuredClone(fixture);m.layout.preset=preset;
+ assert.throws(()=>p.validateManifest(m),/layout-invalid/);
+}
+const focusRule=structuredClone(valid);focusRule.rules[0].selector[0].part='focus';
+assert.match(p.compileRules(focusRule,{}),/\.ctv-focus/);
+for (const property of ['position','left','top','width','height','transform','opacity','visibility']) {
+ const x=structuredClone(focusRule);x.rules[0].declarations[0].property=property;
+ assert.throws(()=>p.validateRules(x),/css-property/);
+}
 console.log('Theme policy checks passed');

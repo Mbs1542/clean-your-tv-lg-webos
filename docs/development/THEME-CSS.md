@@ -32,12 +32,12 @@ set every CSS property: the canonical author whitelist in
 `launcher/theme-policy.js` decides accepted part/property/state combinations.
 Internal IDs, tag names, application metadata, incidental classes and DOM nesting
 are not an author API. All visual parts in the table are accepted by the initial
-policy except `.ctv-tile` and `.ctv-focus`, which are engine-reserved hooks.
+policy except `.ctv-tile`, which remains an engine-reserved interaction hook.
 
 | Part class | Surface and ownership |
 | --- | --- |
 | `.ctv-home` | Theme root and bounded stacking context; root dimensions and containment are engine-owned |
-| `.ctv-ambient` | Two app-color glow layers; crossfade, inline gradients and opacity are engine-owned |
+| `.ctv-ambient` | Two app-color glow layers; crossfade and opacity are engine-owned, while an author background image may replace the default gradient |
 | `.ctv-hero` | Focused dock app title; content, placement and enter/swap visibility are engine-owned |
 | `.ctv-header` | Header appearance; placement and shortcut layout are engine-owned |
 | `.ctv-greeting` | Localized greeting text |
@@ -49,14 +49,14 @@ policy except `.ctv-tile` and `.ctv-focus`, which are engine-reserved hooks.
 | `.ctv-card` | Visual child of an app/Add app tile; height and focus/moving transforms remain engine-owned |
 | `.ctv-icon` | Packaged/app image or Add app SVG; source, error fallback and icon bounds are engine-owned |
 | `.ctv-label` | App, Add app and library-row label text |
-| `.ctv-focus` | Engine focus frame; bounds, motion and visibility are reserved, with a visible trusted fallback |
+| `.ctv-focus` | Focus frame appearance; bounds, motion and visibility remain engine-owned |
 | `.ctv-library` | Add app library overlay inside Home; modal layout, scrolling and controls remain trusted |
 | `.ctv-library-row` | Available app row in the library; native button focus is mirrored |
 | `.ctv-inputs` | Inputs dropdown; anchoring, width and visibility are engine-owned |
 | `.ctv-input-row` | Selectable input/source row; selection action and navigation remain trusted |
 
-`.is-focused` mirrors remote/pointer focus on tiles, their visual cards, header
-shortcuts, library rows and input rows. `.is-moving` mirrors reorder state on a
+`.is-focused` mirrors remote/pointer focus on tiles, their visual cards and labels,
+header shortcuts, library rows and input rows. `.is-moving` mirrors reorder state on a
 tile and its card. `.is-selected` is a policy vocabulary token reserved for
 selection states; do not assume that every part receives it or that focus means
 selection. Existing `.focused` and `.moving` classes remain internal compatibility
@@ -96,6 +96,15 @@ device performance. Ordinary source
 shorthands such as `background` are not accepted typed properties. The compiler
 must reject unsupported source declarations or normalize only documented forms.
 
+Theme focus-frame appearance can use `.ctv-focus`, but a focused app card also
+receives an engine-owned solid 2 px border in the effective accent color. This
+narrow trusted fallback uses `!important` so higher-specificity author states
+cannot remove it. Authors still cannot emit `!important`. The runtime marks a
+successfully applied surface with `ctv-theme-active`; reset removes that marker.
+It is an engine lifecycle marker, not an author selector. While a theme is active,
+the Classic glass specular decoration is removed so flat focus designs do not
+inherit its highlight.
+
 ## Geometry, precedence and inline appearance
 
 The renderer calculates card dimensions, row/column positions, dock size,
@@ -105,6 +114,27 @@ width/height, margins/padding, transforms, pointer behavior or stacking. Alterin
 visual geometry independently would make arrow navigation and pointer hit areas
 disagree with the rendered cards. New layout presets require engine changes and
 navigation checks; a stylesheet cannot introduce one.
+
+The candidate accepts four trusted `layout.preset` values: `dock-grid`,
+`icon-grid`, `side-grid`, and `channel-list`. These select renderer-owned
+compositions rather than injecting layout CSS. `dock-grid` remains the default
+for Classic and existing themes. Unknown values fail validation. A renderer
+without the full-layout application method rejects the new presets before
+changing styles or column defaults; it never silently draws them as Classic.
+Spacing, text and focus scales still require the Classic values `1`, `1`, and
+`1.1`; wider schema bounds do not imply implemented scale combinations.
+
+| Candidate preset | Composition |
+| --- | --- |
+| `dock-grid` | Classic wide app cards, dock band near the bottom and selected app title above it |
+| `icon-grid` | Compact square icon grid with labels and a smaller header |
+| `side-grid` | Fixed clock/menu sidebar on the left and labelled app grid on the right |
+| `channel-list` | Numbered app rows on the left and selected app title on the right; narrow multi-column overrides use compact labelled cells |
+
+In `side-grid`, the sidebar menu uses Up/Down to select a shortcut, Right enters
+the apps, and Left from the first app column returns to the menu. Other grids
+retain the horizontal top-menu navigation. These controls are candidate-only
+preview behavior until theme activation is wired into a release.
 
 The shared Columns control is available in the unreleased candidate through
 **Home settings → Columns** in both editions. Values are integer 1–8 or **By
@@ -118,9 +148,10 @@ the existing renderer geometry.
 App icon sampling currently sets each app card's inline `background` and caches
 an accent color for the ambient glow. Glyph icons use the validated inventory
 color fallback. An ordinary author `background-color` declaration does not
-override that inline value; `!important` is forbidden. Treat per-app icon color
-and ambient crossfade as trusted renderer behavior until a deliberate engine
-API replaces it. Broken tile icons are hidden and replaced with the app initial;
+override that inline value; `!important` is forbidden. The ambient gradient is
+emitted into a trusted default stylesheet instead of inline CSS, so a scoped
+`.ctv-ambient` background image can override it, including a transparent gradient
+for a flat background. Crossfade timing and opacity remain engine-owned. Broken tile icons are hidden and replaced with the app initial;
 broken library images are hidden without hiding their actionable row.
 
 Outfit weights 300/400/500/700 and packaged Noto Sans fallbacks provide offline

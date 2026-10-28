@@ -1,0 +1,46 @@
+// Real renderer: preset geometry must match remote navigation, bounds and theme reset.
+const {assert,chromium,stage,open}=require('./browser.cjs');
+(async()=>{
+ const site=stage(),browser=await chromium.launch({headless:true,channel:process.env.BROWSER_CHANNEL||'chrome'});
+ try {
+  for(const edition of ['launcher','root-launcher']) {
+   const {page,errors}=await open(browser,site,edition);
+   try {
+    for(const preset of ['dock-grid','icon-grid','side-grid','channel-list']) {
+     for(const columns of [1,3,6,8]) {
+      await page.evaluate(({preset,columns})=>{HomeLayoutState.setColumns(null);HomeLayoutState.setThemeLayout({preset,columns,spacingScale:1,textScale:1,focusScale:1.1});},{preset,columns});
+      for(let i=0;i<15;i++)await page.keyboard.press('ArrowUp');
+      await page.keyboard.press(preset==='side-grid'?'ArrowRight':'ArrowDown');
+      const check=async()=>{
+       await page.waitForFunction(()=>{const r=document.getElementById('glass').getBoundingClientRect();return r.top>=-1 && r.bottom<=1081;});
+       const g=await page.evaluate(()=>{const card=document.querySelector('#tiles .focused .card').getBoundingClientRect(),glass=document.getElementById('glass').getBoundingClientRect();return{card:{x:card.x,y:card.y,w:card.width,h:card.height},glass:{x:glass.x,y:glass.y,w:glass.width,h:glass.height},selected:document.querySelector('#tiles .focused').dataset.appId};});
+       assert(g.glass.x>=0&&g.glass.x+g.glass.w<=1920,'frame fits horizontally '+preset+columns);
+       if(preset==='channel-list') assert(await page.locator('#tiles .focused .name').evaluate(el=>el.clientWidth>30),'channel label keeps a positive readable area');
+       assert(Math.abs(g.card.x+g.card.w/2-g.glass.x-g.glass.w/2)<1,'card and frame centre x');
+       assert(Math.abs(g.card.y+g.card.h/2-g.glass.y-g.glass.h/2)<1,'card and frame centre y');
+       if(preset==='side-grid')assert(g.glass.x>=500,'grid remains outside fixed sidebar');
+       return g;
+      };
+      await check();
+      for(let i=0;i<4;i++){await page.keyboard.press('ArrowDown');await check();}
+      await page.evaluate(()=>HomeLayoutState.setColumns(2));
+      assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),2);
+      if(preset==='side-grid') {
+       // Select first column then leave it toward the visible vertical menu.
+       await page.keyboard.press('ArrowLeft');await page.keyboard.press('ArrowLeft');
+       await page.keyboard.press('ArrowDown');
+       assert.equal(await page.locator('#topButtons .focused').count(),1);
+       await page.keyboard.press('ArrowRight');
+       assert.equal(await page.locator('#tiles .focused').count(),1);
+      }
+     }
+    }
+    await page.evaluate(()=>{HomeLayoutState.setColumns(null);ThemeRuntime.reset();});
+    assert.equal(await page.locator('#homeSurface').getAttribute('data-layout'),'dock-grid');
+    assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),5);
+    assert.deepEqual(errors,[]);
+    console.log('PASS all layout presets + column override + navigation + reset: '+edition);
+   }finally{await page.close();}
+  }
+ }finally{await browser.close();}
+})().catch(e=>{console.error(e);process.exitCode=1;});
