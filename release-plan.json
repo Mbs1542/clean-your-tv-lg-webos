@@ -7,7 +7,7 @@
       "issues": [
         115
       ],
-      "summary": "Restore the original v1.3.0 Root OTA path/LS2 contract, guarded retained rollback and signed computer recovery; physical signed upgrade/rollback acceptance pending"
+      "summary": "Restore original v1.3.0 Root managed paths/LS2 contract, signed provenance and guarded retained rollback; scoped C3 signed upgrade/ordinary rollback accepted with fixed System 1.1.1"
     },
     {
       "pr": 119,
@@ -15,7 +15,7 @@
         108,
         109
       ],
-      "summary": "Suppress same-component-version update offers and align settings badges with the edition-specific System Updater; physical-TV confirmation pending"
+      "summary": "Suppress same-component offers and align settings indicator/Update all; host matrices and scoped C3 older-public-feed check accepted, remaining reporter device confirmation separate"
     },
     {
       "pr": 120,
@@ -73,7 +73,8 @@
     {
       "pr": 129,
       "issues": [
-        110
+        110,
+        114
       ],
       "summary": "Keep owned firmware grants revocable without SDK app metadata (partial #110; strict enabling and original access/lifecycle work remain unresolved)"
     },
@@ -90,14 +91,16 @@
     {
       "pr": 132,
       "issues": [
-        110
+        110,
+        114
       ],
       "summary": "Add explicit authenticated Root SDK package permission repair before firmware-access registration; retain strict default/automatic checks and require private package byte authority; no automatic SDK chmod or published delivery"
     },
     {
       "pr": 135,
       "issues": [
-        110
+        110,
+        114
       ],
       "summary": "Distinguish authorized maintainer QA records from other-user installation report consent; preserve privacy and record scoped C3 update-control/geometry/firmware follow-up without finalizing release acceptance"
     },
@@ -107,8 +110,16 @@
         136
       ],
       "summary": "Add explicit verified Root System rollback readiness recovery with genuine launcher health, a bounded audited attempt and explicit post-expiry audit-preserving retry; scoped C3 maintenance accepted, ordinary update/rollback and release gates remain separate"
+    },
+    {
+      "pr": 138,
+      "issues": [
+        115,
+        136
+      ],
+      "summary": "Bound matching launcher health ownership wait to ten seconds within original deadline; require fixed System 1.1.1 for new signed Root offers and provide explicit archived supervisor-only replacement; C3 automatic upgrade and ordinary rollback accepted"
     }
   ],
   "excluded": [],
-  "acceptance": ""
+  "acceptance": "C3 OLED55C3RLA, firmware 43.21.71 / webOS 11.2.0; macOS ARM64 host, remote unknown. Owner-approved single fixed-System1.1.1 cycle on source f896393c: supervisor-only replacement preserved Root0.4.0/Updater0.3.0/full profile; production-signed 686d7eee Root0.5.1/Updater0.3.2/infrastructure0.5.1 installed and ordinary retained rollback completed automatically with genuine health, matching homeResumePhase and terminal ownership. Full live profile exact before/after each stage; fixed System pins match, final Root disabled/LG Home. Accepted component hashes and earlier physical controls/audio/emergency/cold-boot/firmware/geometry scopes in docs/RELEASE-1.4.1-ACCEPTANCE.md. Forced timeout/fault on fixed supervisor, seamless standby, remaining indicator/network/device matrices, fresh/removal/No-root and physical Android phones unverified; no universal compatibility claim. Exact frozen platform/package checks and public feed/signature verification are separate delivery gates tracked in PR114."
 }

@@ -1,6 +1,6 @@
 # Clean Your TV — guide d’utilisation
 
-> Candidat 1.4.1 non publié : compatibilité OTA Root, disponibilité des mises à jour, accès à l’API du micrologiciel et corrections des paquets/de la console Windows. Validation TV et mise à jour/retour arrière signés restent à faire ; aucun téléchargement publié. [1.4.1](../RELEASE-1.4.1.md).
+> Candidat 1.4.1 non publié : compatibilité OTA Root, disponibilité des mises à jour, accès à l’API du micrologiciel et corrections des paquets/de la console Windows. La mise à jour signée et le retour arrière normal sont consignés dans le périmètre limité au C3 ; les compilations finales et la publication restent à faire ; aucun téléchargement publié. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentation](../README.md) · [Signaler un problème](../FEEDBACK.md)
 

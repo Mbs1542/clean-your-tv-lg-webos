@@ -1,6 +1,6 @@
 # Clean Your TV — user guide
 
-> Unpublished candidate 1.4.1: Root OTA compatibility, update availability, firmware API access and Windows payload/console corrections. TV acceptance and signed upgrade/rollback remain pending; do not treat this as a published download. [1.4.1](../RELEASE-1.4.1.md).
+> Unpublished candidate 1.4.1: Root OTA compatibility, update availability, firmware API access and Windows payload/console corrections. Scoped C3 signed upgrade and ordinary rollback are recorded; final builds and publication remain pending; do not treat this as a published download. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentation](../README.md) · [Report a problem](../FEEDBACK.md)
 

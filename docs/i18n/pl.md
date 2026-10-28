@@ -1,6 +1,6 @@
 # Clean Your TV — instrukcja użytkownika
 
-> Nieopublikowany kandydat 1.4.1: zgodność Root OTA, dostępność aktualizacji, dostęp do API firmware oraz poprawki pakietów/konsoli Windows. Odbiór na TV i podpisana aktualizacja/cofnięcie pozostają niezweryfikowane; to nie jest opublikowany plik do pobrania. [1.4.1](../RELEASE-1.4.1.md).
+> Nieopublikowany kandydat 1.4.1: zgodność Root OTA, dostępność aktualizacji, dostęp do API firmware oraz poprawki pakietów/konsoli Windows. Podpisaną aktualizację i zwykłe cofnięcie zapisano w ograniczonym zakresie C3; końcowe kompilacje i publikacja pozostają do wykonania; to nie jest opublikowany plik do pobrania. [1.4.1](../RELEASE-1.4.1.md).
 
 [Dokumentacja](../README.md) · [Zgłoś problem](../FEEDBACK.md)
 

@@ -1,8 +1,11 @@
 # v1.4.1 — Root OTA compatibility and update controls
 
-This is an unpublished candidate for the next production release. Public stable
-remains v1.4.0. The version is selected for test packaging; hardware acceptance,
-final frozen-head platform builds and signed publication verification are pending.
+The maintainer accepted the scoped C3 fixed-supervisor upgrade and ordinary
+rollback cycle on 2026-10-28. See [acceptance and limits](RELEASE-1.4.1-ACCEPTANCE.md).
+Publication requires exact frozen-head builds, accepted component-byte comparison
+and verified signed packages/feeds; [PR #114](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114)
+tracks that delivery. Compatibility claims remain limited to recorded devices
+and tested paths.
 
 | Component | Published v1.4.0 | Candidate |
 | --- | --- | --- |
@@ -22,8 +25,9 @@ final frozen-head platform builds and signed publication verification are pendin
   LS2 contract while retaining audio recovery inside existing managed modules.
   New provisions validate signed infrastructure before offering installation.
   Guarded retained rollback and computer recovery require completed signed System
-  provenance. Final frozen-source signed upgrade and rollback acceptance remains
-  outstanding; scoped earlier-source acceptance is linked below. Fresh
+  provenance. A scoped C3 signed upgrade and ordinary rollback passed with fixed
+  System Updater 1.1.1; final artifacts must preserve the accepted component bytes.
+  Earlier-source evidence retains its own scope. Fresh
   v1.4.0 Root installations have a different pinned contract and need reviewed
   computer migration; do not blindly retry or overwrite retained recovery code.
 - #119 / #108 / #109: suppress upgrade offers when all component versions match,
@@ -35,8 +39,8 @@ final frozen-head platform builds and signed publication verification are pendin
   CYTV-owned grant for its existing control group, with localized diagnostics and
   explicit installer repair/revocation. Scoped C3 follow-up confirmed switch operation, restart persistence and
   effective four-name blocking off/on across restarts. No firmware
-  check/download/install was requested; other network paths/early checks and
-  final changed-product acceptance remain unverified.
+  check/download/install was requested; other network paths and early checks
+  remain unverified.
   See [firmware controls and limitations](LG-FIRMWARE-UPDATES.md).
 - #121 / partial #107: preserve LF in Windows-built POSIX scripts and handle
   redirected legacy-console encodings without crashing. Final native Windows
@@ -54,8 +58,8 @@ final frozen-head platform builds and signed publication verification are pendin
   SDK app metadata is unavailable or writable. Revocation authenticates the
   protected manifest and private receipt; enabling retains strict SDK checks.
   This does not repair an unsafe SDK tree or resolve the remaining access and
-  lifecycle work. C3 follow-up confirmed actual revocation denial after service refresh;
-  final changed-product acceptance remains pending.
+  lifecycle work. C3 follow-up confirmed actual revocation denial after service
+  refresh; remaining lifecycle/network/device limits stay explicit.
 - #130: refresh app-library, renewal and companion browser fixtures for the
   current profile/System updater contracts. Build both recovery apps through
   production builders and cover present/absent supervisors, focus and cancellation
@@ -73,8 +77,9 @@ final frozen-head platform builds and signed publication verification are pendin
   entries, links, owners, drift and pending operations stop repair. Default enable,
   automatic maintenance and revoke retain strict behavior. SDK modes are not
   enforced across platform lifecycle changes; repeat explicit maintenance when
-  required. Host tests and exact PR CI pass; final candidate artifact/lifecycle
-  acceptance remains separate. Earlier feedback packages omit this installer and
+  required. Host tests, scoped C3 streamed repair and the combined signed
+  upgrade/ordinary rollback are recorded. Final artifacts still require exact
+  component-byte comparison. Earlier feedback packages omit this installer and
   runtime helper change.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
@@ -95,7 +100,23 @@ an explicit new attempt requires expiry and preserves the entire prior audit
 under its UUID/hash. Packages and pinned supervisor code/keys stay unchanged.
 [Scoped C3 maintenance acceptance](RELEASE-1.4.1-ACCEPTANCE.md#scoped-maintenance-acceptance-explicit-rollback-readiness-recovery)
 records the exact streamed helper bytes, initial failure and successful recovery;
-final committed-source checks and release inventory integration remain separate.
+this maintenance result remains separate from the fixed-supervisor cycle below.
+
+System Updater 1.1.1 (PR #138; related #136 and #115) waits for installation
+ownership for at most ten seconds only when acquiring a matching launcher's health
+context. It remains bound to the original transaction, phase, version and deadline;
+foreign pending work is refused, and handlers or package operations are not replayed.
+New signed Root feeds require `minimumSupervisorVersion: "1.1.1"`, so the original
+1.1.0 policy rejects them before offering installation. Historical signed proofs
+remain readable by the fixed supervisor; the No-root feed is unchanged.
+
+Before Root TV OTA, `cytv replace-system-updater --edition root` explicitly replaces
+only the old supervisor using the verified fixed bundle. It archives the old state
+and preserves Root/Root Updater apps, the full profile and Home choice; stale target
+bundles, legacy Root Updater backups and unknown/unfinished operations are refused.
+[The fixed C3 cycle](RELEASE-1.4.1-ACCEPTANCE.md#system-111-automatic-upgrade-and-ordinary-rollback)
+completed automatic signed-candidate upgrade and ordinary rollback without
+maintenance recovery, with genuine health receipts and matching profile/pins.
 
 No exclusions. The inventory is recorded in `release-plan.json` and candidate
 [PR #114](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
@@ -105,44 +126,46 @@ No exclusions. The inventory is recorded in `release-plan.json` and candidate
 Rebuild Home, Root, both edition Updaters, private runtime/infrastructure,
 desktop/console installers on all four platforms and signed non-debuggable Android.
 Keep Android application/signing identity and private storage unchanged. New
-supervisor 1.1.1 ships through computer provisioning; app-only updates do not
-replace retained supervisors. Protocol 1 and the original v1.3.0 managed contract
-remain required. Preserve Helper 0.6.19 SHA-256
+supervisor 1.1.1 ships through computer provisioning or the explicit System-only
+replacement; app-only updates do not replace retained supervisors. Protocol 1 and
+the original v1.3.0 managed contract remain required. Preserve Helper 0.6.19 SHA-256
 `52510c9115a518a05849f6618516b41886aea54b7f74ea4763ffeeaf63c03e7b`.
 
-Verify signed whole-edition upgrade, preserved profiles, automatic and retained
-rollback, controls, audio, explicit/emergency off and rollback baseline. Record
-standby, normal restart and true AC-off boot separately. Do not overwrite journals,
-retained drivers or immutable published assets. Homebrew Installer remains disabled
-for promotion (`homebrew/release.json` is absent).
+The scoped C3 record covers signed whole-edition upgrade, real automatic launcher
+health and ordinary retained rollback; prior controls, audio, emergency off and
+lifecycle evidence retains its exact tested sources. Forced timeout rollback and
+fault recovery on the fixed supervisor remain unverified. Final packages must
+match the accepted TV component bytes. Keep standby, normal restart and true AC-off
+boot distinct. Do not overwrite journals, retained drivers or immutable published
+assets. Homebrew Installer remains disabled for promotion (`homebrew/release.json` is absent).
 
 ## Acceptance and documentation
 
-A later ordinary C3 rollback restored packages/profile but lost one-shot readiness
-and reached `recovery-required` ([#136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136)).
-Explicit streamed maintenance recovery subsequently completed that transaction:
-fresh real Root health, terminal System rollback, preserved full profile and
-original hashes, and disabled Root/LG Home routing were independently verified.
-The first maintenance prototype failed; its complete audit was preserved before
-the separately authorized new attempt. This scoped recovery does not fix the
-ordinary readiness race or replace changed-product OTA/rollback acceptance.
-Do not freeze or publish while the remaining gates are unresolved.
+The earlier ordinary C3 rollback failure and explicit maintenance recovery remain
+recorded under [#136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136).
+The subsequent root-cause fix at `f896393c` was accepted on the C3 after explicit
+System-only replacement: the signed candidate reached `complete` and ordinary
+rollback reached `rolled-back`, each with matching `homeResumePhase`, genuine
+health receipts and the exact full profile. Fixed System 1.1.1 pins matched,
+ownership was terminal, and Root stayed disabled with LG Home routing. This
+accepts the owner's requested single fixed cycle; it does not turn earlier failed
+attempts into successes or establish universal compatibility.
 
 The current checklists and historical implementation evidence are in PR #114.
-Historical C3 acceptance of v1.4.0 does not establish acceptance of this candidate.
-[Scoped C3 signed update/retained rollback acceptance](RELEASE-1.4.1-ACCEPTANCE.md)
-is recorded for sources `3d5e0cb0` and `eeb4b8b0`, followed by the published
-maintainer report for update controls, geometry and streamed #132 repair. Preserve
-those exact report paragraphs and their scope. Changed-product signed OTA/ordinary
-retained rollback and automatic/fault recovery remain mandatory and pending after
-#132 (recorded at `686d7eee`); `71d43f26` changes only documentation/inventory.
-Complete mandatory acceptance, settle final documentation/inventory/acceptance,
-then freeze code/build once and verify exact final artifacts. Normal public-feed
-publication verification follows delivery; stable feeds must remain unchanged
-for acceptance. Remaining untested state/network/device matrices and seamless
-standby stay explicit coverage limits. `release-plan.json.acceptance` remains
-empty until the remaining release gates are resolved; do not mark ready or merge
-to main from scoped evidence alone. Open PR #134 does not govern this release.
+[The acceptance record](RELEASE-1.4.1-ACCEPTANCE.md#system-111-automatic-upgrade-and-ordinary-rollback)
+binds the fixed supervisor cycle to the production-signed `686d7eee` Root, Root
+Updater and infrastructure bytes, which match the current candidate payload.
+Earlier `3d5e0cb0`/`eeb4b8b0` reports and the streamed firmware repair retain their
+original scope. Forced timeout/fault and frozen-renderer/observer recovery on the
+fixed supervisor, other device/network/state matrices and seamless standby remain
+unverified. They are not claimed as passed by the ordinary upgrade/rollback.
+
+Finalize the release inventory, documentation and scoped acceptance, then obtain
+the complete trusted push builds and required checks at the final frozen head.
+Compare final TV packages with accepted bytes and complete Release policy before
+main integration. Public signing, package/feed verification, shipping notices and
+issue-status reconciliation remain delivery gates. Stable feeds stay unchanged
+during candidate acceptance. Open PR #134 does not govern this release.
 
 Review README, installation, updates/removal, troubleshooting, prerequisites,
 component/recovery guides and all twelve translations against this inventory.

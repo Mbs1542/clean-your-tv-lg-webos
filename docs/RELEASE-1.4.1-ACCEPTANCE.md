@@ -154,3 +154,8 @@ single fixed-supervisor upgrade/ordinary-rollback cycle. Forced timeout/fault
 recovery on the fixed supervisor, other device/network matrices and seamless
 standby remain unverified. Final exact-head platform builds, package identity
 comparison and public signing/feed verification remain pending. Stable is 1.4.0.
+
+The accepted fixed System CLI SHA-256 is
+`0710c3f7c8a264dcd8ee9cf40e3fe6d67fede738c42ee4fb80415f969e3072ca`.
+Final installer verification must preserve this byte identity and the bundle's
+`health_lock_wait_seconds: 10` marker, in addition to the accepted TV components.

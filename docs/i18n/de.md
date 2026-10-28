@@ -1,6 +1,6 @@
 # Clean Your TV — Benutzeranleitung
 
-> Unveröffentlichter Kandidat 1.4.1: Root-OTA-Kompatibilität, Updateanzeige, Firmware-API-Zugriff und Windows-Paket-/Konsolenkorrekturen. TV-Abnahme sowie signiertes Update und Rollback stehen aus; noch kein veröffentlichter Download. [1.4.1](../RELEASE-1.4.1.md).
+> Unveröffentlichter Kandidat 1.4.1: Root-OTA-Kompatibilität, Updateanzeige, Firmware-API-Zugriff und Windows-Paket-/Konsolenkorrekturen. Signiertes Update und gewöhnlicher Rollback sind im begrenzten C3-Prüfumfang dokumentiert; finale Builds und Veröffentlichung stehen noch aus; noch kein veröffentlichter Download. [1.4.1](../RELEASE-1.4.1.md).
 
 [Dokumentation](../README.md) · [Problem melden](../FEEDBACK.md)
 
