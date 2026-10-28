@@ -64,6 +64,18 @@
         115
       ],
       "summary": "Add private signed Root candidate acceptance admission"
+    },
+    {
+      "pr": 128,
+      "issues": [],
+      "summary": "Fix compact settings spacing across TV locales"
+    },
+    {
+      "pr": 129,
+      "issues": [
+        110
+      ],
+      "summary": "Keep owned firmware grants revocable without SDK app metadata (partial #110; strict enabling and original access/lifecycle work remain unresolved)"
     }
   ],
   "excluded": [],

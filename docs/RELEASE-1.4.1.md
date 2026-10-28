@@ -22,7 +22,8 @@ final frozen-head platform builds and signed publication verification are pendin
   LS2 contract while retaining audio recovery inside existing managed modules.
   New provisions validate signed infrastructure before offering installation.
   Guarded retained rollback and computer recovery require completed signed System
-  provenance. Physical signed upgrade and rollback remain unaccepted. Fresh
+  provenance. Final frozen-source signed upgrade and rollback acceptance remains
+  outstanding; scoped earlier-source acceptance is linked below. Fresh
   v1.4.0 Root installations have a different pinned contract and need reviewed
   computer migration; do not blindly retry or overwrite retained recovery code.
 - #119 / #108 / #109: suppress upgrade offers when all component versions match,
@@ -44,6 +45,14 @@ final frozen-head platform builds and signed publication verification are pendin
 - #127: add separately authorized maintainer-only signed candidate admission with
   read-only preflight and the unchanged supervisor worker. No installed component
   or public-feed behavior changes.
+- #128: fit main settings at 720p by reducing whitespace only in both editions.
+  Keep text/control sizes, 1080p styling and fallback scrolling. Host browser
+  checks cover all twelve languages, remote focus outlines and Return Home.
+- #129 / partial #110: keep an owned firmware API grant revocable when installed
+  SDK app metadata is unavailable or writable. Revocation authenticates the
+  protected manifest and private receipt; enabling retains strict SDK checks.
+  This does not repair an unsafe SDK tree or resolve the remaining access and
+  lifecycle work. Physical revocation and final package acceptance remain pending.
 - #122–#125: synchronize release metadata, reorganize user/developer/history
   documentation, add installation-result consent guidance, and improve README
   installation order, simulated launcher screenshot and twelve language links.
