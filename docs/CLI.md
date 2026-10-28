@@ -299,6 +299,25 @@ a compatible TV loader/libc and additional staging space; it does not replace
 Node.js, root services or input compatibility. [Runtime details](OPTIONAL-PYTHON.md).
 Status, doctor, restore and uninstall never download a new interpreter.
 
+## Candidate Root System Updater replacement
+
+The unpublished 1.4.1 Root candidate requires System Updater 1.1.1 for on-TV
+updates. With the existing trusted Root connection:
+
+```sh
+cytv replace-system-updater --edition root
+```
+
+This explicitly replaces only the supervisor, after checking that installation,
+rollback and Home resumption are finished. Root packages, launcher storage and
+preferences are preserved; the old supervisor state is archived. Normal trusted
+connection options apply; confirmation defaults to No (`--yes` accepts this
+summary). A matching interrupted replacement resumes with the same bundle;
+foreign pending operations and uncertain package outcomes remain blocked. Any
+existing legacy Root Updater transaction/backup also blocks replacement, including
+a completed one; keep that evidence for review, never delete it to force progress.
+See [replacement and recovery](RECOVERY.md#replace-the-root-system-updater-candidate).
+
 ## Interrupted operations
 
 A private local receipt is synchronized before installation/removal, and
