@@ -9,14 +9,18 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
-import time
+import runpy
 
 ROOT = Path(__file__).resolve().parents[1]
 REPO = os.environ.get('GITHUB_REPOSITORY', 'Razdva122/clean-your-tv-lg-webos')
 BRANCH = 'release/next'
 PLAN = 'release-plan.json'
+INPUTS = runpy.run_path(str(Path(__file__).with_name('release-inputs.py')))
 BUILD_JOBS = {
     'android',
+    'validation / tests (ubuntu-latest)',
+    'validation / tests (macos-latest)',
+    'validation / optional-python',
     'build (windows-latest, cytv-windows-x64, dist/cytv.exe)',
     'build (ubuntu-22.04, cytv-linux-x64, dist/cytv)',
     'build (macos-15, cytv-macos-arm64, dist/cytv)',
@@ -41,6 +45,7 @@ def validate_shape(plan):
         raise ValueError('Invalid release inventory schema')
     if plan.get('version') is not None:
         parse_version(plan['version'])
+    INPUTS['build_pin'](plan)
     seen = set()
     for key, text in [('changes', 'summary'), ('excluded', 'reason')]:
         for entry in plan[key]:
@@ -65,6 +70,9 @@ def validate_plan(plan, *, branch, same_repo, final, version: str,
             raise ValueError('Finalize the release version and bump release-versions.json')
         if not isinstance(plan.get('acceptance'), str) or not plan['acceptance'].strip() or not notes.strip():
             raise ValueError('Release notes and hardware acceptance evidence are required')
+        pin = INPUTS['build_pin'](plan)
+        if pin and plan.get('acceptance_build') != str(pin['run_id']) + ':' + str(pin['attempt']):
+            raise ValueError('Hardware acceptance must name the selected build run:attempt')
     expected = {p['number'] for p in merged_prs if p.get('merged_at') and p['merge_commit_sha'] in commits}
     if listed != expected:
         raise ValueError(f'Release inventory mismatch: missing={sorted(expected-listed)}, unexpected={sorted(listed-expected)}')
@@ -77,7 +85,7 @@ def api(path, *, method='GET', data=None, pages=False):
     if data is not None:
         args += ['--input', '-']
     result = json.loads(subprocess.check_output(args, input=json.dumps(data).encode() if data is not None else None))
-    return [item for page in result for item in page] if pages else result
+    return [item for page in result for item in (page['jobs'] if isinstance(page, dict) else page)] if pages else result
 
 
 def git(*args, root=ROOT):
@@ -180,24 +188,67 @@ def validate_build_jobs(jobs):
         raise ValueError('Missing successful candidate jobs: ' + ', '.join(sorted(BUILD_JOBS - successful)))
 
 
-def wait_for_build(head):
-    # Only trusted pushes to the maintained release branch may use the Android signer.
-    deadline = time.monotonic() + 2100
-    while time.monotonic() < deadline:
-        runs = api('actions/workflows/cytv.yml/runs?branch=release%2Fnext&head_sha=' + head + '&per_page=100')['workflow_runs']
-        runs = [r for r in runs if r['event'] == 'push' and r['head_sha'] == head and
-                r['head_repository']['full_name'] == REPO]
-        if runs:
-            run = max(runs, key=lambda r: r['id'])
-            if run['status'] == 'completed':
-                if run['conclusion'] != 'success':
-                    raise ValueError('Release candidate builds failed: ' + run['html_url'])
-                jobs = api('actions/runs/' + str(run['id']) + '/jobs?filter=latest&per_page=100')['jobs']
-                validate_build_jobs(jobs)
-                return
-        print('Waiting for complete release/next builds at ' + head, flush=True)
-        time.sleep(30)
-    raise ValueError('No successful complete candidate build within 35 minutes; rerun the policy check')
+class PendingBuild(ValueError):
+    """No terminal build yet; the completion event will refresh the gate."""
+
+
+def resolve_candidate_build(head, root=ROOT, provider=None):
+    provider = provider or api
+    pin = INPUTS['pin_at'](head, root)
+    source = pin['source'] if pin else head
+    INPUTS['verify_inputs'](source, head, root)
+    if pin:
+        run = provider('actions/runs/' + str(pin['run_id']))
+    else:
+        runs = provider('actions/workflows/cytv.yml/runs?branch=release%2Fnext&head_sha=' + source + '&per_page=100')['workflow_runs']
+        runs = [r for r in runs if r['event'] in ('push', 'workflow_dispatch') and r['head_sha'] == source
+                and r['head_repository']['full_name'] == REPO]
+        if not runs:
+            raise PendingBuild('Candidate build has not started; completion will refresh this gate')
+        run = max(runs, key=lambda r: r['id'])
+    if (run['head_sha'] != source or run['head_branch'] != BRANCH
+            or run['event'] not in ('push', 'workflow_dispatch')
+            or run['path'] != '.github/workflows/cytv.yml'
+            or run['head_repository']['full_name'] != REPO):
+        raise ValueError('Candidate requires a trusted build at the selected source')
+    if pin and run.get('run_attempt') != pin['attempt']:
+        raise ValueError('Selected build attempt changed; select and accept the new artifacts')
+    if run['status'] != 'completed':
+        raise PendingBuild('Candidate build is running; completion will refresh this gate')
+    if run['conclusion'] != 'success':
+        raise ValueError('Candidate build failed; rerun failed jobs in run ' + str(run['id']))
+    jobs = provider('actions/runs/' + str(run['id']) + '/jobs?filter=latest&per_page=100', pages=True)
+    validate_build_jobs(jobs)
+    approval = git('ls-tree', head, 'homebrew/release.json', root=root)
+    if approval:
+        approval = json.loads(read_at(head, 'homebrew/release.json', root))
+        versions = json.loads(read_at(head, 'release-versions.json', root))
+        if approval.get('release') == 'v' + versions['release']:
+            if not any(j['name'] == 'homebrew' and j['conclusion'] == 'success' for j in jobs):
+                raise ValueError('Selected Homebrew promotion requires a successful candidate job')
+    return run
+
+
+def pin_build(run_id, root=ROOT):
+    run = api('actions/runs/' + str(number(run_id)))
+    head = git('rev-parse', 'HEAD', root=root)
+    path = root / PLAN
+    plan = json.loads(path.read_text())
+    pin = {'run_id': run_id, 'attempt': run['run_attempt'], 'source': run['head_sha']}
+    INPUTS['build_pin']({'build': pin})
+    INPUTS['verify_inputs'](pin['source'], head, root)
+    if (run['head_branch'] != BRANCH or run['event'] not in ('push', 'workflow_dispatch')
+            or run['path'] != '.github/workflows/cytv.yml'
+            or run['head_repository']['full_name'] != REPO
+            or run['status'] != 'completed' or run['conclusion'] != 'success'):
+        raise ValueError('Pin only a completed successful trusted candidate build')
+    validate_build_jobs(api('actions/runs/' + str(run_id) + '/jobs?filter=latest&per_page=100', pages=True))
+    if plan.get('build') != pin:
+        plan['acceptance'] = ''
+        plan.pop('acceptance_build', None)
+    plan['build'] = pin
+    path.write_text(json.dumps(plan, indent=2) + '\n')
+    print('Pinned verified candidate build ' + str(run_id) + '; commit the plan with acceptance evidence')
 
 
 def check_pr(event):
@@ -208,8 +259,45 @@ def check_pr(event):
     if pr['base']['ref'] != 'main':
         raise ValueError('PRs must target release/next; only release PRs target main')
     validate_candidate(pr, check_links=True)
-    wait_for_build(pr['head']['sha'])
-    print('Final release candidate and complete trusted platform builds verified')
+    resolve_candidate_build(pr['head']['sha'])
+    print('Final release candidate and complete trusted build/tests verified')
+
+
+def refresh_policy(event):
+    """Trusted main code only: fetch candidate objects as data, then post its status."""
+    if 'workflow_run' in event:
+        run = event['workflow_run']
+        if (run['head_branch'] != BRANCH or run['head_repository']['full_name'] != REPO
+                or run['event'] not in ('push', 'workflow_dispatch')
+                or run['path'] != '.github/workflows/cytv.yml'):
+            return
+        owner = REPO.split('/')[0]
+        targets = api(f'pulls?state=open&base=main&head={owner}:release%2Fnext&per_page=100')
+    else:
+        targets = [event['pull_request']]
+    for target in targets:
+        pr = api('pulls/' + str(number(target['number'])))
+        head = pr['head']['sha']
+        if pr['state'] != 'open':
+            continue
+        context = 'Integration policy' if pr['base']['ref'] == BRANCH else 'Release policy'
+        url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com') + '/' + REPO + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
+        api('statuses/' + head, method='POST', data={'context': context, 'state': 'pending',
+            'description': 'Validating current candidate and build provenance', 'target_url': url})
+        try:
+            git('fetch', '--no-tags', 'origin', 'refs/pull/' + str(pr['number']) + '/head')
+            check_pr({'pull_request': pr})
+            state, description = 'success', 'Release routing and required validation verified'
+        except PendingBuild as error:
+            state, description = 'pending', str(error)
+        except (ValueError, subprocess.CalledProcessError) as error:
+            state, description = 'failure', str(error)
+        print(context + ': ' + state + ': ' + description)
+        if api('pulls/' + str(pr['number']))['head']['sha'] != head:
+            continue  # Never overwrite the status of a newer candidate revision.
+        url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com') + '/' + REPO + '/actions/runs/' + os.environ['GITHUB_RUN_ID']
+        api('statuses/' + head, method='POST', data={'context': context, 'state': state,
+            'description': description[:140], 'target_url': url})
 
 
 def collect(root=ROOT):
@@ -234,6 +322,84 @@ def collect(root=ROOT):
     print('Collected release scope without selecting or changing the version')
 
 
+RECORD_START = '<!-- release-record:start -->'
+RECORD_END = '<!-- release-record:end -->'
+
+
+def replace_record(body, record):
+    if RECORD_START in record or RECORD_END in record:
+        raise ValueError('Generated record contains reserved markers')
+    block = RECORD_START + '\n' + record.rstrip() + '\n' + RECORD_END
+    if RECORD_START not in body and RECORD_END not in body:
+        return body.rstrip() + ('\n\n' if body.strip() else '') + block + '\n'
+    if body.count(RECORD_START) != 1 or body.count(RECORD_END) != 1:
+        raise ValueError('Ambiguous generated release record markers')
+    before, rest = body.split(RECORD_START, 1)
+    _, after = rest.split(RECORD_END, 1)
+    return before + block + after
+
+
+def candidate_record(root=ROOT):
+    plan = json.loads((root / PLAN).read_text())
+    validate_shape(plan)
+    current = json.loads((root / 'release-versions.json').read_text())
+    previous = json.loads(git('show', 'origin/main:release-versions.json', root=root))
+    pin = INPUTS['build_pin'](plan)
+    if pin:
+        INPUTS['verify_inputs'](pin['source'], git('rev-parse', 'HEAD', root=root), root)
+    return render_record(plan, current, previous)
+
+
+def render_record(plan, current, previous):
+    lines = ['## Generated release record', '', '### Scope', '']
+    lines += [f"- #{c['pr']}: {c['summary']}" + ('; issues ' + ', '.join('#' + str(n) for n in c['issues']) if c['issues'] else '') for c in plan['changes']] or ['No collected implementation PRs.']
+    lines += [f"- Excluded #{c['pr']}: {c['reason']}" for c in plan['excluded']]
+    lines += ['', '### Versions', '', '| Component | Main baseline | Committed |', '| --- | --- | --- |']
+    for key in ('release', 'home', 'helper', 'cytv', 'android', 'root', 'updater'):
+        old, new = str(previous[key]), str(current[key])
+        if key == 'android':
+            old += ' / ' + str(previous['android_version_code'])
+            new += ' / ' + str(current['android_version_code'])
+        lines.append(f'| {key} | {old} | {new} |')
+    pin = INPUTS['build_pin'](plan)
+    lines += ['', '### Build and acceptance', '']
+    if pin:
+        lines.append(f"Selected build: [{pin['run_id']}](https://github.com/{REPO}/actions/runs/{pin['run_id']}); attempt {pin['attempt']}; source `{pin['source']}`. This link alone does not certify successful validation or physical acceptance.")
+    else:
+        lines.append('No build pinned. Exact-head candidate validation is required.')
+    lines += ['', 'Recorded acceptance: ' + (plan.get('acceptance') or 'Pending; no physical result claimed.'), '',
+              'Keep proposed bumps, packaging reasons, documentation review and physical limitations in the human-maintained sections.']
+    return '\n'.join(lines)
+
+
+def sync_record(root=ROOT):
+    head = git('rev-parse', 'HEAD', root=root)
+    owner = REPO.split('/')[0]
+    prs = api(f'pulls?state=open&base=main&head={owner}:release%2Fnext&per_page=100')
+    if len(prs) != 1:
+        raise ValueError('Expected exactly one open release candidate')
+    pr = api('pulls/' + str(prs[0]['number']))
+    if pr['head']['sha'] != head:
+        raise ValueError('Candidate advanced; refresh from the current release/next source')
+    body = replace_record(pr.get('body') or '', candidate_record(root))
+    if body != pr.get('body'):
+        api('pulls/' + str(pr['number']), method='PATCH', data={'body': body})
+    print('Updated generated candidate record; human sections preserved')
+
+
+def acceptance_report(root=ROOT):
+    head = git('rev-parse', 'HEAD', root=root)
+    base = git('merge-base', 'origin/main', head, root=root)
+    paths = git('diff', '--name-only', '--no-renames', base, head, root=root).splitlines()
+    selected = INPUTS['acceptance_scope'](paths)
+    print('Physical retest scope: ' + (', '.join(sorted(selected)) or 'No product changes'))
+    print('Record artifact SHA-256, build run, model/firmware, preconditions, observed result and untested paths per scenario.')
+    print('Carry prior results only for identical scenario artifacts and preconditions; this report is not acceptance.')
+    for path in paths:
+        if not INPUTS['metadata_path'](path):
+            print('  ' + path)
+
+
 def remote_json(path, ref):
     return json.loads(base64.b64decode(api('contents/' + path + '?ref=' + ref)['content']))
 
@@ -254,38 +420,25 @@ def ensure_candidate():
     versions = remote_json('release-versions.json', head)
     published = api('releases/latest')['tag_name']
     previous = remote_json('release-versions.json', published)
-    rows = [('Overall release', 'release'), ('Home', 'home'), ('Home Helper', 'helper'),
-            ('cytv installer', 'cytv'), ('Android installer / versionCode', 'android'),
-            ('Root edition', 'root'), ('Independent updater', 'updater')]
     body = ['## Release candidate', '',
             f'Unfrozen draft after {published}. Base: `main`; head: `release/next`.',
-            f'Initial source: `{head}`. Final version and hardware acceptance are not selected.', '',
-            '## Scope', '']
-    body += [f"- #{c['pr']}: {c['summary']}" +
-             (' (Related issues: ' + ', '.join('#' + str(n) for n in c['issues']) + ')' if c['issues'] else '')
-             for c in plan['changes']] or ['No implementation PRs collected yet.']
-    body += [f"- Excluded #{c['pr']}: {c['reason']}" for c in plan['excluded']]
-    body += ['', '## Component versions', '',
-             '| Component | Last published | Currently committed | Proposed/final target | Status |',
-             '| --- | --- | --- | --- | --- |']
-    for label, key in rows:
-        old, current = previous[key], versions[key]
-        if key == 'android':
-            old += ' / ' + str(previous['android_version_code'])
-            current += ' / ' + str(versions['android_version_code'])
-        body.append(f'| {label} | {old} | {current} | TBD | Target not selected |')
-    body += ['', '## Packaging and validation', '',
-             'No new artifact builds or TV acceptance are claimed for this draft. Rebuild requirements,',
-             'component bumps, rollback evidence and validation of the exact frozen commit remain pending.',
-             'Keep pinned Helper baselines and source/package version checks intact.', '',
-             '## Release gates', '',
-             '- [ ] Collect all implementation PRs and issues in `release-plan.json`.',
-             '- [ ] Maintain this description after every scope/version/validation change.',
-             '- [ ] Select final versions, synchronize manifests and write release notes.',
-             '- [ ] Record actual TV acceptance, limitations and rollback evidence.',
-             '- [ ] Complete required tests, all platform builds and Release policy at the frozen head.']
+            f'Initial source: `{head}`. Final target remains TBD until freeze.', '',
+            '## Packaging decisions', '',
+            'Record proposed bumps, unchanged component reasons, pinned baselines and rebuild requirements here.', '',
+            '## Documentation', '',
+            'Record affected guides, verification and remaining limitations here.', '',
+            '## Physical acceptance and limitations', '',
+            'No new TV acceptance claimed. Record scenario artifacts, device/state preconditions,',
+            'observed results, rollback and untested paths here.', '',
+            '## Release gates', '',
+            '- [ ] Collect implementation PRs/issues in the committed plan.',
+            '- [ ] Finalize versions/manifests and release notes.',
+            '- [ ] Pin a complete trusted build and bind acceptance to its run:attempt.',
+            '- [ ] Complete affected documentation and physical acceptance.',
+            '- [ ] Verify final Release policy and package/feed delivery.']
+    body = replace_record('\n'.join(body) + '\n', render_record(plan, versions, previous))
     pr = api('pulls', method='POST', data={'title': 'Next release candidate',
-             'head': BRANCH, 'base': 'main', 'draft': True, 'body': '\n'.join(body) + '\n'})
+             'head': BRANCH, 'base': 'main', 'draft': True, 'body': body})
     print('Created release candidate: ' + pr['html_url'])
     return pr
 
@@ -447,13 +600,24 @@ def protect():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command', choices=['check', 'collect', 'inventory', 'notify', 'protect',
-                                           'ensure-candidate', 'start-cycle'])
+                                           'ensure-candidate', 'start-cycle', 'refresh-policy', 'sync-record', 'acceptance-report', 'pin-build'])
     parser.add_argument('--tag')
+    parser.add_argument('--run-id', type=int)
     parser.add_argument('--source-root', type=Path, default=ROOT)
     parser.add_argument('--output', type=Path)
     args = parser.parse_args()
     if args.command == 'check':
         check_pr(json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text()))
+    elif args.command == 'refresh-policy':
+        refresh_policy(json.loads(Path(os.environ['GITHUB_EVENT_PATH']).read_text()))
+    elif args.command == 'pin-build':
+        if args.run_id is None:
+            parser.error('pin-build requires --run-id')
+        pin_build(args.run_id, args.source_root)
+    elif args.command == 'sync-record':
+        sync_record(args.source_root)
+    elif args.command == 'acceptance-report':
+        acceptance_report(args.source_root)
     elif args.command == 'collect':
         collect(args.source_root)
     elif args.command == 'ensure-candidate':

@@ -39,11 +39,15 @@ on the preparation branch. Product changes should enter through reviewed PRs.
 
 Every `release/next` → `main` release candidate must maintain a current release
 record in its PR description, starting when the draft is opened. Use the
-[release PR template](../.github/PULL_REQUEST_TEMPLATE/release.md). Updating
-`release-plan.json` alone does not update this record.
+[release PR template](../.github/PULL_REQUEST_TEMPLATE/release.md). The **Maintain next release candidate** workflow refreshes a marked generated
+block from the committed plan, versions and selected build. It preserves human
+sections. Use `python3 scripts/release-flow.py sync-record` to refresh explicitly.
+Collect the inventory first; proposed bumps, packaging reasons, observations and
+documentation review remain human-maintained.
 
-The maintainer integrating an implementation PR must update both the release
-inventory and the candidate PR description as part of that integration. Refresh
+The maintainer integrating an implementation PR must collect and commit the release
+inventory; the candidate workflow refreshes its generated PR block. Update the
+human decisions and observations when they change as part of that integration. Refresh
 the description after scope changes, exclusions or reversions, version decisions,
 new validation results and candidate freeze. Do not leave this until publication.
 
@@ -124,19 +128,48 @@ candidate README as data. Policy-source changes take effect when integrated into
 This detects metadata drift, not whether all explanatory prose is accurate:
 keep the manual documentation pass.
 
-Repeat this pass after scope changes, reversions or version changes. The release
+Repeat the affected parts of this pass after scope changes, reversions or version
+changes. Unchanged guides retain their recorded review; do not redo a complete
+documentation pass merely to append acceptance evidence. The release
 template and [release checklist](RELEASE_CHECKLIST.md) make it a maintainer gate;
 CI does not establish that documentation matches product behavior.
 
 ## Freeze and validate the candidate
 
-To collect device feedback before hardware acceptance is available, first prepare
-new version metadata and release notes, then explicitly dispatch **cytv standalone
-builds** on `release/next` with `test_build=true`. This produces installer artifacts
-without filling `acceptance`, publishing a release, or satisfying Release policy.
-Ordinary unfrozen pushes still skip platform builds. Keep the release PR in draft;
-test artifacts do not establish hardware acceptance or replace the final exact-head
-build after acceptance is recorded.
+Select versions and write candidate notes before physical acceptance. A prepared
+new version on `release/next` automatically builds the full Linux/macOS suite,
+Android and all four desktop platforms. The release PR stays draft until actual
+acceptance is recorded. `workflow_dispatch` with `test_build=true` explicitly
+requests another build; it neither publishes nor grants acceptance.
+
+Once the complete candidate run succeeds, pin it before testing:
+
+```sh
+python3 scripts/release-flow.py pin-build --run-id RUN_ID
+```
+
+The command verifies trusted origin, successful jobs and equivalent inputs. It
+writes `build: {run_id, attempt, source}` in `release-plan.json`. Selecting a
+different run or attempt clears the previous `acceptance` and `acceptance_build`.
+Commit the pin and later acceptance evidence normally; they do not rebuild the
+installers. Record `acceptance_build` as `"RUN_ID:ATTEMPT"` alongside the acceptance
+text. The gate rejects evidence bound to another run/attempt, and a rerun after
+acceptance invalidates the pin even if its source SHA is unchanged.
+
+Policy and publication both require the build source to be an ancestor of the
+candidate with every non-documentation Git blob/type/mode unchanged. The only
+exempt regular files are `release-plan.json`, top-level `README.md` and Markdown
+under `docs/`. Executable/symlink documents, packaged notices, embedded Android
+guides, versions, dependencies, tests, workflows and unknown inputs require a
+new build. Do not broaden this allowlist without inspecting actual package inputs.
+Final bundles use current release documentation; embedded installer bytes remain
+those tested. The final main merge must match its second parent's entire tree.
+
+A stale pin cannot authorize new code. Remove it when changing product/build
+inputs, build the new candidate, pin that successful run and record its affected
+acceptance. Never change a published version's contents. Keep downloaded test
+artifacts and their hashes: expired/deleted artifacts require a new build and
+new evidence for the affected bytes.
 
 Choose the final version based on the actual scope. Set it in `release-plan.json`
 and `release-versions.json`, update changed component manifests/versions, and
@@ -153,7 +186,9 @@ release version. A final plan looks like:
   "excluded": [
     {"pr": 124, "reason": "Reverted in full before candidate freeze"}
   ],
-  "acceptance": "TV model and firmware; tested paths; untested paths; rollback evidence/link"
+  "build": {"run_id": 123456, "attempt": 1, "source": "0123456789abcdef0123456789abcdef01234567"},
+  "acceptance_build": "123456:1",
+  "acceptance": "TV model and firmware; artifact hashes; tested paths; untested paths; rollback evidence/link"
 }
 ```
 
@@ -172,9 +207,15 @@ It rejects:
   that will not ship.
 - Omitted issues linked to included PRs. The gate checks closing references and
   `Related issues:` lines and verifies that listed issues are actual issues.
-- An unsuccessful or incomplete trusted push build of the exact candidate SHA.
-  Android and all four desktop jobs must each succeed. The policy waits up to
-  35 minutes; rerun it if builds finish later.
+- An unsuccessful/incomplete trusted candidate build or full-suite result.
+  Android, four desktop jobs, Linux/macOS tests and ARM Python checks must succeed.
+  A selected build may come from a trusted push or explicit dispatch on
+  `release/next`. Unpinned candidates retain exact-head validation.
+
+The policy returns pending while a build is unavailable/running, releasing its
+runner immediately. The candidate completion event refreshes it automatically,
+including failed-job reruns. API/check failures leave the gate blocked. Policy
+always executes trusted `main` code and reads candidate objects only as data.
 
 `main` additionally requires up-to-date Linux/macOS tests, a PR and resolved
 conversations. Administrators follow the same rules. Force pushes and branch
@@ -184,16 +225,64 @@ access limited to trusted maintainers.
 
 Apply the [release checklist](RELEASE_CHECKLIST.md) and Root Edition hardware
 gates. CI cannot certify physical TV behavior: record actual acceptance and
-untested paths honestly. Any new candidate commit invalidates its previous
-checks and triggers a fresh complete build. Mark the PR ready only after all
+untested paths honestly. A product/build-input change invalidates the selected build and its affected
+acceptance. Documentation/evidence-only commits preserve a verified pin. Mark the PR ready only after all
 checks and acceptance are complete.
+
+## Scoped physical acceptance and retry recovery
+
+Before testing, run:
+
+```sh
+python3 scripts/release-flow.py acceptance-report
+```
+
+This conservatively recommends scenarios from changes since `main`; it is not an
+acceptance result or a replacement for reviewing dependencies. Only known visual
+assets select `ui-controls` alone. Behavioral frontend JS and unknown/shared paths
+select the full matrix. Service/input paths select controls, startup and recovery;
+installer/updater paths select update-recovery, including post-transition controls
+and audio. Add scenarios whenever the change affects their preconditions.
+
+Record one row per scenario with build run/attempt, artifact SHA-256, model and
+firmware, initial state/upgrade source, expected/observed result, evidence link,
+and untested paths. `update-recovery` includes installation/update/retained rollback
+and controls/audio after the transition; `startup` distinguishes standby and cold
+boot; `controls` includes Home, Back, other controls and emergency off. Retain
+independent recovery and owner-presence requirements for physical changes.
+
+Carry an observation only when all artifacts used by that scenario have identical
+hashes and its preconditions (firmware, prior state/version and upgrade path) match.
+The candidate input comparison is enough to keep the same selected installer
+bytes across evidence edits; source similarity across rebuilt packages alone is
+not enough. Do not repeat unchanged cases merely because the overall release
+number changed. Do not carry a different model's result or label an untested path
+passed. An unresolved failure remains a failure until investigated.
+
+For a failed CI job at unchanged source, use GitHub's **Re-run failed jobs** or
+`gh run rerun RUN_ID --failed`; successful jobs and their artifacts remain
+available. Uploads from a rerun job replace its own partial artifacts, avoiding
+name conflicts after an interrupted upload. A new attempt invalidates any existing
+acceptance pin. Fix deterministic failures before retrying. Pin only the final successful
+attempt, then accept its bytes. Publication/notification recovery keeps its normal
+separate retry paths; do not rebuild or republish merely to retry a comment.
+
+### Rollout after the current release
+
+This change is held for the next release cycle. The first release containing the
+new workflows still uses the old trusted policy from `main`: keep that candidate
+unpinned and complete its exact-head build/acceptance workflow. After it merges,
+trusted policy and `workflow_run` refresh become available on `main`; subsequent
+candidates can use pinned reuse. No live protection changes or bypasses are needed.
+Do not use the draft PR or its tests as acceptance of the current release.
 
 ## Merge, publish and notify
 
 Merge the release PR using a merge commit. The existing publication pipeline
 reuses the successful candidate installers after verifying that the exact second
-parent and Git tree match the resulting `main` commit. It runs the full tests,
-packages, signs and verifies the release without recompiling platform installers.
+parent and Git tree match the resulting `main` commit. It revalidates the complete candidate test/build record,
+packages, signs and verifies the release without rerunning the full suite or
+recompiling platform installers. Signing/package regression checks still run.
 A merge means integrated;
 shipping is confirmed only after publication and verification of the packages
 and signed update feeds.
@@ -202,11 +291,22 @@ Ordinary PRs run only affected checks: TV/webOS, installer, Android, preview or
 packaging/release tools. Shared dependencies enable every affected group; unknown
 paths conservatively enable all checks. Documentation-only changes skip application
 checks and Pages builds while keeping the required Linux/macOS status names green.
-Once a candidate is frozen (final new version, matching plan, acceptance and notes),
-every subsequent candidate commit, including a documentation correction, needs a
-complete build so shipped artifacts remain bound to that exact source tree.
-Feature branches run tests on PR events; `main` and `release/next` also run tests
-on pushes. Preview Pages runs its own focused tests instead of the full suite.
+Feature branches run affected tests on PR events. Successful runtime results may
+be reused within the same PR/day when the checked-out merge tree (including base
+changes), selected groups, OS/image, exact Python/Node and installed Python
+dependencies match. Only a small run-ID marker is restored; no cached code executes. Its source run
+and the latest prior Tests run on that branch must still be successful; newer
+failed/running evidence or an API error forces fresh tests. Fork PRs do not use
+these markers.
+Current README/plan metadata always runs, and affected setup/packaging checks
+remain fresh. Cache outages fall back to tests; explicit rerun attempts bypass
+hits. Full candidate validation never uses these PR success markers.
+
+Feature branches run affected tests on PR events. The prepared candidate build
+runs the full suite once. Release PR checks retain the required Linux/macOS status
+names and run metadata/setup checks; the trusted Release policy enforces the full
+candidate suite. Standalone push suites and the full publication suite are removed.
+Pinned-equivalent documentation/evidence changes do not rebuild installers. Preview Pages runs its own focused tests instead of the full suite.
 
 Packaging saves `RELEASE-INVENTORY.json` with the tag, exact source commit,
 release PR, included implementation PRs, their issues and delivered summaries.
@@ -248,8 +348,8 @@ does not reset the branch. Shipping notices still run if next-cycle setup fails.
 
 The **Maintain next release candidate** workflow also checks pushes to
 `release/next` and supports manual dispatch on that branch. It creates a draft
-only when the branch has changes and no open candidate exists; it preserves the
-description of an existing PR. Opening the draft does not freeze a version or
+only when the branch has changes and no open candidate exists, then refreshes the
+marked generated scope/version/build block. Human sections are preserved. Opening the draft does not freeze a version or
 establish artifact/TV acceptance. Maintain its scope and validation record as
 described above. Actions-created commits/PRs do not themselves trigger other
 workflows; subsequent implementation pushes trigger the normal checks.

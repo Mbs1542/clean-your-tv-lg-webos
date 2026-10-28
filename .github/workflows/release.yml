@@ -71,14 +71,8 @@ jobs:
           else
             python release-tools/scripts/assemble-release.py --plan --build-run "$BUILD_RUN"
           fi
-  tests:
-    needs: plan
-    if: needs.plan.outputs.release == 'true'
-    uses: ./.github/workflows/tests.yml
-    with:
-      source_sha: ${{ needs.plan.outputs.commit }}
   assemble:
-    needs: [plan, tests]
+    needs: plan
     if: needs.plan.outputs.release == 'true'
     runs-on: ubuntu-latest
     permissions:
