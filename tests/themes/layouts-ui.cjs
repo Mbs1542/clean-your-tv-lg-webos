@@ -15,7 +15,10 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
        await page.waitForFunction(()=>{const r=document.getElementById('glass').getBoundingClientRect();return r.top>=-1 && r.bottom<=1081;});
        const g=await page.evaluate(()=>{const card=document.querySelector('#tiles .focused .card').getBoundingClientRect(),glass=document.getElementById('glass').getBoundingClientRect();return{card:{x:card.x,y:card.y,w:card.width,h:card.height},glass:{x:glass.x,y:glass.y,w:glass.width,h:glass.height},selected:document.querySelector('#tiles .focused').dataset.appId};});
        assert(g.glass.x>=0&&g.glass.x+g.glass.w<=1920,'frame fits horizontally '+preset+columns);
-       if(preset==='channel-list') assert(await page.locator('#tiles .focused .name').evaluate(el=>el.clientWidth>30),'channel label keeps a positive readable area');
+       if(preset==='channel-list') {
+        assert(await page.locator('#tiles .focused .name').evaluate(el=>el.clientWidth>30),'channel label keeps a positive readable area');
+        assert.equal(await page.locator('#tiles .focused .card').evaluate(el=>getComputedStyle(el).transform),'none','channel icon does not shift onto its number');
+       }
        assert(Math.abs(g.card.x+g.card.w/2-g.glass.x-g.glass.w/2)<1,'card and frame centre x');
        assert(Math.abs(g.card.y+g.card.h/2-g.glass.y-g.glass.h/2)<1,'card and frame centre y');
        if(preset==='side-grid')assert(g.glass.x>=500,'grid remains outside fixed sidebar');

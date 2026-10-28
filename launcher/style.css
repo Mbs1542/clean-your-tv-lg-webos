@@ -540,3 +540,5 @@ body.editing .item.moving .name {
 #homeSurface[data-layout="channel-list"] .add-app svg { position: absolute; top: 8px; }
 #homeSurface.ctv-channel-compact .add-app svg { top: 4px; left: 50%; width: 32px; height: 32px; transform: translateX(-50%); }
 #homeSurface.ctv-channel-compact .card.missing-icon::after { left: 0; top: 0; right: 0; height: 36px; font-size: 28px; }
+/* List text/number and icon share a row; selection must not shift its icon onto the number. */
+#homeSurface[data-layout="channel-list"] .item.focused .card { transform: none; }
