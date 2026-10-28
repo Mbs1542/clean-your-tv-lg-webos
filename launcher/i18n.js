@@ -39,9 +39,9 @@
  function formatDate(value,options){try{return new Date(value).toLocaleDateString(active,options||{weekday:'long',day:'numeric',month:'long'});}catch(_){return new Date(value).toLocaleDateString();}}
  function formatDateTime(value){try{return new Date(value).toLocaleString(active);}catch(_){return new Date(value).toLocaleString();}}
  function formatTime(value){try{return new Date(value).toLocaleTimeString(active,{hour:'2-digit',minute:'2-digit'});}catch(_){var d=new Date(value);return d.getHours()+':'+('0'+d.getMinutes()).slice(-2);}}
- function closePicker(){if(dialog)dialog.hidden=true;if(previous&&previous.focus)previous.focus();}
+ function closePicker(){if(dialog)dialog.hidden=true;if(root.ThemeRuntime)root.ThemeRuntime.resume('language');if(previous&&previous.focus)previous.focus();}
  function openLanguagePicker(){
-  if(!root.document)return;var doc=root.document;previous=doc.activeElement;
+  if(!root.document)return;if(root.ThemeRuntime)root.ThemeRuntime.suspend('language');var doc=root.document;previous=doc.activeElement;
   if(!dialog){dialog=doc.createElement('section');dialog.id='languagePicker';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','languageTitle');doc.body.appendChild(dialog);}
   dialog.hidden=false;dialog.innerHTML='<div class="language-card"><h2 id="languageTitle">'+escape(t('Language'))+' / Language</h2><p>'+escape(t('Choose a language. Home will reload.'))+'</p><div id="languageChoices"></div><p id="languageError" role="alert"></p></div>';
   var list=doc.getElementById('languageChoices'),buttons=[],selected=0,choices=[{code:'auto',name:t('Automatic (system language)')}].concat(languages);
@@ -53,12 +53,13 @@
  var confirmation=null,confirmationButtons,confirmationCallback,confirmationPrevious,confirmationSelected=0,swallowOK=false;
  function closeConfirmation(accept){
   if(!confirmation||confirmation.hidden)return;
-  var callback=confirmationCallback;confirmationCallback=null;confirmation.hidden=true;
+  var callback=confirmationCallback;confirmationCallback=null;confirmation.hidden=true;if(root.ThemeRuntime)root.ThemeRuntime.resume('confirmation');
   if(confirmationPrevious&&confirmationPrevious.focus)confirmationPrevious.focus();
   if(accept&&callback)callback();
  }
  function confirmAction(options,callback){
   if(confirmation&&!confirmation.hidden)return;
+  if(root.ThemeRuntime)root.ThemeRuntime.suspend('confirmation');
   var doc=root.document;confirmationPrevious=doc.activeElement;
   if(!confirmation){
    confirmation=doc.createElement('section');confirmation.id='homeConfirmation';confirmation.setAttribute('role','alertdialog');confirmation.setAttribute('aria-modal','true');confirmation.setAttribute('aria-labelledby','homeConfirmationTitle');confirmation.setAttribute('aria-describedby','homeConfirmationMessage');

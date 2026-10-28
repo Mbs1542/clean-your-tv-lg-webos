@@ -55,7 +55,7 @@
       if (!panel.hidden) focus(2);
     });
   }
-  function close() { generation++; panel.hidden = true; back(); }
+  function close() { generation++; panel.hidden = true; if (window.ThemeRuntime) window.ThemeRuntime.resume('audio'); back(); }
   function activate(index) {
     if (buttons[index].disabled) return;
     if (index < 2) change(index); else if (index === 2) refresh(); else close();
@@ -98,6 +98,7 @@
     }, true);
   }
   window.RootAudio = {open:function (call, returnToSettings) {
+    if (window.ThemeRuntime) window.ThemeRuntime.suspend('audio');
     request = call; back = returnToSettings;
     if (!panel) build();
     panel.hidden = false;

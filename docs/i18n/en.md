@@ -71,6 +71,8 @@ No-root: To restart Home control, open Home Helper, choose Start Helper and conf
 
 After interruption, run `status` before retrying; retain journals and recovery files. `restore` returns LG Home without removing apps. `uninstall` restores before removal. Root recovery state is deliberately retained; never delete it to force reinstallation. Review diagnostic reports before sharing; do not publish keys or profile folders.
 
+Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Theme selection and installation by URL are not available yet.
+
 ## Updates and removal
 
 Keep known-working packages and private settings backups. For computer-assisted No-root package replacement, stop Helper first and update without uninstalling, which may erase settings. Removing the desktop app does not remove TV apps. Do not replace a live Root runtime with a standalone IPK; use cytv's explicit recovery/reinstallation flow.

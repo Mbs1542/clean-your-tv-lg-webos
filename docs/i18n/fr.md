@@ -71,6 +71,8 @@ No-root: Pour relancer le contrôle de Home, ouvrez Home Helper, choisissez Dém
 
 Après interruption, lancez d’abord `status` et conservez les journaux. `restore` rétablit LG Home sans supprimer les applications ; `uninstall` le rétablit avant leur suppression. Les données de récupération Root sont conservées volontairement : ne les effacez pas pour forcer une réinstallation. Vérifiez les rapports avant partage ; ne publiez ni clés ni dossiers de profils.
 
+Uniquement dans la version candidate non publiée, dans les deux éditions : ouvrez **Paramètres de Home → Colonnes** et choisissez de 1 à 8 colonnes, ou **Selon le thème** pour utiliser sa valeur (Classic : 5). Un nombre explicite est prioritaire sur le thème. La sélection de thèmes et leur installation par URL ne sont pas encore disponibles.
+
 ## Mises à jour et suppression
 
 Gardez les paquets fonctionnels et des sauvegardes privées des paramètres. Pour remplacer les paquets No-root depuis l’ordinateur, arrêtez d’abord Helper et mettez à jour sans désinstaller : la désinstallation peut effacer les réglages. Supprimer l’application de bureau ne supprime pas les applications TV. Ne remplacez pas un environnement Root actif par une IPK isolée ; utilisez le parcours explicite de récupération ou de réinstallation de cytv.

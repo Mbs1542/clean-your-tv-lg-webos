@@ -11,6 +11,7 @@ has() { [[ "$selected" == *" $1 "* ]]; }
 if has tv; then
 npm run test:compat
 npm run lint:compat
+npm run test:themes
 node tests/helper-compat.cjs
 for test in tests/apps/*.cjs; do
   if [[ "$test" != *"/ui.cjs" ]]; then node "$test"; fi
@@ -88,6 +89,7 @@ if has android; then
   python3 -m unittest discover -s android/tests
 fi
 if has preview; then
+  for test in tests/showcase/{registry,submission-security,site,remote}.cjs; do node "$test"; done
   node tests/preview-bridge.cjs
   python3 -m unittest discover -s tests -p test_preview.py
 fi

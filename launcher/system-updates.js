@@ -46,6 +46,7 @@
   function focus(index) { var list = enabled(); if (!list.length) return; selected = (index + list.length) % list.length; list[selected].focus(); }
   function close() {
     generation++; clearTimeout(timer); panel.hidden = true; busy = polling = false;
+    if (window.ThemeRuntime) window.ThemeRuntime.resume('system-updates');
     var callback = options.onClose;
     if (callback) callback(); else if (previous && previous.focus) previous.focus();
   }
@@ -195,6 +196,7 @@
     }, true);
   }
   function open(value) {
+    if (window.ThemeRuntime) window.ThemeRuntime.suspend('system-updates');
     var request = ++generation, supervisorSeen = false; clearTimeout(timer); options = value || {}; options.edition = options.edition === 'root' ? 'root' : 'no-root';
     if (!panel) build(); if (panel.hidden) previous = document.activeElement; busy = true; polling = false; transaction = offer = null; stickyError = options.error || ''; errorText = checkError = ''; recovery = options.recovery === true; selected = 0;
     return rpc('status', {}).then(function (state) {
@@ -203,7 +205,7 @@
       if (!recovery) return checkOffer(request);
     }).catch(function (error) {
       if (request !== generation) return;
-      if (!supervisorSeen && error.unavailable && options.fallback) { panel.hidden = true; options.fallback(); return; }
+      if (!supervisorSeen && error.unavailable && options.fallback) { panel.hidden = true; options.fallback(); if (window.ThemeRuntime) window.ThemeRuntime.resume('system-updates'); return; }
       errorText = error.message; panel.hidden = false;
     }).then(function () { if (request !== generation) return; busy = false; render(); schedule(); });
   }

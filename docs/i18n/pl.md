@@ -71,6 +71,8 @@ No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Help
 
 Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore` przywraca LG Home bez usuwania aplikacji; `uninstall` przywraca je przed usunięciem. Dane odzyskiwania Root pozostają celowo: nie kasuj ich, by wymusić ponowną instalację. Sprawdź raporty przed udostępnieniem; nie publikuj kluczy ani katalogów profili.
 
+Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Wybór motywów i instalacja przez URL nie są jeszcze dostępne.
+
 ## Aktualizacja i usuwanie
 
 Po połączeniu cytv pokazuje wersję zainstalowaną → dołączoną i rozróżnia pierwszą instalację, ponowną instalację i cofnięcie wersji. Sprawdź podsumowanie przed potwierdzeniem; `--yes` nie omija kontroli zgodności. Zachowaj działające pakiety i prywatne kopie ustawień. Przed wymianą pakietów z komputera zatrzymaj No-root Helper; nie odinstalowuj wcześniej aplikacji. Nie zastępuj działającego Root pojedynczym IPK: użyj odpowiedniej procedury cytv. Usunięcie aplikacji komputerowej nie usuwa aplikacji z TV.

@@ -5,7 +5,9 @@
     "lint:compat": "node scripts/check-tv-web.cjs",
     "test:compat": "node tests/web-build.cjs",
     "test:legacy-ui": "node tests/legacy-launcher.cjs",
-    "test:geometry": "node tests/launcher-geometry.cjs"
+    "test:geometry": "node tests/launcher-geometry.cjs",
+    "test:themes": "node tests/themes/columns.cjs && node tests/themes/policy.cjs && node tests/themes/compiler.cjs && node tests/themes/runtime.cjs && python3 tests/themes/export-runtime.py",
+    "test:themes:browser": "node tests/themes/baseline.cjs && node tests/themes/isolation.cjs && node tests/themes/columns-ui.cjs"
   },
   "browserslist": [
     "Chrome 38"
@@ -20,6 +22,7 @@
     "playwright": "1.64.1",
     "postcss": "8.5.31",
     "postcss-preset-env": "11.6.1",
+    "postcss-value-parser": "4.2.0",
     "safe-buffer": "5.2.1"
   }
 }

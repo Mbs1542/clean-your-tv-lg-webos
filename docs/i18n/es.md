@@ -71,6 +71,8 @@ No-root: Para reiniciar el control de Home, abre Home Helper, elige Iniciar Help
 
 Tras una interrupción, ejecuta primero `status` y conserva los registros. `restore` recupera LG Home sin quitar aplicaciones; `uninstall` lo restaura antes de eliminarlas. Los datos de recuperación Root se conservan deliberadamente: no los borres para forzar otra instalación. Revisa los informes antes de compartirlos; no publiques claves ni carpetas de perfiles.
 
+Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. La selección de temas y su instalación por URL aún no están disponibles.
+
 ## Actualizaciones y eliminación
 
 Guarda paquetes funcionales y copias privadas de ajustes. Para sustituir paquetes No-root desde el ordenador, detén Helper primero y actualiza sin desinstalar, ya que podrías perder ajustes. Eliminar la aplicación del ordenador no elimina las aplicaciones del televisor. No sustituyas un entorno Root activo con una IPK suelta; usa el proceso explícito de recuperación o reinstalación de cytv.

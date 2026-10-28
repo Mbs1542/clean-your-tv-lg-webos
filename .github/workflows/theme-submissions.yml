@@ -1,0 +1,80 @@
+name: Theme submissions
+
+# Untrusted PRs receive validation artifacts only. No publishing token or deployment.
+on:
+  pull_request:
+    paths:
+      - 'showcase/**'
+      - 'theme-api/**'
+      - 'launcher/theme-policy.js'
+      - 'scripts/check-theme-submissions.cjs'
+      - 'scripts/build-showcase.cjs'
+      - 'scripts/compile-tv-web.cjs'
+      - 'tests/showcase/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/theme-submissions.yml'
+  push:
+    branches: [main, release/next]
+    paths:
+      - 'showcase/**'
+      - 'theme-api/**'
+      - 'launcher/theme-policy.js'
+      - 'scripts/check-theme-submissions.cjs'
+      - 'scripts/build-showcase.cjs'
+      - 'scripts/compile-tv-web.cjs'
+      - 'tests/showcase/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/theme-submissions.yml'
+  workflow_dispatch:
+    inputs:
+      verify_remote:
+        description: Check pinned public source bytes as well as reviewed local bytes
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: theme-submissions-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NODE_OPTIONS: --max-old-space-size=512
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install main-project tools without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test registry, data-only validation and static output
+        run: |
+          node tests/showcase/registry.cjs
+          node tests/showcase/submission-security.cjs
+          node tests/showcase/remote.cjs
+          node tests/showcase/site.cjs
+          node scripts/check-theme-submissions.cjs
+      - name: Verify bounded commit-pinned public source bytes
+        if: github.event_name != 'workflow_dispatch' || inputs.verify_remote
+        run: timeout 180 node scripts/check-theme-submissions.cjs --remote
+      - name: Prepare isolated browser checks
+        run: npx playwright install --with-deps chromium
+      - name: Test showcase with local synthetic fixtures and blocked external requests
+        run: node tests/showcase/browser.cjs
+      - name: Build reviewed static inspection artifact
+        run: node scripts/build-showcase.cjs build/showcase-review/themes
+      - uses: actions/upload-artifact@v4
+        with:
+          name: theme-showcase-review
+          path: build/showcase-review
+          retention-days: 7
+          if-no-files-found: error

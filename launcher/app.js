@@ -10,6 +10,8 @@
     return window.HomeI18n ? HomeI18n.html(markup) : markup;
   }
   // Shared layout, focus and remote-control state.
+  var layoutState = window.HomeLayout ? HomeLayout.create(localStorage, CONFIG, window.RootProfileData || window.HomeData) : null;
+  window.HomeLayoutState = layoutState;
   var GRID_LEFT = 112,
     GRID_WIDTH = 1696,
     MAX_CARD_WIDTH = 360,
@@ -20,14 +22,19 @@
     ROW_GAP = 90,
     DOCK_PADDING = 28,
     DOCK_TOP = 680,
-    columnCount = Math.max(1, CONFIG.columns || 4),
-    columnWidth = GRID_WIDTH / columnCount,
-    // Leave CARD_GAP between an enlarged focus frame and its idle neighbour.
-    CARD_WIDTH = Math.min(MAX_CARD_WIDTH, Math.floor((columnWidth - FOCUS_PADDING - CARD_GAP) / ((FOCUS_SCALE + 1) / 2))),
-    CARD_HEIGHT = Math.round(CARD_WIDTH * MAX_CARD_HEIGHT / MAX_CARD_WIDTH),
-    DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2,
+    columnCount = Math.max(1, Math.min(8, CONFIG.columns || 5)),
+    columnWidth, CARD_WIDTH, CARD_HEIGHT, DOCK_HEIGHT,
     TILE_BASE = DOCK_TOP + DOCK_PADDING,
     HERO_OFFSET = 176;
+  function updateGeometry(columns) {
+    columnCount = columns;
+    columnWidth = GRID_WIDTH / columnCount;
+    // Leave CARD_GAP between an enlarged focus frame and its idle neighbour.
+    CARD_WIDTH = Math.min(MAX_CARD_WIDTH, Math.floor((columnWidth - FOCUS_PADDING - CARD_GAP) / ((FOCUS_SCALE + 1) / 2)));
+    CARD_HEIGHT = Math.round(CARD_WIDTH * MAX_CARD_HEIGHT / MAX_CARD_WIDTH);
+    DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2;
+  }
+  updateGeometry(columnCount);
   var toastTimer,
     KEY_OK = 13,
     KEY_BACK = 461,
@@ -179,10 +186,10 @@
     tilesContainer.innerHTML = "";
     tiles = library.visible().map(createTile);
     var el = document.createElement('div');
-    el.className = 'item add-app';
+    el.className = 'item add-app ctv-tile';
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', tr('Add app'));
-    el.innerHTML = ht('<div class="card"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name">Add app</div>');
+    el.innerHTML = ht('<div class="card ctv-card"><svg class="ctv-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name ctv-label">Add app</div>');
     var item = {
       add: true,
       app: {
@@ -245,7 +252,7 @@
       item: item,
       snapshot: tiles.slice()
     };
-    item.el.classList.add('moving');
+    setPartState(item.el, 'moving', true);
     document.body.classList.add('editing');
     hideButton.hidden = false;
     editHint.hidden = false;
@@ -320,7 +327,7 @@
     }
     moveState = null;
     hideSelected = false;
-    item.el.classList.remove('moving');
+    setPartState(item.el, 'moving', false);
     document.body.classList.remove('editing');
     hideButton.hidden = true;
     editHint.hidden = true;
@@ -384,21 +391,25 @@
     pickerButtons = [];
     apps.forEach(function (app) {
       var button = document.createElement('button');
-      button.className = 'app-choice';
+      button.className = 'app-choice ctv-library-row';
       button.dataset.appId = app.id;
       var icon = document.createElement('img');
+      icon.className = 'ctv-icon';
       icon.src = app.icon || '';
       icon.alt = '';
       icon.onerror = function () {
         icon.style.visibility = 'hidden';
       };
       var title = document.createElement('span');
+      title.className = 'ctv-label';
       title.textContent = app.title;
       button.appendChild(icon);
       button.appendChild(title);
       button.addEventListener('focus', function () {
         pickerIndex = pickerButtons.indexOf(button);
+        setPartState(button, 'focused', true);
       });
+      button.addEventListener('blur', function () { setPartState(button, 'focused', false); });
       button.addEventListener('click', function () {
         try {
           library.add(app.id);
@@ -476,7 +487,8 @@
     picker.setAttribute('aria-modal', 'true');
     picker.setAttribute('aria-labelledby', 'appPickerTitle');
     picker.innerHTML = ht('<div class="app-picker-card"><h2 id="appPickerTitle">Add app</h2><p id="appPickerStatus" role="status"></p><div id="appPickerList"></div><button id="appPickerClose">Back to Home</button></div>');
-    document.body.appendChild(picker);
+    picker.className = 'ctv-library';
+    getElement('homeSurface').appendChild(picker);
     pickerList = getElement('appPickerList');
     pickerStatus = getElement('appPickerStatus');
     pickerClose = getElement('appPickerClose');
@@ -559,12 +571,12 @@
   // Tile rendering, icon colors and grid geometry.
   function createTile(app) {
     var element = document.createElement("div");
-    element.className = "item";
+    element.className = "item ctv-tile";
     element.dataset.appId = app.id;
     element.setAttribute("role", "button");
     element.setAttribute("aria-label", app.title);
     var card = document.createElement("div");
-    card.className = "card";
+    card.className = "card ctv-card";
     var image = document.createElement("img"),
       tile = {
         app: app,
@@ -572,6 +584,7 @@
         card: card,
         color: null
       };
+    image.className = 'ctv-icon';
     image.onload = function () {
       !function (e, t) {
         var n = null,
@@ -630,7 +643,7 @@
     card.appendChild(image);
     element.appendChild(card);
     var label = document.createElement("div");
-    return label.className = "name", label.textContent = app.title, element.appendChild(label), element.addEventListener("mouseover", function () {
+    return label.className = "name ctv-label", label.textContent = app.title, element.appendChild(label), element.addEventListener("mouseover", function () {
       "inputs" === focusZone || pickerOpen || undoState || (moveState ? pointerMove(tile) : focusTile(tiles.indexOf(tile)));
     }), element.addEventListener("click", function () {
       tileClick(tile);
@@ -663,6 +676,11 @@
     dockBand.style.width = (dockCount - 1) * columnWidth + CARD_WIDTH + DOCK_PADDING * 2 + "px";
     dockBand.style.height = DOCK_HEIGHT + "px";
   }
+  if (layoutState) layoutState.onchange = function (state) {
+    updateGeometry(state.columns);
+    layoutTiles();
+    focusTile(focusedTile);
+  };
   function animateTiles() {
     tiles.forEach(function (e, t) {
       e.el.classList.remove("shown");
@@ -708,13 +726,20 @@
     });
   }
   // Focus follows both remote navigation and Magic Remote hover.
+  function setPartState(element, state, enabled) {
+    if (!element) return;
+    element.classList.toggle(state, enabled);
+    element.classList.toggle('is-' + state, enabled);
+    var card = element.querySelector('.ctv-card');
+    if (card) card.classList.toggle('is-' + state, enabled);
+  }
   function focusTile(index) {
     if (tiles.length) {
       index = Math.max(0, Math.min(index, tiles.length - 1));
       setFocusZone("grid");
-      tiles[focusedTile] && tiles[focusedTile].el.classList.remove("focused");
+      tiles[focusedTile] && setPartState(tiles[focusedTile].el, 'focused', false);
       focusedTile = index;
-      tiles[index].el.classList.add("focused");
+      setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
       0 === row && !moveState ? scrollOffset = 0 : (top - scrollOffset + CARD_HEIGHT + 70 > (moveState ? 850 : 1060) && (scrollOffset = top + CARD_HEIGHT + 70 - (moveState ? 850 : 1060)), top - scrollOffset - 24 < 80 && (scrollOffset = top - 24 - 80));
@@ -763,12 +788,12 @@
   function focusTopButton(index) {
     setFocusZone("top");
     document.body.classList.remove("scrolled");
-    topButtons[focusedTopButton].classList.remove("focused");
+    setPartState(topButtons[focusedTopButton], 'focused', false);
     focusedTopButton = Math.max(0, Math.min(index, topButtons.length - 1));
-    topButtons[focusedTopButton].classList.add("focused");
+    setPartState(topButtons[focusedTopButton], 'focused', true);
   }
   function setFocusZone(zone) {
-    focusZone !== zone && ("top" === focusZone && topButtons[focusedTopButton].classList.remove("focused"), "grid" === focusZone && (tiles[focusedTile] && tiles[focusedTile].el.classList.remove("focused"), focusGlassVisible = false, focusGlass.style.opacity = "0"), focusZone = zone);
+    focusZone !== zone && ("top" === focusZone && setPartState(topButtons[focusedTopButton], 'focused', false), "grid" === focusZone && (tiles[focusedTile] && setPartState(tiles[focusedTile].el, 'focused', false), focusGlassVisible = false, focusGlass.style.opacity = "0"), focusZone = zone);
   }
   function updateClock() {
     var now = new Date(),
@@ -797,7 +822,7 @@
         inputsPanel.style.top = e.bottom + 20 + "px";
         inputsPanel.style.minWidth = Math.max(e.width, 300) + "px";
         inputsPanel.classList.remove("hidden");
-        topButtons[focusedTopButton].classList.remove("focused");
+        setPartState(topButtons[focusedTopButton], 'focused', false);
         focusZone = "inputs";
         focusInput(0);
       } else {
@@ -812,7 +837,7 @@
   }
   function addInputRow(iconPath, label, appId) {
     var element = document.createElement("div");
-    element.className = "inputRow";
+    element.className = "inputRow ctv-input-row";
     element.innerHTML = ht('<svg viewBox="0 0 24 24"><path d="') + iconPath + '"/></svg>';
     element.appendChild(document.createTextNode(label));
     var index = inputRows.length;
@@ -829,9 +854,9 @@
     inputsPanel.appendChild(element);
   }
   function focusInput(index) {
-    inputRows[focusedInput] && inputRows[focusedInput].classList.remove("focused");
+    inputRows[focusedInput] && setPartState(inputRows[focusedInput], 'focused', false);
     focusedInput = Math.max(0, Math.min(index, inputRows.length - 1));
-    inputRows[focusedInput].classList.add("focused");
+    setPartState(inputRows[focusedInput], 'focused', true);
   }
   function closeInputs() {
     inputsPanel.classList.add("hidden");
@@ -850,7 +875,7 @@
       tiles = moveState.snapshot;
     }
     moveState = null;
-    item.el.classList.remove("moving");
+    setPartState(item.el, 'moving', false);
     document.body.classList.remove("editing");
     hideSelected = false;
     hideButton.hidden = true;
@@ -869,7 +894,7 @@
     updateClock();
     "inputs" === focusZone && inputsPanel.classList.add("hidden");
     topButtons.forEach(function (e) {
-      e.classList.remove("focused");
+      setPartState(e, 'focused', false);
     });
     focusZone = "none";
     focusTile(focusedTile);
@@ -986,6 +1011,10 @@
   });
   document.addEventListener("webOSRelaunch", restoreFocus);
   document.addEventListener("visibilitychange", function () {
+    if (window.ThemeRuntime) {
+      if (document.hidden) ThemeRuntime.suspend('visibility');
+      else ThemeRuntime.resume('visibility');
+    }
     document.hidden || restoreFocus();
   });
   initializeApps();

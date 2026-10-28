@@ -35,6 +35,11 @@ def components(paths):
             selected.add('installer')
         elif path.startswith('tests/setup/'):
             selected.add('setup')
+        elif path.startswith(('showcase/', 'tests/showcase/')) or path in (
+                'scripts/build-showcase.cjs', 'scripts/check-theme-submissions.cjs'):
+            selected.add('preview')
+        elif path.startswith('theme-api/') or path == 'scripts/export-theme-runtime.py':
+            selected.update(COMPONENTS)
         elif path.startswith('preview/') or path in ('scripts/preview.py', 'tests/test_preview.py', 'tests/preview-bridge.cjs'):
             selected.add('preview')
         elif path.startswith('tests/updates/'):

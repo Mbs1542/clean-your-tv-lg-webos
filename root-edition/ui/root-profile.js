@@ -81,6 +81,8 @@
       else {
         var previousLanguage = window.HomeI18n ? window.HomeI18n.preference() : null;
         save(profile);
+        // Older backup contracts contain the effective count, not its theme override mode.
+        localStorage.removeItem('tvhome.columns.v1');
         if (profile.settings['tvhome.order'] === undefined) localStorage.removeItem('tvhome.order');
         else localStorage.setItem('tvhome.order', profile.settings['tvhome.order']);
         if (systemRestore) {
