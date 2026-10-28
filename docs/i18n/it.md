@@ -1,6 +1,6 @@
 # Clean Your TV — guida all’uso
 
-> Candidato 1.4.1 non pubblicato: compatibilità OTA Root, disponibilità aggiornamenti, accesso API firmware e correzioni pacchetti/console Windows. Accettazione TV e aggiornamento/ripristino firmati restano da verificare; non è un download pubblicato. [1.4.1](../RELEASE-1.4.1.md).
+> Candidato 1.4.1 non pubblicato: compatibilità OTA Root, disponibilità aggiornamenti, accesso API firmware e correzioni pacchetti/console Windows. Aggiornamento firmato e ripristino ordinario sono registrati nell’ambito limitato al C3; build finali e pubblicazione restano da completare; non è un download pubblicato. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentazione](../README.md) · [Segnalare un problema](../FEEDBACK.md)
 
@@ -80,6 +80,12 @@ Apri impostazioni Home → Aggiornamenti software e verifica le versioni prima d
 **Installazione 1.3.0 esistente:** il System Updater originale non può applicare 1.4.0 perché è cambiato l’elenco dei file consentiti. Se il tentativo si ferma prima della sostituzione, conserva il registro e fermati; non cancellare lo stato né ripetere alla cieca. Usa il recupero verificato e una nuova installazione 1.4.0; aggiornare solo l’app non sostituisce i driver Root conservati. La prossima correzione OTA **non è pubblicata**. [Migrazione e recupero (inglese)](../UPDATES.md#one-time-computer-preparation).
 
 Il recupero audio HDMI Root è sperimentale e **disattivato per impostazione predefinita**; abilitalo solo se serve. Può interrompere audio funzionante e non dimostra compatibilità eARC. [Recupero audio (inglese)](../development/ROOT-AUDIO-RECOVERY.md). Il **CYTV Installer Homebrew non è ancora pubblicato**; usa l’installer pubblicato per computer o Android.
+
+Solo candidato non pubblicato: se vecchie directory Root scrivibili impediscono l’accesso all’API del firmware, `cytv enable-firmware-access --edition root --repair-package-permissions` verifica il pacchetto corrente con dati privati attendibili e rimuove la scrittura per gruppo/altri solo dai percorsi propri di Root. File sconosciuti o modificati fermano la riparazione. Profilo, scelta Home e blocco firmware restano invariati; [dettagli (inglese)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+Solo nel candidato non pubblicato: `cytv recover-system-rollback --edition root` gestisce un ripristino Root verificato quando tutti gli installer dei pacchetti sono terminati, ma è scaduto il tempo di disponibilità del launcher. Richiede il segnale autentico del launcher e rifiuta risultati d’installazione sconosciuti. Conserva pacchetti, codice e chiavi fissati, prove dell’errore e la disattivazione esplicita di Home. Un registro privato documenta il tentativo limitato. Ripetere normalmente non estende il termine. Solo dopo la scadenza dei 120 secondi, senza un segnale di disponibilità accettato né risultati d’installazione sconosciuti, `--new-recovery-attempt` archivia l’intero registro precedente con UUID/hash e apre esplicitamente un nuovo tentativo. Un recupero completato resta idempotente; nessun tentativo automatico. [Procedura e limiti (inglese)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+Solo candidato 1.4.1 non pubblicato: gli aggiornamenti Root sulla TV richiedono System Updater 1.1.1. Prima dell’OTA, sostituisci esplicitamente 1.1.0 con `cytv replace-system-updater --edition root`. Cambia solo System Updater; app Root/Root Updater, profilo completo e scelta Home restano invariati, mentre lo stato precedente viene archiviato. Operazioni sconosciute o incomplete bloccano la sostituzione. Questo requisito non blocca i feed No-root. [Procedura (inglese)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Aiuto e altre istruzioni
 

@@ -18,7 +18,70 @@ from transport import call as luna
 
 
 
-def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2-dev', installed='/media/developer/apps/usr/palm', installation='/var/lib/clean-your-tv-installation', enable=True, lock_product=True, refresh=None, uid=0, automatic=False):
+def repair_sdk_permissions(installed='/media/developer/apps',states=None,uid=0,version=None):
+    """Explicit, lock-held hardening; private writer bytes select every own leaf."""
+    import hashlib,os,stat
+    from pathlib import Path
+    from package_identity import ROOT,inventory,identity
+    from package_data import read_verified
+    installed=Path(installed)
+    expected=inventory(ROOT,states=states,uid=uid)
+    info=identity(ROOT,states=states,installed=installed,uid=uid,full=True)
+    if info['version']!=version:raise ValueError('Repair version differs from protected manifest')
+    files={installed/name:digest for name,digest in expected.items()}
+    roots={installed/'usr/palm'/kind/(ROOT+suffix) for kind,suffix in (('applications',''),('services','.service'),('packages',''))}
+    directories=set()
+    for path in files:
+        for parent in path.parents:
+            if any(parent==root or root in parent.parents for root in roots):directories.add(parent)
+    # Only directories required by the authenticated package may be hardened.
+    children={path:{other.name for other in set(files)|directories if other.parent==path} for path in directories}
+    fds={};owned={};repaired=0
+    def binding(s):return s.st_dev,s.st_ino
+    def valid(s,isdir):
+        if (not (stat.S_ISDIR(s.st_mode) if isdir else stat.S_ISREG(s.st_mode)) or s.st_uid!=uid
+                or s.st_mode&0o7000 or not isdir and s.st_nlink!=1):raise ValueError('Unsafe own package repair path')
+    def directory(path):
+        if path in fds:return fds[path]
+        if path.parent==path:fd=os.open(path,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+        else:fd=os.open(path.name,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW,dir_fd=directory(path.parent))
+        fds[path]=fd
+        if path in directories:valid(os.fstat(fd),True);owned[path]=(fd,True)
+        return fd
+    def verify():
+        for path,fd in fds.items():
+            if binding(path.lstat())!=binding(os.fstat(fd)):raise ValueError('Package repair path replaced')
+        for path,(fd,isdir) in owned.items():
+            valid(os.fstat(fd),isdir)
+            if isdir:
+                if set(os.listdir(fd))!=children[path]:raise ValueError('Unknown own package entries')
+            else:
+                os.lseek(fd,0,os.SEEK_SET);digest=hashlib.sha256();size=0
+                while True:
+                    raw=os.read(fd,65536)
+                    if not raw:break
+                    size+=len(raw)
+                    if size>32*1024*1024:raise ValueError('Oversized repair file')
+                    digest.update(raw)
+                if digest.hexdigest()!=files[path]:raise ValueError('Own package bytes changed')
+    try:
+        for path in sorted(directories,key=lambda p:len(p.parts)):directory(path)
+        for path,digest in files.items():
+            read_verified(path,sha256=digest,installed=installed,uid=uid,limit=32*1024*1024)
+            fd=os.open(path.name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=directory(path.parent));fds[path]=fd;owned[path]=(fd,False)
+        verify()  # No chmod before the entire package and directory inventory pass.
+        for path,(fd,isdir) in sorted(owned.items(),key=lambda item:(not item[1][1],len(item[0].parts))):
+            if any(binding(p.lstat())!=binding(os.fstat(f)) for p,f in fds.items()):raise ValueError('Package repair path replaced')
+            current=os.fstat(fd);valid(current,isdir);mode=stat.S_IMODE(current.st_mode)
+            if mode&0o022:os.fchmod(fd,mode&~0o022);os.fsync(fd);repaired+=1
+        verify()
+        if inventory(ROOT,states=states,uid=uid)!=expected:raise ValueError('Private package publication changed')
+        return {'repaired':repaired,'version':info['version']}
+    finally:
+        for fd in reversed(list(fds.values())):os.close(fd)
+
+
+def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2-dev', installed='/media/developer/apps/usr/palm', installation='/var/lib/clean-your-tv-installation', enable=True, lock_product=True, refresh=None, uid=0, automatic=False, repair=None):
     """Register only configuration APIs; retain legacy ACLs and updater contracts."""
     import contextlib, fcntl, hashlib, json, os, re, stat, subprocess, tempfile
     from pathlib import Path
@@ -63,7 +126,7 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
         try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
         except BaseException:os.close(fd);raise
         return fd
-    if type(enable) is not bool:raise ValueError('Invalid firmware permission action')
+    if type(enable) is not bool or repair is not None and (not enable or automatic or not callable(repair)):raise ValueError('Invalid firmware permission action')
     for path in (root,base,installation):directories(path)
     directories(installed,sdk=True)
     with contextlib.ExitStack() as locks:
@@ -99,7 +162,7 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
         if not isinstance(clients,dict) or not isinstance(original_clients,dict) or {name for name,groups in clients.items() if isinstance(groups,list) and group in groups}!={app,app+'-*'} or any(isinstance(groups,list) and group in groups for groups in original_clients.values()):raise ValueError('Root Home group ownership changed')
         raw=secure(manifest);value=json.loads(raw);meta=manifest.stat()
         # Revocation needs only the protected manifest, never SDK caller authority.
-        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True)) if enable else value
+        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True)) if enable and repair is None else value
         version=info.get('version') if isinstance(info,dict) else None
         if not isinstance(info,dict) or info.get('id')!=app or not isinstance(version,str) or not re.fullmatch(r'\d{1,4}\.\d{1,4}\.\d{1,4}',version):raise ValueError('Root Home identity changed')
         normal={'version':version,'id':app,'serviceFiles':[str(paths['service'])],'apiPermissionFiles':[str(paths['api'])],
@@ -117,6 +180,10 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
         elif value==granted or os.path.lexists(api):raise ValueError('Firmware permission collision')
         if os.path.lexists(api) and secure(api)!=content:raise ValueError('Firmware API drift')
         if automatic and saved is not None and saved['phase']=='disabled':return {'returnValue':True,'permissions_installed':False}
+        if repair is not None:
+            repair(version)  # All protected registration/provenance checks precede SDK mutation.
+            checked=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True))
+            if not isinstance(checked,dict) or checked.get('id')!=app or checked.get('version')!=version:raise ValueError('Repaired SDK identity changed')
         if enable and saved is not None and saved['phase']=='enabled' and value==granted and os.path.lexists(api):return {'returnValue':True,'permissions_installed':True,'effective_verified':False,'reopen_home':True}
         if not enable and saved is None:return {'returnValue':True,'permissions_installed':False}
         if enable:

@@ -23,6 +23,7 @@ function verifyHomeRelease(feed,build,bytes,key=fs.readFileSync(path.join(__dirn
 }
 function verifySystemRelease(feed,build,assets,key=fs.readFileSync(path.join(__dirname,'../updater-service/release-public.pem'))){
  const manifest=systemPolicy.verify(feed,key);
+ if(manifest.edition==='root'&&systemPolicy.compare(manifest.release.slice(1),'1.4.1')>=0&&manifest.minimumSupervisorVersion!=='1.1.1')throw Error('root-minimum-supervisor-required');
  if(manifest.release!==build.tag)throw Error('system-release-tag-mismatch');
  for(const item of manifest.components){
   const version=build.versions[({'root-infrastructure':'root','root-updater':'updater'})[item.name]||item.name];

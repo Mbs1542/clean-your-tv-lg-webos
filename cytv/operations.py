@@ -129,14 +129,48 @@ if ! env -u PYTHONHOME -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=
         self._selected_python = '/usr/bin/python3'
         return self._selected_python
 
-    def configure_firmware_access(self, enabled=True):
+    def recover_system_rollback(self, new_attempt=False):
+        if self.profile['edition'] != 'root' or not self.remote.root:
+            raise UserError('Rollback readiness recovery requires an existing Root connection.')
+        if self.store.pending(self.profile):
+            raise UserError('Previous operation is unresolved. Run cytv status or cytv restore; do not retry installation.')
+        from .system_rollback_recovery import program
+        try:
+            reply = json.loads(self.remote.run(
+                self._python_command([self._python(SYSTEM_UPDATER_STATE), '-I', '-B', '-']),
+                data=(program(new_attempt=True) if new_attempt else program()).encode(), timeout=200))
+            result = reply.get('result') if isinstance(reply, dict) else None
+            if reply.get('returnValue') is not True or not isinstance(result, dict) or result.get('phase') != 'rolled-back' or result.get('homeResumePhase') != 'rolled-back':
+                raise ValueError('Rollback readiness is not complete')
+            return result
+        except Exception:
+            raise UserError('Rollback readiness recovery was not confirmed. Keep recovery state and retry the same command.') from None
+
+    def replace_system_updater(self):
+        if self.profile['edition']!='root' or not self.remote.root:
+            raise UserError('System Updater replacement requires an existing Root connection.')
+        pending=self.store.pending(self.profile)
+        if pending:
+            raise UserError('Previous operation is unresolved. Run cytv status; retain recovery state before retrying.')
+        from .system_updater_replace import program
+        try:
+            source=program(self.payload.resolve()/'system-updater')
+            python=self._python(ROOT_STATE)
+            reply=json.loads(self.remote.run(self._python_command([python,'-I','-B','-']),data=source.encode(),timeout=600))
+            if not isinstance(reply,dict) or reply.get('installed') is not True or reply.get('version')!='1.1.1' or not all(reply.get(k) is True for k in ('root_unchanged','home_unchanged','profile_storage_untouched')):
+                raise ValueError('Unconfirmed System replacement')
+            return reply
+        except Exception:
+            raise UserError('System updater setup was not confirmed. Keep recovery state and run cytv status.') from None
+
+    def configure_firmware_access(self, enabled=True, repair=False):
         if self.profile['edition']!='root' or not self.remote.root:
             raise UserError('Homebrew API access requires an existing Root installation.')
         if self.store.pending(self.profile):
             raise UserError('Previous operation is unresolved. Run cytv status or cytv restore; do not retry installation.')
         from .firmware_access import program
         try:
-            source=program(self.payload/'root',enabled)
+            source=program(self.payload/'root',enabled,repair=True) if repair else program(self.payload/'root',enabled)
             reply=json.loads(self.remote.run(self._python_command([self._python(ROOT_STATE),'-I','-']),data=source.encode(),timeout=60))
             if not isinstance(reply,dict) or reply.get('returnValue') is not True or reply.get('permissions_installed') is not enabled:raise ValueError('Unconfirmed firmware permission action')
             return reply

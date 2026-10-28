@@ -106,8 +106,10 @@ Keep README short; place commands/build internals in [developer references](deve
 and dated evidence in [history](history/README.md). Update a current instruction
 in place instead of appending another release story. Avoid copying the complete
 component version table into every guide. Preserve old links/anchors when moving
-material. Installer feedback guidance must retain explicit user consent before
-an agent publishes a report; see [feedback](FEEDBACK.md).
+material. Feedback from another user's installation requires explicit consent
+before an agent publishes it. Authorized maintainer QA on maintainer/project-owned
+test devices does not require per-report confirmation; privacy and task-scope
+limits still apply. See [feedback](FEEDBACK.md).
 
 The README's `release:downloads` and `release:components` sections must match
 `release-versions.json`, including the release tag/notes links and Android

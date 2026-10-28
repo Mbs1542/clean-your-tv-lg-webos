@@ -1,6 +1,6 @@
 # Clean Your TV — 用户指南
 
-> 未发布候选版 1.4.1：修正 Root OTA 兼容性、更新提示、固件 API 访问及 Windows 包/控制台问题。电视验收及签名升级/回滚仍待验证；这不是已发布的下载。 [1.4.1](../RELEASE-1.4.1.md).
+> 未发布候选版 1.4.1：修正 Root OTA 兼容性、更新提示、固件 API 访问及 Windows 包/控制台问题。已记录 C3 限定范围内的签名升级和常规回滚；最终构建与发布仍待完成；这不是已发布的下载。 [1.4.1](../RELEASE-1.4.1.md).
 
 [文档导航](../README.md) · [报告问题](../FEEDBACK.md)
 
@@ -80,6 +80,12 @@ No-root: 要重新启动 Home 控制，请打开 Home Helper，选择启动 Help
 **现有 1.3.0 安装：**由于允许的文件清单发生变化，原有 System Updater 无法应用 1.4.0。如果尝试在替换前停止，请保留日志并停止操作；不要清除状态或盲目重试。迁移需经过检查的恢复流程和全新 1.4.0 设置；只更新应用不会替换保留的 Root 驱动。下一次 OTA 修正**尚未发布**。[迁移与恢复（英文）](../UPDATES.md#one-time-computer-preparation)。
 
 Root HDMI 声音恢复是实验功能，**默认关闭**，仅在需要时自行启用。它可能中断正常音频，并不证明 eARC 兼容性。[声音恢复（英文）](../development/ROOT-AUDIO-RECOVERY.md)。独立的 **Homebrew CYTV Installer 尚未发布**；请使用已发布的电脑或 Android 安装程序。
+
+仅限未发布候选版：如果旧 Root 目录的可写权限导致固件 API 访问被拒绝，可显式运行 `cytv enable-firmware-access --edition root --repair-package-permissions`。该命令先用可信的私有软件包记录验证当前文件，再仅移除 Root 自有路径的组及其他用户写权限。遇到未知或已修改文件就停止；保留个人配置、Home 选择和固件屏蔽设置。[修复详情（英文）](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate)。
+
+仅限未发布候选版：`cytv recover-system-rollback --edition root` 仅用于已验证的 Root 回滚：所有软件包安装程序均已完成，但启动器就绪等待超时。必须由真实启动器发送就绪信号；安装结果不明时拒绝恢复。保留软件包、固定代码和密钥、失败证据及明确关闭的 Home 控制状态，并以私有记录保存有时限的尝试。 普通重试不会延长时限。仅在之前的 120 秒到期、没有已接受的就绪信号且不存在不明安装结果后，才可用 `--new-recovery-attempt` 按 UUID/哈希归档完整旧记录，并明确开始新尝试。已完成的恢复不会重新开始，也不会自动连续重试。 [流程与限制（英文）](../RECOVERY.md#root-system-rollback-readiness-candidate)。
+
+仅限未发布的 1.4.1 候选版：电视上的 Root 更新需要 System Updater 1.1.1。电视 OTA 前，请明确运行 `cytv replace-system-updater --edition root` 替换 1.1.0。只替换 System Updater，保留 Root/Root Updater 应用、完整配置和 Home 选择，并归档旧状态。结果不明或尚未完成的操作会阻止替换。此要求不限制 No-root 更新源。[替换流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
 
 ## 帮助与详细说明
 
