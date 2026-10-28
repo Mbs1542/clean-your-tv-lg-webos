@@ -57,6 +57,7 @@ def parser():
     result.add_argument('--migrate-home', action='store_true', help=i18n.translate('Root install: explicitly import existing Home packaged/profile data'))
     result.add_argument('--check-payload', action='store_true', help=i18n.translate('Verify embedded release assets without contacting a TV'))
     result.add_argument('--prepare-python-runtime', action='store_true', help=i18n.translate('Download and verify the optional TV Python for offline setup'))
+    result.add_argument('--repair-package-permissions', action='store_true', help=i18n.translate('enable-firmware-access: explicitly repair verified Root package permissions'))
     result.add_argument('--report', action='store_true', help=i18n.translate('doctor: save an issue-ready diagnostic report without private connection data'))
     return result
 
@@ -163,6 +164,8 @@ def main(argv=None, ask=input, write=print, connect=None, secret=getpass.getpass
     remote = None
     store, profile, phase, tv_info = state.Store(args.data_dir), None, 'select-tv', {}
     try:
+        if args.repair_package_permissions and (args.command!='enable-firmware-access' or args.edition=='no-root'):
+            raise UserError('--repair-package-permissions applies only to Root enable-firmware-access.')
         if args.prepare_python_runtime:
             phase = 'prepare-python-runtime'
             from .python_runtime import prime_cache
@@ -429,7 +432,10 @@ def main(argv=None, ask=input, write=print, connect=None, secret=getpass.getpass
                 write('System updates are ready. Open Home Settings → Software updates on the TV.')
             elif args.command in ('enable-firmware-access','disable-firmware-access'):
                 phase=args.command
-                installer.configure_firmware_access(args.command=='enable-firmware-access')
+                if args.repair_package_permissions:
+                    installer.configure_firmware_access(True,repair=True)
+                else:
+                    installer.configure_firmware_access(args.command=='enable-firmware-access')
                 write('Root Home permissions were updated. Reopen Home and check LG firmware updates.')
             elif args.command == 'home-diagnostics':
                 phase = 'home-diagnostics'

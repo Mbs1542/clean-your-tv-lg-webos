@@ -81,6 +81,8 @@ Apri impostazioni Home → Aggiornamenti software e verifica le versioni prima d
 
 Il recupero audio HDMI Root è sperimentale e **disattivato per impostazione predefinita**; abilitalo solo se serve. Può interrompere audio funzionante e non dimostra compatibilità eARC. [Recupero audio (inglese)](../development/ROOT-AUDIO-RECOVERY.md). Il **CYTV Installer Homebrew non è ancora pubblicato**; usa l’installer pubblicato per computer o Android.
 
+Solo candidato non pubblicato: se vecchie directory Root scrivibili impediscono l’accesso all’API del firmware, `cytv enable-firmware-access --edition root --repair-package-permissions` verifica il pacchetto corrente con dati privati attendibili e rimuove la scrittura per gruppo/altri solo dai percorsi propri di Root. File sconosciuti o modificati fermano la riparazione. Profilo, scelta Home e blocco firmware restano invariati; [dettagli (inglese)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
 ## Aiuto e altre istruzioni
 
 Dopo un errore o un’interruzione, controlla lo stato e salva il rapporto diagnostico di quel tentativo. Il recupero guidato chiede conferme separate per rimozione e reinstallazione. Se il risultato è incerto, fermati e conserva registri privati e file di recupero; non eliminarli mai per forzare un tentativo. [Recupero (inglese)](../RECOVERY.md). Per assistenza indica modello, firmware, edizione, versione dell’installer, passaggio fallito e risultato atteso/effettivo; verifica e rimuovi i segreti dal rapporto prima di condividerlo.

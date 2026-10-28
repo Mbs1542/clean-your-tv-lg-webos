@@ -81,6 +81,8 @@ Otwórz ustawienia Home → Aktualizacje oprogramowania i sprawdź wersje przed 
 
 Odzyskiwanie dźwięku HDMI w Root jest eksperymentalne i **domyślnie wyłączone**; włączaj tylko w razie potrzeby. Może przerwać poprawny dźwięk i nie dowodzi zgodności eARC. [Odzyskiwanie dźwięku (angielski)](../development/ROOT-AUDIO-RECOVERY.md). Osobny **CYTV Installer dla Homebrew nie jest jeszcze wydany**; użyj opublikowanego instalatora komputerowego lub Android.
 
+Tylko nieopublikowany kandydat: gdy stare zapisywalne katalogi Root blokują dostęp do API oprogramowania TV, `cytv enable-firmware-access --edition root --repair-package-permissions` sprawdza bieżący pakiet według zaufanych danych prywatnych i usuwa zapis dla grupy/innych wyłącznie we własnych ścieżkach Root. Nieznane lub zmienione pliki zatrzymują naprawę. Profil, wybór Home i blokowanie aktualizacji pozostają bez zmian; [szczegóły (angielski)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
 ## Pomoc i dalsze instrukcje
 
 Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej próby. Prowadzone odzyskiwanie prosi oddzielnie o zgodę na usunięcie i ponowną instalację. Przy niepewnym wyniku przerwij i zachowaj prywatne logi, dzienniki oraz pliki odzyskiwania; nigdy nie usuwaj ich, aby wymusić ponowienie. [Odzyskiwanie (angielski)](../RECOVERY.md). Prosząc o pomoc podaj model, firmware, edycję, wersję instalatora, nieudany krok oraz oczekiwane/rzeczywiste zachowanie; przed udostępnieniem przejrzyj raport i usuń sekrety.
