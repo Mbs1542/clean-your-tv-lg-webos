@@ -706,6 +706,7 @@
     scrollOffset = 0;
     layoutTiles();
     focusTile(focusedTile);
+    var event = document.createEvent('Event'); event.initEvent('home-layout-change', false, false); document.dispatchEvent(event);
   };
   function animateTiles() {
     tiles.forEach(function (e, t) {

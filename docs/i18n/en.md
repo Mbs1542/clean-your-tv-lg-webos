@@ -71,7 +71,7 @@ No-root: To restart Home control, open Home Helper, choose Start Helper and conf
 
 After interruption, run `status` before retrying; retain journals and recovery files. `restore` returns LG Home without removing apps. `uninstall` restores before removal. Root recovery state is deliberately retained; never delete it to force reinstallation. Review diagnostic reports before sharing; do not publish keys or profile folders.
 
-Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Theme selection and installation by URL are not available yet.
+Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Theme selection and installation by URL are not available yet. Themes with a fixed layout hide the Columns option and use the author’s value. Your saved choice returns when you switch to a theme that supports this setting.
 
 In candidate theme previews with the optional sidebar layout, Up/Down selects a menu item, Right enters the apps, and Left from the first app column returns to the menu.
 

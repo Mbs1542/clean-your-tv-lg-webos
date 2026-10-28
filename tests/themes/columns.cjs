@@ -12,12 +12,12 @@ function storage() {
 }
 const saved = storage(), config = {columns: 5};
 let model = create(saved, config);
-assert.deepEqual(model.state(), {columns: 5, override: null, themeColumns: 5, preset: 'dock-grid'});
+assert.deepEqual(model.state(), {columns: 5, override: null, themeColumns: 5, preset: 'dock-grid', allowColumnOverride: true});
 model.setThemeColumns(6);
 assert.equal(model.state().columns, 6);
 model.setColumns(3);
 model.setThemeColumns(8);
-assert.deepEqual(model.state(), {columns: 3, override: 3, themeColumns: 8, preset: 'dock-grid'});
+assert.deepEqual(model.state(), {columns: 3, override: 3, themeColumns: 8, preset: 'dock-grid', allowColumnOverride: true});
 assert.equal(config.columns, 3);
 model = create(saved, config);
 model.setThemeColumns(7);

@@ -30,3 +30,21 @@ for(const bad of [layout('freeform',3),layout('side-grid',9),{...layout('icon-gr
 assert.equal(geometry('dock-grid',5).top,708,'Classic geometry is preserved');
 assert.notDeepEqual(geometry('icon-grid',5),geometry('side-grid',5));
 console.log('PASS distinct trusted layouts, bounds and column precedence');
+
+// Author-controlled layouts temporarily suspend the user's saved column choice.
+model.setColumns(6);
+model.setThemeLayout({...layout('scenic-grid',8),allowColumnOverride:false});
+assert.equal(model.state().columns,8);
+assert.equal(model.state().override,6);
+assert.equal(model.state().allowColumnOverride,false);
+const storedBefore=storage.getItem(require('../../launcher/home-layout.js').key);
+assert.throws(()=>model.setColumns(2),/columns-locked/);
+assert.equal(storage.getItem(require('../../launcher/home-layout.js').key),storedBefore);
+model.setThemeLayout(layout('dock-grid',5));
+assert.equal(model.state().columns,6,'returning to an adjustable theme restores the user choice');
+assert.equal(model.state().allowColumnOverride,true,'omitted flag remains backward compatible');
+for(const invalid of [null,0,'false',{}]) {
+ const previous=model.state();
+ assert.throws(()=>model.setThemeLayout({...layout('scenic-grid',8),allowColumnOverride:invalid}),/layout-invalid/);
+ assert.deepEqual(model.state(),previous);
+}

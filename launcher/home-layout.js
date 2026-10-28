@@ -33,14 +33,15 @@
     return g;
   }
   function create(storage, config, profileData) {
-    var preset = 'dock-grid', themeColumns = 5, override = valid(config.columns) && config.columns !== 5 ? config.columns : null;
+    var preset = 'dock-grid', themeColumns = 5, allowColumnOverride = true, override = valid(config.columns) && config.columns !== 5 ? config.columns : null;
     try {
       var saved = JSON.parse(storage.getItem(KEY));
       if (saved && saved.version === 1 && (saved.columns === null || valid(saved.columns))) override = saved.columns;
     } catch (_) {}
-    function state() { return {columns: override === null ? themeColumns : override, override: override, themeColumns: themeColumns, preset: preset}; }
+    function state() { return {columns: !allowColumnOverride || override === null ? themeColumns : override, override: override, themeColumns: themeColumns, preset: preset, allowColumnOverride: allowColumnOverride}; }
     function changed() { config.columns = state().columns; if (model.onchange) model.onchange(state()); }
     function setColumns(value) {
+      if (!allowColumnOverride) throw Error('columns-locked');
       if (value !== null && !valid(value)) throw Error('columns-invalid');
       var previous = storage.getItem(KEY), profile = null;
       if (profileData) {
@@ -61,10 +62,11 @@
       override = value;
       changed();
     }
-    var model = {state: state, setColumns: setColumns, setThemeLayout: function (layout) {
+    var model = {supportsColumnPolicy: true, state: state, setColumns: setColumns, setThemeLayout: function (layout) {
       if (!layout || presets.indexOf(layout.preset) < 0 || !valid(layout.columns) ||
+          (layout.allowColumnOverride !== undefined && typeof layout.allowColumnOverride !== 'boolean') ||
           layout.spacingScale !== 1 || layout.textScale !== 1 || layout.focusScale !== 1.1) throw Error('layout-invalid');
-      preset = layout.preset; themeColumns = layout.columns; changed();
+      preset = layout.preset; themeColumns = layout.columns; allowColumnOverride = layout.allowColumnOverride !== false; changed();
     }, setThemeColumns: function (value) {
       if (!valid(value)) throw Error('columns-invalid');
       themeColumns = value; changed();

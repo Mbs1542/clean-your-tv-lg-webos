@@ -68,3 +68,12 @@ assert.equal(surfaceClasses.has('ctv-theme-active'),false);
 assert.deepEqual(layouts.at(-1),{preset:'dock-grid',columns:5,spacingScale:1,textScale:1,focusScale:1.1});
 assert.equal(nodes['ctv-theme-style'],undefined);
 console.log('Theme runtime checks passed');
+
+const fixed={...manifest,layout:{...manifest.layout,allowColumnOverride:false}};
+assert.throws(()=>context.ThemeRuntime.apply({manifest:fixed,rules,assetHandles:{}}),/unsupported column policy/,'older renderer rejects fixed policy before mutation');
+assert.equal(nodes['ctv-theme-style'],undefined);
+context.HomeLayoutState.supportsColumnPolicy=true;
+context.ThemeRuntime.apply({manifest:fixed,rules,assetHandles:{}});
+assert.equal(layouts.at(-1).allowColumnOverride,false);
+context.ThemeRuntime.reset();
+assert.notEqual(layouts.at(-1).allowColumnOverride,false,'Classic restores adjustable columns');

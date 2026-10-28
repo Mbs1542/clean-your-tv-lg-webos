@@ -246,3 +246,32 @@ example. User overrides remain authoritative. Rows snap without title motion;
 reorder temporarily lifts the row above its trusted Hide/Place controls.
 The reference is https://github.com/rorygallagher2024/glasshouse; no third-party
 application code is loaded. Settings and emergency UI remain trusted.
+
+## Author-controlled column availability
+
+`layout.allowColumnOverride` is an optional boolean, defaulting to `true` when
+omitted. Set it to `false` for a composition whose column count must stay fixed:
+
+```json
+"layout": {
+  "preset": "scenic-grid",
+  "columns": 8,
+  "allowColumnOverride": false,
+  "spacingScale": 1,
+  "textScale": 1,
+  "focusScale": 1.1
+}
+```
+
+The renderer uses the author's `columns`, hides the Columns settings entry in
+both editions and rejects direct attempts to change it. An open Columns dialog
+closes if a fixed theme is applied. The existing user preference is retained,
+including in storage, and resumes for an adjustable theme or built-in Classic.
+Existing themes remain adjustable without changes. A renderer without explicit
+column-policy support rejects a fixed theme before applying its CSS or geometry.
+There is no new preference key, permission or network endpoint.
+
+This flag protects a composition from user reflow; it does not permit untrusted
+positioning CSS or arbitrary HTML. Card coordinates and remote hit areas still
+belong to the trusted preset. New compositions, including a looping horizontal
+ribbon, require their own renderer implementation and navigation verification.

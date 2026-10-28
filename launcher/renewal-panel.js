@@ -42,7 +42,7 @@
  }
 
  function openNow(){return !panel.classList.contains('hidden');}
- function focus(i){var direction=i<index?-1:1;for(var n=0;n<buttons.length;n++,i+=direction){var j=(i+buttons.length*2)%buttons.length;if(!buttons[j].disabled&&!(buttons[j]===details&&details.classList.contains('hidden'))&&(developerButtons.indexOf(buttons[j])>=0)===developerOpen){index=j;buttons[index].focus();return;}}}
+ function focus(i){var direction=i<index?-1:1;for(var n=0;n<buttons.length;n++,i+=direction){var j=(i+buttons.length*2)%buttons.length;if(!buttons[j].disabled&&!buttons[j].hidden&&!(buttons[j]===details&&details.classList.contains('hidden'))&&(developerButtons.indexOf(buttons[j])>=0)===developerOpen){index=j;buttons[index].focus();return;}}}
  function rpc(method,callback){
   var bridge,done=false,timer=setTimeout(function(){finish(null);},45000);
   function finish(r){if(done)return;done=true;clearTimeout(timer);if(bridge)try{bridge.cancel();}catch(_){}callback(r);}
@@ -150,6 +150,7 @@
  function close(){panel.classList.add('hidden');if(window.ThemeRuntime)ThemeRuntime.resume('settings');if(previous&&previous.focus)previous.focus();}
  document.getElementById('renewalClose').onclick=close;
  document.getElementById('homeLanguage').onclick=function(){if(window.HomeI18n)HomeI18n.openLanguagePicker();};
+ document.addEventListener('home-layout-change',function(){if(openNow()&&buttons[index].hidden)focus(index+1);});
  document.getElementById('homeColumns').onclick=function(){if(window.HomeLayoutPanel)HomeLayoutPanel.open();};
  document.getElementById('renewalUpdates').onclick=function(){panel.classList.add('hidden');window.HomeUpdates.open({onClose:function(){panel.classList.remove('hidden');focus(buttons.indexOf(document.getElementById('renewalUpdates')));checkUpdates();}});};
  document.getElementById('renewalTV').onclick=function(){close();try{var b=new PalmServiceBridge();b.onservicecallback=function(){b.cancel();};b.call('luna://com.webos.applicationManager/launch',JSON.stringify({id:'com.palm.app.settings',params:{}}));}catch(_){}};
@@ -164,7 +165,7 @@
   if(document.activeElement===details&&k===13){focus(buttons.indexOf(document.getElementById('renewalDiagnostics')));return;}
   if(k===461||k===27){if(developerOpen)showDeveloper(false);else close();}else if(k===13){if(!e.repeat)buttons[index].click();}else focus(index+(k===37||k===38||(k===9&&e.shiftKey)?-1:1));
  },true);
- window.RenewalPanel={isOpen:openNow,open:function(){if(openNow())return;if(window.ThemeRuntime)ThemeRuntime.suspend('settings');previous=document.activeElement;developerOpen=false;homeGeneration++;homeReplies={};main.classList.remove('hidden');developer.classList.add('hidden');panel.setAttribute('aria-label',tr('Home settings'));panel.classList.remove('hidden');details.classList.add('hidden');document.getElementById('renewalDiagnostics').textContent=tr('Show diagnostics');document.getElementById('renewalDiagnostics').setAttribute('aria-expanded','false');focus(0);action('status');refreshHome();checkUpdates();}};
+ window.RenewalPanel={isOpen:openNow,open:function(){if(openNow())return;if(window.HomeLayoutPanel)HomeLayoutPanel.refreshAvailability();if(window.ThemeRuntime)ThemeRuntime.suspend('settings');previous=document.activeElement;developerOpen=false;homeGeneration++;homeReplies={};main.classList.remove('hidden');developer.classList.add('hidden');panel.setAttribute('aria-label',tr('Home settings'));panel.classList.remove('hidden');details.classList.add('hidden');document.getElementById('renewalDiagnostics').textContent=tr('Show diagnostics');document.getElementById('renewalDiagnostics').setAttribute('aria-expanded','false');focus(0);action('status');refreshHome();checkUpdates();}};
  // No session request, token access or scheduler setup happens on launcher startup.
 }());
 

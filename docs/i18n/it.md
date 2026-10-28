@@ -71,7 +71,7 @@ No-root: Per riavviare il controllo Home, apri Home Helper, scegli Avvia Helper 
 
 Dopo un’interruzione, esegui prima `status` e conserva i registri. `restore` ripristina LG Home senza rimuovere app; `uninstall` lo ripristina prima della rimozione. I dati di ripristino Root restano intenzionalmente: non cancellarli per forzare una reinstallazione. Controlla i rapporti prima di condividerli; non pubblicare chiavi o cartelle dei profili.
 
-Solo nella versione candidata non ancora pubblicata, in entrambe le edizioni: apri **Impostazioni di Home → Colonne** e scegli da 1 a 8 colonne, oppure **Secondo il tema** per usarne il valore (Classic: 5). Un numero esplicito ha la precedenza sul tema. La selezione dei temi e l’installazione tramite URL non sono ancora disponibili.
+Solo nella versione candidata non ancora pubblicata, in entrambe le edizioni: apri **Impostazioni di Home → Colonne** e scegli da 1 a 8 colonne, oppure **Secondo il tema** per usarne il valore (Classic: 5). Un numero esplicito ha la precedenza sul tema. La selezione dei temi e l’installazione tramite URL non sono ancora disponibili. I temi con disposizione fissa nascondono l’opzione Colonne e usano il valore dell’autore. La scelta salvata viene ripristinata passando a un tema che supporta questa impostazione.
 
 Nelle anteprime dei temi della versione candidata non pubblicata con barra laterale opzionale, Su/Giù seleziona una voce del menu, Destra passa alle app e Sinistra dalla prima colonna delle app torna al menu.
 

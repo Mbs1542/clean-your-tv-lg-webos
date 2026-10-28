@@ -3,6 +3,13 @@
   'use strict';
   var panel, buttons = [], selected = 0, previous;
   function t(text, params) { return window.HomeI18n ? HomeI18n.t(text, params) : text; }
+  function isAvailable() { return !!window.HomeLayoutState && window.HomeLayoutState.state().allowColumnOverride !== false; }
+  function refreshAvailability() {
+    var available = isAvailable(), entry = document.getElementById('homeColumns');
+    if (isOpen() && !available) close();
+    if (entry) { entry.hidden = !available; entry.parentNode.classList.toggle('hidden', !available); }
+    return available;
+  }
   function isOpen() { return !!panel && !panel.hidden; }
   function focus(index) { selected = (index + buttons.length) % buttons.length; buttons[selected].focus(); }
   function close() {
@@ -54,8 +61,9 @@
     if (event.keyCode === 13) { if (!event.repeat) buttons[selected].click(); return; }
     focus(selected + (event.keyCode === 37 || event.keyCode === 38 || event.keyCode === 9 && event.shiftKey ? -1 : 1));
   }, true);
-  window.HomeLayoutPanel = {isOpen: isOpen, open: function () {
-    if (isOpen() || !window.HomeLayoutState) return;
+  document.addEventListener('home-layout-change', refreshAvailability);
+  window.HomeLayoutPanel = {isOpen: isOpen, isAvailable: isAvailable, refreshAvailability: refreshAvailability, open: function () {
+    if (isOpen() || !isAvailable()) return;
     if (!panel) build();
     previous = document.activeElement;
     if (window.ThemeRuntime) ThemeRuntime.suspend('columns');

@@ -83,13 +83,13 @@
   var order = [3, 1, 8, 5, 4, 0, 7, 6, 2];
   function focus(index) {
     selected = index;
-    if (!buttons[selected].disabled) buttons[selected].focus();
+    if (!buttons[selected].disabled && !buttons[selected].hidden) buttons[selected].focus();
   }
   function move(direction) {
     var index = order.indexOf(selected);
     for (var count = 0; count < order.length; count++) {
       index = (index + direction + order.length) % order.length;
-      if (!buttons[order[index]].disabled) return focus(order[index]);
+      if (!buttons[order[index]].disabled && !buttons[order[index]].hidden) return focus(order[index]);
     }
   }
   function close() {
@@ -180,11 +180,13 @@
       move(e.keyCode === 37 || e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey) ? -1 : 1);
     }, true);
   }
+  document.addEventListener('home-layout-change', function () { if (panel && !panel.hidden && buttons[selected].hidden) move(1); });
   window.RenewalPanel = {
     isOpen: function () { return !!panel && !panel.hidden; },
     open: function () {
       if (!panel) build();
       if (!panel.hidden) return;
+      if (window.HomeLayoutPanel) HomeLayoutPanel.refreshAvailability();
       if (window.ThemeRuntime) window.ThemeRuntime.suspend('settings');
       previous = document.activeElement;
       message.textContent = t('Checking whether Home control is on…');

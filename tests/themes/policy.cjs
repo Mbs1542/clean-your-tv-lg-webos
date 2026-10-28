@@ -63,3 +63,12 @@ for (const part of ['library-panel', 'library-close']) {
  }
 }
 console.log('Theme policy checks passed');
+
+for(const value of [true,false]) {
+ const m=structuredClone(fixture);m.layout.allowColumnOverride=value;
+ assert.equal(p.validateManifest(m).layout.allowColumnOverride,value);
+}
+for(const value of [null,0,'false',{}]) {
+ const m=structuredClone(fixture);m.layout.allowColumnOverride=value;
+ assert.throws(()=>p.validateManifest(m),/layout-invalid/);
+}

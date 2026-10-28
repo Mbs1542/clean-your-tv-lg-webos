@@ -71,7 +71,7 @@ No-root: Para reiniciar el control de Home, abre Home Helper, elige Iniciar Help
 
 Tras una interrupción, ejecuta primero `status` y conserva los registros. `restore` recupera LG Home sin quitar aplicaciones; `uninstall` lo restaura antes de eliminarlas. Los datos de recuperación Root se conservan deliberadamente: no los borres para forzar otra instalación. Revisa los informes antes de compartirlos; no publiques claves ni carpetas de perfiles.
 
-Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. La selección de temas y su instalación por URL aún no están disponibles.
+Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. La selección de temas y su instalación por URL aún no están disponibles. Los temas con una distribución fija ocultan la opción Columnas y usan el valor del autor. Tu elección guardada se recupera al cambiar a un tema que admita este ajuste.
 
 En las vistas previas de temas del candidato no publicado con barra lateral opcional, Arriba/Abajo selecciona una opción del menú, Derecha pasa a las aplicaciones e Izquierda desde la primera columna de aplicaciones vuelve al menú.
 

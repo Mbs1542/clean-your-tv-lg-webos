@@ -45,10 +45,10 @@
     e.field = field;
     throw e;
   }
-  function object(x, keys, code, field) {
+  function object(x, keys, code, field, optional) {
     if (!x || typeof x !== 'object' || Array.isArray(x) || Object.getPrototypeOf(x) !== Object.prototype && Object.getPrototypeOf(x) !== null) fail(code, field);
     Object.keys(x).forEach(function (k) {
-      if (keys.indexOf(k) < 0 || k === 'constructor' || k === '__proto__' || k === 'prototype') fail(code, field);
+      if ((keys.indexOf(k) < 0 && (!optional || optional.indexOf(k) < 0)) || k === 'constructor' || k === '__proto__' || k === 'prototype') fail(code, field);
     });
     keys.forEach(function (k) {
       if (!Object.prototype.hasOwnProperty.call(x, k)) fail(code, field + '.' + k);
@@ -111,8 +111,9 @@
     object(m.requires, ['minimumHomeVersion', 'capabilities'], 'manifest-invalid', 'requires');
     version(m.requires.minimumHomeVersion);
     list(m.requires.capabilities, 0, 'api-unsupported', 'capabilities');
-    object(m.layout, ['preset', 'columns', 'spacingScale', 'textScale', 'focusScale'], 'layout-invalid', 'layout');
+    object(m.layout, ['preset', 'columns', 'spacingScale', 'textScale', 'focusScale'], 'layout-invalid', 'layout', ['allowColumnOverride']);
     if (['dock-grid', 'icon-grid', 'side-grid', 'channel-list', 'scenic-grid'].indexOf(m.layout.preset) < 0) fail('layout-invalid', 'preset');
+    if (Object.prototype.hasOwnProperty.call(m.layout, 'allowColumnOverride') && typeof m.layout.allowColumnOverride !== 'boolean') fail('layout-invalid', 'allowColumnOverride');
     number(m.layout.columns, 1, 8, 'layout-invalid', 'columns');
     if (m.layout.columns % 1) fail('layout-invalid', 'columns');
     number(m.layout.spacingScale, .8, 1.2, 'layout-invalid', 'spacingScale');
