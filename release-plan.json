@@ -22,7 +22,7 @@
       "issues": [
         110
       ],
-      "summary": "Restore Root Home access to Homebrew configuration APIs and localized diagnostics; C3 switch accepted, effective blocking after TV restart and full lifecycle acceptance pending"
+      "summary": "Restore Root Home Homebrew configuration API access and localized diagnostics; scoped C3 switch/restart/four-name blocking accepted, final changed-product and remaining lifecycle/network coverage separate"
     },
     {
       "pr": 121,
@@ -85,7 +85,7 @@
     {
       "pr": 131,
       "issues": [],
-      "summary": "Fix launcher card/focus geometry for one through eight columns; preserve sparse layouts and add compiled-browser navigation/scroll regressions; physical-TV acceptance pending"
+      "summary": "Fix launcher card/focus geometry for one through eight columns; compiled-browser regressions and scoped C3 checks accepted (1/8 physical remote, 2\u20137 CDP); full physical-remote matrix unverified"
     },
     {
       "pr": 132,

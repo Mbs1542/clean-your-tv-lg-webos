@@ -83,6 +83,8 @@ Root HDMI sound recovery is experimental and **off by default**; opt in only if 
 
 Unpublished candidate only: if firmware API access is refused because an old Root package retained writable directories, the explicit command `cytv enable-firmware-access --edition root --repair-package-permissions` verifies the current private package before removing write access for group/others from Root-owned paths. Unknown or changed files stop repair. It preserves your profile, Home choice and firmware-blocking preference; see [repair details](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
 
+Unpublished candidate only: `cytv recover-system-rollback --edition root` handles a verified Root rollback whose package installers completed but launcher readiness timed out. It requires genuine launcher health, refuses unknown installer outcomes, and preserves packages, pinned code/keys, failure evidence and an explicit Home-off choice. A private audit records the bounded attempt. [Procedure and limits](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
 ## Help and further reading
 
 After a failed or interrupted operation, check status and save its diagnostic report. Guided recovery asks separately before removal and reinstallation. If the result is uncertain, stop and retain private logs, journals and recovery files; never delete them to force a retry. See [recovery (English)](../RECOVERY.md). For help, include model, firmware, edition, installer version, failed step and expected/actual behavior; review and redact the report before sharing.

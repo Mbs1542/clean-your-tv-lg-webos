@@ -38,6 +38,33 @@ Status, restore and removal do not download Python; referenced recovery runtimes
 are retained. For Root routing recovery, use the
 [Root restore commands](../root-edition/ROLLOUT.md#controls-and-recovery).
 
+## Root System rollback readiness (candidate)
+
+<a id="root-system-rollback-readiness-candidate"></a>
+
+**Unpublished candidate only.** Use this explicit maintenance command only when a
+Root System rollback completed every package installer, but the restored launcher
+missed its readiness deadline. First check status using the same trusted TV
+connection and retain the failed attempt's diagnostic report.
+
+```sh
+cytv recover-system-rollback --edition root
+```
+
+The command verifies the original supervisor pins, restored components, private
+recovery receipts and saved profile digest. It refuses unknown installer outcomes,
+incomplete package rollback, conflicting operations or changed evidence. It does
+not reinstall packages or replace pinned code or keys. It opens the restored Root
+launcher and gives it a fresh, bounded **120-second** window to send its genuine
+authenticated readiness signal; no health receipt is manufactured.
+
+A private durable audit records the attempt and its outcome. Only the same
+unexpired attempt can be resumed; a failed or uncertain attempt keeps its evidence.
+If recovery cannot finish, stop and retain diagnostics and journals for review;
+do not delete state or repeatedly retry. The original completion path preserves
+an explicit Home-off choice. Successful readiness recovery does not prove
+controls, audio, standby or cold boot; check actual behavior separately. [Connection flags and CLI details](CLI.md#candidate-root-system-rollback-readiness).
+
 ## Private Python and low /var space
 
 Root Python preparation checks ABI, directory safety and free space separately.

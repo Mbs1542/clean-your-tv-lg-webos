@@ -9,6 +9,28 @@ from cytv import cli, state
 
 
 class CLITests(unittest.TestCase):
+    def test_explicit_system_rollback_recovery_never_starts_installation(self):
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer, patch('cytv.cli.package.verify_payload', return_value={}):
+            code, output, _ = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp, '--yes'], remote=MagicMock())
+            self.assertEqual(code, 0, output)
+            installer.return_value.recover_system_rollback.assert_called_once_with()
+            installer.return_value.install.assert_not_called()
+        for edition, pending in [('no-root', False), ('root', True)]:
+            with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+                if pending: state.Store(tmp).begin(state.target('192.0.2.10', edition), 'install')
+                code, _, calls = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', edition, '--data-dir', tmp, '--yes'])
+                self.assertEqual(code, 2)
+                self.assertFalse(calls)
+                installer.return_value.recover_system_rollback.assert_not_called()
+
+    def test_system_rollback_recovery_confirmation_defaults_to_no(self):
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+            code, _, calls = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp], [''])
+            self.assertEqual(code, 0)
+            self.assertFalse(calls)
+            installer.assert_not_called()
+
     def test_firmware_access_command_checks_root_pending_and_uses_no_install(self):
         from unittest.mock import MagicMock
         for command,enabled in [('enable-firmware-access',True),('disable-firmware-access',False)]:

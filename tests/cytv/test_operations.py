@@ -76,6 +76,31 @@ class Remote:
 
 
 class OperationTests(unittest.TestCase):
+    def test_system_rollback_recovery_streams_trusted_program_and_requires_complete_reply(self):
+        from unittest.mock import MagicMock, patch
+        from cytv.errors import UserError
+        remote = MagicMock(); remote.root = True
+        store = MagicMock(); store.pending.return_value = None
+        installer = operations.Installer(remote, store, {'edition':'root'}, Path('/unused'), {}, lambda *_:None)
+        for reply, accepted in [({'returnValue':True,'result':{'phase':'rolled-back','homeResumePhase':'rolled-back'}},True), ({'returnValue':True,'result':{'phase':'recovery-required'}},False), ({'returnValue':False},False)]:
+            with self.subTest(reply=reply), patch.object(installer, '_python', return_value='/verified/python') as python:
+                remote.run.return_value = json.dumps(reply)
+                if accepted: installer.recover_system_rollback()
+                else:
+                    with self.assertRaises(UserError): installer.recover_system_rollback()
+                python.assert_called_once_with(operations.SYSTEM_UPDATER_STATE)
+                args, kwargs = remote.run.call_args
+                self.assertLess(len(args[0]), 512)
+                self.assertIn('-I -B -', args[0])
+                self.assertIn(b'def recover(', kwargs['data'])
+                self.assertGreaterEqual(kwargs['timeout'], 180)
+        remote.reset_mock(); store.pending.return_value = {'phase':'unknown'}
+        with self.assertRaises(UserError): installer.recover_system_rollback()
+        remote.run.assert_not_called()
+        store.pending.return_value = None; remote.root = False
+        with self.assertRaises(UserError): installer.recover_system_rollback()
+        remote.run.assert_not_called()
+
     def test_failed_python_provisioning_stops_before_the_root_install_receipt(self):
         import subprocess, sys
         remote = Remote()

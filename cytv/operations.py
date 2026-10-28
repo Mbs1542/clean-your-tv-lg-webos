@@ -129,6 +129,23 @@ if ! env -u PYTHONHOME -u PYTHONPATH PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=
         self._selected_python = '/usr/bin/python3'
         return self._selected_python
 
+    def recover_system_rollback(self):
+        if self.profile['edition'] != 'root' or not self.remote.root:
+            raise UserError('Rollback readiness recovery requires an existing Root connection.')
+        if self.store.pending(self.profile):
+            raise UserError('Previous operation is unresolved. Run cytv status or cytv restore; do not retry installation.')
+        from .system_rollback_recovery import program
+        try:
+            reply = json.loads(self.remote.run(
+                self._python_command([self._python(SYSTEM_UPDATER_STATE), '-I', '-B', '-']),
+                data=program().encode(), timeout=200))
+            result = reply.get('result') if isinstance(reply, dict) else None
+            if reply.get('returnValue') is not True or not isinstance(result, dict) or result.get('phase') != 'rolled-back' or result.get('homeResumePhase') != 'rolled-back':
+                raise ValueError('Rollback readiness is not complete')
+            return result
+        except Exception:
+            raise UserError('Rollback readiness recovery was not confirmed. Keep recovery state and retry the same command.') from None
+
     def configure_firmware_access(self, enabled=True, repair=False):
         if self.profile['edition']!='root' or not self.remote.root:
             raise UserError('Homebrew API access requires an existing Root installation.')

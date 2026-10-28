@@ -321,6 +321,25 @@ uses the guarded fallback. Rejection alone does not establish that an older
 registration is absent: an EIM input-list readback establishes absence when
 available. An unknown EIM result still requires confirmed cleanup before uninstall.
 
+## Candidate: Root System rollback readiness
+
+**Unpublished candidate only:** after a verified Root System rollback reaches a
+launcher-readiness timeout with all package installers completed, use the same
+saved/trusted Root connection:
+
+```sh
+cytv recover-system-rollback --edition root
+```
+
+Normal connection options such as `--host`, `--port`, `--identity`, `--data-dir`
+and `--non-interactive` remain available. This is a Root-only maintenance command,
+not an installation retry. It verifies retained evidence, requires the restored
+launcher's genuine authenticated readiness within a fresh 120-second window, and
+keeps a durable audit. Unknown installer results or changed/conflicting state stop
+recovery. Packages, pinned supervisor code/keys and an explicit Home-off choice
+are preserved. Failed attempts keep their evidence; only the same unexpired
+attempt can resume. See [the recovery procedure and limits](RECOVERY.md#root-system-rollback-readiness-candidate).
+
 ## Report a problem
 
 Every failed connection/install/recovery step prints the error, an

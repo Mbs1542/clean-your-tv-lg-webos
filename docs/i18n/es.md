@@ -83,6 +83,8 @@ La recuperación de sonido HDMI de Root es experimental y está **desactivada po
 
 Solo candidato no publicado: si el acceso a la API de firmware falla por directorios Root antiguos con permisos de escritura, `cytv enable-firmware-access --edition root --repair-package-permissions` verifica el paquete actual con datos privados de confianza y elimina la escritura para grupo/otros solo en rutas propias de Root. Los archivos desconocidos o modificados detienen la reparación. Conserva el perfil, Home y el bloqueo de firmware; [detalles (inglés)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
 
+Solo en el candidato no publicado: `cytv recover-system-rollback --edition root` recupera una reversión Root verificada cuyos instaladores terminaron, pero venció el plazo de disponibilidad del lanzador. Exige la señal auténtica del lanzador y rechaza resultados de instalación desconocidos. Conserva paquetes, código y claves fijados, pruebas del fallo y la desactivación explícita de Home. Un registro privado conserva el intento limitado. [Procedimiento y límites (inglés)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
 ## Ayuda y más instrucciones
 
 Tras un fallo o interrupción, comprueba el estado y guarda el informe de diagnóstico de ese intento. La recuperación guiada pide confirmaciones separadas para eliminar y reinstalar. Si el resultado es incierto, para y conserva registros privados y archivos de recuperación; nunca los borres para forzar otro intento. [Recuperación (inglés)](../RECOVERY.md). Para pedir ayuda, indica modelo, firmware, edición, versión del instalador, paso fallido y resultado esperado/real; revisa y elimina secretos del informe antes de compartirlo.

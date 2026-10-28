@@ -18,6 +18,36 @@ With LG auto-update off and no pending installation reported by the owner, the a
 
 [Maintainer QA report](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/110#issuecomment-6464370670). [Explicit repair PR #132](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/132). This follow-up covers the stated installed app and streamed maintenance helper; it does not freeze or publish the release.
 
+## New blocking result: retained rollback readiness
+
+On 2026-10-28 the next ordinary retained rollback of the installed `eeb4b8b0`
+candidate restored Root 0.4.0 and Root Updater 0.3.0 but did not complete System
+rollback acceptance. The actual Root UI rendered, restored the current rollback
+profile and matched the full saved profile; its one-shot health path reported
+`installation_operation_retained`. The original 120-second readiness deadline
+expired into `recovery-required`. No fault-injection signal had been sent.
+
+LG Home routing and disabled Root intent were independently read back. All 27
+original supervisor hashes, 40 Root recovery hashes, the recovery proof and
+baseline matched the earlier verified rollback. The current release descriptor
+is not finalized. This result supersedes any assumption that the next unchanged
+ordinary rollback must succeed; earlier successful rounds remain scoped history.
+
+A separate-process host reproduction against the authenticated original System
+CLI and installation lock reproduced the refusal during ownership contention;
+the same health request succeeded after releasing that lock. Root's actual
+profile code attempted health once and opened recovery without retrying. This
+matches the observed symptoms but does not prove the exact device contention
+timing. No health receipt was fabricated, deadline extended, journal cleared or
+package installation retried. An explicit, narrowly scoped recovery command is
+approved for implementation; device recovery and changed-product acceptance
+remain pending. See [blocking issue #136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136).
+
+Before this rollback, candidate `686d7eee` passed private artifact verification,
+native macOS ARM64 smoke and production signing with `publish=false`
+([run 40661994355](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40661994355)).
+It has not been admitted on this TV. Public stable remains 1.4.0.
+
 ## Earlier-source evidence references
 
 - [Candidate build 40562857636](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40562857636).
@@ -25,4 +55,4 @@ With LG auto-update off and no pending installation reported by the owner, the a
 - [Acceptance controller PR #127](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/127).
 - [Candidate scope and remaining gates](RELEASE-1.4.1.md).
 
-The earlier-source signing draft was removed. The latest signing draft remains unpublished; signed package evidence remains private locally. Public stable remains 1.4.0. Neither scoped record finalizes the overall release acceptance or satisfies final-head platform/publication gates.
+The earlier-source signing draft was removed. The latest signing draft remains unpublished; signed package evidence remains private locally. Public stable remains 1.4.0. These scoped records do not finalize overall release acceptance or satisfy final-head platform/publication gates.
