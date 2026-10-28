@@ -6,6 +6,14 @@
       "pr": 134,
       "issues": [],
       "summary": "Reuse verified candidate builds and unchanged PR runtime checks, scope physical acceptance and refresh release gates automatically."
+    },
+    {
+      "pr": 142,
+      "issues": [
+        133,
+        140
+      ],
+      "summary": "Fix No-root Helper control ownership while preserving pairing; reject unsupported Root Home interfaces before installation (partial #133; retained recovery remains unresolved)."
     }
   ],
   "excluded": [],
