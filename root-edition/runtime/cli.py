@@ -97,10 +97,11 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
             if (not isinstance(entry,dict) or not isinstance(entry.get('original'),str) or digest(entry['original'].encode())!=entry.get('original_sha256') or digest(secure(path))!=entry.get('installed_sha256') or (meta.st_uid,meta.st_gid,stat.S_IMODE(meta.st_mode))!=(entry.get('uid'),entry.get('gid'),entry.get('mode'))):raise ValueError('Root registration drift')
         clients=read(paths['client']);original_clients=json.loads(snapshot['files'][str(paths['client'])]['original'])
         if not isinstance(clients,dict) or not isinstance(original_clients,dict) or {name for name,groups in clients.items() if isinstance(groups,list) and group in groups}!={app,app+'-*'} or any(isinstance(groups,list) and group in groups for groups in original_clients.values()):raise ValueError('Root Home group ownership changed')
-        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True))
+        raw=secure(manifest);value=json.loads(raw);meta=manifest.stat()
+        # Revocation needs only the protected manifest, never SDK caller authority.
+        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True)) if enable else value
         version=info.get('version') if isinstance(info,dict) else None
         if not isinstance(info,dict) or info.get('id')!=app or not isinstance(version,str) or not re.fullmatch(r'\d{1,4}\.\d{1,4}\.\d{1,4}',version):raise ValueError('Root Home identity changed')
-        raw=secure(manifest);value=json.loads(raw);meta=manifest.stat()
         normal={'version':version,'id':app,'serviceFiles':[str(paths['service'])],'apiPermissionFiles':[str(paths['api'])],
             'roleFiles':[str(paths['role']),str(base/'roles.d'/(app+'.app.json'))],
             'clientPermissionFiles':[str(paths['client']),str(base/'client-permissions.d'/(app+'.app.json'))]}
