@@ -13,6 +13,8 @@ No-root 和 Root 是適用於不同電視組態的同等選項。使用 LG 開�
 - **No-root：**啟用 LG Developer Mode 和 Key Server，輸入電視顯示的口令，並單獨接受電視配對請求。開發者模式必須保持有效；過期可能移除側載應用。即使啟用 Beta 自動續期，也要留意官方計時器。Helper 監控需要本地網路。
 - **Root：**必須已有 root SSH 訪問權限。安裝程式不會為電視獲取 root。已取得 root 的電視不要啟用開發者模式。請保留 root 訪問和恢復服務。
 
+Root 需要可用的 Settings Service 和 System Profile Home 介面（`com.webos.service.systemprofile`）；僅有 root 權限並不能證明相容性。
+
 ## 安裝之前
 
 安裝期間保持電視開機，將電腦與電視連線到同一個可信本地網路。完成後無需電腦持續開機。兼容性取決於型號、固件和遙控器；Root 仍有待完成的實機檢查。

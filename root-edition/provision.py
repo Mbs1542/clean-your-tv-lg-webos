@@ -267,6 +267,29 @@ def refresh():
     return {'returnValue':True,'operation':'scan-services','effective_registration_verified':False}
 
 
+def require_home_interfaces():
+    """Read-only capability gate, usable before any package or Root state exists.
+
+    An absent settings override is valid; prepare_stock_home materializes it
+    later only after checking the actual stock profiles. Never infer a route
+    when the firmware cannot supply its effective profile readback.
+    """
+    try:
+        settings = rpc('home-read')
+        reply = rpc('home-profiles')
+        defaults = settings['settings']['defaultApps']
+        profiles = reply['profiles']
+        routes = [profiles['defaultApps']['categories']['home'], profiles['idleApp']['appId']]
+        if not isinstance(defaults,dict): raise ValueError('invalid-defaults')
+        if 'home' in defaults: routes.append(defaults['home'])
+        if (settings.get('returnValue') is not True or reply.get('returnValue') is not True
+                or type(profiles['idleApp']['support']) is not bool
+                or any(not isinstance(value,str) or not value or value.strip()!=value for value in routes)):
+            raise ValueError('invalid-routing-readback')
+    except (OSError,RuntimeError,ValueError,KeyError,TypeError) as error:
+        raise RuntimeError('Required Home routing interfaces are unavailable or invalid; installation was not started') from error
+
+
 def prepare_stock_home():
     """Setup only: materialize an absent override, never infer a SAM readback.
 
