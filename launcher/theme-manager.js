@@ -7,7 +7,7 @@
  function persist(choice){localStorage.setItem(choiceKey,JSON.stringify(choice));if(localStorage.getItem(choiceKey)!==JSON.stringify(choice))throw Error('Could not save theme selection');}
  function recover(error){generation++;if(trial)clearTimeout(trial.timer);trial=null;rollback=null;classic();try{localStorage.removeItem(choiceKey);localStorage.removeItem(trialKey);}catch(_){}notice=error||'Theme recovery: Classic restored';emit();}
  function selection(){var raw=localStorage.getItem(choiceKey);if(raw===null)return {id:'builtin:classic',title:'Classic'};var s=JSON.parse(raw);if(!s||typeof s.id!=='string'||typeof s.title!=='string'||s.title.length>100||s.id!=='builtin:classic'&&s.id!=='builtin:alpine'&&!/^github:/.test(s.id)||s.id.indexOf('github:')===0&&!/^[a-f0-9]{64}$/.test(s.digest))throw Error('Invalid saved theme selection');return s;}
- function start(){if(ready)return ready;ready=Promise.resolve().then(function(){
+ function start(){if(ready)return ready;if(root.CYTV_THEME_AUTHOR_PREVIEW){ready=Promise.resolve();return ready;}ready=Promise.resolve().then(function(){
    var token=generation,saved;try{if(localStorage.getItem(trialKey)!==null){recover('An interrupted theme preview was reset to Classic');return;}saved=selection();}catch(e){recover(e.message);return;}
    if(saved.id==='builtin:classic')return;
    return environment().then(function(){return payload(saved);}).then(function(pack){return apply(pack,saved,true,token);}).catch(function(e){recover(e.message);});
