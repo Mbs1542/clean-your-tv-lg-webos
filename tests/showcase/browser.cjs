@@ -20,7 +20,8 @@ const {buildShowcase}=require('../../scripts/build-showcase.cjs'),fixture=requir
   await page.locator('#search').fill('does not exist');assert.equal(await page.locator('[data-theme]:visible').count(),0);assert.equal(await page.locator('#no-results').isVisible(),true);
   await page.locator('#search').fill('');await page.locator('#style').selectOption('light');assert.equal(await page.locator('[data-theme]:visible').count(),0);await page.locator('#style').selectOption('dark');assert.equal(await page.locator('[data-theme]:visible').count(),2);
   await page.keyboard.press('Tab');assert.equal(await page.evaluate(()=>document.activeElement.tagName),'SELECT');
-  await page.locator('.card-copy a').first().click();assert.match(await page.title(),/Classic/);assert.equal(await page.locator('[data-copy]').count(),1);
+  await page.locator('#search').fill('Classic');
+  await page.locator('.card-copy a').first().click();await page.locator('[data-copy]').waitFor({timeout:3000});assert.match(await page.title(),/Classic/);assert.equal(await page.locator('[data-copy]').count(),1);
   await page.locator('[data-copy]').click();assert.match(await page.locator('.tv-link').inputValue(),/raw\.githubusercontent\.com\/owner\/collection\/[a-f0-9]{40}\/day\/cytv-theme\.json/);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,'mobile detail must not overflow');
   await page.setViewportSize({width:1440,height:1000});await page.goto(origin+'/repo/themes/');assert.equal(await page.locator('[data-theme]:visible').count(),2);

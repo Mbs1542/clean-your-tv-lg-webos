@@ -10,10 +10,11 @@
       cards.slice().sort(function (a, b) {
         var field = sort.value === 'recent' ? 'data-added' : 'data-updated';
         return sort.value === 'curated' ? cards.indexOf(a) - cards.indexOf(b) : b.getAttribute(field).localeCompare(a.getAttribute(field));
-      }).forEach(function (card) {
+      }).forEach(function (card, index) {
         card.hidden = !(card.getAttribute('data-title').indexOf(query) >= 0 && (!style.value || card.getAttribute('data-tags').split(' ').indexOf(style.value) >= 0) && (!api.value || card.getAttribute('data-api') === api.value));
         if (!card.hidden) count++;
-        grid.appendChild(card);
+        // Preserve a pending click when search change fires on input blur.
+        if (grid.children[index] !== card) grid.insertBefore(card, grid.children[index] || null);
       });
       document.getElementById('result-count').textContent = count + (count === 1 ? ' theme' : ' themes');
       document.getElementById('no-results').hidden = count !== 0;
