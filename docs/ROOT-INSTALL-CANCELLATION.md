@@ -6,6 +6,12 @@ limited to a failed product install at `root-deploy`, with the original Root
 `install-observed` journal, an independently saved genuine SDK install terminal,
 no migration, and no Root Updater/System or provisioning/activation state.
 
+A failure at `provision-finalize-starting` / `stock-home`, including an unavailable
+`com.webos.service.systemprofile`, is **outside this procedure's admission**.
+Provisioning has already started; do not delete its records, use this cancellation
+as a workaround, or assume that unchanged Home controls prove safe removal.
+Review that operation's original provisioning evidence before choosing recovery.
+
 Use separately reviewed source in an isolated checkout. Do not patch a retained
 worker, private runtime, bundle manifest, original request/submission, host
 pending record, ownership receipt, or SDK container permissions. Never submit

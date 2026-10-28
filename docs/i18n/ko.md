@@ -13,6 +13,8 @@ No-root와 Root는 서로 다른 TV 환경에 맞는 동등한 선택지입니�
 - **No-root:** LG Developer Mode와 Key Server를 켜세요. TV에 표시된 암호 문구를 입력하고 별도로 표시되는 페어링 요청을 TV에서 승인하세요. Developer Mode를 계속 활성화해야 합니다. 세션이 만료되면 설치한 앱이 삭제될 수 있습니다. 베타 자동 갱신을 켰더라도 공식 타이머를 확인하세요. Helper의 상태 감시에는 로컬 네트워크가 필요합니다.
 - **Root:** 기존 root SSH 접근 권한이 필요합니다. 설치 프로그램은 TV를 루팅하지 않습니다. 이미 루팅한 TV에는 Developer Mode를 켜지 마세요. root 접근 및 복구 서비스를 유지하세요.
 
+Root에는 Settings Service 및 System Profile (`com.webos.service.systemprofile`)의 정상적인 Home 인터페이스가 필요합니다. root 권한만으로 호환성이 보장되지는 않습니다.
+
 ## 설치 전 준비
 
 TV를 켜고 컴퓨터와 같은 신뢰할 수 있는 로컬 네트워크에 연결하세요. 설치 후에는 컴퓨터를 꺼도 됩니다. 호환성은 모델, 펌웨어, 리모컨에 따라 다릅니다. Root는 실제 기기 검증이 남아 있습니다.

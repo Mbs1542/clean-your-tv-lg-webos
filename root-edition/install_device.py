@@ -135,7 +135,10 @@ class LocalDevice:
         import deploy
         from updater.bootstrap import verify_bundle
         deploy.require_device();deploy.require_node()
-        if product:require_product_abi()
+        if product:
+            require_product_abi()
+            from provision import require_home_interfaces
+            require_home_interfaces()
         self.payload=Path(payload)
         deploy.verify_bundle(self.payload/'root')
         verify_bundle(self.payload/'root-updater')

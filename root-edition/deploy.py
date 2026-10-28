@@ -188,6 +188,8 @@ def install(bundle, run=command, observe=observed_install, migrate=False):
         raise RuntimeError('Root requires TV Python 3.9+')
     if STATE.exists() or STATE.is_symlink() or any(p.exists() or p.is_symlink() for p in installed_paths()):
         raise FileExistsError('Candidate or state already exists; inspect and recover, never retry blindly')
+    from provision import require_home_interfaces
+    require_home_interfaces()
     manifest = verify_bundle(bundle)
     # Validate and retain the exact migration bytes before any install mutation.
     prepared = migration_source() if migrate else None

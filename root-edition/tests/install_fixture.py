@@ -18,6 +18,11 @@ class CurrentInstallation:
         spec=importlib.util.spec_from_file_location('fixture_root_provision',project/'root-edition/provision.py')
         self.provision=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.provision)
         self.stack.enter_context(patch.dict(sys.modules,{'provision':self.provision}))
+        def home_bus(method):
+            if method=='home-read':return {'returnValue':True,'settings':{'defaultApps':{'home':'com.webos.app.home'}}}
+            if method=='home-profiles':return {'returnValue':True,'profiles':{'defaultApps':{'categories':{'home':'com.webos.app.home'}},'idleApp':{'appId':'com.webos.app.home','support':True}}}
+            raise AssertionError('Unexpected Home bus mutation: '+method)
+        self.stack.enter_context(patch.object(self.provision,'rpc',side_effect=home_bus))
         self.payload=self.base/'payload';self.payload.mkdir()
         for script,folder in (('root-edition/build.py','root'),('root-edition/build_updater.py','root-updater')):
             subprocess.run([sys.executable,str(project/script),'--output',str(self.payload/folder)],check=True,capture_output=True)
