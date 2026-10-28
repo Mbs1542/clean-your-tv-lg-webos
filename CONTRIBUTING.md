@@ -66,6 +66,8 @@ release story to every user guide. Update the current instruction in place;
 link the original release evidence instead. Clearly separate unpublished paths.
 Preserve inbound links/anchors when reorganizing and retain recovery details.
 
-After assisted installation, an agent may offer an installation-result report.
-It must show a redacted draft and destination and obtain explicit user consent
-before publication; see [AGENTS.md](AGENTS.md#installation-results-and-user-consent).
+For another user's installation, an agent must show a redacted draft and destination
+and obtain explicit user consent before publication. Authorized maintainer QA on
+maintainer/project-owned test devices may publish redacted technical acceptance
+records without per-report confirmation. Privacy and scope limits apply to both;
+see [AGENTS.md](AGENTS.md#installation-results-and-user-consent).

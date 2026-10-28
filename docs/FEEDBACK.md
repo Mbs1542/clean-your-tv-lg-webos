@@ -32,11 +32,19 @@ issue. Keep it private and ask the maintainer for a private reporting channel.
 
 ## If an AI agent helped
 
-The agent should offer a short, redacted draft after the installation attempt,
-whether it succeeded, failed or succeeded after recovery. It must ask your
-permission to publish that draft to the named issue or repository. You may edit
-it, decline or keep it locally. Permission to install or debug is not permission
-to publish. No response is not consent.
+For your installation as an end user, the agent should offer a short, redacted
+draft after the attempt, whether it succeeded, failed or succeeded after recovery.
+It must ask your permission to publish that draft to the named issue or repository.
+You may edit it, decline or keep it locally. Permission to install or debug is not
+permission to publish. No response is not consent.
+
+For an authorized maintainer release/QA session on a maintainer-owned or
+project-owned test TV, the agent may record redacted technical acceptance results
+in the related issue, release PR and repository without asking separately for each
+update. The maintainer/test-device context must already be established from the
+human's instructions. This exception does not cover remote help on another user's
+device or that user's private information. A request to keep a run private still
+applies, and the redaction rules above always apply.
 
 The agent must not run extra TV tests, retry a failed installation or change
 settings just to fill in a report. See [the agent instructions](../AGENTS.md#installation-results-and-user-consent).
