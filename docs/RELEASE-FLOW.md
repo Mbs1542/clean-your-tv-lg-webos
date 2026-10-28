@@ -289,6 +289,17 @@ Ordinary PRs run only affected checks: TV/webOS, installer, Android, preview or
 packaging/release tools. Shared dependencies enable every affected group; unknown
 paths conservatively enable all checks. Documentation-only changes skip application
 checks and Pages builds while keeping the required Linux/macOS status names green.
+Feature branches run affected tests on PR events. Successful runtime results may
+be reused within the same PR/day when the checked-out merge tree (including base
+changes), selected groups, OS/image, exact Python/Node and installed Python
+dependencies match. Only a small run-ID marker is restored; no cached code executes. Its source run
+and the latest prior Tests run on that branch must still be successful; newer
+failed/running evidence or an API error forces fresh tests. Fork PRs do not use
+these markers.
+Current README/plan metadata always runs, and affected setup/packaging checks
+remain fresh. Cache outages fall back to tests; explicit rerun attempts bypass
+hits. Full candidate validation never uses these PR success markers.
+
 Feature branches run affected tests on PR events. The prepared candidate build
 runs the full suite once. Release PR checks retain the required Linux/macOS status
 names and run metadata/setup checks; the trusted Release policy enforces the full

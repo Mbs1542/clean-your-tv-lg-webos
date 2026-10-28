@@ -107,7 +107,7 @@ def main():
             and os.environ.get('CI_FULL_SUITE') != 'true'):
         selected = {'setup'}  # Release policy requires full tests from the trusted build.
     outputs = {name: name in selected for name in COMPONENTS}
-    outputs.update(any=bool(selected), candidate=candidate, installers=installers)
+    outputs.update(any=bool(selected), runtime=bool(selected - {'setup'}), candidate=candidate, installers=installers)
     lines = ''.join(f'{name}={str(value).lower()}\n' for name, value in outputs.items())
     print(lines, end='')
     with open(os.environ['GITHUB_OUTPUT'], 'a') as output:

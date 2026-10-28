@@ -94,6 +94,41 @@ class ReleaseInputs(unittest.TestCase):
             with self.subTest(pin=pin), self.assertRaises(ValueError):
                 self.inputs['build_pin']({'build': pin})
 
+    def test_cached_success_never_overrides_newer_failed_evidence(self):
+        self.assertTrue('test_cache_hit' in self.inputs, 'Reuse must check the latest CI evidence')
+        valid = {'id': 10, 'status': 'completed', 'conclusion': 'success', 'event': 'pull_request',
+                 'head_branch': 'feature', 'path': '.github/workflows/tests.yml',
+                 'head_repository': {'full_name': 'owner/repo'}}
+        for latest, original, expected in (
+            (valid, valid, True),
+            ({**valid, 'id': 11}, valid, True),
+            ({**valid, 'id': 11, 'conclusion': 'failure'}, valid, False),
+            ({**valid, 'id': 11, 'status': 'in_progress', 'conclusion': None}, valid, False),
+            ({**valid, 'id': 11}, {**valid, 'conclusion': 'failure'}, False),
+            (valid, {**valid, 'head_repository': {'full_name': 'someone/fork'}}, False),
+        ):
+            def provider(path):
+                return original if path == 'actions/runs/10' else {'workflow_runs': [latest, {**valid, 'id': 12, 'status': 'in_progress'}]}
+            self.assertEqual(self.inputs['test_cache_hit'](10, 12, 'owner/repo', 'feature', provider), expected)
+
+
+    def test_test_cache_identity_includes_merge_tree_selection_and_environment(self):
+        self.assertTrue('test_key' in self.inputs, 'PR tests need an input/environment-bound success key')
+        key = self.inputs['test_key']
+        environment = {'python': '3.12.9', 'node': '22.1.0', 'dependencies': 'paramiko==3.5.1', 'image': 'ubuntu-1', 'day': '2026-10-28'}
+        first = key(self.source, 'tv,installer', environment, self.root)
+        self.write('docs/INSTALL.md', 'documentation correction')
+        self.write('release-plan.json', '{"acceptance":"observed"}')
+        docs = self.commit('evidence only')
+        self.assertEqual(first, key(docs, 'tv,installer', environment, self.root))
+        self.assertNotEqual(first, key(docs, 'tv', environment, self.root))
+        self.assertNotEqual(first, key(docs, 'tv,installer', {**environment, 'dependencies': 'paramiko==9'}, self.root))
+        self.assertNotEqual(first, key(docs, 'tv,installer', {**environment, 'day': '2026-10-29'}, self.root))
+        self.write('base-only-dependency', 'changed merged base')
+        merged = self.commit('base input changed')
+        self.assertNotEqual(first, key(merged, 'tv,installer', environment, self.root))
+
+
     def test_scope_keeps_metadata_out_and_unknown_inputs_expand(self):
         scope = self.inputs['acceptance_scope']
         self.assertEqual(scope(['docs/INSTALL.md', 'release-plan.json']), set())

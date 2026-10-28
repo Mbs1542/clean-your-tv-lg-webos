@@ -16,6 +16,7 @@ on:
     branches: [release/next]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: cytv-candidate-${{ github.ref }}
   cancel-in-progress: true

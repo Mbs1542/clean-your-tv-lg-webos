@@ -19,7 +19,11 @@ required platform/test jobs. No candidate scripts execute in privileged policy.
 
 ## CI lifecycle
 
-Feature PRs retain affected checks. The candidate build runs the full Linux/macOS
+Feature PRs retain affected checks and may reuse successful runtime results for
+identical checked-out merge inputs, selected groups, OS/image, exact Python/Node,
+installed Python dependencies and UTC day in the same PR. README/plan metadata
+and affected setup checks stay fresh. Explicit reruns bypass hits, cache outages
+fall back to testing and candidate validation never uses this cache. The candidate build runs the full Linux/macOS
 suite once alongside all platform builds. Candidate PRs run metadata checks;
 Release policy enforces the complete trusted build. Publication rechecks that
 record and verifies final packages/feeds without running the same full suite.

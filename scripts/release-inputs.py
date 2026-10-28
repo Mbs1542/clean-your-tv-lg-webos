@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Conservative, data-only source equivalence for previously built candidates."""
 import json
+import hashlib
 from pathlib import Path
 import re
 import subprocess
@@ -77,3 +78,59 @@ def acceptance_scope(paths):
         else:
             selected.update(ALL_SCENARIOS)
     return selected
+
+
+def test_key(commit, selection, environment, root=ROOT):
+    """A success marker is reusable only for the same merged inputs and runtime."""
+    raw = json.dumps([snapshot(commit, root), selection, environment], sort_keys=True).encode()
+    return hashlib.sha256(raw).hexdigest()
+
+
+def test_cache_hit(run_id, current_id, repo, branch, provider):
+    """A newer failed/running attempt overrides an older cached success."""
+    from urllib.parse import urlencode
+    def successful(run):
+        return (run.get('status') == 'completed' and run.get('conclusion') == 'success'
+                and run.get('event') == 'pull_request' and run.get('head_branch') == branch
+                and run.get('path') == '.github/workflows/tests.yml'
+                and run.get('head_repository', {}).get('full_name') == repo)
+    original = provider('actions/runs/' + str(run_id))
+    if not successful(original):
+        return False
+    query = urlencode({'branch': branch, 'event': 'pull_request', 'per_page': 100})
+    runs = provider('actions/workflows/tests.yml/runs?' + query)['workflow_runs']
+    prior = [run for run in runs if run['id'] != current_id and run.get('head_branch') == branch
+             and run.get('head_repository', {}).get('full_name') == repo]
+    return bool(prior and successful(max(prior, key=lambda run: run['id'])))
+
+
+if __name__ == '__main__':
+    import argparse
+    from datetime import datetime, timezone
+    import os
+    import sys
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--test-key', action='store_true')
+    mode.add_argument('--check-test-cache', type=Path)
+    args = parser.parse_args()
+    if args.test_key:
+        environment = {name: os.environ.get(name, '') for name in ('RUNNER_OS', 'RUNNER_ARCH', 'ImageOS', 'ImageVersion')}
+        environment.update(python=sys.version, node=subprocess.check_output(['node', '--version'], text=True).strip(),
+                           dependencies=subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'], text=True),
+                           day=datetime.now(timezone.utc).date().isoformat())
+        value = test_key(git('rev-parse', 'HEAD').decode().strip(), os.environ['TEST_SELECTION'], environment)
+        output_line = 'key=' + value
+    else:
+        def provider(path):
+            return json.loads(subprocess.check_output(['gh', 'api', 'repos/' + os.environ['GITHUB_REPOSITORY'] + '/' + path],
+                                                     stderr=subprocess.DEVNULL, timeout=20))
+        try:
+            raw = (args.check_test_cache / 'run').read_text().strip()
+            hit = bool(re.fullmatch('[1-9][0-9]{0,19}', raw)) and test_cache_hit(
+                int(raw), int(os.environ['GITHUB_RUN_ID']), os.environ['GITHUB_REPOSITORY'], os.environ['GITHUB_HEAD_REF'], provider)
+        except (OSError, ValueError, KeyError, subprocess.SubprocessError):
+            hit = False  # Cache/API outages must execute tests, never grant success.
+        output_line = 'hit=' + str(hit).lower()
+    with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+        output.write(output_line + '\n')
