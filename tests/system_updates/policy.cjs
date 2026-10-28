@@ -32,3 +32,19 @@ async function offerFixture(status,body,error){
  }
  console.log('System update offline offer error fixtures passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
+
+// New Root offers fail closed on the actual immutable 1.3 supervisor policy.
+const historical=manifest('root'),gated={...historical,minimumSupervisorVersion:'1.1.1'};
+assert.equal(policy.validate(gated).minimumSupervisorVersion,'1.1.1');
+assert.equal(policy.validate(historical).edition,'root');
+for(const value of ['1.1.2','2.0.0','bad',null,111])assert.throws(()=>policy.validate({...gated,minimumSupervisorVersion:value}));
+assert.throws(()=>policy.validate({...manifest(),minimumSupervisorVersion:'1.1.1'}));
+const originalSource=require('child_process').execFileSync('python3',['-c',"import tarfile;print(tarfile.open('tests/system_updates/fixtures/public-1.3.0-supervisor.tar.gz').extractfile('supervisor/system_updater/policy.js').read().decode(),end='')"],{cwd:require('path').resolve(__dirname,'../..'),encoding:'utf8'});
+const original={exports:{}};
+require('vm').runInNewContext(originalSource,{require,module:original,Buffer,process,__dirname:require('path').resolve(__dirname,'../../system-updater')});
+assert.equal(original.exports.validate(historical).edition,'root');
+assert.throws(()=>original.exports.validate(gated),/incompatible/);
+const rawGated=Buffer.from(JSON.stringify(gated)),signedGated={payload:rawGated.toString('base64'),signature:crypto.sign('RSA-SHA256',rawGated,privateKey).toString('base64')};
+assert.throws(()=>original.exports.verify(signedGated,publicKey),/incompatible/);
+assert.equal(policy.verify(signedGated,publicKey).minimumSupervisorVersion,'1.1.1');
+console.log('PASS historical six-field proofs retained; new Root minimum rejects old supervisor before offer');

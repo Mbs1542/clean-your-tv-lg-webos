@@ -1,9 +1,10 @@
 # Root Edition doctor
 
-## cytv requirement diagnostics (1.1.0)
+<a id="cytv-requirement-diagnostics-110"></a>
+## cytv requirement diagnostics
 
 `cytv doctor --report` uses the shared installer's saved connection and writes a
-private issue-ready report. Root checks include UID, Python executable/modules
+private diagnostic report. Root checks include UID, Python executable/modules
 and version/features, Luna, developer/service directories and TV Node.js 8+.
 `tv.root_requirements` records each result as `pass`, `fail` or `unknown`;
 `ssh_command.exit_status` can record a safe numeric remote exit status without raw

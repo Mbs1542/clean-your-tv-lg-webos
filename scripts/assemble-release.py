@@ -238,7 +238,11 @@ def assemble(artifacts, output, versions, commit, build_commit=None):
         updater = (payload / 'updater.ipk').read_bytes()
         system_builder = runpy.run_path(str(ROOT / 'system-updater/build.py'))
         note = 'docs/RELEASE-' + versions['release'] + '.md'
-        system_builder['prepare_release'](payload, output, 'v'+versions['release'], (ROOT / note).read_text()[:3800])
+        system_manifests=system_builder['prepare_release'](payload, output, 'v'+versions['release'], (ROOT / note).read_text()[:3800])
+        system_files={c['url'].rsplit('/',1)[1] for manifest in system_manifests.values() for c in manifest['components']}
+        runpy.run_path(str(ROOT/'scripts/prepare-release.py'))['verify_system_assets'](
+            system_manifests,{'tag':'v'+versions['release'],'versions':versions},
+            {name:(output/name).read_bytes() for name in system_files})
         with zipfile.ZipFile(output / ('clean-your-tv-no-root-' + versions['home'] + '.zip'), 'w', zipfile.ZIP_DEFLATED) as archive:
             archive.write(payload / 'launcher.ipk', 'com.gathin.tvhome_' + versions['home'] + '_all.ipk')
             archive.write(payload / 'helper.ipk', 'com.local.nativehome_' + versions['helper'] + '_arm.ipk')

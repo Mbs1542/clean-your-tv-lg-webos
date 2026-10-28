@@ -1,12 +1,13 @@
-# Offline candidate bundle
+# Build a Root source bundle
 
 Build on the host with Python 3; the output directory must not exist:
 
 ```sh
-python3 root-edition/build.py --version 0.4.0 --output /absolute/path/to/new-candidate
+python3 root-edition/build.py --version 0.5.0 --output /absolute/path/to/new-candidate
 ```
 
-The bundle contains an isolated `com.cleanyourtv.root.preview` IPK, its public-source file hashes, the recovery runtime, and host/device drivers. `bundle.json` covers every distributed support/runtime file. `SHA256SUMS` covers the IPK. No TV connection occurs during build. This candidate still requires hardware validation.
+The bundle contains an isolated `com.cleanyourtv.root.preview` IPK, its public-source file hashes, the recovery runtime, and host/device drivers. `bundle.json` covers every distributed support/runtime file. `SHA256SUMS` covers the IPK. No TV connection occurs during build. A source build requires its own exact-artifact validation; see
+[1.4.0 evidence](../../docs/RELEASE-1.4.0-ACCEPTANCE.md).
 
 These are **unreleased source-candidate** instructions, distinct from published
 tagged bundles. For a later supervised TV session, build the matching Root Updater
@@ -32,7 +33,8 @@ installation automatically or infer completion from shell exit.
 `--identity /path/to/key` is optional. The scripts require strict host-key checking and batch authentication. Device operations require root, suitable Python 3.9+, TV Node.js 8+, Homebrew services,
 the webOS Luna tool, the developer-app directory and supported ARM32 remote input.
 Manual drivers do not provision Python; cytv can supply the optional pinned ARMv7
-runtime on eligible TVs. Retain its verified binding for recovery/removal. Installation does not select this app as Home. Persistent activation is available
+runtime on eligible TVs. Retain its verified binding for recovery/removal. The manual bundle install request does not select this app as Home; normal
+cytv setup follows provisioning with verified activation and launch. Manual persistent activation is available
 through `setup.py enable` or **Change Home** in Home settings after the checks
 pass. For normal setup, use [manual installation](../../docs/MANUAL_INSTALL.md),
 including shared product status/removal and explicit continuation, or [cytv](../../docs/INSTALL.md).
@@ -63,3 +65,6 @@ coordinator/updater ownership. Package-owned 50/51/52 startup links and live
 package-disappearance guards are implemented but direct deletion, standby,
 cold boot and all other [physical gates](../../docs/development/HOMEBREW-INSTALL-ACCEPTANCE.md)
 remain untested. Recovery evidence and referenced runtimes survive removal.
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="offline-candidate-bundle"></a>

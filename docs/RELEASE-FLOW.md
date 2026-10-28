@@ -97,6 +97,33 @@ release PR ready. Release notes alone do not replace updated usage instructions.
   record why. Resolve stale instructions before marking the PR ready; document
   deliberate remaining limitations rather than checking an unfinished item.
 
+Keep current user guides task-first and reachable from [the documentation index](README.md).
+Keep README short; place commands/build internals in [developer references](development/README.md)
+and dated evidence in [history](history/README.md). Update a current instruction
+in place instead of appending another release story. Avoid copying the complete
+component version table into every guide. Preserve old links/anchors when moving
+material. Feedback from another user's installation requires explicit consent
+before an agent publishes it. Authorized maintainer QA on maintainer/project-owned
+test devices does not require per-report confirmation; privacy and task-scope
+limits still apply. See [feedback](FEEDBACK.md).
+
+The README's `release:downloads` and `release:components` sections must match
+`release-versions.json`, including the release tag/notes links and Android
+versionCode. Update these visible sections when selecting versions at freeze;
+do not remove or duplicate their HTML boundary comments. Historical evidence
+outside those sections keeps its original versions. Run:
+
+```sh
+python3 -m unittest discover -s tests/setup -p test_readme_release.py
+```
+
+Required Linux/macOS setup tests validate the actual README; README-only changes
+now select these checks. The trusted release policy also reads and validates the
+candidate README as data. Policy-source changes take effect when integrated into
+`main`; required candidate tests enforce this check during the initial rollout.
+This detects metadata drift, not whether all explanatory prose is accurate:
+keep the manual documentation pass.
+
 Repeat this pass after scope changes, reversions or version changes. The release
 template and [release checklist](RELEASE_CHECKLIST.md) make it a maintainer gate;
 CI does not establish that documentation matches product behavior.

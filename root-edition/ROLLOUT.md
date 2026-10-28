@@ -1,162 +1,104 @@
 # Install and activate Root Edition
 
-This is a separate Root Edition package for an already rooted TV. Tested device:
-**OLED55C3RLA / 43.21.71**. See [acceptance and remaining gates](RELEASE-ACCEPTANCE.md).
-The ordinary launcher and Home Helper remain installed. Keep a working backup
-and root SSH connection before changing routing.
+Install Root on an already rooted TV with working root SSH access and recovery
+backups. [1.4.0 acceptance](../docs/RELEASE-1.4.0-ACCEPTANCE.md) covers the recorded
+C3 configuration; it does not establish other-model compatibility.
 
 ## 1. Download or build, then verify
 
-For the complete manual-install archive, extract it and open a terminal in its top
-folder. Check its included instructions and bundle paths. The commands below use
-`build/root-candidate` for Root and `build/root-updater` for its independent updater.
-If those bundles are included, skip their build commands and verify checksums. Do not
-replace the bundled runtime with an untested build while following this release.
-
-To build the **Root 0.4.0 source bundle** (published archives retain their own versions and hardware record):
-
-On your computer, use Python 3.9+, OpenSSH, Node.js 20.19+ and npm. The full tests also need Bash,
-a C compiler and the project Python dependencies, including
-`cytv/requirements.txt`. From the repository root:
-
-```sh
-npm ci --ignore-scripts --no-audit --no-fund
-bash scripts/test.sh
-mkdir -p build
-python3 root-edition/build.py --version 0.4.0 --output build/root-candidate
-python3 root-edition/build_updater.py --output build/root-updater
-```
-
-The output directory must be new. Keep the whole directory, including `setup.py`,
-`bundle.json`, runtime, IPK and `SHA256SUMS`; the IPK alone does not provision
-recovery. Verify its IPK checksum with `sha256sum -c SHA256SUMS` (macOS:
-`shasum -a 256 -c SHA256SUMS`) from inside that directory. Installation also checks
-all bundle files against `bundle.json`. Checksums do not replace source trust.
-
-Public builds contain an empty inventory. They exclude the ordinary Home updater,
-renewal and helper-control scripts. Root's separate update UI requires the
-[one-time Root Updater setup](UPDATES.md). This build does not contact the TV.
+Use the [installation guide](../docs/INSTALL.md) for desktop or Android.
+Source builders and manual archive users should follow the
+[manual Root procedure](../docs/MANUAL_INSTALL.md#7-root-first-installation-checks-and-persistent-activation)
+and [bundle contract](package/README.md). Keep complete matching Root and Root
+Updater bundles and verify included hashes. An IPK alone does not provision recovery.
+Published archives use their included instructions; unreleased source commands
+are identified separately in the manual guide.
 
 ## 2. Check access and install without activating
 
-Configure an OpenSSH alias `my-tv` for your existing root login. Verify its host
-key through your existing trusted setup; do not disable host-key checking.
-The TV needs suitable Python 3.9+, Node.js 8+, luna-send, Homebrew services and
-supported ARM32 Magic Remote input. These manual commands assume working system
-Python. Eligible TVs without it can use cytv's separately downloaded pinned ARMv7
-[managed Python](../docs/OPTIONAL-PYTHON.md); compatible loader/libc is still required.
-Maintenance must retain and use the verified interpreter binding. The doctor is read-only:
+Root requires Python 3.9+, TV Node.js 8+, Homebrew services and supported ARM32
+Magic Remote input. Eligible TVs may use [managed Python](../docs/OPTIONAL-PYTHON.md).
+Keep strict SSH host-key verification. [Doctor](DOCTOR.md) is read-only and cannot
+certify compatibility.
 
-```sh
-python3 root-edition/doctor.py --ssh my-tv --output doctor-report.json
-python3 build/root-candidate/setup.py install --ssh my-tv --bundle build/root-candidate --migrate-packaged-home
-python3 build/root-candidate/setup.py status --ssh my-tv
-```
+Normal desktop/Android cytv setup verifies recovery, stops Home Helper, enables
+Home control and opens Clean without a trial countdown or Keep confirmation.
+The remaining provisioning/activation steps in this section describe **manual
+source bundles**, whose install request leaves Home control off.
 
-`--migrate-packaged-home` reads the existing updater's validated profile JSON when
-available, otherwise copies the ordinary launcher's packaged inventory/config and
-icons. It does not write to the original profile or migrate arbitrary localStorage.
-Omit the flag only if you intend to configure the empty candidate yourself.
-Resulting private hashes are recorded in `personalization.json` on the TV.
+Normal current source setup installs Root Home and Root Updater together through
+the shared coordinator. Keep the original operation UUID and inspect status until
+`state: complete` **and** `current: true`. A successful submission is not completion.
+Pending means inspect again; conflict, recovery-required or unknown outcomes stop
+activation. Do not repeat setup or replace an operation ID to bypass a pending request.
 
-Installation provisions recovery but **does not switch system Home**. It refuses
-an existing candidate or state directory. If installation has an unknown outcome,
-retain its journal and inspect it; never blindly retry or delete recovery state.
-Do not overwrite a live runtime with a newer bundle.
+Packaged-profile migration copies validated JSON/config/icons only; it never
+modifies the source installation or imports arbitrary browser storage.
 
 ## 2a. Install the independent updater once
 
-For a manual installation, install Root Updater before activating Home control. The distribution
-contains `build/root-updater`; use the exact newly installed Root bundle as its
-rollback baseline:
-
-```sh
-python3 build/root-updater/setup-updater.py --bundle build/root-updater --baseline build/root-candidate --ssh my-tv --apply
-```
-
-Keep LG Home selected during setup. Whole-edition RC updates additionally need
-explicit computer bootstrap of the independent System Updater supervisor.
-See [Root updates and recovery](UPDATES.md); a legacy app-only OTA cannot do this.
-Existing Root Stable 0.1.0 uses package version 0.0.1 and older recovery
-infrastructure: it needs supervised computer migration, not an IPK-only update.
-The setup refuses live or retained state rather than overwriting it. Restore LG
-Home, retain private backups and have a maintainer inspect existing recovery
-state; do not delete that state to bypass the check.
+Root Updater belongs to normal full-product setup. Signed whole-edition updates
+also require explicit computer bootstrap of the separate **System Updater**.
+See [updates and the original 1.3.0 → 1.4.0 OTA limitation](UPDATES.md).
+Existing retained infrastructure requires matching recovery/transition review;
+fresh-setup commands are not a migration shortcut.
 
 ## 3. Turn on Home control
 
-If Home Helper is active, press Home three times within two seconds to stop it,
-then release all buttons. Helper versions through 0.6.13 instead use holding Home
-for about two seconds. Root activation refuses to
-run while that helper is present and never clears its safety latch.
+Normal cytv setup performs activation after recovery verification. If it stops
+before completion, inspect status and use **Finish Root setup** only when offered.
 
-Open **Home Root** from LG Apps, then turn **Change Home** on in **Home settings**.
-Alternatively:
+For manual setup or later explicit reactivation, stop Home Helper if it is running:
+press Home three times within two seconds
+(Helper through 0.6.13: hold Home about two seconds). Release all buttons.
+Root refuses activation while Helper is present and never clears its safety latch.
 
-```sh
-python3 build/root-candidate/setup.py enable --ssh my-tv
-```
-
-Activation checks input, the recovery guardian and effective Home routing
-before recording permanent intent. No countdown or second confirmation is needed.
-If startup fails, it restores LG Home. Check arrows/OK, short Home and Back.
-Turn **Change Home** off, press Home three times, or use the restore command below
-to turn it off whenever needed.
+Open **Home Root → Home settings → Change Home** and turn it on.
+Activation checks input, the independent guardian and actual routing before
+saving permanent intent. No countdown or second confirmation is required.
+Check arrows/OK, short Home and Back on your TV.
 
 ## 4. Persistent operation
 
-The mode runs on the TV without a computer. A confirmed normal shutdown retains
-the selected Home profile for startup. Startup recovery reconciles the old
-transaction before reactivation with fresh protections and normal-boot checks.
-Use webOS power controls: a direct `systemctl reboot` can be classified as an
-input fault and disable Home control. A fault or explicit exit disables intent rather than looping
-through automatic reactivation. Other lifecycle cases remain final release gates.
+Root runs without an always-on computer. Confirmed normal shutdown retains the
+selected profile; startup reconciles the previous transaction and requires fresh
+health checks. Faults, failsafe and explicit/emergency off inhibit reactivation.
+Use normal webOS power controls; direct `systemctl reboot` can be classified as
+an input fault. C3 startup/standby evidence is in [current acceptance](../docs/RELEASE-1.4.0-ACCEPTANCE.md).
 
 ## Controls and recovery
 
 | Action | Result |
 | --- | --- |
-| Short Home | Opens our system Home |
-| Back inside an app | App handles navigation and its exit confirmation |
-| Confirmed Back exit | Returns to our Home on the tested setup |
-| Three short Home presses in two seconds | Emergency restore to LG, independent of the web interface |
-| Home settings → Change Home off | Restore LG routing; disables Root autostart |
-| Open LG Home | Visit LG Home once; routing preference stays saved |
+| Short Home | Open Clean through system Home routing |
+| Back inside an app | App handles navigation and exit confirmation |
+| Confirmed Back exit | Return through native Home routing on the tested setup |
+| Three short Home presses within two seconds | Restore LG Home and disable Root intent |
+| Home settings → Change Home off | Restore LG routing and disable Root intent |
+| Open LG Home | Visit LG Home once; retain routing preference |
 
-Release Home between taps. Long Home is **not** the Root emergency action and can
-trigger LG behavior such as zoom. Exiting Root mode does not remove root or resume
-the old helper. To use No-root again, open Home Helper.
+Release Home between taps. Long Home is not the emergency action and can invoke
+LG features such as magnification. Exit does not remove root or resume Helper.
+After verified restoration, explicitly open Home Helper to return to No-root.
 
-Host recovery and readback:
-
-```sh
-python3 build/root-candidate/setup.py restore --ssh my-tv
-python3 build/root-candidate/setup.py status --ssh my-tv
-```
-
-If restoration reports an error or conflict, keep its evidence and root access.
-Do not remove state files or repeatedly activate. Recovery will not overwrite an
-unrecognized foreign profile. [Recovery contract](RECOVERY.md).
+From a computer, run `cytv status`, then `cytv restore` if routing recovery is
+needed, and inspect status again. For a manual archive, use its retained matching
+`setup.py status` / `setup.py restore` through the existing root SSH alias.
+Keep conflicts and recovery evidence; never delete state or repeatedly activate.
+See [recovery](RECOVERY.md).
 
 ## Remove or replace Root Edition
 
-```sh
-python3 build/root-candidate/setup.py restore --ssh my-tv
-python3 build/root-candidate/setup.py status --ssh my-tv
-python3 build/root-candidate/setup.py uninstall --ssh my-tv
-```
-
-Uninstall restores first, removes owned recovery registration/startup hook, then
-removes the isolated package. It intentionally retains state and evidence. It
-does not touch the original launcher or start its helper. A retained state directory
-blocks reinstallation. Compatible Root edition release sets can use the independent
-[System Updater supervisor](UPDATES.md), including compatible recovery infrastructure.
-Initial supervisor/runtime bootstrap and legacy infrastructure migration remain host-assisted.
-Archive and resolve that state only after verified removal and restoration,
-following maintainer review.
-An unknown removal result is not permission to resubmit or delete directories.
+Use the [verified uninstall/replacement procedure](../docs/MAINTENANCE.md) with
+the retained connection and matching recovery evidence. Android has no uninstall
+action; use desktop/CLI. Removal restores LG first, verifies terminal package
+removal and removes owned registrations/startup links. Required journals,
+archives and Python slots remain. A retained state directory is not disposable.
+An unknown removal result must be inspected before any continuation.
 
 ## Release scope
 
-System libraries, early boot artwork and faster cold-start display are outside
-this release. See [release scope and limitations](ROOT-STABLE-0.1.0.md). Evidence is model- and build-specific.
+Root does not deliver early boot artwork, system-library changes or system ad
+removal. [Current limits](STATUS.md) and [historical evidence](HISTORY.md) remain
+specific to their exact builds and test scenarios. [Homebrew Installer](../homebrew/README.md)
+is an unreleased separate setup client.

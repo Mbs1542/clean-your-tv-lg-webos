@@ -1,90 +1,122 @@
 {
   "schema": 1,
-  "version": "1.4.0",
+  "version": "1.4.1",
   "changes": [
     {
-      "pr": 80,
+      "pr": 118,
       "issues": [
-        12,
-        59
+        115
       ],
-      "summary": "Expose safe Home/settings and renewal diagnostics; underlying firmware transport and reporter acceptance remain unresolved"
+      "summary": "Restore original v1.3.0 Root managed paths/LS2 contract, signed provenance and guarded retained rollback; scoped C3 signed upgrade/ordinary rollback accepted with fixed System 1.1.1"
     },
     {
-      "pr": 81,
+      "pr": 119,
+      "issues": [
+        108,
+        109
+      ],
+      "summary": "Suppress same-component offers and align settings indicator/Update all; host matrices and scoped C3 older-public-feed check accepted, remaining reporter device confirmation separate"
+    },
+    {
+      "pr": 120,
+      "issues": [
+        110
+      ],
+      "summary": "Restore Root Home Homebrew configuration API access and localized diagnostics; scoped C3 switch/restart/four-name blocking accepted, final changed-product and remaining lifecycle/network coverage separate"
+    },
+    {
+      "pr": 121,
+      "issues": [
+        107
+      ],
+      "summary": "Preserve LF in Windows-built POSIX payload scripts and prevent redirected legacy-console encoding crashes; partial #107, BX routing/recovery remains unresolved"
+    },
+    {
+      "pr": 122,
       "issues": [],
-      "summary": "Guide first-time desktop/Android setup with focused steps and bundled LG screen examples"
+      "summary": "Correct published 1.4.0 README metadata and Android download labeling; enforce stable release links/component versions in candidate policy and required README CI checks"
     },
     {
-      "pr": 87,
-      "issues": [
-        82
-      ],
-      "summary": "Initialize an absent Root Home key only during explicit setup with durable intent and independent stock readback; original finalize/device result still needs acceptance"
-    },
-    {
-      "pr": 89,
+      "pr": 123,
       "issues": [],
-      "summary": "Add experimental opt-in Root eARC recovery, disabled by default; Bluetooth/microphone scope of PR27 excluded; all audio hardware acceptance pending"
+      "summary": "Reorganize user docs and all twelve guides around tasks, preserve historical evidence and links, and require explicit user consent for redacted installation-result issues"
     },
     {
-      "pr": 97,
-      "issues": [
-        93
-      ],
-      "summary": "Use binary cryptography wheels and exercise both frozen installer entrypoints before TV connection; published Intel device confirmation pending"
+      "pr": 124,
+      "issues": [],
+      "summary": "Move edition choice below README installation and replace the hero with a current international-app demo screenshot"
     },
     {
-      "pr": 99,
-      "issues": [
-        95
-      ],
-      "summary": "Explain failed private-Python ABI/ownership/storage checks with bounded diagnostics; no WAM cleanup, original installation outcome remains unconfirmed"
+      "pr": 125,
+      "issues": [],
+      "summary": "Add prominent native-language links to all twelve installation guides before the README demo and screenshot"
     },
     {
-      "pr": 100,
+      "pr": 126,
       "issues": [
-        95
+        110
       ],
-      "summary": "Offer default-No Root native WAM cache/codecache cleanup and warned manual Session Storage guidance; C3 API recovered about 98.4 MiB, exact installer and original C2 setup acceptance remain pending"
+      "summary": "Fix Windows discovery of POSIX firmware registration tests"
     },
     {
-      "pr": 102,
+      "pr": 127,
       "issues": [
-        21,
-        101
+        115
       ],
-      "summary": "Accept C2 UID1001 only for independently pinned shared package DATA and guide interrupted No-root install recovery; existing Root-operation recovery and original No-root package refusal remain unconfirmed"
+      "summary": "Add private signed Root candidate acceptance admission"
     },
     {
-      "pr": 103,
-      "issues": [
-        90
-      ],
-      "summary": "Add fixed-code Root observer diagnostics; maintainer C3 standby acceptance passed with the combined startup/shutdown corrections and #90 was closed at the reporting maintainer request"
+      "pr": 128,
+      "issues": [],
+      "summary": "Fix compact settings spacing across TV locales"
     },
     {
-      "pr": 105,
+      "pr": 129,
       "issues": [
-        104
+        110
       ],
-      "summary": "Use stable private startup-session identity and one guarded Home presentation; C3 repeated AC startup, early focus and emergency/off persistence accepted; first-screen delay varies"
+      "summary": "Keep owned firmware grants revocable without SDK app metadata (partial #110; strict enabling and original access/lifecycle work remain unresolved)"
     },
     {
-      "pr": 112,
-      "issues": [
-        111
-      ],
-      "summary": "Validate release-bound historical Root0.4 runtime before updater teardown; original-request recovery, fresh setup and manual physical rollback verified on C3"
+      "pr": 130,
+      "issues": [],
+      "summary": "Refresh synthetic browser acceptance fixtures for current profile/System updater contracts and both packaged recovery apps; no product changes"
     },
     {
-      "pr": 113,
+      "pr": 131,
+      "issues": [],
+      "summary": "Fix launcher card/focus geometry for one through eight columns; compiled-browser regressions and scoped C3 checks accepted (1/8 physical remote, 2\u20137 CDP); full physical-remote matrix unverified"
+    },
+    {
+      "pr": 132,
       "issues": [
-        104
+        110
       ],
-      "summary": "Recognize fresh session-bound firmware shutdown before input teardown and defer old observers to guarded boot recovery; corrected candidate C3 power/focus/emergency acceptance passed"
+      "summary": "Add explicit authenticated Root SDK package permission repair before firmware-access registration; retain strict default/automatic checks and require private package byte authority; no automatic SDK chmod or published delivery"
+    },
+    {
+      "pr": 135,
+      "issues": [
+        110
+      ],
+      "summary": "Distinguish authorized maintainer QA records from other-user installation report consent; preserve privacy and record scoped C3 update-control/geometry/firmware follow-up without finalizing release acceptance"
+    },
+    {
+      "pr": 137,
+      "issues": [
+        136
+      ],
+      "summary": "Add explicit verified Root System rollback readiness recovery with genuine launcher health, a bounded audited attempt and explicit post-expiry audit-preserving retry; scoped C3 maintenance accepted, ordinary update/rollback and release gates remain separate"
+    },
+    {
+      "pr": 138,
+      "issues": [
+        115,
+        136
+      ],
+      "summary": "Bound matching launcher health ownership wait to ten seconds within original deadline; require fixed System 1.1.1 for new signed Root offers and provide explicit archived supervisor-only replacement; C3 automatic upgrade and ordinary rollback accepted"
     }
   ],
   "excluded": [],
-  "acceptance": "Maintainer accepted 2026-10-27: OLED55C3RLA / firmware43.21.71 / SDK11.2.0, exact99997e47 artifacts/run40498700100. Checked replacement/fresh setup, 25 runtime hashes, guardian/recovery/System; three enabled AC cycles automatic Clean (variable first-screen delay), standby Emby-to-Home, early focus, triple-Home and explicit-off surviving separate AC cycles passed. Manual physical rollback to verified published v1.3.0/Root0.4/Updater0.3 completed with 24 runtime hashes, healthy old System baseline and owner-confirmed Emby-to-Home. TV left stable; no return-to-candidate or automatic signed downgrade claim. Maintainer confirmed normal operation and requested #90 closure. Other reporter devices, eARC audible/timing and physical Android remain unverified. See docs/RELEASE-1.4.0-ACCEPTANCE.md; fresh final-head builds required."
+  "acceptance": "C3 OLED55C3RLA, firmware 43.21.71 / webOS 11.2.0; macOS ARM64 host, remote unknown. Owner-approved single fixed-System1.1.1 cycle on source f896393c: supervisor-only replacement preserved Root0.4.0/Updater0.3.0/full profile; production-signed 686d7eee Root0.5.1/Updater0.3.2/infrastructure0.5.1 installed and ordinary retained rollback completed automatically with genuine health, matching homeResumePhase and terminal ownership. Full live profile exact before/after each stage; fixed System pins match, final Root disabled/LG Home. Accepted component hashes and earlier physical controls/audio/emergency/cold-boot/firmware/geometry scopes in docs/RELEASE-1.4.1-ACCEPTANCE.md. Forced timeout/fault on fixed supervisor, seamless standby, remaining indicator/network/device matrices, fresh/removal/No-root and physical Android phones unverified; no universal compatibility claim. Exact frozen platform/package checks and public feed/signature verification are separate delivery gates tracked in PR114."
 }

@@ -1,297 +1,141 @@
 ![Clean Your TV — for LG webOS](assets/brand/readme-logo.png#gh-light-mode-only)
-
-1.4.0: [release notes](docs/RELEASE-1.4.0.md) and [C3 acceptance / limits](docs/RELEASE-1.4.0-ACCEPTANCE.md). [Release #98](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/98) tracks publication; latest-download links follow the published release.
 ![Clean Your TV — for LG webOS](assets/brand/readme-logo-dark.png#gh-dark-mode-only)
 
-# Clean Your TV — LG webOS
+<a id="clean-your-tv--lg-webos"></a>
+<a id="what-it-does"></a>
+<a id="how-it-works"></a>
 
-Release 1.4.0: Android **0.4.0 / code 13** removes preview after maintainer-approved Android 15 ARM64 / WebView 124 emulator checks. Physical phones and live phone-to-TV recovery remain unverified. Latest-download links follow the published release. See [Android acceptance and limits](android/STABLE-READINESS.md).
+# Clean Your TV
 
-**A clean home screen for LG webOS, with No-root and Root editions.**
+A personal home screen for LG webOS: your apps, your order, and a configurable
+dock, without sponsored rows in this launcher. It runs on the TV; your computer
+can be switched off after setup. It does not remove advertisements from other
+LG screens or obtain root access.
 
-Keep your favorite apps in a personal dock and app grid, without sponsored rows
-in this launcher. Both editions run on the TV; your computer can be switched off
-after setup. One cytv wizard installs either edition.
+## Installation guide in your language
 
-No-root and Root are equal options for different TV setups. Choose No-root for LG Developer Mode or Root for existing root SSH access. Compatibility and test coverage remain specific to each edition.
+[English](docs/i18n/en.md) · [Deutsch](docs/i18n/de.md) · [Español](docs/i18n/es.md) ·
+[Português (Brasil)](docs/i18n/pt-BR.md) · [Français](docs/i18n/fr.md) · [Italiano](docs/i18n/it.md) ·
+[한국어](docs/i18n/ko.md) · [हिन्दी](docs/i18n/hi.md) · [Polski](docs/i18n/pl.md) ·
+[Русский](docs/i18n/ru.md) · [简体中文](docs/i18n/zh-Hans.md) · [繁體中文](docs/i18n/zh-Hant.md).
 
-- **No-root:** uses LG Developer Mode and an on-TV Home Helper. Keep the session
-  active and local networking available for Helper monitoring.
-- **Root:** uses existing root access, system Home routing and independent recovery.
-  The installer does not obtain root or flash firmware.
-- **Home opens your launcher** while Home control is enabled.
-- **A way back to LG Home:** press Home three times within two seconds. Older
-  No-root Helper versions through 0.6.13 instead use holding Home for two seconds.
+<a id="browser-preview"></a>
 
-Based on [webos-vibehack](https://github.com/OmkarK97/webos-vibehack), with Home-button
-handling moved from an external watcher to an on-TV native helper.
+[Try the browser demo](https://razdva122.github.io/clean-your-tv-lg-webos/) ·
+[Installation guide](docs/INSTALL.md) · [Help and recovery](docs/RECOVERY.md)
 
-[Live preview](https://razdva122.github.io/clean-your-tv-lg-webos/) · [Install](docs/INSTALL.md) · [Recovery](docs/RECOVERY.md) ·
-[Compatibility](docs/COMPATIBILITY.md) · [Build](docs/BUILD.md) · [Update & remove](docs/MAINTENANCE.md)
+![Demo launcher with Netflix, YouTube, Prime Video, Disney+ and Apple TV](docs/launcher-international.png)
 
-[Manual installation of both editions without cytv](docs/MANUAL_INSTALL.md) — requirements, commands, recovery and reinstallation limits.
+*Six-column demo layout with international apps; apps are not bundled. TV functions are simulated.*
 
-## Languages
+<a id="install-with-cytv"></a>
+<a id="get-started"></a>
 
-Installation, use and recovery: [English](docs/i18n/en.md) · [Deutsch](docs/i18n/de.md) · [Español](docs/i18n/es.md) · [Português (Brasil)](docs/i18n/pt-BR.md) · [Français](docs/i18n/fr.md) · [Italiano](docs/i18n/it.md) · [한국어](docs/i18n/ko.md) · [हिन्दी](docs/i18n/hi.md) · [Polski](docs/i18n/pl.md) · [Русский](docs/i18n/ru.md) · [简体中文](docs/i18n/zh-Hans.md) · [繁體中文](docs/i18n/zh-Hant.md).
+## Download and install
 
-The v1.0.1 release selects the system language automatically and saves
-an explicit choice in the installer or **Settings → Language** on the TV.
-See [language availability and guides](docs/LANGUAGES.md); older release downloads
-may predate these features. Simplified and Traditional Chinese are new in the
-1.3.0 release; earlier v1.2.0 downloads retain the original ten languages.
+> Candidate branch: v1.4.1 is not published. The public stable release remains
+> [v1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0).
+> The release metadata below describes the intended download after promotion.
 
-## Install with cytv
-
-Choose your platform. Download buttons use GitHub’s `releases/latest/download`
-URLs, so they follow the latest published release without a version in the link.
+<!-- release:downloads -->
+Current stable release: **[v1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)** — [release notes](docs/RELEASE-1.4.1.md).
+<!-- /release:downloads -->
 
 [![Download Windows x64 graphical installer — GUI ZIP](assets/brand/downloads/windows.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-windows-x64-desktop.zip)
 [![Download macOS Apple Silicon graphical installer — ZIP](assets/brand/downloads/macos-arm64.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-macos-arm64.zip)
 [![Download macOS Intel graphical installer — ZIP](assets/brand/downloads/macos-x64.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-macos-x64.zip)
 [![Download Linux x64 graphical installer — DEB](assets/brand/downloads/linux.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-linux-x64.deb)
-[![Download Android ARM64 preview installer — APK](assets/brand/downloads/android.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-android-arm64.apk)
+[![Download Android ARM64 installer — APK](assets/brand/downloads/android.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-android-arm64.apk)
 
-The buttons above follow the stable release. **[v1.3.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)**. It adds shared Root setup/recovery, Chinese localization and installer corrections; the intermittent Root standby limitation is tracked in [issue #90](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/90). Hardware evidence remains specific to the tested configuration; see [release notes](docs/RELEASE-1.3.0.md) and [compatibility](docs/COMPATIBILITY.md).
+1. Download the installer for your computer or an ARM64 Android phone. The buttons follow the latest published release.
+2. Prepare TV access and choose No-root or Root in the wizard.
+3. Install, then check Home, Back, normal controls and emergency exit before daily use.
 
-Windows downloads the graphical ZIP: use **Extract All**, then open
-`cytv-desktop/cytv-desktop.exe` with its `_internal` folder beside it. Windows
-publisher signing is not configured. Android is an ARM64,
-non-debuggable preview APK with the retained signing identity; see [Android preview and requirements](android/README.md).
-These downloads do not establish physical-TV compatibility.
+**[Follow the installation guide →](docs/INSTALL.md)**
 
-One wizard installs either edition. Root activates and opens Home immediately,
-without a trial or Keep confirmation.
-[All latest release files](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest) ·
-[Desktop setup](docs/DESKTOP_INSTALL.md) · [CLI guide](docs/CLI.md) · [Release notes](docs/RELEASE-1.2.0.md)
+Windows: extract the whole ZIP before opening the app. macOS: choose Apple Silicon
+or Intel to match your Mac. See [desktop instructions](docs/DESKTOP_INSTALL.md)
+or [Android requirements](android/README.md) for platform details.
 
-## Candidate: install Root from the TV
-
-**Unreleased candidate:** a separate **CYTV Installer** (`com.cleanyourtv.installer`)
-adds an on-TV Root setup path alongside cytv. It is not yet available through a
-published Homebrew catalog listing. cytv keeps No-root and Root on Windows,
-macOS, Linux and Android. Published download buttons above do not include this
-new path.
-
-The candidate needs existing root, Homebrew Channel with root exec, Node.js 8+
-and usable Python 3.9+. Supported ARMv7/`armv8l` 32-bit userspace can explicitly
-prepare the bundled pinned private Python offline, then inspect again and review
-installation. Setup leaves Home activation separate and never clears emergency
-off. Existing verified installations share profiles and recovery with cytv;
-unknown older infrastructure requires diagnosis, not automatic migration.
-
-Homebrew updates **Installer only**; existing Root/System Updaters own product
-updates and complete signed sets. Removing Installer leaves the product installed.
-Use explicit complete-product removal to restore LG Home and clean owned startup
-hooks; required recovery evidence and interpreter slots remain. See the
-[candidate setup and recovery contract](docs/INSTALL.md#candidate-on-tv-root-installation)
-and [pending physical acceptance](docs/development/HOMEBREW-INSTALL-ACCEPTANCE.md).
+<a id="what-you-need"></a>
 
 ## Choose your edition
 
-| Edition | Status | Start here |
-| --- | --- | --- |
-| **No-root** | Launcher and helper run on the TV | [Installation](docs/INSTALL.md) |
-| **Root Edition** | Root 0.4.0 with persistent activation and Settings updates; version-specific hardware evidence | [Overview and evidence](root-edition/README.md) |
-
-Both use the same Home interface. Root Stable provides native system routing
-for Home and confirmed Back exits without an observed LG flash on the tested C3.
-It installs separately. True cold boot remains untested for this release; the current C3 check passed triple-Home emergency exit and explicit resume. [Compare requirements, controls and limits](docs/EDITIONS.md).
-The features and remote-control guide below describe **No-root Edition**.
-
-![Clean Your TV menu with a five-app dock and Inputs, Wi-Fi and Settings shortcuts](docs/launcher-menu.png)
-
-*Launcher 1.0.11, rendered locally with an example five-app configuration.
-Your apps and their order are configured during setup; they are not bundled.*
-
-## What you need
-
-Use a computer or a compatible Android phone for initial installation and maintenance. cytv includes the
-runtime and TV packages. **+ / Add app** can refresh the app inventory on the TV.
-No-root requires an active Developer Mode session and local networking for Helper
-monitoring. Root requires existing root SSH access and recovery services; do not
-enable Developer Mode over root. Root needs a suitable TV Python 3.9+ and Node.js
-8+ in addition to webOS services. The 1.1.0 installer can supply a verified private
-ARMv7 Python on demand when the existing Python is unsuitable. Working system
-Python skips that download; ordinary installers do not embed the runtime archive.
-See [installation requirements](docs/INSTALL.md) and [optional Python](docs/OPTIONAL-PYTHON.md).
-
-Compatibility varies by model, remote and firmware; see [compatibility and known limits](docs/COMPATIBILITY.md)
-before installing. Not affiliated with LG.
-
-## What it does
-
-| Feature | Behavior |
+| Your TV setup | Edition |
 | --- | --- |
-| Personal home screen | Local app grid, configurable dock, hidden tiles and tile ordering; no sponsored rows in this launcher |
-| Short Home | Native on-TV interception returns to the launcher without passing through LG Home on the tested setup |
-| Three short Home presses within two seconds | Stops interception and returns to LG Home |
-| Resume interception | Manually open **Home Helper** from LG Apps |
-| Wi-Fi shortcut | Opens LG's network setup overlay |
-| Automatic startup | Returns after standby and cold boot using input restoration plus a guarded fallback helper; no external device runs the startup logic |
-| Exit with Back | Returns after watched apps exit, preserving in-app navigation and exit confirmation; LG Home can briefly flash |
-| Quick standby/resume | Avoids relaunching a launcher already restored by webOS, preserving arrows and OK after a fast power cycle |
-| Remote controls | Arrows, held arrows, OK, volume and pointer remain usable; wheel events are forwarded |
-| Failure recovery | Watchdog cleanup releases interception if the handler stalls; triple Home provides a manual escape |
-| Local interface | App tiles, font and splash assets are stored locally; the menu does not wait for an Internet download |
+| LG Developer Mode, without root | **No-root** — Home and the on-TV Home Helper. Keep Developer Mode active. |
+| Existing root access and trusted root SSH | **Root** — native Home routing and independent recovery. Do not enable Developer Mode over root. |
 
-This does not remove system advertisements, uninstall apps, or replace the operating
-system's Home destination. It provides an alternative screen. Cold boot still has
-an initial black interval; early display timing is under investigation.
+Both use the same launcher. Compatibility depends on the model, firmware and
+remote: [check requirements and known limits](docs/COMPATIBILITY.md) first.
 
-## How it works
+<a id="remote-control-guide"></a>
+<a id="resume-after-an-emergency-exit"></a>
 
-**Home** is the app launcher. **Home Helper** handles the Home button and watches
-for exits from configured apps. Both run on the TV. The helper leaves ordinary
-in-app Back navigation, exit confirmations and the other remote controls intact.
+## Everyday use
 
-![Remote controls: short Home opens our launcher; three short Home presses within two seconds stop the helper; hold Back exits to LG Home; resume via the Home Helper app](docs/remote-controls.png)
+- **Home** opens your launcher while Home control is enabled.
+- **Hold OK** on a tile to move or hide it; **+ / Add app** adds an installed app to the grid.
+- **Press Home three times within two seconds** to stop Home control and return to LG Home. This does not erase settings.
+- After an emergency exit, resume explicitly through **Home Helper** (No-root) or the Root activation control. Opening Home alone does not clear the stop.
 
-*Illustrated controls and example screens; button layout varies by remote.*
+[Remote controls](docs/CONTROLS.md) · [Arrange apps](docs/APP-MANAGEMENT.md) ·
+[Update or remove](docs/MAINTENANCE.md)
 
-**Hold Back exits the app; three short Home presses stop the helper.** When the helper is active,
-it returns to our launcher after a watched app exits through LG Home. That path
-can briefly show LG Home; it is not the same direct path as short Home.
+<a id="candidate-install-root-from-the-tv"></a>
+<a id="developer-mode-auto-renewal--beta"></a>
 
-### Remote control guide
+## Before you rely on it
 
-| Button | What it does |
+- Test results are specific to devices and versions. Read [compatibility](docs/COMPATIBILITY.md); a successful install alone does not prove daily reliability.
+- The original **1.3.0 Root updater cannot install 1.4.0 through OTA**. Keep recovery records and read [the update limitations](docs/UPDATES.md) before attempting that transition.
+- No-root needs an active Developer Mode session. Automatic renewal is optional Beta; continue monitoring LG's official timer.
+- The on-TV **Homebrew Installer is unreleased**. Use the published computer/Android installer; [candidate details](homebrew/README.md) are for coordinated testing.
+
+<a id="languages"></a>
+<a id="software-updates"></a>
+
+## Guides and help
+
+[All documentation](docs/README.md) · [Guides in 12 languages](docs/LANGUAGES.md) ·
+[Report a problem or a successful installation](docs/FEEDBACK.md)
+
+If an AI agent helps with installation, it should prepare a short, redacted result
+and ask your permission before posting an issue. See [instructions for agents](AGENTS.md#installation-results-and-user-consent).
+
+<a id="no-root-source-installation"></a>
+<a id="run-locally"></a>
+<a id="project-layout"></a>
+
+For contributors: [build and technical references](docs/development/README.md),
+[contributing](CONTRIBUTING.md), and [release history and test evidence](docs/history/README.md).
+
+<a id="current-components-and-hardware-evidence"></a>
+
+<details>
+<summary>Versions in the stable download</summary>
+
+<!-- release:components -->
+| Component | Stable version |
 | --- | --- |
-| **Arrows / hold an arrow** | Move through tiles and menus; normal navigation inside apps. |
-| **OK / pointer click** | Open the selected app or activate a control. |
-| **Short Home** | Return directly to our launcher while Home Helper is active. With the helper stopped, LG handles Home normally. |
-| **Three short Home presses within two seconds** | Emergency exit: stop the helper and open LG Home. Preferences are kept; this is **not a factory reset**. |
-| **Short Back** | Go back inside the current app. Its exit dialog and Cancel action still work normally. On a confirmed exit from a watched app, the helper returns to our launcher. |
-| **Hold Back** | Use webOS's exit-to-Home action and stay in LG Home. It **does not stop the helper**; a subsequent short Home opens our launcher. The new hold detection awaits C3/C4 hardware verification. |
-| **Volume + / −, mute** | Normal TV/audio controls. |
-| **Move the Magic Remote / wheel** | Pointer and wheel events pass through. Wheel-to-tile selection is not implemented in our launcher. |
-| **Power** | Normal TV standby/wake. With startup configured and the helper not stopped, our launcher returns automatically; cold boot still takes time. |
-| **Hold 1, if assigned** | Open Home using LG Quick Access. This shortcut must be assigned during setup; it does not resume a stopped helper by itself. |
+| cytv installer | 0.5.1 |
+| Home | 1.5.1 |
+| Home Helper | 0.6.19 |
+| Root edition | 0.5.1 |
+| Both edition Updaters | 0.3.2 |
+| Android installer / versionCode | 0.4.1 / 14 |
+<!-- /release:components -->
 
-### Resume after an emergency exit
+Candidate System Updater: 1.1.1 / protocol 1 (existing supervisors stay pinned).
+See the [candidate release notes](docs/RELEASE-1.4.1.md)
+and [C3 acceptance and limits](docs/RELEASE-1.4.0-ACCEPTANCE.md).
 
-Open **Home Helper** from LG's app list to restart the stopped helper.
-Opening Home alone does **not** clear the emergency stop. A single-instance lock
-prevents duplicate controllers. Regular Home routing is controlled by the
-**Change Home** switch in Home settings; there is no recovery button in the top menu.
-Older packages may call the helper **Native Home Prototype**.
+</details>
 
-The long-Back action is documented by [LG's remote guide](https://webostv.developer.lge.com/develop/guides/magic-remote);
-app-specific exit behavior can vary. See [Recovery](docs/RECOVERY.md) for troubleshooting.
+<a id="credits"></a>
 
-## Get started
+## Credits and license
 
-Start with the [shared installation guide](docs/INSTALL.md) for No-root or Root.
-cytv includes TV discovery, saved profiles, diagnostics, recovery and the required
-packages. macOS uses `cytv.app`; Linux uses the graphical `cytv-linux-x64.deb`
-package. Windows uses `cytv-windows-x64-desktop.zip`: extract
-all files and open `cytv-desktop/cytv-desktop.exe` with `_internal` beside it.
-The separate `cytv-windows-x64.exe` download is the console wizard. See [desktop setup](docs/DESKTOP_INSTALL.md).
-The [Android preview](android/README.md) includes the original ten desktop languages in published v1.2.0; the 1.3.0 candidate adds both Chinese variants. Its top-right control shows the current language and opens a saved language picker.
-Real-TV acceptance remains model- and build-specific.
-
-### No-root source installation
-
-On the TV, enable **Developer Mode** and **Key Server**. On a Mac or Linux computer
-with **Node.js 20+ (including npm), Python 3.9+ and Git**, run:
-
-```sh
-git clone https://github.com/Razdva122/clean-your-tv-lg-webos.git
-cd clean-your-tv-lg-webos
-./install.sh 192.168.1.50
-```
-
-Replace the address with your TV's IP. The script prepares local tools, pairs with
-the TV, reads your apps, builds and installs both packages, configures Home Helper
-and requests its launch. Enter the Developer Mode passphrase when prompted and
-accept the remote-control pairing request on the TV. No manual helper build or
-configuration is needed. No root or `sudo` is used.
-
-Once installed, check short Home, press Home three times within two seconds to test recovery, and
-check standby/wake and cold boot. **Hardware compatibility still needs to be
-verified on your TV.** See the [installation guide](docs/INSTALL.md) for prerequisites,
-manual installation and recovery. This Bash source workflow has not been validated
-on Windows/WSL; the native Windows cytv console is a separate download.
-
-## Browser preview
-
-[Try the live launcher preview](https://razdva122.github.io/clean-your-tv-lg-webos/).
-Switch between **No-root Edition** and **Root Edition** in the top bar. Both use
-demo apps and simulated TV functions; Root mode activation and exit
-only change the browser simulation. [Open Root Edition directly](https://razdva122.github.io/clean-your-tv-lg-webos/#root).
-GitHub Pages automatically deploys
-the latest `main` after tests pass.
-
-### Run locally
-
-Preview the actual launcher without a TV or extra dependencies (Python 3.9+):
-
-```sh
-python3 scripts/preview.py --open
-```
-
-Open http://127.0.0.1:8765/ if the browser does not open automatically. The
-1920×1080 TV canvas scales to fit the window. Use the mouse, arrow keys and
-Enter; hold Enter to rearrange a tile, and use Esc to go back in panels.
-The preview uses ten demo apps with scalable SVG brand logos and simulated webOS
-services. It never connects to a TV or performs real launches, renewals or updates.
-
-Save changes in `launcher/` or `preview/` and the page reloads automatically
-within about a second. The server reads sources on each request and disables
-caching. Tile order is saved in the
-browser's local storage. Stop with Ctrl+C; use `--port 8766` if the port is busy.
-Only launcher assets and preview files are served, on the loopback interface.
-The preview adapter is injected by the server and is not included in TV packages.
-Logo sources are recorded in `preview/icons/SOURCES.txt`.
-
-## Developer Mode auto-renewal — Beta
-
-No-root Home includes **Home settings → Developer Mode auto-renewal (Beta) →
-Turn on auto-renewal**. It is off by default and aims to renew the session on the
-TV. **Real renewal on unrooted TVs remains unverified: monitor the official timer.**
-See [setup, status and feedback](docs/DEVELOPER-MODE-BETA.md).
-
-## Current components and hardware evidence
-
-The **v1.3.0 stable** distribution contains cytv **0.4.0**, Home **1.4.2**, Helper **0.6.19**, Root **0.4.0**, both edition Updaters **0.3.0**, Android **0.3.0-preview / code 11**, and System Updater **1.1.0 / protocol 1**. Component versions are recorded in `release-versions.json`; see [release notes](docs/RELEASE-1.3.0.md).
-
-Current Root 0.4.0 test results and the known standby limitation are recorded in [1.3.0 acceptance](docs/RELEASE-1.3.0-ACCEPTANCE.md). Historical results below retain their original versions.
-
-Root **0.2.0**, Root Updater **0.2.0** and System Updater supervisor **1.0.0** were checked on **LG OLED55C3RLA / firmware 43.21.71 / webOS 11.2.0**, using `d344d92` (product contents identical to `4b66951`). Arrows, OK, app launch, Home, Back/Cancel/confirmed exit, volume/mute, triple-Home emergency exit and explicit resume passed. Standby/wake with Emby left open for 70 seconds and the installed-version menus passed; an unavailable update feed showed a friendly message. True cold boot, Helper **0.6.19** on a TV, UK6540PTD, and a complete signed system upgrade or rollback remain untested. Stable publication accepts this limited evidence; it does not validate every model or path.
-
-The historical [1.2.0 acceptance record](docs/RELEASE-1.2.0-ACCEPTANCE.md) records the maintainer's confirmation on OLED55C3RLA / 43.21.71 and its limits. Earlier hardware reports retain their original artifact scope. C5/webOS 26 Helper startup remains under investigation. See [compatibility](docs/COMPATIBILITY.md), [Root acceptance](root-edition/RELEASE-ACCEPTANCE.md) and [installation checks](docs/INSTALL.md#5-verify-before-daily-use).
-
-## Project layout
-
-```text
-launcher/          Web launcher and local splash image
-native/app/        Home controller, policies and native entry point
-native/prototype/  Remote relay/filter source and tests
-native/service/    Guarded startup service
-scripts/           Build and setup tools
-docs/              Installation, edition comparison, recovery and limitations
-root-edition/      Root package, installer, recovery runtime, updater and validation
-cytv/              Shared desktop/console installer and saved TV connections
-```
-
-## Credits
-
-Built on the work of [OmkarK97/webos-vibehack](https://github.com/OmkarK97/webos-vibehack)
+Built on [OmkarK97/webos-vibehack](https://github.com/OmkarK97/webos-vibehack)
 and [Gathin23/cleanyourtv](https://github.com/Gathin23/cleanyourtv).
-MIT-licensed project code; Outfit uses SIL OFL and the bundled ws library uses MIT.
-See [LICENSE](LICENSE) and [third-party notices](THIRD_PARTY_NOTICES.md).
-
-No firmware images, extracted proprietary binaries, TV credentials or personal
-app inventories are included. Please redact logs before opening an issue.
-
-## Software updates
-
-The 1.1.0 release introduces **Update all** in **Settings → Software updates**
-for rooted TVs with Homebrew Channel and a separately provisioned System Updater.
-Its signed release set updates Home/Helper/Home Updater for No-root edition on a
-rooted TV, or Root Home/runtime/Root Updater for Root edition. In the published setup flow, initial installation
-and supervisor setup use the computer installer; installing a launcher IPK or
-using legacy Home-only OTA does not install that infrastructure. Unrooted TVs
-continue updating from their computer. Updates preserve the profile and retain a
-verified previous component set for recovery; explicit emergency stops stay off.
-See [setup and recovery](docs/UPDATES.md). Complete signed system upgrade and rollback acceptance remains pending.
+Not affiliated with LG. [MIT license](LICENSE) · [Third-party notices](THIRD_PARTY_NOTICES.md).

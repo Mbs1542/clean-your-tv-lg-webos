@@ -1,7 +1,9 @@
-# Home settings diagnostics (next candidate)
+# Home settings diagnostics
 
-These changes are preparation for the next candidate. They are not in published
-v1.2.0 and do not establish a fix for the C5/webOS26 status transport.
+[Documentation](README.md) · [Feedback and privacy](FEEDBACK.md)
+
+The published diagnostics help identify failures; they do not by themselves fix
+the unresolved C5/webOS26 status transport.
 
 ## Collecting a report
 
@@ -81,3 +83,6 @@ Android payloads, and synchronize the affected manifests. Shared settings CSS
 also requires rebuilding Root Home and both Updaters. Helper 0.6.19 and its
 published archive pin are unchanged. No compatibility claim follows from the
 host tests or package dependency check.
+
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="home-settings-diagnostics-next-candidate"></a>

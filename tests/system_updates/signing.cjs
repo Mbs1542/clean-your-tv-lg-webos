@@ -5,7 +5,7 @@ const policy=require('../../system-updater/policy');
 const {privateKey,publicKey}=crypto.generateKeyPairSync('rsa',{modulusLength:2048});
 const base='https://github.com/Razdva122/clean-your-tv-lg-webos/releases/download/v1.0.3/';
 const descriptor=(name,application)=>({name,application,version:'1.0.0',kind:'ipk',url:base+application+'_1.0.0_all.ipk',sha256:'a'.repeat(64),size:12});
-const set=(edition,components)=>({schema:1,release:'v1.0.3',edition,supervisor:1,notes:'Changes',components});
+const set=(edition,components)=>({schema:1,release:'v1.0.3',edition,supervisor:1,notes:'Changes',components,...(edition==='root'?{minimumSupervisorVersion:'1.1.1'}:{})});
 const manifests={
 root:{schema:1,edition:'root',application:'com.cleanyourtv.root.preview',release:'v1.0.3',version:'1.0.0',runtime:1,updater:1,profile:1,url:base+'com.cleanyourtv.root.preview_1.0.0_all.ipk',sha256:'a'.repeat(64),size:12,notes:'Root'},
 home:{schema:1,release:'v1.0.3',home:'1.0.1',helper:'1.0.0',url:base+'com.gathin.tvhome_1.0.1_all.ipk',sha256:'a'.repeat(64),notes:'Home'},
@@ -28,3 +28,18 @@ assert.throws(()=>verifySystemRelease(exact['system-update-root.json'],{...build
 assert.throws(()=>verifySystemRelease(exact['system-update-no-root.json'],build,{},publicKey),/package/);
 console.log('PASS publication verifies both system feeds against final asset bytes and versions');
 assert.throws(()=>verifySystemRelease(exact['system-update-root.json'],{...build,versions:{}},assets,publicKey),/version/);
+
+for(const minimum of [undefined,'1.1.0']){
+ const bad=JSON.parse(JSON.stringify(manifests));
+ if(minimum===undefined)delete bad.system.root.minimumSupervisorVersion;else bad.system.root.minimumSupervisorVersion=minimum;
+ assert.throws(()=>signFeeds(bad,privateKey,publicKey),/supervisor/);
+}
+const unsafe=JSON.parse(JSON.stringify(system.root));unsafe.release='v1.4.1';unsafe.components.forEach(c=>{c.url=c.url.replace('/v1.0.3/','/v1.4.1/');});delete unsafe.minimumSupervisorVersion;
+const unsafeRaw=Buffer.from(JSON.stringify(unsafe)),unsafeFeed={payload:unsafeRaw.toString('base64'),signature:crypto.sign('RSA-SHA256',unsafeRaw,privateKey).toString('base64')};
+assert.throws(()=>verifySystemRelease(unsafeFeed,{...build,tag:'v1.4.1'},assets,publicKey),/supervisor/);
+console.log('PASS new Root signing/publication requires the safe supervisor minimum');
+
+const oldProof=JSON.parse(JSON.stringify(system.root));delete oldProof.minimumSupervisorVersion;
+const oldBytes=Buffer.from(JSON.stringify(oldProof)),oldFeed={payload:oldBytes.toString('base64'),signature:crypto.sign('RSA-SHA256',oldBytes,privateKey).toString('base64')};
+assert.equal(verifySystemRelease(oldFeed,build,assets,publicKey).release,'v1.0.3');
+console.log('PASS historical publication verification remains available');

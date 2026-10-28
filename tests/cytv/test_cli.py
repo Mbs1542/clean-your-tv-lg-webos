@@ -9,6 +9,83 @@ from cytv import cli, state
 
 
 class CLITests(unittest.TestCase):
+    def test_system_updater_replacement_preserves_root_and_rejects_pending_work(self):
+        from unittest.mock import MagicMock
+        for pending in [None]:
+            with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer, patch('cytv.cli.package.verify_payload', return_value={}):
+                if pending: state.Store(tmp).begin(state.target('192.0.2.10', 'root'), pending)
+                code, output, _ = self.run_cli(['replace-system-updater', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp, '--yes'], remote=MagicMock())
+                self.assertEqual(code, 0, output)
+                installer.return_value.replace_system_updater.assert_called_once_with()
+                installer.return_value.install.assert_not_called(); installer.return_value.uninstall.assert_not_called()
+        for edition, pending in [('no-root', None), ('root', 'install'), ('root', 'replace-system-updater')]:
+            with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+                if pending: state.Store(tmp).begin(state.target('192.0.2.10', edition), pending)
+                code, _, calls = self.run_cli(['replace-system-updater', '--host', '192.0.2.10', '--edition', edition, '--data-dir', tmp, '--yes'])
+                self.assertEqual(code, 2); self.assertFalse(calls); installer.assert_not_called()
+
+    def test_system_updater_replacement_confirmation_defaults_to_no(self):
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+            code, _, calls = self.run_cli(['replace-system-updater', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp], [''])
+            self.assertEqual(code, 0); self.assertFalse(calls); installer.assert_not_called()
+
+    def test_explicit_system_rollback_recovery_never_starts_installation(self):
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer, patch('cytv.cli.package.verify_payload', return_value={}):
+            code, output, _ = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp, '--yes'], remote=MagicMock())
+            self.assertEqual(code, 0, output)
+            installer.return_value.recover_system_rollback.assert_called_once_with()
+            installer.return_value.install.assert_not_called()
+        for edition, pending in [('no-root', False), ('root', True)]:
+            with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+                if pending: state.Store(tmp).begin(state.target('192.0.2.10', edition), 'install')
+                code, _, calls = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', edition, '--data-dir', tmp, '--yes'])
+                self.assertEqual(code, 2)
+                self.assertFalse(calls)
+                installer.return_value.recover_system_rollback.assert_not_called()
+
+    def test_new_recovery_attempt_is_explicit_and_scoped_to_recovery(self):
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+            code, output, _ = self.run_cli(['recover-system-rollback', '--new-recovery-attempt', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp, '--yes'], remote=MagicMock())
+            self.assertEqual(code, 0, output)
+            installer.return_value.recover_system_rollback.assert_called_once_with(new_attempt=True)
+        for command in ['install', 'status', 'restore']:
+            with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+                code, _, calls = self.run_cli([command, '--new-recovery-attempt', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp, '--yes'])
+                self.assertEqual(code, 2); self.assertFalse(calls); installer.assert_not_called()
+
+    def test_system_rollback_recovery_confirmation_defaults_to_no(self):
+        with tempfile.TemporaryDirectory() as tmp, patch('cytv.cli.Installer') as installer:
+            code, _, calls = self.run_cli(['recover-system-rollback', '--host', '192.0.2.10', '--edition', 'root', '--data-dir', tmp], [''])
+            self.assertEqual(code, 0)
+            self.assertFalse(calls)
+            installer.assert_not_called()
+
+    def test_firmware_access_command_checks_root_pending_and_uses_no_install(self):
+        from unittest.mock import MagicMock
+        for command,enabled in [('enable-firmware-access',True),('disable-firmware-access',False)]:
+            with self.subTest(command=command),tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer,patch('cytv.cli.package.verify_payload',return_value={}):
+                remote=MagicMock();code,output,_=self.run_cli([command,'--host','192.0.2.10','--edition','root','--data-dir',tmp,'--yes'],remote=remote)
+                self.assertEqual(code,0,output);installer.return_value.configure_firmware_access.assert_called_once_with(enabled)
+                installer.return_value.install.assert_not_called()
+        for edition,pending in [('no-root',False),('root',True)]:
+            with self.subTest(edition=edition),tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer:
+                if pending:state.Store(tmp).begin(state.target('192.0.2.10',edition),'install')
+                code,_,calls=self.run_cli(['enable-firmware-access','--host','192.0.2.10','--edition',edition,'--data-dir',tmp,'--yes'])
+                self.assertEqual(code,2);self.assertFalse(calls);installer.return_value.configure_firmware_access.assert_not_called()
+
+    def test_sdk_permission_repair_flag_is_explicit_and_enable_only(self):
+        from unittest.mock import MagicMock
+        with tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer,patch('cytv.cli.package.verify_payload',return_value={}):
+            code,output,_=self.run_cli(['enable-firmware-access','--repair-package-permissions','--host','192.0.2.10','--edition','root','--data-dir',tmp,'--yes'],remote=MagicMock())
+            self.assertEqual(code,0,output)
+            installer.return_value.configure_firmware_access.assert_called_once_with(True,repair=True)
+        for command in ['install','disable-firmware-access','status']:
+            with tempfile.TemporaryDirectory() as tmp,patch('cytv.cli.Installer') as installer:
+                code,output,calls=self.run_cli([command,'--repair-package-permissions','--host','192.0.2.10','--edition','root','--data-dir',tmp,'--yes'])
+                self.assertEqual(code,2,output);self.assertFalse(calls)
+
     def test_wam_cache_cleanup_has_default_no_consent_even_with_yes(self):
         from unittest.mock import MagicMock
         for choice, cleared in [('n', False), ('', False), ('y', True)]:

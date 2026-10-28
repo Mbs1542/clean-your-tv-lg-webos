@@ -144,12 +144,17 @@ class Device:
         except (ValueError,KeyError,TypeError):raise ValueError(VERIFICATION_ERROR) from None
         prior=self._baseline(edition);reason='available'
         if any(version(c['version'])<version(p['version']) for c,p in zip(candidate['components'],prior['components'])):reason='component-downgrade'
-        elif version(candidate['release'][1:])<=version(prior['release'][1:]):reason='current'
+        elif version(candidate['release'][1:])<=version(prior['release'][1:]) or all(c['version']==p['version'] for c,p in zip(candidate['components'],prior['components'])):reason='current'
         else:
             try:
                 self.check_legacy()
                 if not self.verify_baseline(prior):raise ValueError('Installed baseline changed')
                 for c in prior['components']:self.inspect(self.cache_bytes(c),c)
+                for c in candidate['components']:
+                    if c['kind']=='infrastructure':
+                        raw=(self.cache_bytes(c) if os.path.lexists(self.cached(c)) else
+                             self.fetch('package',{'proof':candidate['proof'],'name':c['name']},binary=True))
+                        self.inspect(raw,c)
             except Exception as error:reason=str(error)
         components=[]
         for c in candidate['components']:

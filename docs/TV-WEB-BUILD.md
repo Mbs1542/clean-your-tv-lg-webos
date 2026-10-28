@@ -87,6 +87,7 @@ regression on the compiled Home frontend:
 python3 scripts/tv_web_build.py --input launcher --output build/legacy-ui
 npx playwright install chromium
 BROWSER_CHANNEL=chromium TV_WEB_DIR=build/legacy-ui npm run test:legacy-ui
+BROWSER_CHANNEL=chromium TV_WEB_DIR=build/legacy-ui npm run test:geometry
 ```
 
 The browser test verifies the actual rendered Outfit face for each weight, then
@@ -95,6 +96,15 @@ It checks actual card hit-testing, dimensions, icon fallback, scrolling,
 launch/navigation and full-screen dialogs. This models the reported engine
 limitations in a current browser; it is not an emulator of an entire old TV.
 Hardware confirmation is still required on the original webOS 3.5 device.
+
+The geometry regression renders one through eight columns and checks spacing
+between the focus frame and neighbouring cards, frame alignment, remote
+navigation, scrolling back to the dock and the separately constructed Add app
+tile. Card dimensions are calculated in `launcher/app.js`; CSS inherits the
+item width rather than maintaining a second fixed card size. Sparse layouts
+retain the original maximum size, while denser layouts reserve room for the
+enlarged focus frame. These browser checks do not establish physical TV
+performance or Home-button compatibility.
 
 ## Helper Node compatibility
 
@@ -131,7 +141,7 @@ References: [LG engine versions](https://webostv.developer.lge.com/develop/speci
 
 ## Chinese UI fonts
 
-The 1.3.0 candidate adds `zh-Hans` (Simplified Chinese) and `zh-Hant`
+The UI supports `zh-Hans` (Simplified Chinese) and `zh-Hant`
 (Traditional Chinese). Explicit script tags take precedence over a region;
 `zh`, CN and SG default to Hans, while TW, HK and MO default to Hant.
 The preference is selectable and persisted using the existing language setting.

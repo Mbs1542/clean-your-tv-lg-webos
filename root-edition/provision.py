@@ -18,7 +18,7 @@ STATE = Path('/var/lib/clean-your-tv-root')
 BASE = Path('/var/luna-service2-dev')
 PRIVATE_SERVICE = STATE/'service'
 RUNNER = STATE/'run-recovery-service'
-PRIVATE_FILES = ('audio-recovery.js', 'service.js','startup-diagnostics.js','app-inventory.js','handlers.js','services.json','package.json','activity.json','boot-recover.sh')
+PRIVATE_FILES = ('service.js','startup-diagnostics.js','app-inventory.js','handlers.js','services.json','package.json','activity.json','boot-recover.sh')
 SYSTEM_FILES = tuple(Path(x) for x in ('/usr/bin/node','/usr/palm/services/jsservicelauncher/bootstrap-node.js','/usr/palm/services/jsservicelauncher/bootstrap.js'))
 RUNTIME = STATE / 'runtime'
 FILES = {'service': BASE/'services.d'/(NAME+'.service'),
@@ -104,7 +104,7 @@ def plan(original):
         'outbound':['com.webos.service.activitymanager','com.palm.activitymanager']}]
     return {'service': original['service'].replace(expected,'Exec='+str(RUNNER)).encode(),
             'role':encoded(role), 'client':encoded({NAME:['activity.operation'],'com.cleanyourtv.root.preview':[NAME+'.control'],'com.cleanyourtv.root.preview-*':[NAME+'.control']}),
-            'api':encoded({NAME+'.control':[NAME+'/'+x for x in ('status','restore','enable','confirm','listApps','audioRecoveryStatus','setAudioRecoveryEnabled','recoverAudio')],'activities.callbacks':[NAME+'/boot'],NAME+'.admin':[NAME+'/'+x for x in ('status','restore','register','unregister')]})}
+            'api':encoded({NAME+'.control':[NAME+'/'+x for x in ('status','restore','enable','confirm','listApps')],'activities.callbacks':[NAME+'/boot'],NAME+'.admin':[NAME+'/'+x for x in ('status','restore','register','unregister')]})}
 
 def manifest():
     callback = PRIVATE_SERVICE/'boot-recover.sh'
@@ -320,6 +320,14 @@ def prepare_stock_home():
     if pending['phase'] != 'verified': write(receipt,encoded(dict(pending,phase='verified')))
 
 
+def register_firmware_access():
+    from python_binding import command
+    reply=subprocess.run([command(STATE),str(RUNTIME/'cli.py'),'provision-firmware-access'],check=True,timeout=30,stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+    envelope=json.loads(reply.stdout)
+    result=envelope.get('result') if isinstance(envelope,dict) and envelope.get('returnValue') is True else None
+    return isinstance(result,dict) and result.get('returnValue') is True and result.get('permissions_installed') is True
+
+
 def finalize():
     before = startup_record()
     phase = 'manifest'
@@ -341,7 +349,10 @@ def finalize():
         startup_hook.install(secure,write)
         phase = 'publish'
         write(STATE/'recovery-provision.json',encoded(expected))
-        return {'returnValue':True,'mode':'recovery-only','activity':reply}
+        phase = 'firmware-permissions'
+        try: firmware_ready=register_firmware_access()
+        except Exception: firmware_ready=False  # Optional settings must not block core Home/recovery setup.
+        return {'returnValue':True,'mode':'recovery-only','activity':reply,'firmware_permissions_registered':bool(firmware_ready)}
     except Exception as error:
         report = {'schema':1, 'phase':phase, 'reason':'failed'}
         attempt = os.environ.get('CYTV_ROOT_INSTALL_ATTEMPT', '')

@@ -1,30 +1,25 @@
 # Clean Your TV — instrukcja użytkownika
 
-1.4.0: opiekun zaakceptował poprawione testy C3: zasilanie, Home, fokus, zachowanie wyłączenia i ręczny powrót do 1.3.0; #90 zamknięto na jego prośbę. Inne TV, dźwięk eARC i fizyczny Android pozostają niesprawdzone. Nie powtórzono wszystkich testów podstawowych przycisków z poprzedniego kandydata. [1.4.0 acceptance (English)](../RELEASE-1.4.0-ACCEPTANCE.md). Earlier pending statements below are historical.
+> Nieopublikowany kandydat 1.4.1: zgodność Root OTA, dostępność aktualizacji, dostęp do API firmware oraz poprawki pakietów/konsoli Windows. Podpisaną aktualizację i zwykłe cofnięcie zapisano w ograniczonym zakresie C3; końcowe kompilacje i publikacja pozostają do wykonania; to nie jest opublikowany plik do pobrania. [1.4.1](../RELEASE-1.4.1.md).
 
+[Dokumentacja](../README.md) · [Zgłoś problem](../FEEDBACK.md)
+
+Poradnik opisuje opublikowaną wersję **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**. Akceptacja C3 obejmuje zapisane testy zasilania, Home, fokusu, zachowania stanu wyłączenia i ręcznego cofnięcia wersji. Inne telewizory, dźwięk eARC i fizyczne urządzenia Android pozostają niezweryfikowane; udana instalacja nie dowodzi zgodności. [Zakres testów (angielski)](../RELEASE-1.4.0-ACCEPTANCE.md).
+
+## Wybierz edycję
 
 No-root i Root to równorzędne opcje dla różnych konfiguracji telewizora. Wybierz No-root dla LG Developer Mode lub Root, jeśli masz już dostęp root przez SSH. Zgodność i zakres wykonanych testów są określane osobno dla każdej wersji.
 
+- **No-root:** włącz LG Developer Mode i Key Server. Wpisz hasło wyświetlane na telewizorze i zaakceptuj na nim osobne żądanie parowania. Developer Mode musi pozostać aktywny: wygaśnięcie sesji może usunąć tak zainstalowane aplikacje. Sprawdzaj oficjalny licznik także przy włączonym odnawianiu Beta. Monitorowanie Helper wymaga sieci lokalnej.
+- **Root:** potrzebny jest istniejący dostęp root przez SSH. Instalator nie uzyskuje uprawnień root. Nie włączaj Developer Mode na telewizorze z istniejącym rootem. Zachowaj dostęp root i usługi odzyskiwania.
+
 ## Wymagania
-
-Ta instrukcja opisuje **[v1.3.0 stable](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.3.0)**. Odnośniki `releases/latest/download` pobierają opublikowane wydanie stabilne. Zobacz [instalację](../INSTALL.md) i [opis wydania](../RELEASE-1.3.0.md).
-
-Wersje wydania: cytv **0.4.0**, Home **1.4.2**, Home Helper **0.6.19**, Root **0.4.0**, Home Updater i Root Updater **0.3.0**, Android **0.3.0-preview** (kod **11**), nadzorca System Updater **1.1.0**, protokół **1**.
-
-Nieopublikowany kandydat 1.4.0 zawiera Android 0.4.0 (kod 13) bez preview po zaakceptowanych przez opiekuna testach emulatora. Sprawdzono: Android 15 ARM64 / WebView 124. Fizyczne telefony i odzyskiwanie podczas rzeczywistej instalacji na TV pozostają niesprawdzone; Android 7 / WebView 108 to minimum, nie przetestowany telefon. Aktualizuj bez odinstalowywania i czyszczenia danych. Publiczne pliki nadal zawierają 0.3.0-preview. Zgłaszając problem, podaj telefon, Android/WebView, TV/oprogramowanie, edycję i nieudany krok, bez danych logowania.
-
-Znany problem w 1.3.0: po wyjściu z czuwania sterowanie Home w Root może się wyłączyć i Home ponownie otwiera LG. Włącz je ponownie ręcznie w ustawieniach Clean Your TV; jeśli się nie uda, pozostaw LG Home i zapisz diagnostykę. Zobacz [issue #90](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/90) i [aktualne wyniki testów](../RELEASE-1.3.0-ACCEPTANCE.md).
 
 Włącz telewizor i połącz go z tą samą zaufaną siecią lokalną co komputer. Później komputer może być wyłączony. Zgodność zależy od modelu, oprogramowania i pilota; Root ma nieukończone testy sprzętowe.
 
-- **No-root:** włącz LG Developer Mode i Key Server. Wpisz hasło wyświetlane na telewizorze i zaakceptuj na nim osobne żądanie parowania. Developer Mode musi pozostać aktywny: wygaśnięcie sesji może usunąć tak zainstalowane aplikacje. Sprawdzaj oficjalny licznik także przy włączonym odnawianiu Beta. Monitorowanie Helper wymaga sieci lokalnej.
+No-root Helper wymaga Node.js **0.12.2+** na TV. Root wymaga Node.js **8+** i działającego Pythona **3.9+**. W razie potrzeby instalator pobierze zweryfikowanego prywatnego Pythona; początkowe przygotowanie wymaga **320 MiB** wolnego miejsca. Nie zastępuje Pythona systemowego. Zachowaj środowiska potrzebne do odzyskiwania. [Python (angielski)](../OPTIONAL-PYTHON.md). Odnawianie Developer Mode to **Beta, domyślnie wyłączona**; rzeczywiste odnawianie bez roota nie zostało potwierdzone. Nadal sprawdzaj oficjalny licznik.
 
-Zaktualizowany Helper No-root wymaga Node.js 0.12.2 lub nowszego na telewizorze. Instalator sprawdza ten wymóg przed instalacją. Wcześniej opublikowane pakiety nie uzyskują tej zgodności automatycznie; dostęp do urządzeń wejściowych, wybudzanie i zimny start wymagają testów na każdym modelu.
-
-- **Root:** potrzebny jest istniejący dostęp root przez SSH. Instalator nie uzyskuje uprawnień root. Nie włączaj Developer Mode na telewizorze z istniejącym rootem. Zachowaj dostęp root i usługi odzyskiwania.
-
-
-## Konfiguracja Developer Mode (No-root)
+### Konfiguracja Developer Mode (No-root)
 
 Developer Mode pozwala CYTV instalować aplikacje na TV bez roota.
 
@@ -40,37 +35,13 @@ Parowanie to osobny krok: gdy TV zapyta, zatwierdź CYTV pilotem.
 
 Utrzymuj Developer Mode aktywny: przed końcem odliczania otwórz aplikację i naciśnij EXTEND, gdy TV ma internet. Po wygaśnięciu LG może usunąć te aplikacje.
 
-Home to ekran aplikacji. Home Helper sprawia, że przycisk Home otwiera ten ekran.
-
-Po instalacji naciśnij Home, aby sprawdzić działanie. Jeśli otworzy się LG Home, otwórz Home Helper z listy aplikacji TV. Trzy krótkie naciśnięcia Home w ciągu dwóch sekund przywracają LG Home. Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Helper i potwierdź. Zapisany wybór ekranu Home zostaje zachowany.
-
-CYTV na komputerze pokazuje przygotowanie krok po kroku. Szczegóły otwierają dziennik operacji. Obrazy LG można powiększyć; użyj kodu ze swojego TV.
-
-[LG Developer Mode](https://webostv.developer.lge.com/develop/getting-started/developer-mode-app)
-
-## Opcjonalny Python dla Root
-
-Root wymaga na TV Pythona 3.9+. Instalator sprawdza rzeczywiste moduły i operacje, w tym `json`, `fcntl`, blokady, pliki i podprocesy; sam numer wersji nie wystarcza. Jeśli obecny interpreter spełnia wymagania, dodatkowy Python nie jest pobierany. W przeciwnym razie podczas konfiguracji komputer lub Android może pobrać przypięty CPython **3.13.17 dla ARMv7 soft-float**, sprawdzić URL, rozmiar i SHA-256, a następnie przesłać go istniejącym zaufanym połączeniem SSH. Zwykłe pakiety instalatora nie zawierają tego archiwum. TV nie potrzebuje Internetu na tym etapie.
-
-Dodatkowe pobranie to około **26,3 MB**, znormalizowana transmisja SSH **51,5 MB**, zainstalowane pliki **119,3 MB**; przygotowanie wymaga **320 MiB** wolnego miejsca na TV. Zgodność programu ładującego i bibliotek jest sprawdzana przed aktywacją. Prywatne wersje znajdują się w `/var/lib/clean-your-tv-python/`, bez zmiany systemowego Pythona, libc lub globalnego PATH. Nadal potrzebne są root, odpowiednie usługi webOS i Node.js **8+** dla Root/System Updater; No-root Helper wymaga Node.js **0.12.2+**.
-
-Na komputerze z Internetem przygotuj zweryfikowaną pamięć podręczną bez wyszukiwania TV ani łączenia się z nim:
-
-```sh
-./cytv --prepare-python-runtime --data-dir /sciezka/prywatna-pamiec
-```
-
-Podczas instalacji użyj tego samego `--data-dir`. Do przenoszenia przygotuj osobny prywatny katalog, bez zwykłych kluczy SSH i profili. Polecenia `status`, `doctor`, `restore` i `uninstall` nie pobierają Pythona automatycznie. Zachowaj wersje używane przez Root, updatery i odzyskiwanie, także po usunięciu aplikacji. Więcej: [opcjonalny runtime](../OPTIONAL-PYTHON.md).
-
 ## Instalacja i język
 
 - **Windows x64:** pobierz `cytv-windows-x64-desktop.zip`, wybierz **Wyodrębnij wszystkie** w Eksploratorze i otwórz `cytv-desktop/cytv-desktop.exe`. Zachowaj obok folder `_internal`. Podpis wydawcy Windows nie jest skonfigurowany. Osobna konsola to `cytv-windows-x64.exe`; zmień nazwę na `cytv.exe` i użyj `.\cytv.exe` w PowerShell dla poniższych poleceń.
 - **macOS 13+:** rozpakuj `cytv-macos-arm64.zip` dla Apple Silicon lub `cytv-macos-x64.zip` dla Intela. Przenieś `cytv.app` do Aplikacji i otwórz; zezwól na dostęp do sieci lokalnej. Jeśli zaufany plik zostanie zablokowany, użyj Prywatność i ochrona → Otwórz mimo to; nie wyłączaj Gatekeepera. Zgodność ze starszymi systemami nie jest w pełni potwierdzona.
 - **Linux x64:** na Ubuntu 22.04+, Debianie 12+ lub Mint 21+ zainstaluj `cytv-linux-x64.deb` przez graficzny menedżer pakietów i otwórz Clean Your TV z menu. Pobranie bibliotek może wymagać Internetu. Nie ma pakietu Linux ARM. Samodzielny plik `cytv-linux-x64` to CLI; aplikacja graficzna jest w pakiecie `.deb`.
 
-[Instalator Android](../../android/README.md) obsługuje wszystkie dwanaście języków interfejsu. W prawym górnym rogu widać bieżący język; dotknij go, aby wybrać inny. Wybór zostaje zapisany w telefonie.
-
-W Androidzie wybrane działanie serwisowe pozostaje widoczne podczas łączenia i pokazuje własny postęp. Interfejs używa czcionki systemowej telefonu oraz większych etykiet i tekstów pomocy.
+[Instalator Android (angielski)](../../android/README.md): wybierz język w prawym górnym rogu. Aktualizuj bez odinstalowania i czyszczenia danych. Android 7 / WebView 108 to minimum, a nie sprawdzony telefon; testy akceptacyjne używały emulatora Android 15 ARM64 / WebView 124. Fizyczne telefony i odzyskiwanie z połączeniem do prawdziwego TV pozostają niezweryfikowane.
 
 Kreator początkowo używa języka systemu i zapamiętuje wybrany język. Na telewizorze otwórz **Ustawienia → Język** i wybierz język lub automatyczny wybór według systemu. Preferencje instalatora i telewizora są niezależne. Kody zawiera [spis języków](../LANGUAGES.md).
 
@@ -83,15 +54,13 @@ chmod +x cytv
 
 Wybierz telewizor lub podaj IP, wybierz edycję i sprawdź podsumowanie. Nową tożsamość SSH zatwierdzaj tylko dla własnego telewizora w zaufanej sieci; zmieniony zapisany klucz blokuje dostęp. Root przygotowuje odzyskiwanie i od razu aktywuje Home, bez okresu próbnego ani potwierdzenia zachowania ustawień. Sprawdź strzałki, OK, Home, Wstecz/Anuluj, głośność, czuwanie i uruchomienie po całkowitym odłączeniu zasilania.
 
-Jeśli usuwanie Root zostanie przerwane, ponownie wybierz Usuń w aplikacji. Sprawdzi dziennik TV i stan pakietów przed kontynuowaniem; nie ponowi zakończonego usuwania. Jeśli operacja trwa, odczekaj minutę. Jeśli wyniku nie można potwierdzić, uruchom TV ponownie i sprawdź stan; zachowaj raport dla pomocy technicznej.
-
 ## Obsługa i odzyskiwanie
 
-Strzałki wybierają, OK otwiera; przytrzymaj OK, aby zmienić kolejność. Krótkie Wstecz zachowuje nawigację aplikacji i jej potwierdzenie wyjścia. Home otwiera ekran Clean Your TV, gdy sterowanie jest aktywne. W nowych kompilacjach przytrzymaj Wstecz przez 1,2 sekundy, aby jednorazowo otworzyć LG Home. Przełącznik sterowania Home i ustawienia pozostają bez zmian.
+Strzałki wybierają, OK otwiera; przytrzymaj OK, aby zmienić kolejność. Krótkie Wstecz zachowuje nawigację aplikacji i jej potwierdzenie wyjścia. Home otwiera ekran Clean Your TV, gdy sterowanie jest aktywne. Przytrzymaj Wstecz przez 1,2 sekundy, aby jednorazowo otworzyć LG Home. Przełącznik sterowania Home i ustawienia pozostają bez zmian.
 
-**Nowe kompilacje: naciśnij Home trzy razy w ciągu dwóch sekund**, puszczając przycisk po każdym naciśnięciu. Przywraca to LG Home i zatrzymuje sterowanie bez usuwania preferencji. W No-root Helper do wersji 0.6.13 włącznie zamiast tego przytrzymaj Home około dwóch sekund. Przytrzymanie Home nie jest gestem awaryjnym Root.
+**Naciśnij Home trzy razy w ciągu dwóch sekund**, puszczając przycisk po każdym naciśnięciu. Przywraca to LG Home i zatrzymuje sterowanie bez usuwania preferencji. W No-root Helper do wersji 0.6.13 włącznie zamiast tego przytrzymaj Home około dwóch sekund. Przytrzymanie Home nie jest gestem awaryjnym Root.
 
-No-root: Trzy krótkie naciśnięcia Home w ciągu dwóch sekund przywracają LG Home. Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Helper i potwierdź. Zapisany wybór ekranu Home zostaje zachowany. Root: włącz **Zmień Home** w ustawieniach Home, aby wznowić. **Otwórz LG Home** otwiera LG Home jednorazowo bez zmiany celu przycisku Home. Aby przywrócić LG Home jako stały cel, wyłącz **Zmień Home** lub uruchom `cytv restore`. Nie uruchamiaj obu kontrolerów jednocześnie. Przy powtarzającym się błędzie pozostań przy LG Home.
+No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Helper i potwierdź. Zapisany wybór ekranu Home zostaje zachowany. Root: włącz **Zmień Home** w ustawieniach Home, aby wznowić. **Otwórz LG Home** otwiera LG Home jednorazowo bez zmiany celu przycisku Home. Aby przywrócić LG Home jako stały cel, wyłącz **Zmień Home** lub uruchom `cytv restore`. Nie uruchamiaj obu kontrolerów jednocześnie. Przy powtarzającym się błędzie pozostań przy LG Home.
 
 ```sh
 ./cytv --language pl status
@@ -106,125 +75,29 @@ Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore`
 
 Po połączeniu cytv pokazuje wersję zainstalowaną → dołączoną i rozróżnia pierwszą instalację, ponowną instalację i cofnięcie wersji. Sprawdź podsumowanie przed potwierdzeniem; `--yes` nie omija kontroli zgodności. Zachowaj działające pakiety i prywatne kopie ustawień. Przed wymianą pakietów z komputera zatrzymaj No-root Helper; nie odinstalowuj wcześniej aplikacji. Nie zastępuj działającego Root pojedynczym IPK: użyj odpowiedniej procedury cytv. Usunięcie aplikacji komputerowej nie usuwa aplikacji z TV.
 
-Kandydat dodaje **Aktualizuj wszystko** w Ustawienia → Aktualizacje oprogramowania. Niezależny System Updater weryfikuje podpisany zestaw dla danej edycji: Home, Helper i Home Updater dla No-root na TV z rootem; Root Home, Root Updater oraz runtime sterowania i odzyskiwania dla Root. Aktualizacja na TV wymaga **roota, Homebrew Channel**, odpowiedniego Pythona, Node.js 8+ i działających usług webOS. Na TV bez roota aktualizuj z komputera.
+Otwórz ustawienia Home → Aktualizacje oprogramowania i sprawdź wersje przed potwierdzeniem. Aktualizacje i cofanie wersji na TV wymagają **roota, Homebrew Channel** i przygotowanej zgodnej infrastruktury aktualizacji, również dla edycji No-root. Bez roota użyj komputera. Przygotowanie pełnych aktualizacji systemu to osobna świadoma czynność: [aktualizacje (angielski)](../UPDATES.md). Odzyskiwanie pokazuje zapisaną wersję; cofnięcie może utracić późniejsze zmiany ustawień.
 
-Przy pierwszej instalacji użyj kompletnego instalatora kandydata, który przygotuje Home i Updater odzyskiwania danej edycji. Ta wersja przejściowa nie jest oferowana w stabilnym kanale aktualizacji.
+**Istniejąca instalacja 1.3.0:** pierwotny System Updater nie może zastosować 1.4.0 z powodu zmiany listy dozwolonych plików. Jeśli próba zatrzymała się przed wymianą, zachowaj dziennik i przerwij; nie kasuj stanu i nie ponawiaj w ciemno. Przejdź przez sprawdzane odzyskiwanie i nową instalację 1.4.0; aktualizacja samej aplikacji nie zastępuje zachowanych sterowników Root. Następna poprawka OTA **nie została opublikowana**. [Migracja i odzyskiwanie (angielski)](../UPDATES.md#one-time-computer-preparation).
 
-Jeśli Root jest już zainstalowany i zachowany jest Root Updater, zwykła ponowna instalacja może zostać celowo zablokowana. Najpierw uruchom `status` i diagnostykę, następnie sprawdź transakcję oraz stan odzyskiwania w dotychczasowym Updaterze. Aktywne lub niepewne operacje rozwiąż przez odpowiadający im wcześniejszy mechanizm odzyskiwania; przejście na nową infrastrukturę wymaga oceny rzeczywistego stanu TV. Nie usuwaj dziennika ani nie obchodź blokady przez `--yes`, pojedynczy IPK lub stare OTA. OTA samej aplikacji nie instaluje nowej infrastruktury. Zobacz [kontrolę istniejącego TV](../UPDATES.md#one-time-computer-preparation).
+Odzyskiwanie dźwięku HDMI w Root jest eksperymentalne i **domyślnie wyłączone**; włączaj tylko w razie potrzeby. Może przerwać poprawny dźwięk i nie dowodzi zgodności eARC. [Odzyskiwanie dźwięku (angielski)](../development/ROOT-AUDIO-RECOVERY.md). Osobny **CYTV Installer dla Homebrew nie jest jeszcze wydany**; użyj opublikowanego instalatora komputerowego lub Android.
 
-Dopiero po potwierdzeniu zgodnej konfiguracji z Home `systemUpdateProtocol = 1` i właściwym Updaterem odzyskiwania włącz nadzorcę z komputera. W instalatorze wybierz włączenie aktualizacji wszystkich komponentów TV; dla Root, z zapisanym połączeniem root SSH:
+Tylko nieopublikowany kandydat: gdy stare zapisywalne katalogi Root blokują dostęp do API oprogramowania TV, `cytv enable-firmware-access --edition root --repair-package-permissions` sprawdza bieżący pakiet według zaufanych danych prywatnych i usuwa zapis dla grupy/innych wyłącznie we własnych ścieżkach Root. Nieznane lub zmienione pliki zatrzymują naprawę. Profil, wybór Home i blokowanie aktualizacji pozostają bez zmian; [szczegóły (angielski)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
 
-```sh
-./cytv --language pl enable-system-updates --edition root --host TV_ADDRESS
-```
+Tylko nieopublikowany kandydat: `cytv recover-system-rollback --edition root` obsługuje zweryfikowane przywracanie Root, gdy wszystkie instalatory pakietów zakończyły pracę, ale upłynął czas gotowości launchera. Wymaga prawdziwego sygnału launchera i odrzuca nieznane wyniki instalacji. Zachowuje pakiety, przypięty kod i klucze, dowody błędu oraz jawnie wyłączone sterowanie Home. Prywatny zapis dokumentuje ograniczoną próbę. Zwykłe ponowienie nie wydłuża terminu. Dopiero po 120 sekundach, bez zaakceptowanego sygnału gotowości i nieznanych wyników instalacji, `--new-recovery-attempt` archiwizuje cały poprzedni zapis pod UUID/haszem i jawnie rozpoczyna nową próbę. Ukończone odzyskiwanie pozostaje idempotentne; brak automatycznych kolejnych prób. [Procedura i ograniczenia (angielski)](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-Dla No-root na TV z rootem najpierw zainstaluj Home/Helper/Home Updater z komputera, następnie skorzystaj z procedury z aliasem root SSH w [instrukcji aktualizacji](../UPDATES.md#one-time-computer-preparation). Nadzorca zapisuje zweryfikowaną bazę odzyskiwania faktycznie zainstalowanych komponentów. Starsze OTA aktualizujące tylko aplikację nie instalują nowego Pythona, nadzorcy ani infrastruktury updaterów. Po przygotowaniu używaj wspólnego mechanizmu; kolidujące starsze instalatory są blokowane.
+Tylko nieopublikowany kandydat 1.4.1: aktualizacje Root na TV wymagają System Updater 1.1.1. Przed OTA jawnie zastąp 1.1.0 poleceniem `cytv replace-system-updater --edition root`. Wymieniany jest tylko System Updater; aplikacje Root/Root Updater, pełny profil i wybór Home pozostają, a stary stan jest archiwizowany. Nieznane lub niedokończone operacje blokują wymianę. Wymóg nie blokuje kanałów No-root. [Procedura (angielski)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
-Instalacja wymaga potwierdzenia, a sprawdzenie uruchomienia jest automatyczne. Profil i ustawienia są zachowywane; jawne lub awaryjne wyłączenie sterowania Home nie jest cofane. Góra/Dół przewija opis zmian, Lewo/Prawo wybiera stałe przyciski, a odświeżanie nie przenosi zaznaczenia. Pomarańczowa kropka oznacza nową wersję, także gdy wymaga komputera. Otwórz Odzyskiwanie w Updaterze, aby zobaczyć stan i dostępną poprzednią wersję. Cofnięcie aktualizacji systemu przywraca cały poprzedni zestaw i zapisany profil; późniejsze zmiany ustawień zostaną utracone. Automatyczna kontrola uruchomienia nie usuwa możliwości cofnięcia, która pozostaje do następnej transakcji.
+## Pomoc i dalsze instrukcje
 
-Po przerwaniu uruchom `status` i zachowaj dziennik oraz dane odzyskiwania. Niejednoznaczny wynik blokuje ponowną instalację i cofanie; odczyt wersji nie dowodzi zakończenia instalatora. Nie usuwaj dziennika, blokad ani wersji Pythona, aby wymusić próbę. `doctor --report` wskazuje poszczególne niespełnione wymagania Root i zapisuje numeryczne kody SSH bez poświadczeń i surowego wyjścia. Sprawdź raport przed udostępnieniem.
+Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej próby. Prowadzone odzyskiwanie prosi oddzielnie o zgodę na usunięcie i ponowną instalację. Przy niepewnym wyniku przerwij i zachowaj prywatne logi, dzienniki oraz pliki odzyskiwania; nigdy nie usuwaj ich, aby wymusić ponowienie. [Odzyskiwanie (angielski)](../RECOVERY.md). Prosząc o pomoc podaj model, firmware, edycję, wersję instalatora, nieudany krok oraz oczekiwane/rzeczywiste zachowanie; przed udostępnieniem przejrzyj raport i usuń sekrety.
 
-## Testy sprzętowe i ograniczenia
+[Dokumentacja](../README.md) · [Zgłoś problem](../FEEDBACK.md)
 
-Root 0.2.0, Root Updater 0.2.0 i nadzorca 1.0.0 sprawdzono na OLED55C3RLA / firmware 43.21.71 / webOS 11.2.0 (`d344d92`, identyczna zawartość produktu jak `4b66951`). Przeszły sterowanie, potrójny Home i wznowienie, czuwanie/wybudzenie z Emby otwartym przez 70 sekund, menu wersji i czytelny komunikat o niedostępnej liście aktualizacji. Prawdziwy zimny start, Helper 0.6.19 na TV, UK6540PTD i pełna podpisana aktualizacja/wycofanie systemu nie zostały przetestowane. Wydanie stabilne przyjęto z tym ograniczonym zakresem dowodów; inne modele nie są zweryfikowane.
-
-No-root sprawdza ABI powłoki i dopuszcza 64-bitowe jądro tylko ze zweryfikowanym środowiskiem ARM32. Nazwa modelu ani `armv7l` nie gwarantują zgodności. Zakres wcześniejszych testów pozostaje ograniczony do sprawdzonego sprzętu i pakietów.
-
-No-root: Ustawienia Home → Tryb dewelopera zawiera odnawianie Beta, kontrolę sesji i diagnostykę. Zawsze sprawdzaj oficjalny licznik. Home Helper pokazuje stan i prosi o potwierdzenie wznowienia po zatrzymaniu.
-
-Dokumentacja techniczna: [aplikacja komputerowa](../DESKTOP_INSTALL.md), [CLI](../CLI.md), [instalacja ręczna](../MANUAL_INSTALL.md), [odzyskiwanie](../RECOVERY.md), [edycje](../EDITIONS.md), [aktualizacje](../UPDATES.md).
-
-Jeśli Root pokazuje `Denied methods call status` zaraz po konfiguracji nadzorcy, zamknij i ponownie otwórz Home Root jeden raz, a następnie sprawdź aktualizacje. Jeśli błąd pozostaje, zachowaj diagnostykę i dane odzyskiwania.
-
-1.2.0 (#51): po odrzuceniu pakietu przez TV raport JSON zachowuje tylko kategorię operacji, ograniczone liczbowe kody błędu/statusu, dozwolony stan pakietu i wynik logiczny. Pomija surowy tekst błędu TV, ścieżki i identyfikatory aplikacji. Sprawdź raport przed udostępnieniem; nie ma automatycznej ponownej próby, a naprawa instalacji na UN70006LA nie jest jeszcze potwierdzona.
-
-1.2.0 (#59): jeśli nie można sprawdzić stanu Helper, **Uruchom Helper** pozostaje dostępne z potwierdzeniem. Otwarcie kafelka nie uruchamia ponownie Helper ani nie znosi zatrzymania awaryjnego. Ustawienia Home wymagają odpowiedzi sterowania.
-
-1.2.0 (#55): Root sprawdza dane migracji przed instalacją. Instalację przerwaną przed konfiguracją usług można usunąć bez nigdy nieutworzonej migawki LS2; zachowuje zweryfikowany zapis dla zwykłej archiwizacji i ponownej instalacji cytv. Brak migawki na późniejszym etapie lub sprzeczne dowody nadal blokują czyszczenie. Wymagany jest nowy sterownik; problem startu usługi odzyskiwania na OLED Flex pozostaje nierozwiązany.
-
-## Blokada oprogramowania LG w 1.2.0
-
-Tylko Root: Ustawienia Home → Aktualizacje oprogramowania LG zmienia istniejące ustawienie Homebrew Channel. Dotyczy też aktualizacji zabezpieczeń TV; aktualizacje Clean Your TV są oddzielne. Obie zmiany wymagają prawdziwego ponownego uruchomienia TV; czuwanie nie wystarczy. Przełącznik pokazuje zapisane ustawienie, nie potwierdza działania blokady. Niektóre TV sprawdzają wcześniej; powiadomienia mogą pozostać i może być potrzebna blokada na routerze. Homebrew zachowuje ustawienie po usunięciu lub cofnięciu wersji CYTV. Przy niedostępności lub braku potwierdzenia sprawdź Homebrew i odśwież stan. Zakres testów TV opisuje zapis akceptacji.
-
-[LG firmware blocking](../LG-FIRMWARE-UPDATES.md) · [1.2.0](../RELEASE-1.2.0-ACCEPTANCE.md)
-
-## Nowości w 1.3.0: odzyskiwanie w instalatorze komputerowym
-
-Nowości w 1.3.0. Po sprawdzeniu stanu TV, diagnostyce połączenia lub powrocie do LG Home niedokończone usuwanie No-root oferuje **Odzyskaj i zainstaluj ponownie** dla tego samego TV i połączenia. Jawnie potwierdź dokończenie usuwania (domyślnie: Nie), następnie sprawdź dołączone wersje przed instalacją. **Skonfiguruj mój TV** również udostępnia tę ścieżkę. Sam powrót do LG Home nie kończy usuwania. Przy błędzie użyj **Zapisz raport diagnostyczny…**, aby zapisać raport z tej nieudanej próby i dołączyć go do zgłoszenia; terminal nie jest potrzebny. Jeśli raport nie powstał, podaj widoczny błąd. Zachowaj dane odzyskiwania; operacje nieudane lub o niepewnym wyniku nie są automatycznie ponawiane. Nie potwierdza to jeszcze rozwiązania problemu G5 / firmware 43.21.71 (#65).
-
-## Nowości w 1.3.0 — #12
-
-Narzędzia Androida zachowują wybrany telewizor, edycję i port SSH po powrocie do ekranu początkowego; No-root zwykle używa 9922. Jeśli ustawienia nie mogą sprawdzić sterowania Home, pokazują stan nieznany i ukrywają Zmień Home do czasu poprawnej odpowiedzi. Nie oznacza to zatrzymania Helpera i nie uruchamia go ponownie. Tych zmian nie ma w opublikowanych pakietach v1.2.0.
-
-Diagnostyka Root w 1.3.0 (#55): po błędzie instalacji zapisz raport z tej próby. Może zawierać kategorie błędów uruchamiania usługi odzyskiwania; zachowaj dane odzyskiwania i zainstalowany sterownik. Naprawa na OLED Flex nie jest jeszcze potwierdzona.
-
-## Nieopublikowany kandydat: instalacja Root przez Homebrew
-
-Ten kod dodaje osobną aplikację **CYTV Installer**, wyłącznie dla **Root**.
-Nie jest jeszcze opublikowana w katalogu Homebrew. cytv zachowuje No-root i Root
-na Windows, macOS, Linux i Androidzie; obecne linki nadal prowadzą do cytv.
-
-Wymagane są istniejący root, Homebrew Channel z wykonaniem jako root, Node.js **8+**
-i działający Python **3.9+**. Dla zgodnego ARMv7/`armv8l` z 32-bitowym środowiskiem
-użytkownika dołączono przypięty prywatny Python offline. Otwarcie i status niczego
-nie zmieniają: jawnie przygotuj brakujący Python, sprawdź ponownie i przejrzyj plan.
-Potrzeba **320 MiB wolnego miejsca po instalacji Installer**; dodatkowej przestrzeni
-roboczej pakietów na TV jeszcze nie zmierzono. Zgodność nowych modeli i firmware
-nie została potwierdzona.
-
-Instalowane są Root Home i Root Updater; przygotowanie System Updater jest jawnie
-wybieraną opcją. Change Home włącz osobno po weryfikacji. Zatrzymanie awaryjne i
-wyłączenie pozostają zachowane. Zweryfikowana obecna instalacja dzieli profil i
-odzyskiwanie między cytv a TV bez reinstalacji lub resetu. Nieznana stara infrastruktura
-wymaga diagnozy; import spakowanych preferencji dotyczy nowej instalacji, nie danych
-przeglądarki ani migracji infrastruktury.
-
-Po przerwaniu najpierw odczytaj status. Kontynuacja wymaga pierwotnej migawki i
-rezerwacji oraz potwierdzonego stanu końcowego. Inne etapy wymagają statusu,
-przywracania lub diagnozy; CLI ze źródeł może jawnie wznowić dalsze rozpoznane etapy.
-Finish Root setup w cytv nie uruchamia ponownie nieukończonego procesu. Nie usuwaj
-dzienników i nie ponawiaj w ciemno. Homebrew aktualizuje tylko Installer; produkt
-korzysta z istniejących Updaterów i podpisanych pełnych zestawów. Usunięcie Installer
-pozostawia produkt. Pełne usunięcie przywraca LG Home i usuwa własne linki startowe,
-zachowując niezależne dane odzyskiwania, archiwa i potrzebny Python. Wszystkie testy
-fizyczne tej ścieżki czekają; historyczne wyniki Root 0.2.0 na C3 jej nie potwierdzają.
-
-Uruchamianie korzysta z prywatnych skryptów powiązanych z potwierdzeniem własności i sprawdza tożsamość pakietu wyłącznie jako dane. Skrypty startowe z pakietów nie są wykonywane. Brakujący lub niezabezpieczony pakiet blokuje automatyczne wznowienie; niezależne odzyskiwanie nadal może przywrócić LG Home. Sprawdzanie może tymczasowo skopiować zweryfikowane pliki do prywatnego katalogu bez zmiany Home ani produktu.
-
-[Instalacja i odzyskiwanie (angielski)](../INSTALL.md#candidate-on-tv-root-installation) ·
-[Oczekujące testy TV (angielski)](../development/HOMEBREW-INSTALL-ACCEPTANCE.md)
-
-
-W tym kandydacie ze źródeł istniejąca instalacja Root wymaga zweryfikowanego odzyskiwania i nowej konfiguracji, aby otrzymać poprawione prywatne środowisko. Aktualizacja samego Installer go nie zastępuje. Zachowaj dane odzyskiwania i włącz Home tylko w zwykłej konfiguracji lub ustawieniach.
-
-Tylko w następnym kandydacie: No-root Ustawienia → Tryb programisty → Pokaż diagnostykę zawiera bezpieczne kategorie błędów zapisu i RPC Home oraz rzeczywistą wersję usługi. Podgląd nie włącza odnawiania ani nie uruchamia Helpera. Nieudana kontrola nie dowodzi zatrzymania Helpera. Poprawka dla C5 nie jest potwierdzona; [szczegóły (angielski)](../SETTINGS-DIAGNOSTICS.md).
-
-Raport otrzymuje fokus pilota. Góra/Dół przewija; Lewo/Prawo lub OK wraca do pobliskich działań, a Wstecz do ustawień Home.
-
-**Jeszcze niewydane, #82:** gdy brakuje ustawienia Home, jawnie uruchomiona instalacja Root może ustawić LG Home i potwierdzić odczyt przed zakończeniem przygotowania odzyskiwania. Status/doctor niczego nie zapisuje. Zapis o niepewnym wyniku nie jest powtarzany; zachowaj dane odzyskiwania. Jawne ustawienie LG Home pozostaje po odinstalowaniu. Testy na urządzeniu z tym firmware są nadal wymagane.
-
-## Nieopublikowany kandydat: odzyskiwanie dźwięku HDMI (Root)
-
-Ustawienia Home → Dźwięk HDMI oferuje ponowne łączenie eARC i potwierdzone przywrócenie
-HDMI. ARC-only, łączone/WOW Orchestra i nieznane tryby są pomijane. Automatyka po
-włączeniu/wybudzeniu jest eksperymentalna, domyślnie wyłączona, wymaga obsługiwanej
-subskrypcji zasilania i może przerywać sprawny dźwięk. Wstecz zamyka podczas porządkowania.
-Po przerwaniu sprawdź stan; przywróć ustawienie tylko, jeśli chcesz włączyć eARC.
-Przywrócenie Home/zatrzymanie awaryjne wyłącza automatykę do jawnego włączenia.
-Starsze prywatne runtime wymagają sprawdzonej ponownej konfiguracji. Zgodność i krótsze
-opóźnienie niepotwierdzone.
-
-[Device acceptance (English)](../development/ROOT-AUDIO-RECOVERY.md)
-
-Jeszcze niewydane: kontrola prywatnego Pythona rozróżnia błędy ABI, bezpieczeństwa katalogów i miejsca. Pierwsza instalacja wymaga 320 MiB wolnego w /var/lib. Duży WAM Session Storage może wyjaśniać brak miejsca; usunięcie może utracić stan sesji aplikacji. Zobacz [odzyskiwanie](../RECOVERY.md#private-python-and-low-var-space).
-
-W nieopublikowanym kandydacie 1.4.0 przerwana instalacja No-root również oferuje **Odzyskaj i zainstaluj ponownie** po **Sprawdź stan telewizora**. Potwierdź usunięcie tylko wtedy, gdy chcesz usunąć aplikacje Clean Your TV, a następnie sprawdź wersje przed ponowną instalacją. Jeśli odzyskiwanie się nie powiedzie, zapisz raport diagnostyczny i zatrzymaj się. Przyczyna pierwotnego odrzucenia pakietu przez TV nadal nie jest ustalona ani potwierdzona jako naprawiona (#21).
-
-
-**Niewydane — WAM:** `cytv clean-wam-cache --edition root`. Żądanie obejmuje tylko cache i codecache. Session Storage, ciasteczka, Local Storage, Service Worker i bazy danych są wyłączone. Najpierw zamknij aplikacje TV. Pamięć podręczna zostanie pobrana lub utworzona ponownie; kolejny start może być wolniejszy. [WAM](../WAM-CLEANUP.md).
-
-Możesz anulować i samodzielnie zwolnić miejsce. Sprawdź instrukcję i ponownie /var/lib; usunięcie aplikacji może zwolnić inną partycję. **Session Storage (SSH):** Najpierw zamknij aplikacje TV. Stan sesji zostanie usunięty; możesz utracić logowanie lub niezapisane dane. [WAM](../WAM-CLEANUP.md#free-space-yourself-instead).
-
-Nieopublikowana poprawka zimnego startu Root: przy włączonej obsłudze Home i ekranie startowym LG ustawionym na Home, po sprawdzeniu zabezpieczeń Clean może otworzyć się raz, jeśli nadal widać telewizję lub LG Home. Aplikacja widoczna podczas ostatniego sprawdzenia zostaje zachowana; brak ponawiania. Jawne wyłączenie i trzy naciśnięcia Home pozostają wyłączone. Potrzebna jest sprawdzona instalacja/aktualizacja prywatnego środowiska; sama aktualizacja aplikacji nie wystarczy. Testy na telewizorze są nadal wymagane.
-
-[Cold-start investigation and acceptance (English)](../development/ROOT-COLD-BOOT.md)
+<!-- Anchors retained for links to earlier guide headings. -->
+<a id="opcjonalny-python-dla-root"></a>
+<a id="testy-sprzętowe-i-ograniczenia"></a>
+<a id="blokada-oprogramowania-lg-w-120"></a>
+<a id="nowości-w-130-odzyskiwanie-w-instalatorze-komputerowym"></a>
+<a id="nowości-w-130--12"></a>
+<a id="nieopublikowany-kandydat-instalacja-root-przez-homebrew"></a>
+<a id="nieopublikowany-kandydat-odzyskiwanie-dźwięku-hdmi-root"></a>
