@@ -10,6 +10,14 @@ C3 candidate acceptance, 2026-10-28: OLED55C3RLA, firmware 43.21.71 / webOS 11.2
 - [Candidate build 40643645644](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40643645644).
 - [Production signing with publish=false, 40644813064](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40644813064).
 
+## Maintainer follow-up: update controls, geometry and firmware API
+
+C3 follow-up acceptance, 2026-10-28: OLED55C3RLA, firmware 43.21.71 / webOS 11.2.0, Homebrew 0.7.3; macOS ARM64 source installer; remote model unknown. Installed Root 0.5.1 / Root Updater 0.3.2 from candidate eeb4b8b0, retained System Updater 1.1.0. Maintenance helper source 3e01ac0e (#132) restored firmware API access without replacing installed code or changing file bytes/owners, recovery/ACL/baseline hashes, full profile or Homebrew preferences. Normal Homebrew quit/restart was needed to refresh cached API groups. The owner confirmed off/on switching. Real TV restart preserved access and the enabled preference. Revocation actually denied the app after service refresh; after SDK permissions returned to 0777, ordinary strict re-enable refused and explicit verified repair restored access. Unrelated getAppInfo and the Root Updater client remained denied. A preliminary Root status read refused once; a later read succeeded before permission changes.
+
+With LG auto-update off and no pending installation reported by the owner, the actual UI disabled blocking and a normal restart removed loopback answers for the four checked LG names; restoring on and restarting returned all four to loopback. No firmware check/download/install was requested. The owner reconfirmed controls/audio and LG Home routing afterward. Additional checks: no indicator and disabled/skipped Update all, including repeated check, with installed versions newer than public stable; 1/8 columns accepted by physical remote and 2–7 by CDP geometry/navigation on C3. Original five columns/full profile restored. Final state: candidate Root 0.5.1 installed, Home interception off, firmware blocking on. SDK modes are not enforced across platform lifecycle changes. On-device matching-version/newer-offer/error/absent-supervisor matrices, automatic timeout rollback, all network paths/early checks, fresh/removal/other-edition/device coverage and final frozen artifacts remain unverified; public stable is 1.4.0.
+
+[Maintainer QA report](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/110#issuecomment-6464370670). [Explicit repair PR #132](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/132). This follow-up covers the stated installed app and streamed maintenance helper; it does not freeze or publish the release.
+
 ## Earlier-source evidence references
 
 - [Candidate build 40562857636](https://github.com/Razdva122/clean-your-tv-lg-webos/actions/runs/40562857636).
