@@ -83,6 +83,8 @@ Root HDMI 聲音復原是實驗功能，**預設關閉**，僅在需要時自行
 
 僅限未發布候選版：若舊 Root 目錄的可寫入權限導致韌體 API 存取遭拒，可明確執行 `cytv enable-firmware-access --edition root --repair-package-permissions`。指令會先以可信的私人套件記錄驗證目前檔案，再僅移除 Root 自有路徑的群組及其他使用者寫入權限。遇到未知或已修改檔案便停止；保留個人設定、Home 選擇和韌體封鎖設定。[修復詳情（英文）](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate)。
 
+僅限未發布候選版：`cytv recover-system-rollback --edition root` 僅用於已驗證的 Root 回復版本：所有套件安裝程式均已完成，但啟動器就緒等待逾時。必須由真正的啟動器傳送就緒訊號；安裝結果不明時拒絕恢復。保留套件、固定程式碼和金鑰、失敗證據及明確關閉的 Home 控制狀態，並以私人記錄保存有時限的嘗試。 一般重試不會延長時限。僅在先前的 120 秒到期、沒有已接受的就緒訊號且不存在不明安裝結果後，才可用 `--new-recovery-attempt` 按 UUID/雜湊封存完整舊記錄，並明確開始新嘗試。已完成的恢復不會重新開始，也不會自動連續重試。 [流程與限制（英文）](../RECOVERY.md#root-system-rollback-readiness-candidate)。
+
 ## 說明與詳細指引
 
 操作失敗或中斷後，先檢查狀態並儲存該次嘗試的診斷報告。引導復原會分別確認移除和重新安裝。結果不確定時請停止，保留私人記錄及復原檔案；切勿刪除它們來強制重試。請參閱[復原（英文）](../RECOVERY.md)。求助時請提供型號、韌體、版本類別、安裝程式版本、失敗步驟及預期/實際表現；分享前檢查報告並刪除機密資訊。

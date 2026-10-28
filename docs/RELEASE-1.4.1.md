@@ -33,8 +33,10 @@ final frozen-head platform builds and signed publication verification are pendin
   newer, checking, failed and supervisor-absent cases remain pending.
 - #120 / #110: restore Root Home access to Homebrew configuration APIs through a
   CYTV-owned grant for its existing control group, with localized diagnostics and
-  explicit installer repair/revocation. Existing C3 switch availability/toggling
-  was confirmed; effective blocking after restart and candidate lifecycle were not.
+  explicit installer repair/revocation. Scoped C3 follow-up confirmed switch operation, restart persistence and
+  effective four-name blocking off/on across restarts. No firmware
+  check/download/install was requested; other network paths/early checks and
+  final changed-product acceptance remain unverified.
   See [firmware controls and limitations](LG-FIRMWARE-UPDATES.md).
 - #121 / partial #107: preserve LF in Windows-built POSIX scripts and handle
   redirected legacy-console encodings without crashing. Final native Windows
@@ -52,7 +54,8 @@ final frozen-head platform builds and signed publication verification are pendin
   SDK app metadata is unavailable or writable. Revocation authenticates the
   protected manifest and private receipt; enabling retains strict SDK checks.
   This does not repair an unsafe SDK tree or resolve the remaining access and
-  lifecycle work. Physical revocation and final package acceptance remain pending.
+  lifecycle work. C3 follow-up confirmed actual revocation denial after service refresh;
+  final changed-product acceptance remains pending.
 - #130: refresh app-library, renewal and companion browser fixtures for the
   current profile/System updater contracts. Build both recovery apps through
   production builders and cover present/absent supervisors, focus and cancellation
@@ -61,8 +64,9 @@ final frozen-head platform builds and signed publication verification are pendin
   enlarged focus frame. Share dimensions across placement, dock, scrolling and
   top-button navigation, including Add app; preserve sparse-layout maximum size
   and existing icon processing. Compiled-browser geometry and navigation checks
-  passed on Linux; the full Linux/macOS CI passed. Physical-TV acceptance is
-  pending. Earlier feedback packages do not include this geometry correction.
+  passed on Linux; the full Linux/macOS CI passed. Scoped C3 follow-up checked columns 1/8 by physical remote and 2–7 by
+  CDP geometry/navigation; a full physical-remote matrix remains unverified.
+  Earlier feedback packages before eeb4b8b0 omit this correction.
 - #132 / #110: add explicit `--repair-package-permissions` to Root
   `enable-firmware-access`. The current private updater package/cache selects
   every installed byte before only owned SDK write bits are narrowed; unknown
@@ -81,6 +85,17 @@ final frozen-head platform builds and signed publication verification are pendin
   other users and shared privacy limits. Record scoped C3 follow-up for the
   eeb4b8b0 app and streamed #132 helper; final frozen artifacts and the stated
   untested cases remain separate.
+
+Candidate maintenance [PR #137](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/137)
+adds explicit `cytv recover-system-rollback --edition root` and
+`--new-recovery-attempt` for a completed package rollback whose readiness expired.
+It verifies retained evidence and requires genuine launcher health; unknown
+installer outcomes remain blocked. Ordinary retries never extend the attempt;
+an explicit new attempt requires expiry and preserves the entire prior audit
+under its UUID/hash. Packages and pinned supervisor code/keys stay unchanged.
+[Scoped C3 maintenance acceptance](RELEASE-1.4.1-ACCEPTANCE.md#scoped-maintenance-acceptance-explicit-rollback-readiness-recovery)
+records the exact streamed helper bytes, initial failure and successful recovery;
+final committed-source checks and release inventory integration remain separate.
 
 No exclusions. The inventory is recorded in `release-plan.json` and candidate
 [PR #114](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
@@ -103,14 +118,31 @@ for promotion (`homebrew/release.json` is absent).
 
 ## Acceptance and documentation
 
+A later ordinary C3 rollback restored packages/profile but lost one-shot readiness
+and reached `recovery-required` ([#136](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/136)).
+Explicit streamed maintenance recovery subsequently completed that transaction:
+fresh real Root health, terminal System rollback, preserved full profile and
+original hashes, and disabled Root/LG Home routing were independently verified.
+The first maintenance prototype failed; its complete audit was preserved before
+the separately authorized new attempt. This scoped recovery does not fix the
+ordinary readiness race or replace changed-product OTA/rollback acceptance.
+Do not freeze or publish while the remaining gates are unresolved.
+
 The current checklists and historical implementation evidence are in PR #114.
 Historical C3 acceptance of v1.4.0 does not establish acceptance of this candidate.
 [Scoped C3 signed update/retained rollback acceptance](RELEASE-1.4.1-ACCEPTANCE.md)
-is now recorded for candidate source `3d5e0cb0`. The same record now includes a maintainer follow-up for update controls,
-column geometry and firmware access/blocking with its exact tested sources and
-limits. Normal public-feed discovery and final frozen-artifact acceptance remain
-unverified; the earlier-source paragraphs retain their historical scope. `release-plan.json` keeps overall acceptance empty until the remaining
-release gates are resolved; do not mark ready or merge to main from this scoped test alone.
+is recorded for sources `3d5e0cb0` and `eeb4b8b0`, followed by the published
+maintainer report for update controls, geometry and streamed #132 repair. Preserve
+those exact report paragraphs and their scope. Changed-product signed OTA/ordinary
+retained rollback and automatic/fault recovery remain mandatory and pending after
+#132 (recorded at `686d7eee`); `71d43f26` changes only documentation/inventory.
+Complete mandatory acceptance, settle final documentation/inventory/acceptance,
+then freeze code/build once and verify exact final artifacts. Normal public-feed
+publication verification follows delivery; stable feeds must remain unchanged
+for acceptance. Remaining untested state/network/device matrices and seamless
+standby stay explicit coverage limits. `release-plan.json.acceptance` remains
+empty until the remaining release gates are resolved; do not mark ready or merge
+to main from scoped evidence alone. Open PR #134 does not govern this release.
 
 Review README, installation, updates/removal, troubleshooting, prerequisites,
 component/recovery guides and all twelve translations against this inventory.
