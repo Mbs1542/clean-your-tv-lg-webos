@@ -258,8 +258,10 @@ number changed. Do not carry a different model's result or label an untested pat
 passed. An unresolved failure remains a failure until investigated.
 
 For a failed CI job at unchanged source, use GitHub's **Re-run failed jobs** or
-`gh run rerun RUN_ID --failed`; successful jobs and immutable artifacts remain
-available. Fix deterministic failures before retrying. Pin only the final successful
+`gh run rerun RUN_ID --failed`; successful jobs and their artifacts remain
+available. Uploads from a rerun job replace its own partial artifacts, avoiding
+name conflicts after an interrupted upload. A new attempt invalidates any existing
+acceptance pin. Fix deterministic failures before retrying. Pin only the final successful
 attempt, then accept its bytes. Publication/notification recovery keeps its normal
 separate retry paths; do not rebuild or republish merely to retry a comment.
 
