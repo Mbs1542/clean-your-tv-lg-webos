@@ -8,7 +8,12 @@
   in the release PR. Release notes alone do not complete this check.
 - Verify README stable downloads/component sections against `release-versions.json`
   with `python3 -m unittest discover -s tests/setup -p test_readme_release.py`.
-- Run scripts/test.sh and scripts/build.sh.
+- Verify the complete candidate CI suite and platform builds once; retain the run,
+  attempt and artifact hashes. Use the pinned result across evidence-only edits.
+- Run scripts/test.sh and scripts/build.sh for local implementation verification.
+- Record matching `acceptance_build` (run:attempt); selecting a different build
+  invalidates prior acceptance. Review `acceptance-report` and carry unchanged
+  scenarios only with identical artifact hashes and device/state preconditions.
 - Build from a clean inventory; inspect package contents for credentials and state.
 - Preserve licenses and upstream attribution.
 - Mark hardware-tested and untested paths explicitly.

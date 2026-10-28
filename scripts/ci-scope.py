@@ -4,7 +4,10 @@ import json
 import os
 from pathlib import Path
 import re
+import runpy
 import subprocess
+
+INPUTS = runpy.run_path(str(Path(__file__).with_name('release-inputs.py')))
 
 COMPONENTS = ('tv', 'installer', 'android', 'setup', 'preview')
 
@@ -12,7 +15,7 @@ COMPONENTS = ('tv', 'installer', 'android', 'setup', 'preview')
 def components(paths):
     selected = set()
     for path in paths:
-        if path == 'README.md':
+        if path in ('README.md', 'release-plan.json'):
             selected.add('setup')
             continue
         if (path.startswith(('docs/', '.github/ISSUE_TEMPLATE/', '.github/PULL_REQUEST_TEMPLATE/'))
@@ -64,7 +67,7 @@ def build_installers(event, kind, ref, plan, version, previous, notes):
         return False
     requested = event.get('inputs', {}).get('test_build')
     draft = kind == 'workflow_dispatch' and (requested is True or requested == 'true')
-    return is_candidate(plan, version, previous) or bool(draft and prepared_version(plan, version, previous))
+    return bool(prepared_version(plan, version, previous) and (kind == 'push' or draft))
 
 
 def git(*args):
@@ -91,6 +94,18 @@ def main():
         notes = Path('docs/RELEASE-' + version + '.md').is_file()
         candidate = is_candidate(plan, version, previous) and notes
         installers = build_installers(event, kind, os.environ.get('GITHUB_REF'), plan, version, previous, notes)
+    # A selected build survives only documentation/evidence edits. Never skip on trust alone.
+    if installers and INPUTS['build_pin'](plan) and not (kind == 'workflow_dispatch' and event.get('inputs', {}).get('test_build') in (True, 'true')):
+        try:
+            INPUTS['verify_inputs'](plan['build']['source'], git('rev-parse', 'HEAD').decode().strip(), Path.cwd())
+        except ValueError:
+            pass  # Changed inputs need a new build and an updated pin before release.
+        else:
+            installers = False
+    if (kind == 'pull_request' and event['pull_request']['base'].get('ref') == 'main'
+            and event['pull_request']['head'].get('ref') == 'release/next'
+            and os.environ.get('CI_FULL_SUITE') != 'true'):
+        selected = {'setup'}  # Release policy requires full tests from the trusted build.
     outputs = {name: name in selected for name in COMPONENTS}
     outputs.update(any=bool(selected), candidate=candidate, installers=installers)
     lines = ''.join(f'{name}={str(value).lower()}\n' for name, value in outputs.items())

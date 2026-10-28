@@ -87,6 +87,14 @@ class ReleaseFlow(unittest.TestCase):
             with self.subTest(update=update, plan=plan), self.assertRaises(ValueError):
                 self.flow.validate_plan(plan, **{**self.context, **update})
 
+    def test_pinned_acceptance_requires_matching_build_attempt(self):
+        pin = {'run_id': 42, 'attempt': 2, 'source': 'a' * 40}
+        for binding in (None, '42:1', '43:2'):
+            with self.subTest(binding=binding), self.assertRaisesRegex(ValueError, 'acceptance'):
+                self.flow.validate_plan({**self.plan, 'build': pin, 'acceptance_build': binding}, **self.context)
+        self.flow.validate_plan({**self.plan, 'build': pin, 'acceptance_build': '42:2'}, **self.context)
+
+
     def test_inventory_requires_all_merged_prs_and_explicit_exclusions(self):
         self.flow.validate_plan(self.plan, **self.context)
         with self.assertRaisesRegex(ValueError, 'inventory'):

@@ -25,9 +25,10 @@ class AutomaticRelease(unittest.TestCase):
         jobs = [{'name': name, 'conclusion': 'success'} for name in names]
         run = {'id': 42, 'head_sha': SHA}
         for explicit in (None, 42):
-            responses = [run, {'jobs': jobs}] if explicit else [{'workflow_runs': [run]}, {'jobs': jobs}]
+            responses = [run, jobs] if explicit else [{'workflow_runs': [run]}, jobs]
             with self.subTest(explicit=explicit), \
                  patch.object(release, 'github', side_effect=responses) as api, \
+                 patch.dict(release.INPUTS, {'pin_at': lambda *args: None}), \
                  patch.object(release, 'validate_build_run') as validate, \
                  patch.object(release.subprocess, 'check_output', return_value=SHA):
                 self.assertEqual(release.resolve_build_source('b' * 40, explicit), run)
@@ -35,10 +36,11 @@ class AutomaticRelease(unittest.TestCase):
                 self.assertIn('actions/runs/42/jobs', api.call_args.args[0])
         for incomplete in (jobs[1:], [{**job, 'conclusion': 'skipped'} if job['name'] == 'android' else job for job in jobs]):
             with self.subTest(jobs=incomplete), \
-                 patch.object(release, 'github', side_effect=[run, {'jobs': incomplete}]), \
+                 patch.object(release, 'github', side_effect=[run, incomplete]), \
                  patch.object(release, 'validate_build_run'), self.assertRaises(ValueError):
                 release.resolve_build_source('b' * 40, 42)
-        with patch.object(release, 'github', return_value={'workflow_runs': []}), \
+        with patch.dict(release.INPUTS, {'pin_at': lambda *args: None}), \
+             patch.object(release, 'github', return_value={'workflow_runs': []}), \
              patch.object(release.subprocess, 'check_output', return_value=SHA), self.assertRaisesRegex(ValueError, 'No successful build'):
             release.resolve_build_source('b' * 40)
 

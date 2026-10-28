@@ -37,8 +37,8 @@ class ReleaseTests(unittest.TestCase):
         (self.root / 'android').mkdir()
         (self.root / 'scripts').mkdir()
         # Reuse the production embedded verifier, including actual IPK appinfo checks.
-        (self.root / 'scripts/assemble-release.py').write_text(
-            (ROOT / 'scripts/assemble-release.py').read_text())
+        for name in ('assemble-release.py', 'release-inputs.py'):
+            (self.root / 'scripts' / name).write_text((ROOT / 'scripts' / name).read_text())
         (self.root / 'release-versions.json').write_text(json.dumps(VERSIONS))
         (self.root / 'android/preview-certificate.sha256').write_text(CERT + '\n')
         self.apk = self.root / 'preview.apk'

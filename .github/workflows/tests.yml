@@ -1,7 +1,5 @@
 name: Tests
 on:
-  push:
-    branches: [main, release/next]
   pull_request:
   workflow_call:
     inputs:

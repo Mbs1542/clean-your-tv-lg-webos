@@ -18,6 +18,8 @@ import tarfile
 import tempfile
 import zipfile
 
+INPUTS = runpy.run_path(str(Path(__file__).with_name('release-inputs.py')))
+
 ROOT = Path(os.environ.get('RELEASE_SOURCE_ROOT', Path(__file__).resolve().parents[1])).resolve()
 sys.path.insert(0, str(ROOT))
 from cytv import package
@@ -58,16 +60,26 @@ def validate_build_run(run, commit, root=ROOT):
     def revision(ref):
         return subprocess.check_output(['git', 'rev-parse', ref], cwd=root, text=True).strip()
     try:
-        if revision(commit + '^2') != run['head_sha']:
+        candidate = revision(commit + '^2')
+        pin = INPUTS['pin_at'](candidate, root)
+        if pin:
+            if run.get('id') != pin['run_id'] or run['head_sha'] != pin['source'] or run.get('run_attempt') != pin['attempt']:
+                raise ValueError('Candidate build does not match the committed build pin')
+            INPUTS['verify_inputs'](pin['source'], candidate, root)
+        elif candidate != run['head_sha']:
             raise ValueError('Candidate must be the exact second parent of the release merge')
-        if revision(commit + '^{tree}') != revision(run['head_sha'] + '^{tree}'):
+        if revision(commit + '^{tree}') != revision(candidate + '^{tree}'):
             raise ValueError('Release merge tree differs from the built candidate tree')
     except subprocess.CalledProcessError as error:
         raise ValueError('Release source must be a merge of the built candidate') from error
 
 
-def github(path):
-    return json.loads(subprocess.check_output(['gh', 'api', 'repos/Razdva122/clean-your-tv-lg-webos/' + path]))
+def github(path, *, pages=False):
+    args = ['gh', 'api', 'repos/Razdva122/clean-your-tv-lg-webos/' + path]
+    if pages:
+        args += ['--paginate', '--slurp']
+    result = json.loads(subprocess.check_output(args))
+    return [item for page in result for item in (page['jobs'] if isinstance(page, dict) else page)] if pages else result
 
 
 def selected_homebrew_approval(root=ROOT):
@@ -89,13 +101,16 @@ def resolve_build_source(commit, build_run=None):
         run = github('actions/runs/' + str(build_run))
     else:
         candidate = subprocess.check_output(['git', 'rev-parse', commit + '^2'], cwd=ROOT, text=True).strip()
+        pin = INPUTS['pin_at'](candidate, ROOT)
+        if pin:
+            return resolve_build_source(commit, pin['run_id'])
         runs = github('actions/workflows/cytv.yml/runs?branch=release%2Fnext&event=push&status=success&head_sha=' + candidate + '&per_page=100')['workflow_runs']
         if not runs:
             raise ValueError('No successful build exists for the exact release candidate')
         run = max(runs, key=lambda item: item['id'])
     validate_build_run(run, commit)
     flow = runpy.run_path(str(Path(__file__).with_name('release-flow.py')))
-    jobs=github('actions/runs/' + str(run['id']) + '/jobs?filter=latest&per_page=100')['jobs']
+    jobs=github('actions/runs/' + str(run['id']) + '/jobs?filter=latest&per_page=100', pages=True)
     flow['validate_build_jobs'](jobs)
     validate_homebrew_job(jobs, selected_homebrew_approval() is not None)
     return run
@@ -261,9 +276,10 @@ def assemble(artifacts, output, versions, commit, build_commit=None):
     info = {'tag': 'v' + versions['release'], 'source_commit': commit, 'build_source_commit': build_commit or commit, 'versions': versions,
             'release_date': datetime.now(timezone.utc).date().isoformat(),
             'ci_build_run': {'id': build_run, 'url': os.environ.get('GITHUB_SERVER_URL', 'https://github.com') + '/' + os.environ.get('GITHUB_REPOSITORY', 'Razdva122/clean-your-tv-lg-webos') + '/actions/runs/' + build_run, 'conclusion': 'success'},
-            'ci_test_run': {'id': os.environ.get('GITHUB_RUN_ID'), 'conclusion': 'success'},
+            'ci_test_run': {'id': build_run, 'conclusion': 'success', 'workflow': 'cytv.yml / validation'},
             'embedded_payload_verification': checks,
-            'hardware_evidence': 'Automated tests and package verification; this exact release still requires TV acceptance testing.'}
+            'hardware_evidence': json.loads((ROOT / 'release-plan.json').read_text()).get('acceptance', 'No physical acceptance recorded.'),
+            'acceptance_build': json.loads((ROOT / 'release-plan.json').read_text()).get('acceptance_build')}
     approval = assemble_homebrew(artifacts, output, selected_homebrew_approval())
     if approval is not None: info['homebrew'] = approval
     (output / 'BUILD-INFO.json').write_text(json.dumps(info, indent=2) + '\n')
@@ -316,9 +332,9 @@ def main():
         if subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT).strip(): raise ValueError('Release source checkout must be clean')
         if args.build_commit and args.build_commit != commit:
             # Recheck the binding immediately before consuming candidate artifacts.
-            validate_build_run({'conclusion': 'success', 'status': 'completed', 'head_sha': args.build_commit,
-                                'head_branch': 'release/next', 'event': 'push', 'path': '.github/workflows/cytv.yml',
-                                'head_repository': {'full_name': 'Razdva122/clean-your-tv-lg-webos'}}, commit)
+            run = resolve_build_source(commit, int(os.environ['SOURCE_BUILD_RUN']))
+            if run['head_sha'] != args.build_commit:
+                raise ValueError('Build source changed before assembly')
         assemble(args.artifacts, args.output, versions, commit, args.build_commit)
 
 
