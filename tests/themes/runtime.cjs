@@ -38,7 +38,7 @@ context.ThemeRuntime.reset();assert.equal(nodes['ctv-theme-style'],undefined);as
 assert.equal(surfaceClasses.has('ctv-theme-active'),false,'reset removes the active surface marker');
 // Older renderers can keep accepting Classic, but must reject new geometry before mutation.
 const previousCss=nodes['ctv-theme-style'],previousColumns=columns.slice();
-for (const preset of ['icon-grid','side-grid','channel-list']) {
+for (const preset of ['icon-grid','side-grid','channel-list','scenic-grid']) {
  assert.throws(()=>context.ThemeRuntime.apply({manifest:{...manifest,layout:{...manifest.layout,preset}},rules,assetHandles:{}}),/layout-invalid/);
  assert.equal(nodes['ctv-theme-style'],previousCss);
  assert.equal(surfaceClasses.has('ctv-theme-active'),false,'rejected application cannot mark an inactive surface active');
@@ -46,7 +46,7 @@ for (const preset of ['icon-grid','side-grid','channel-list']) {
 }
 const layouts=[];
 context.HomeLayoutState.setThemeLayout=layout=>layouts.push(structuredClone(layout));
-for (const preset of ['dock-grid','icon-grid','side-grid','channel-list']) {
+for (const preset of ['dock-grid','icon-grid','side-grid','channel-list','scenic-grid']) {
  const next={...manifest,layout:{...manifest.layout,preset}};
  context.ThemeRuntime.apply({manifest:next,rules,assetHandles:{}});
  assert.deepEqual(layouts.at(-1),next.layout,'runtime forwards the whole validated layout');

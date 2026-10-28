@@ -6,7 +6,7 @@
   'use strict';
   var KEY = 'tvhome.columns.v1';
   function valid(value) { return typeof value === 'number' && isFinite(value) && value % 1 === 0 && value >= 1 && value <= 8; }
-  var presets = ['dock-grid', 'icon-grid', 'side-grid', 'channel-list'];
+  var presets = ['dock-grid', 'icon-grid', 'side-grid', 'channel-list', 'scenic-grid'];
   // Only trusted presets own positions, hit areas and scrolling. Theme CSS owns appearance.
   function geometry(preset, columns) {
     if (presets.indexOf(preset) < 0 || !valid(columns)) throw Error('layout-invalid');
@@ -19,6 +19,9 @@
     } else if (preset === 'side-grid') {
       g.left = 560; g.width = 1248; g.maxWidth = 300; g.maxHeight = 190;
       g.dockTop = 210; g.padding = 0; g.rowGap = 90; g.rowExtra = 0; g.scrollTop = 200;
+    } else if (preset === 'scenic-grid') {
+      g.maxWidth = 128; g.maxHeight = 128; g.dockTop = 810; g.padding = 0;
+      g.rowGap = 100; g.rowExtra = 0; g.scrollTop = 760;
     } else if (preset === 'channel-list') {
       g.left = 96; g.width = columns === 1 ? 1024 : 1728; g.maxWidth = g.width; g.maxHeight = columns >= 5 ? 104 : 88;
       g.dockTop = 240; g.padding = 0; g.rowGap = 18; g.rowExtra = 0; g.scrollTop = 200;

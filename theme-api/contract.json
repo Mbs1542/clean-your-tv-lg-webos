@@ -83,7 +83,8 @@
       "dock-grid",
       "icon-grid",
       "side-grid",
-      "channel-list"
+      "channel-list",
+      "scenic-grid"
     ]
   },
   "defaults": {

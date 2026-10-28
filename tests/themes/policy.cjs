@@ -38,7 +38,7 @@ const smallImageCss=p.compileRules({schemaVersion:1,rules:[imageRule]},{preview:
 assert.match(smallImageCss,/data:image\/png;base64,AA==/,'small trusted data images remain supported');
 assert(p.compileRules(repeatedImages,{preview:'blob:verified-image'}).length<=p.limits.emittedCssBytes);
 // Layout choices remain a finite trusted set; themes still cannot set geometry CSS.
-for (const preset of ['dock-grid', 'icon-grid', 'side-grid', 'channel-list']) {
+for (const preset of ['dock-grid', 'icon-grid', 'side-grid', 'channel-list', 'scenic-grid']) {
  const m=structuredClone(fixture);m.layout.preset=preset;
  assert.equal(p.validateManifest(m).layout.preset,preset);
 }

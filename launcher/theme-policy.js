@@ -112,7 +112,7 @@
     version(m.requires.minimumHomeVersion);
     list(m.requires.capabilities, 0, 'api-unsupported', 'capabilities');
     object(m.layout, ['preset', 'columns', 'spacingScale', 'textScale', 'focusScale'], 'layout-invalid', 'layout');
-    if (['dock-grid', 'icon-grid', 'side-grid', 'channel-list'].indexOf(m.layout.preset) < 0) fail('layout-invalid', 'preset');
+    if (['dock-grid', 'icon-grid', 'side-grid', 'channel-list', 'scenic-grid'].indexOf(m.layout.preset) < 0) fail('layout-invalid', 'preset');
     number(m.layout.columns, 1, 8, 'layout-invalid', 'columns');
     if (m.layout.columns % 1) fail('layout-invalid', 'columns');
     number(m.layout.spacingScale, .8, 1.2, 'layout-invalid', 'spacingScale');

@@ -556,3 +556,29 @@ body.editing .item.moving .name {
 .ctv-theme-active .card::after { border-radius: inherit; box-shadow: none; }
 #homeSurface[data-layout="side-grid"] .name,
 #homeSurface[data-layout="icon-grid"] .name { margin-top: 34px; }
+
+/* Scenic: wallpaper first, a large quiet clock and one bottom row at a time. */
+#homeSurface[data-layout="scenic-grid"] { background-size: cover; background-position: center; }
+#homeSurface[data-layout="scenic-grid"]::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(180deg, rgba(0,0,0,0.18), transparent 45%, rgba(0,0,0,0.86)); pointer-events: none; }
+#homeSurface[data-layout="scenic-grid"] header { top: 104px; align-items: flex-start; }
+#homeSurface[data-layout="scenic-grid"] #timeRow { display: block; }
+#homeSurface[data-layout="scenic-grid"] #clock { font-size: 176px; font-weight: 300; letter-spacing: -4px; }
+#homeSurface[data-layout="scenic-grid"] #ampm { font-size: 40px; margin-left: 16px; }
+#homeSurface[data-layout="scenic-grid"] #date { display: block; font-size: 30px; margin: 22px 0 0 6px; }
+#homeSurface[data-layout="scenic-grid"] #greeting,
+#homeSurface[data-layout="scenic-grid"] .divider,
+#homeSurface[data-layout="scenic-grid"] #hero,
+#homeSurface[data-layout="scenic-grid"] #glass { display: none; }
+#homeSurface[data-layout="scenic-grid"] .pill { height: 64px; padding: 0 22px; font-size: 25px; margin-left: 14px; }
+#homeSurface[data-layout="scenic-grid"] .pill svg { width: 28px; height: 28px; margin-right: 12px; }
+#homeSurface[data-layout="scenic-grid"] #viewport { top: 760px; }
+#homeSurface[data-layout="scenic-grid"] #stage { top: -760px; transition: none; }
+#homeSurface[data-layout="scenic-grid"] .item { padding-bottom: 12px; border-radius: 6px; transition: none; }
+#homeSurface[data-layout="scenic-grid"] .item.focused,
+#homeSurface[data-layout="scenic-grid"] .item.moving { outline: 2px solid #ece7df; outline-offset: 18px; background: rgba(20,19,16,0.7); }
+#homeSurface[data-layout="scenic-grid"] .card { border-radius: 14px; transform: none; transition: none; }
+#homeSurface[data-layout="scenic-grid"] .card img { top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; transform: none; }
+#homeSurface[data-layout="scenic-grid"] .name { opacity: 1; transform: none; font-size: 24px; margin-top: 16px; line-height: 32px; height: 32px; font-weight: 400; }
+#homeSurface[data-layout="scenic-grid"] .card.missing-icon::after { font-size: 48px; }
+body.editing #homeSurface[data-layout="scenic-grid"] #viewport { top: 600px; }
+body.editing #homeSurface[data-layout="scenic-grid"] #stage { top: -600px; }

@@ -177,13 +177,13 @@
   // Remote input owns focus until the pointer actually moves or is clicked.
   document.addEventListener('mousemove', function () { pointerNavigation = true; }, true);
   document.addEventListener('keydown', function (event) {
-    if (layoutPreset === 'channel-list' && [13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
+    if ((layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') && [13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
   }, true);
   document.addEventListener('mousedown', function () { pointerNavigation = true; }, true);
   function bindPointerFocus(element, action) {
-    function hover() { if (layoutPreset !== 'channel-list' || pointerNavigation) action(); }
+    function hover() { if ((layoutPreset !== 'channel-list' && layoutPreset !== 'scenic-grid') || pointerNavigation) action(); }
     element.addEventListener('mouseover', hover);
-    element.addEventListener('mousemove', function () { if (layoutPreset === 'channel-list') hover(); });
+    element.addEventListener('mousemove', function () { if (layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') hover(); });
   }
   function screenIds() {
     return tiles.filter(function (item) {
@@ -772,7 +772,8 @@
         row = rowFor(index);
       var ceiling = layoutGeometry.scrollTop;
       var floor = moveState ? 850 : layoutGeometry.scrollBottom;
-      if (row === 0 && !moveState) scrollOffset = 0;
+      if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);
+      else if (row === 0 && !moveState) scrollOffset = 0;
       else {
         if (top - scrollOffset + CARD_HEIGHT + 70 > floor) scrollOffset = top + CARD_HEIGHT + 70 - floor;
         if (top - scrollOffset - 24 < ceiling) scrollOffset = Math.max(0, top - 24 - ceiling);

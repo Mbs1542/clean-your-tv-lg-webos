@@ -6,14 +6,20 @@ const {assert,chromium,stage,open}=require('./browser.cjs');
   for(const edition of ['launcher','root-launcher']) {
    const {page,errors}=await open(browser,site,edition);
    try {
-    for(const preset of ['dock-grid','icon-grid','side-grid','channel-list']) {
+    for(const preset of ['dock-grid','icon-grid','side-grid','channel-list','scenic-grid']) {
      for(const columns of [1,3,6,8]) {
       await page.evaluate(({preset,columns})=>{HomeLayoutState.setColumns(null);HomeLayoutState.setThemeLayout({preset,columns,spacingScale:1,textScale:1,focusScale:1.1});},{preset,columns});
       for(let i=0;i<15;i++)await page.keyboard.press('ArrowUp');
       await page.keyboard.press(preset==='side-grid'?'ArrowRight':'ArrowDown');
       const check=async()=>{
-       await page.waitForFunction(()=>{const r=document.getElementById('glass').getBoundingClientRect();return r.top>=-1 && r.bottom<=1081;});
+       await page.waitForFunction(()=>{const r=document.querySelector('#tiles .focused .card').getBoundingClientRect();return r.top>=-1 && r.bottom<=1081;});
        const g=await page.evaluate(()=>{const card=document.querySelector('#tiles .focused .card').getBoundingClientRect(),glass=document.getElementById('glass').getBoundingClientRect();return{card:{x:card.x,y:card.y,w:card.width,h:card.height},glass:{x:glass.x,y:glass.y,w:glass.width,h:glass.height},selected:document.querySelector('#tiles .focused').dataset.appId};});
+       if(preset==='scenic-grid') {
+        assert(g.card.y>=760 && g.card.y+g.card.h<=1080,'scenic row stays in bottom viewport');
+        assert.equal(await page.locator('#clock').evaluate(el=>getComputedStyle(el).fontSize),'176px');
+        assert.equal(await page.locator('#hero').evaluate(el=>getComputedStyle(el).display),'none');
+        return g;
+       }
        assert(g.glass.x>=0&&g.glass.x+g.glass.w<=1920,'frame fits horizontally '+preset+columns);
        if(preset==='channel-list') {
         assert(await page.locator('#tiles .focused .name').evaluate(el=>el.clientWidth>30),'channel label keeps a positive readable area');

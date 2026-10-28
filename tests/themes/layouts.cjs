@@ -5,7 +5,7 @@ const values = new Map();
 const storage = {getItem: k => values.has(k) ? values.get(k) : null, setItem: (k,v) => values.set(k,v), removeItem:k=>values.delete(k)};
 const model = create(storage, {columns:5});
 const layout = (preset,columns) => ({preset,columns,spacingScale:1,textScale:1,focusScale:1.1});
-for (const preset of ['dock-grid','icon-grid','side-grid','channel-list']) {
+for (const preset of ['dock-grid','icon-grid','side-grid','channel-list','scenic-grid']) {
  model.setThemeLayout(layout(preset,3));
  assert.equal(model.state().preset,preset);
  assert.equal(model.state().columns,3);

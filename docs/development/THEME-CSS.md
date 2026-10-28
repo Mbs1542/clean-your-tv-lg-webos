@@ -123,8 +123,8 @@ visual geometry independently would make arrow navigation and pointer hit areas
 disagree with the rendered cards. New layout presets require engine changes and
 navigation checks; a stylesheet cannot introduce one.
 
-The candidate accepts four trusted `layout.preset` values: `dock-grid`,
-`icon-grid`, `side-grid`, and `channel-list`. These select renderer-owned
+The candidate accepts five trusted `layout.preset` values: `dock-grid`,
+`icon-grid`, `side-grid`, `channel-list`, and `scenic-grid`. These select renderer-owned
 compositions rather than injecting layout CSS. `dock-grid` remains the default
 for Classic and existing themes. Unknown values fail validation. A renderer
 without the full-layout application method rejects the new presets before
@@ -137,6 +137,7 @@ Spacing, text and focus scales still require the Classic values `1`, `1`, and
 | `dock-grid` | Classic wide app cards, dock band near the bottom and selected app title above it |
 | `icon-grid` | Compact square icon grid with labels and a smaller header |
 | `side-grid` | Fixed clock/menu sidebar on the left and labelled app grid on the right |
+| `scenic-grid` | Large light clock over wallpaper, compact square icons in a bottom row; Down/Up pages rows while the clock stays fixed |
 | `channel-list` | Numbered app rows on the left and selected app title on the right; narrow multi-column overrides use compact labelled cells |
 
 In `side-grid`, the sidebar menu uses Up/Down to select a shortcut, Right enters
@@ -239,3 +240,9 @@ pointer over row eight while moving Up through the scrolling boundary.
 
 The Channel selection title also updates synchronously in place. Pending title
 swap timers are cancelled; fade/slide transitions remain disabled for this preset.
+
+The `scenic-grid` preset defaults to eight columns in the Glasshouse-inspired
+example. User overrides remain authoritative. Rows snap without title motion;
+reorder temporarily lifts the row above its trusted Hide/Place controls.
+The reference is https://github.com/rorygallagher2024/glasshouse; no third-party
+application code is loaded. Settings and emergency UI remain trusted.
