@@ -632,6 +632,12 @@
         } catch (e) {}
         var r = null;
         a && a[3] > 200 ? e.card.style.background = "rgb(" + a[0] + "," + a[1] + "," + a[2] + ")" : (e.card.classList.add("glyph"), e.card.style.background = tileBackground(e.app.iconColor), r = "#2c2c2e" === tileBackground(e.app.iconColor) ? null : parseHexColor(e.app.iconColor));
+        t.classList[a && a[3] > 200 ? 'remove' : 'add']('is-glyph');
+        t.classList[a && a[3] > 200 && a[0] >= 240 && a[1] >= 240 && a[2] >= 240 ? 'add' : 'remove']('is-light');
+        var iconLuma = a && a[3] > 200 ? (a[0] * .2126 + a[1] * .7152 + a[2] * .0722) / 255 : -1;
+        t.classList[iconLuma >= 0 && iconLuma < .25 ? 'add' : 'remove']('is-dark');
+        t.classList[iconLuma >= .25 && iconLuma < .5 ? 'add' : 'remove']('is-mid');
+        t.classList[iconLuma >= .5 ? 'add' : 'remove']('is-bright');
         e.brandBackground = e.card.style.background;
         if (layoutPreset === 'channel-list') e.card.style.background = '';
         e.color = r || (n ? function (e) {

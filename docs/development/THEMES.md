@@ -74,3 +74,8 @@ python3 scripts/preview.py --build build/theme-pages --showcase
 
 Use an empty showcase output directory. Build rejects a nonempty directory so
 removed listings cannot survive unnoticed as stale generated pages.
+
+The optional candidate `modern-icon-css-v1` capability supports bounded CSS-only
+icon effects on browsers with filter/screen support. It never replaces original
+app images; older browsers reject it safely. See [the contract](THEME-CSS.md#optional-css-icon-effects)
+and [the local Itachi package source](../../themes/itachi/README.md).

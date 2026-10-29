@@ -34,6 +34,10 @@
     var policy = root.ThemePolicy;
     if (!policy) fail('api-unsupported', 'ThemePolicy');
     var manifest = policy.validateManifest(input.manifest), rules = policy.validateRules(input.rules);
+    var modernIcons = manifest.requires.capabilities.indexOf('modern-icon-css-v1') >= 0;
+    var hasIconEffects = rules.rules.some(function (rule) { return rule.declarations.some(function (d) { return d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation'; }); });
+    if (hasIconEffects && !modernIcons) fail('api-unsupported', 'icon CSS capability');
+    if (modernIcons && (!root.CSS || !root.CSS.supports || !root.CSS.supports('isolation', 'isolate') || !root.CSS.supports('mix-blend-mode', 'screen') || !root.CSS.supports('filter', 'grayscale(1) invert(1) brightness(1.3)'))) fail('api-unsupported', 'modern icon CSS');
     /* Trusted layouts currently implement only the Classic scale values. */
     if (manifest.layout.spacingScale !== 1 || manifest.layout.textScale !== 1 || manifest.layout.focusScale !== 1.1) fail('layout-invalid', 'unsupported scale preset');
     if (manifest.layout.preset !== 'dock-grid' && (!root.HomeLayoutState || !root.HomeLayoutState.setThemeLayout)) fail('layout-invalid', 'unsupported renderer preset');
@@ -58,7 +62,22 @@
     }
     /* A trusted minimum remains visible even against higher-specificity author states.
        Author CSS cannot emit !important; this narrow engine-owned border may. */
-    appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:' + (manifest.layout.preset === 'scenic-grid' ? '3' : '2') + 'px!important;}');
+    var scaleFocus = modernIcons && manifest.layout.preset === 'scenic-grid' && rules.rules.some(function (rule) {
+      return rule.selector.length === 1 && rule.selector[0].part === 'card' && rule.selector[0].states.length === 1 && rule.selector[0].states[0] === 'focused' &&
+        rule.declarations.some(function (d) { return d.property === 'border-width' && d.value.value === 0; }) &&
+        rule.declarations.some(function (d) { return d.property === 'border-style' && d.value.value === 'none'; });
+    });
+    if (scaleFocus) appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border:0!important;transform:scale(1.1)!important;}#homeSurface.ctv-home .ctv-label.is-focused{color:#fff!important;opacity:1!important;text-shadow:0 1px 6px #000!important;}');
+    else appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:' + (manifest.layout.preset === 'scenic-grid' ? '3' : '2') + 'px!important;}');
+    if (modernIcons) rules.rules.forEach(function (rule) {
+      var part = rule.selector[rule.selector.length - 1].part;
+      if (part !== 'card' && part !== 'clock' && part !== 'date') return;
+      rule.declarations.forEach(function (d) {
+        if (!(part === 'card' && d.property === 'background-color') && !((part === 'clock' || part === 'date') && d.property === 'font-size')) return;
+        var background = policy.compileRules({schemaVersion: 1, rules: [{selector: rule.selector, declarations: [d]}]}, handles);
+        appendCss('\n' + background.replace(/;\}$/, '!important;}'));
+      });
+    });
     /* All untrusted input is checked before either geometry or styles are changed. */
     if (root.HomeLayoutState && root.HomeLayoutState.setThemeLayout) root.HomeLayoutState.setThemeLayout(manifest.layout);
     else if (root.HomeLayoutState && root.HomeLayoutState.setThemeColumns) root.HomeLayoutState.setThemeColumns(manifest.layout.columns);

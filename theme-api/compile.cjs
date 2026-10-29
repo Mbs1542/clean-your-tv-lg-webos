@@ -55,8 +55,14 @@ function scalar(raw) {
   return parseFloat(raw);
 }
 function typed(raw, family, assets) {
+  if (family === 'filter') {
+    if (raw === 'none') return {type: 'filter', functions: []};
+    const nodes = parseValue(raw).nodes.filter(n => n.type !== 'space');
+    if (!nodes.length || nodes.some(n => n.type !== 'function' || n.nodes.length !== 1 || n.nodes[0].type !== 'word' || !/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(n.nodes[0].value))) error('css-value', 'filter');
+    return {type: 'filter', functions: nodes.map(n => ({name: n.value, amount: Number(n.nodes[0].value)}))};
+  }
   if (family === 'color') return color(raw);
-  if (family === 'length') return {
+  if (family === 'length' || family === 'fontSize') return {
     type: 'length',
     unit: 'px',
     value: scalar(raw)
@@ -208,7 +214,10 @@ async function compileThemeCss(css, options = {}) {
   (options.assets || []).forEach(a => handles[a.id] = 'data:' + a.mediaType + ';base64,AA==');
   const output = policy.compileRules(bundle, handles);
   try {
-    await compat.stylesheet(output, 'theme.css');
+    // Screen blending is a separately gated optional capability, not a Chromium 38 promise.
+    // All other typed output still uses the unchanged compatibility checker.
+    const legacy = {schemaVersion: 1, rules: bundle.rules.map(r => ({...r, declarations: r.declarations.filter(d => d.property !== 'mix-blend-mode' && d.property !== 'isolation')}))};
+    await compat.stylesheet(policy.compileRules(legacy, handles), 'theme.css');
   } catch (_) {
     error('css-value', 'unsupported Chromium 38 feature; use API 1 properties');
   }
@@ -322,7 +331,7 @@ async function compileSource(input) {
   source.source = input.source || source.source;
   source.requires = {
     minimumHomeVersion: input.minimumHomeVersion || '0.0.0',
-    capabilities: []
+    capabilities: compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation')) ? ['modern-icon-css-v1'] : []
   };
   source.layout = Object.assign({
     preset: 'dock-grid',
