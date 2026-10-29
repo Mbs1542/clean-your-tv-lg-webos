@@ -75,6 +75,8 @@ Dopo un’interruzione, esegui prima `status` e conserva i registri. `restore` r
 
 Solo nella versione candidata non ancora pubblicata, in entrambe le edizioni: apri **Impostazioni di Home → Aspetto → Colonne** e scegli da 1 a 8 colonne, oppure **Secondo il tema** per usarne il valore (Classic: 5). Un numero esplicito ha la precedenza sul tema. I temi con disposizione fissa nascondono l’opzione Colonne e usano il valore dell’autore. La scelta salvata viene ripristinata passando a un tema che supporta questa impostazione. Nell’anteprima candidata Glasshouse, le app formano una sola fila orizzontale ciclica: Sinistra/Destra scorre, Su apre le scorciatoie e Giù torna alla stessa app. Nell’anteprima Glasshouse puoi scorrere anche con la rotella o il touchpad; Home non si muove dietro una finestra aperta.
 
+Candidato non ancora pubblicato, entrambe le edizioni: in **Impostazioni Home → Aspetto**, disattiva **Mostra riquadro «Aggiungi app»** per nascondere +. È attivo per impostazione predefinita. Usa **Aggiungi app** nella stessa sezione per aggiungere o ripristinare app anche con + nascosto. Puoi continuare a spostare e nascondere le app; la scelta resta dopo il riavvio. Se tutte le app sono nascoste, i controlli in alto e le impostazioni restano accessibili.
+
 Nelle anteprime dei temi della versione candidata non pubblicata con barra laterale opzionale, Su/Giù seleziona una voce del menu, Destra passa alle app e Sinistra dalla prima colonna delle app torna al menu.
 
 ## Aggiornamenti e rimozione

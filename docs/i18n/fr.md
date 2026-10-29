@@ -75,6 +75,8 @@ Après interruption, lancez d’abord `status` et conservez les journaux. `resto
 
 Uniquement dans la version candidate non publiée, dans les deux éditions : ouvrez **Paramètres de Home → Apparence → Colonnes** et choisissez de 1 à 8 colonnes, ou **Selon le thème** pour utiliser sa valeur (Classic : 5). Un nombre explicite est prioritaire sur le thème. Les thèmes à disposition fixe masquent l’option Colonnes et utilisent la valeur de l’auteur. Votre choix enregistré est rétabli lorsque vous passez à un thème qui prend en charge ce réglage. Dans l’aperçu candidat Glasshouse, les applications forment un ruban horizontal en boucle : Gauche/Droite fait défiler, Haut ouvre les raccourcis et Bas revient à la même application. Dans l’aperçu Glasshouse, la molette ou le pavé tactile fait aussi défiler le ruban ; Home reste immobile derrière une boîte de dialogue ouverte.
 
+Candidat non publié, dans les deux éditions : dans **Paramètres Home → Apparence**, désactivez **Afficher la tuile « Ajouter une app »** pour masquer +. Cette option est activée par défaut. Utilisez **Ajouter une app** dans la même section pour ajouter ou rétablir des apps lorsque + est masqué. Le déplacement et le masquage restent disponibles ; le choix est conservé au redémarrage. Si toutes les apps sont masquées, les commandes du haut et les paramètres restent accessibles.
+
 Dans les aperçus de thèmes du candidat non publié avec barre latérale facultative, Haut/Bas sélectionne une entrée du menu, Droite passe aux applications et Gauche depuis leur première colonne revient au menu.
 
 ## Mises à jour et suppression

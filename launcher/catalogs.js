@@ -3,7 +3,7 @@ HomeI18n.add({
     "A signed Home update is available.": "A signed Home update is available.",
     "Add app": "Add app",
     "All installed apps are already on Home.": "All installed apps are already on Home.",
-    "App hidden. Add it back with +.": "App hidden. Add it back with +.",
+    "App hidden. Restore it with Add app.": "App hidden. Restore it with Add app.",
     "Auto-renewal enabled (Beta)": "Auto-renewal enabled (Beta)",
     "Auto-renewal off": "Auto-renewal off",
     "Automatic (system language)": "Automatic (system language)",
@@ -152,7 +152,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Ein signiertes Home-Update ist verfügbar.",
     "Add app": "App hinzufügen",
     "All installed apps are already on Home.": "Alle installierten Apps sind bereits auf Home.",
-    "App hidden. Add it back with +.": "App ausgeblendet. Mit + wieder hinzufügen.",
+    "App hidden. Restore it with Add app.": "App ausgeblendet. Mit „App hinzufügen“ wiederherstellen.",
     "Auto-renewal enabled (Beta)": "Automatische Verlängerung aktiv (Beta)",
     "Auto-renewal off": "Automatische Verlängerung aus",
     "Automatic (system language)": "Automatisch (Systemsprache)",
@@ -301,7 +301,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Hay una actualización firmada de Home disponible.",
     "Add app": "Añadir aplicación",
     "All installed apps are already on Home.": "Todas las aplicaciones instaladas ya están en Home.",
-    "App hidden. Add it back with +.": "Aplicación oculta. Vuelve a añadirla con +.",
+    "App hidden. Restore it with Add app.": "Aplicación oculta. Recupérala con «Añadir app».",
     "Auto-renewal enabled (Beta)": "Renovación automática activada (Beta)",
     "Auto-renewal off": "Renovación automática desactivada",
     "Automatic (system language)": "Automático (idioma del sistema)",
@@ -450,7 +450,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Uma atualização assinada do Home está disponível.",
     "Add app": "Adicionar aplicativo",
     "All installed apps are already on Home.": "Todos os aplicativos instalados já estão no Home.",
-    "App hidden. Add it back with +.": "Aplicativo oculto. Adicione novamente com +.",
+    "App hidden. Restore it with Add app.": "Aplicativo oculto. Restaure com «Adicionar app».",
     "Auto-renewal enabled (Beta)": "Renovação automática ativada (Beta)",
     "Auto-renewal off": "Renovação automática desativada",
     "Automatic (system language)": "Automático (idioma do sistema)",
@@ -599,7 +599,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Une mise à jour signée de Home est disponible.",
     "Add app": "Ajouter une application",
     "All installed apps are already on Home.": "Toutes les applications installées sont déjà sur Home.",
-    "App hidden. Add it back with +.": "Application masquée. Ajoutez-la à nouveau avec +.",
+    "App hidden. Restore it with Add app.": "Application masquée. Rétablissez-la avec « Ajouter une app ».",
     "Auto-renewal enabled (Beta)": "Renouvellement automatique activé (Beta)",
     "Auto-renewal off": "Renouvellement automatique désactivé",
     "Automatic (system language)": "Automatique (langue du système)",
@@ -748,7 +748,7 @@ HomeI18n.add({
     "A signed Home update is available.": "È disponibile un aggiornamento firmato di Home.",
     "Add app": "Aggiungi app",
     "All installed apps are already on Home.": "Tutte le app installate sono già su Home.",
-    "App hidden. Add it back with +.": "App nascosta. Aggiungila di nuovo con +.",
+    "App hidden. Restore it with Add app.": "App nascosta. Ripristinala con «Aggiungi app».",
     "Auto-renewal enabled (Beta)": "Rinnovo automatico attivato (Beta)",
     "Auto-renewal off": "Rinnovo automatico disattivato",
     "Automatic (system language)": "Automatico (lingua del sistema)",
@@ -897,7 +897,7 @@ HomeI18n.add({
     "A signed Home update is available.": "서명된 Home 업데이트가 있습니다.",
     "Add app": "앱 추가",
     "All installed apps are already on Home.": "설치된 모든 앱이 이미 Home에 있습니다.",
-    "App hidden. Add it back with +.": "앱을 숨겼습니다. +로 다시 추가하세요.",
+    "App hidden. Restore it with Add app.": "앱을 숨겼습니다. 앱 추가로 다시 표시하세요.",
     "Auto-renewal enabled (Beta)": "자동 갱신 켜짐 (베타)",
     "Auto-renewal off": "자동 갱신 꺼짐",
     "Automatic (system language)": "자동 (시스템 언어)",
@@ -1046,7 +1046,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Home का हस्ताक्षरित अपडेट उपलब्ध है।",
     "Add app": "ऐप जोड़ें",
     "All installed apps are already on Home.": "सभी इंस्टॉल किए ऐप पहले से Home पर हैं।",
-    "App hidden. Add it back with +.": "ऐप छिपा दिया गया। + से फिर जोड़ें।",
+    "App hidden. Restore it with Add app.": "ऐप छिपा दिया गया। ऐप जोड़ें से वापस लाएँ।",
     "Auto-renewal enabled (Beta)": "अपने-आप नवीनीकरण चालू (बीटा)",
     "Auto-renewal off": "अपने-आप नवीनीकरण बंद",
     "Automatic (system language)": "स्वचालित (सिस्टम की भाषा)",
@@ -1195,7 +1195,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Dostępna jest podpisana aktualizacja Home.",
     "Add app": "Dodaj aplikację",
     "All installed apps are already on Home.": "Wszystkie zainstalowane aplikacje są już na Home.",
-    "App hidden. Add it back with +.": "Aplikacja ukryta. Dodaj ją ponownie przyciskiem +.",
+    "App hidden. Restore it with Add app.": "Aplikacja ukryta. Przywróć ją przez „Dodaj aplikację”.",
     "Auto-renewal enabled (Beta)": "Automatyczne odnawianie włączone (Beta)",
     "Auto-renewal off": "Automatyczne odnawianie wyłączone",
     "Automatic (system language)": "Automatycznie (język systemu)",
@@ -1344,7 +1344,7 @@ HomeI18n.add({
     "A signed Home update is available.": "Доступно подписанное обновление Home.",
     "Add app": "Добавить приложение",
     "All installed apps are already on Home.": "Все установленные приложения уже на Home.",
-    "App hidden. Add it back with +.": "Приложение скрыто. Верните его через +.",
+    "App hidden. Restore it with Add app.": "Приложение скрыто. Верните его через «Добавить приложение».",
     "Auto-renewal enabled (Beta)": "Автопродление включено (Бета)",
     "Auto-renewal off": "Автопродление выключено",
     "Automatic (system language)": "Автоматически (язык системы)",
@@ -1912,7 +1912,7 @@ HomeI18n.add({
     "A signed Home update is available.": "有可用的已签名 Home 更新。",
     "Add app": "添加应用",
     "All installed apps are already on Home.": "所有已安装的应用都已在 Home 中。",
-    "App hidden. Add it back with +.": "应用已隐藏。可通过 + 重新添加。",
+    "App hidden. Restore it with Add app.": "应用已隐藏。可通过“添加应用”恢复。",
     "Auto-renewal enabled (Beta)": "自动续期已开启（Beta）",
     "Auto-renewal off": "自动续期已关闭",
     "Automatic (system language)": "自动（系统语言）",
@@ -2098,7 +2098,7 @@ HomeI18n.add({
     "A signed Home update is available.": "有可用的已簽署 Home 更新。",
     "Add app": "新增應用程式",
     "All installed apps are already on Home.": "所有已安裝的應用程式都已在 Home 中。",
-    "App hidden. Add it back with +.": "應用程式已隱藏。可透過 + 重新新增。",
+    "App hidden. Restore it with Add app.": "應用程式已隱藏。可透過「新增應用程式」恢復。",
     "Auto-renewal enabled (Beta)": "自動續期已開啟（Beta）",
     "Auto-renewal off": "自動續期已關閉",
     "Automatic (system language)": "自動（系統語言）",
@@ -2484,5 +2484,45 @@ HomeI18n.add({
     "Choose 1–8 columns. Your choice overrides the theme.": "選擇 1–8 欄。你的選擇優先於主題設定。",
     "Columns: {count}": "欄數：{count}",
     "Could not save columns. Please try again.": "無法儲存欄數。請重試。"
+  }
+});
+
+// Home app tile visibility is shared by both editions.
+HomeI18n.add({
+  "en": {
+    "Show Add app tile": "Show Add app tile"
+  },
+  "de": {
+    "Show Add app tile": "Kachel „App hinzufügen“ anzeigen"
+  },
+  "es": {
+    "Show Add app tile": "Mostrar tarjeta «Añadir app»"
+  },
+  "pt-BR": {
+    "Show Add app tile": "Mostrar bloco «Adicionar app»"
+  },
+  "fr": {
+    "Show Add app tile": "Afficher la tuile « Ajouter une app »"
+  },
+  "it": {
+    "Show Add app tile": "Mostra riquadro «Aggiungi app»"
+  },
+  "ko": {
+    "Show Add app tile": "앱 추가 타일 표시"
+  },
+  "hi": {
+    "Show Add app tile": "ऐप जोड़ें टाइल दिखाएँ"
+  },
+  "pl": {
+    "Show Add app tile": "Pokaż kafelek „Dodaj aplikację”"
+  },
+  "ru": {
+    "Show Add app tile": "Показывать плитку «Добавить приложение»"
+  },
+  "zh-Hans": {
+    "Show Add app tile": "显示“添加应用”卡片"
+  },
+  "zh-Hant": {
+    "Show Add app tile": "顯示「新增應用程式」圖塊"
   }
 });

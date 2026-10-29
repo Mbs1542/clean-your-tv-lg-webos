@@ -796,3 +796,7 @@
 
 .settings-categories button[data-update-available="true"] .settings-update-dot { display: inline-block; }
 .settings-categories .settings-update-dot { margin-left: 16px; width: 12px; height: 12px; }
+
+/* Keep the visibility switch inside its Appearance setting row. */
+.settings-layout .home-routing-switch { position: relative; padding-right: 128px; }
+#homeAppsError:empty { display: none; }

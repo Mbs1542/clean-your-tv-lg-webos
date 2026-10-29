@@ -75,6 +75,8 @@ Nach einer Unterbrechung zuerst `status` ausführen und Protokolle behalten. `re
 
 Nur im unveröffentlichten Kandidaten, in beiden Editionen: Öffne **Home-Einstellungen → Darstellung → Spalten** und wähle 1–8 Spalten oder **Nach Theme**, um dessen Wert zu verwenden (Classic: 5). Eine feste Zahl hat Vorrang vor dem Theme. Themes mit festem Layout blenden die Spaltenoption aus und verwenden den Wert des Autors. Deine gespeicherte Auswahl gilt wieder, sobald du zu einem Theme wechselst, das diese Einstellung unterstützt. In der Glasshouse-Kandidatenvorschau liegen Apps in einem endlosen horizontalen Band: Links/Rechts blättert im Kreis, Oben öffnet die Schnellzugriffe und Unten kehrt zur selben App zurück. In der Glasshouse-Vorschau lässt sich das Band auch mit Mausrad oder Touchpad bewegen; bei geöffnetem Dialog bleibt Home stehen.
 
+Unveröffentlichter Kandidat, beide Editionen: Schalte unter **Home-Einstellungen → Darstellung** die Option **Kachel „App hinzufügen“ anzeigen** aus, um + auszublenden. Standardmäßig ist sie eingeschaltet. Über **App hinzufügen** im selben Bereich kannst du weiterhin Apps hinzufügen oder zurückholen. Verschieben und Ausblenden bleiben möglich; die Auswahl bleibt nach einem Neustart erhalten. Sind alle Apps ausgeblendet, bleiben die oberen Schaltflächen und Einstellungen erreichbar.
+
 In Theme-Vorschauen des unveröffentlichten Kandidaten mit optionaler Seitenleiste wählst du mit Oben/Unten einen Menüpunkt, wechselst mit Rechts zu den Apps und kehrst mit Links aus der ersten App-Spalte zum Menü zurück.
 
 ## Aktualisierung und Entfernung

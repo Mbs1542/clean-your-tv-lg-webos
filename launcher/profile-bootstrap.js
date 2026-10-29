@@ -7,8 +7,12 @@
   try{b=new PalmServiceBridge();b.onservicecallback=function(raw){try{var r=JSON.parse(raw);finish(r.returnValue===true?(r.result===undefined?r.state:r.result):null,r.returnValue===true);}catch(_){finish(null);}};b.call((service||'luna://com.cleanyourtv.updater.service/')+method,JSON.stringify(payload||{}));}catch(_){finish(null);}
  }
  function boot(){if(booted)return;booted=true;var s=document.createElement('script');s.src='app.js';s.onload=function(){
-  // A populated rendered grid is a startup signal, not proof of every TV feature.
-  if(!systemRestore&&!document.querySelector('#tiles .item[data-app-id]'))return;
+  // A rendered grid (including an intentionally empty Home) is a startup signal.
+  if(!systemRestore&&!document.querySelector('#tiles .item[data-app-id]')){
+   if(!window.AppLibrary||window.RootLauncherRendered!==true)return;
+   var library=window.AppLibrary.create(localStorage,window.TV_APPS.apps,window.CONFIG);
+   if(library.showAddApp()||library.visible().length)return;
+  }
   var manifest=new XMLHttpRequest();manifest.open('GET','appinfo.json',true);manifest.timeout=5000;
   manifest.onload=function(){try{
    if(manifest.status!==0&&manifest.status!==200)return;
