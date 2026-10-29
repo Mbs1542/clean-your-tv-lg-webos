@@ -590,8 +590,16 @@ class Device:
         for entry in Path('/proc').iterdir():
             if not entry.name.isdigit():continue
             try:
-                args=(entry/'cmdline').read_bytes().split(b'\0')
-                if any(a.decode('utf8') in (target,target+'/service.js') for a in args if a):processes.append((int(entry.name),self._process_start(int(entry.name))))
+                pid=int(entry.name);start=self._process_start(pid)
+                args=[a for a in (entry/'cmdline').read_bytes().split(b'\0') if a]
+                matches=any(a.decode('utf8') in (target,target+'/service.js') for a in args)
+                # webos-service rewrites argv to its bus ID. Require all fixed
+                # process bindings before treating that title as our Root worker.
+                if not matches and target==str(self.root_state/'service') and args==[b'com.cleanyourtv.root.preview.service']:
+                    matches=(entry.stat().st_uid==self.uid and os.readlink(entry/'cwd')==target and os.readlink(entry/'exe')=='/usr/bin/node')
+                if matches:
+                    if self._process_start(pid)!=start:raise ValueError('Service process changed during inspection')
+                    processes.append((pid,start))
             except FileNotFoundError:continue
         for pid,start in processes:self._signal_checked(pid,start,signal.SIGSTOP)
         for pid,start in processes:self._signal_checked(pid,start,signal.SIGKILL)

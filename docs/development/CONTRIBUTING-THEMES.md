@@ -413,7 +413,7 @@ That previous direction serves a snapshot from the computer and needs inbound co
 
 Installed/built-in themes apply without a timer. A new Showcase trial still requires **Keep theme** within 20 seconds. To remove an active downloaded version, apply another theme first and then select **Remove**; built-ins cannot be deleted. Showcase hides installed IDs, so updates use Send to TV or **Add by URL**.
 
-If the primary receiver is unavailable, update both Home and its packaged service to the supported candidate. A new toolkit alone cannot add a service to an older installed Home. Root and No-root browser/packaging checks cover both editions; [the physical record](../history/2026-10-29-theme-push-acceptance.md) describes only the tested fixture/model and its limits. See [TV theme instructions](../THEMES.md).
+If the primary receiver is unavailable, update the complete matching Home/service set. Root upgrades also need the supported retained worker and receiver permission transition; replacing only the Home IPK is insufficient. The [Root upgrade diagnostic](../history/2026-10-29-root-receiver-upgrade.md) records the initial candidate limitation and distinguishes explicit computer maintenance from rebuilt-package acceptance. A new toolkit alone cannot add a service to an older installed Home. Root and No-root browser/packaging checks cover both editions; [the physical record](../history/2026-10-29-theme-push-acceptance.md) describes only the tested fixture/model and its limits. See [TV theme instructions](../THEMES.md).
 
 ## 8. Commit and build a fixed distribution
 

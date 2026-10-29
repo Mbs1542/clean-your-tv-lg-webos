@@ -5,7 +5,8 @@ import json
 from pathlib import Path
 
 
-def program(bundle, enable=True, repair=False):
+def program(bundle, enable=True, repair=False, feature='firmware'):
+    if feature not in ('firmware','theme-receiver') or repair and feature!='firmware':raise ValueError('Unsupported permission feature')
     bundle=Path(bundle)
     manifest=json.loads((bundle/'bundle.json').read_bytes())
     source=bundle/'runtime/cli.py'
@@ -27,4 +28,5 @@ def program(bundle, enable=True, repair=False):
         for name,value in sources.items():
             prefix+='module=types.ModuleType('+repr(name)+');sys.modules['+repr(name)+']=module;exec(compile('+repr(value)+', '+repr('<verified '+name+'>')+", 'exec'),module.__dict__)\n"
         return prefix+ast.get_source_segment(raw,repairs[0])+'\n'+ast.get_source_segment(raw,functions[0])+"\nimport json\nprint(json.dumps(firmware_access(repair=lambda version:repair_sdk_permissions(version=version))))\n"
-    return ast.get_source_segment(raw,functions[0])+'\nimport json\nprint(json.dumps(firmware_access(enable='+repr(enable)+')))\n'
+    selection='' if feature=='firmware' else ',feature='+repr(feature)
+    return ast.get_source_segment(raw,functions[0])+'\nimport json\nprint(json.dumps(firmware_access(enable='+repr(enable)+selection+')))\n'

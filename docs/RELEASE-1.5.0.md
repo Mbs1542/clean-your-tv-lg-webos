@@ -55,11 +55,23 @@ Helper rollback compatibility and remaining release gates are tracked in
 Use a complete matching installer/update set. A standalone Home IPK does not
 replace retained Root workers or their LS2 permission contract. New Root
 provisions record receiver capabilities; historical snapshots replay their
-original permissions. Actual upgrade receiving, supported provisioning and
-rollback must be verified before release; do not edit private pins or permission
-files to force acceptance. System Updater 1.1.2 contains capability-aware replay
-for new provisions; existing supervisors are replaced only through the documented
-explicit preparation/recovery flow.
+original permissions. Receiver access on those snapshots uses a separate fixed
+API attachment and resumable receipt through the protected SDK manifest; it does
+not rewrite the legacy snapshot or its four managed LS2 files. Trusted runtime
+reconciliation maintains this attachment after updates and at boot, independently
+of the Homebrew configuration permission choice. Only the receiver uses protected
+manifest identity; Homebrew grants retain their stricter SDK checks.
+
+Root QA on the first 1.5.0 build exposed both missing receiver permissions and a
+stale service process: webos-service replaces its command line with the bus ID.
+The prepared System Updater 1.1.2 recognizes that title only together with matching
+UID, private working directory, executable and stable process start identity.
+Existing supervisors are replaced only through the documented explicit
+preparation/recovery flow. The successful [maintainer diagnostic](history/2026-10-29-root-receiver-upgrade.md)
+used explicit host maintenance and a standard service restart; it is not acceptance
+of a rebuilt candidate. Actual upgrade receiving, provisioning and rollback still
+need matching artifact verification before release. Do not edit private pins or
+permission files to force acceptance.
 
 Helper 0.6.20 requires a new exact-archive rollback approval against the published
 Home/Helper baseline. The earlier 0.6.19 approval does not authorize this transition.

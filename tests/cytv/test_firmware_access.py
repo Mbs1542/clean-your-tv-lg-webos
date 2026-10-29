@@ -239,7 +239,7 @@ class Tests(unittest.TestCase):
         with patch.dict(sys.modules,{'intent_runtime':intent,'update_guard':updates}):
             self.assertEqual(ns['execute']('boot'),{'home':'safe'})
             self.assertEqual(ns['execute']('finish-update','tx'),{'finished':True})
-        self.assertEqual(calls,[{'lock_product':False,'automatic':True}]*2)
+        self.assertEqual(calls,[{'lock_product':False,'automatic':True,'feature':f} for _ in range(2) for f in ('firmware','theme-receiver')])
 
     def test_host_streams_verified_source_instead_of_a_long_ssh_command(self):
         from cytv.operations import Installer
@@ -297,6 +297,76 @@ class Tests(unittest.TestCase):
         self.grant();count=len(self.events);before=self.receipt.stat().st_mtime_ns
         self.function(self.root,self.bus,self.apps,self.install,automatic=True,lock_product=False,refresh=lambda:self.events.append('scan'),uid=os.getuid())
         self.assertEqual(len(self.events),count);self.assertEqual(self.receipt.stat().st_mtime_ns,before)
+
+    def receiver(self, enable=True):
+        return self.function(self.root,self.bus,self.apps,self.install,feature='theme-receiver',enable=enable,refresh=lambda:self.events.append('scan'),uid=os.getuid())
+
+    def test_receiver_upgrade_preserves_legacy_contract_and_independent_firmware_choice(self):
+        before={p:p.read_bytes() for p in [self.snapshot,self.proof,*self.paths.values()]}
+        self.grant();self.grant(False)
+        old_receipt=self.receipt.read_bytes()
+        self.receiver();receiver=self.root/'permissions/theme-receiver.api.json'
+        self.assertEqual(json.loads(receiver.read_bytes()),{GROUP:[SERVICE+'/'+m for m in ('themeReceiverStart','themeReceiverStatus','themeReceiverRead','themeReceiverStop')]})
+        self.assertEqual(json.loads(self.manifest.read_bytes())['apiPermissionFiles'],[str(self.paths['api']),str(receiver)])
+        self.assertEqual(self.receipt.read_bytes(),old_receipt)
+        self.grant();self.assertEqual(json.loads(self.manifest.read_bytes())['apiPermissionFiles'],[str(self.paths['api']),str(self.api),str(receiver)])
+        self.grant(False);self.assertIn(str(receiver),json.loads(self.manifest.read_bytes())['apiPermissionFiles'])
+        self.receiver(False);self.assertEqual(json.loads(self.manifest.read_bytes()),self.normal)
+        self.assertFalse(receiver.exists())
+        for path,raw in before.items():self.assertEqual(path.read_bytes(),raw)
+
+    def test_receiver_and_firmware_reconcile_after_package_replacement(self):
+        self.grant();old_receipt=json.loads(self.receipt.read_bytes());self.receiver()
+        normal=dict(self.normal,version='0.6.0')
+        self.manifest.write_bytes(encode(normal));(self.apps/'applications'/APP/'appinfo.json').write_bytes(encode({'id':APP,'version':'0.6.0'}))
+        self.grant();self.receiver();self.grant();self.receiver()
+        self.assertEqual(json.loads(self.manifest.read_bytes())['apiPermissionFiles'],[str(self.paths['api']),str(self.api),str(self.root/'permissions/theme-receiver.api.json')])
+        self.assertEqual(json.loads(self.receipt.read_bytes())['api_sha256'],old_receipt['api_sha256'])
+        self.receiver(False);self.grant(False);self.assertEqual(json.loads(self.manifest.read_bytes()),normal)
+
+    def test_receiver_uses_protected_manifest_without_trusting_sdk_identity(self):
+        info=self.apps/'applications'/APP/'appinfo.json';info.parent.chmod(0o777);info.write_bytes(b'not identity authority')
+        self.receiver()
+        self.assertEqual(info.read_bytes(),b'not identity authority');self.assertEqual(info.parent.stat().st_mode&0o777,0o777)
+        with self.assertRaises(ValueError):self.grant()
+        raw=self.manifest.read_bytes();self.manifest.chmod(0o666)
+        with self.assertRaises(ValueError):self.receiver()
+        self.assertEqual(self.manifest.read_bytes(),raw)
+
+    def test_receiver_registration_rejects_drift_before_other_permission_writes(self):
+        self.grant();self.receiver()
+        receiver=self.root/'permissions/theme-receiver.api.json';receiver.write_bytes(b'foreign')
+        before={p:p.read_bytes() for p in (self.manifest,self.receipt,receiver)}
+        for action in (self.receiver,self.grant):
+            with self.assertRaises(ValueError):action()
+        for path,raw in before.items():self.assertEqual(path.read_bytes(),raw)
+
+    def test_legacy_runtime_accepts_firmware_receipt_after_receiver_downgrade(self):
+        fixture=ROOT/'tests/cytv/fixtures/firmware-access-7fb6986f.py'
+        self.assertEqual(sha(fixture.read_bytes()),'3298256c4d4f2598f18474aa08d70376d0a84fcba441a3608051674753ba7eec')
+        source=fixture.read_text();tree=ast.parse(source);node=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='firmware_access')
+        ns={};exec(ast.get_source_segment(source,node),ns)
+        # Receiver-first must not taint the historical firmware receipt.
+        self.receiver();self.grant()
+        self.manifest.write_bytes(encode(self.normal))  # Actual IPK replacement regenerates the SDK manifest.
+        result=ns['firmware_access'](self.root,self.bus,self.apps,self.install,refresh=lambda:None,uid=os.getuid())
+        self.assertTrue(result['permissions_installed'])
+        self.assertNotIn(str(self.root/'permissions/theme-receiver.api.json'),json.loads(self.manifest.read_bytes())['apiPermissionFiles'])
+        ns['firmware_access'](self.root,self.bus,self.apps,self.install,enable=False,refresh=lambda:None,uid=os.getuid())
+        self.assertEqual(json.loads(self.manifest.read_bytes()),self.normal)
+
+    def test_receiver_each_interrupted_write_resumes(self):
+        replace=os.replace
+        for cut in range(1,5):
+            with self.subTest(cut=cut):
+                counter=0
+                def crash(src,dst):
+                    nonlocal counter
+                    replace(src,dst);counter+=1
+                    if counter==cut:raise OSError('power loss')
+                with patch('os.replace',side_effect=crash),self.assertRaises(OSError):self.receiver()
+                self.receiver();self.grant();self.receiver(False);self.grant(False)
+                self.assertEqual(json.loads(self.manifest.read_bytes()),self.normal)
 
     def test_executable_program_requires_verified_bundle(self):
         (self.bundle/'runtime/cli.py').write_bytes(b'poisoned')
