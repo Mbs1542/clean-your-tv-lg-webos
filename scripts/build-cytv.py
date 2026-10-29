@@ -34,7 +34,7 @@ def tracked_files(prefix):
                              'launcher/fonts/NotoSansTC.ttf', 'launcher/fonts/NotoSansTC-OFL.txt'],
                 'native/service': ['native/service/app-inventory.js']}
     if prefix == 'launcher':
-        required[prefix] += ['launcher/' + name for name in ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())]
+        required[prefix] += ['launcher/' + name for name in ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-receiver.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())]
     if prefix == 'native/app':
         required[prefix] += [p.relative_to(ROOT).as_posix() for p in (ROOT/'native/app/vendor/ws-legacy').rglob('*') if p.is_file()]
     for name in sorted(set(result.stdout.splitlines()) | set(required.get(prefix, []))):
@@ -54,6 +54,9 @@ def pack_app(appfiles, servicefiles, architecture='all', helper=False):
         appfiles = compile_web(appfiles)
     app, version = info['id'], info['version']
     service = json.loads(servicefiles['services.json'])['id']
+    if service == 'com.gathin.tvhome.renewal':
+        from scripts.theme_receiver import inject
+        servicefiles = inject(servicefiles)
     files = {'usr/palm/applications/' + app + '/' + n: b for n, b in appfiles.items()}
     files.update({'usr/palm/services/' + service + '/' + n: b for n, b in servicefiles.items()})
     files['usr/palm/packages/' + app + '/packageinfo.json'] = json.dumps({

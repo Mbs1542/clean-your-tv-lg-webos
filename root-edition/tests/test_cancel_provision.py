@@ -64,6 +64,24 @@ class PendingProvisionCancellationTests(unittest.TestCase):
 
     def inspect(self):return self.case.inspect()
 
+    def test_fresh_receiver_capability_cancellation_restores_original_registration(self):
+        self.saved['capabilities']=['theme-receiver-v1']
+        updated=self.p.plan(self.original,self.saved['capabilities'])
+        for key,path in self.files.items():
+            path.write_bytes(updated[key])
+            self.saved['files'][str(path)]['installed_sha256']=self.p.sha(updated[key])
+        self.f.root_store.write('ls2-provision-snapshot',self.saved)
+        proof=self.inspect();self.assertEqual(proof['state'],'admissible')
+        with patch('observed_install.remove',side_effect=self.remove):
+            result=self.recovery.remove(self.case.identifier,self.case.candidate,proof['proof_sha256'])
+        self.assertEqual(result['state'],'cancelled-and-removed')
+        self.assertEqual(self.f.root_store.read('ls2-provision-snapshot'),self.saved)
+
+    def test_unknown_receiver_capability_is_not_admitted(self):
+        self.saved['capabilities']=['unknown']
+        self.f.root_store.write('ls2-provision-snapshot',self.saved)
+        with self.assertRaisesRegex(ValueError,'Unknown recovery capabilities'):self.inspect()
+
     def remove(self,*args,**kwargs):
         self.assertEqual(self.refreshes,['scan'])
         for key,path in self.files.items():self.assertEqual(path.read_text(),self.original[key])

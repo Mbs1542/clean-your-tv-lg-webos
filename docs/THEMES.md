@@ -1,6 +1,8 @@
 # Choose and install themes
 
-These controls are implemented in the **theme-enabled development candidate** on `release/next`. Published packages may not include them yet. If Settings has no Themes entry, use a package from that candidate after its normal release/acceptance; copying a link into an older Home cannot add the feature. Physical-TV acceptance is still required.
+These embedded controls are implemented in an **unpublished theme-settings follow-up**. Published packages may not include them yet. If Settings has no Themes entry, use a package from that candidate after its normal release/acceptance; copying a link into an older Home cannot add the feature. Physical-TV acceptance is still required.
+
+Authors: follow the [complete theme contribution walkthrough](development/CONTRIBUTING-THEMES.md) to create a theme, preview it on PC, test it on TV and submit it to Showcase.
 
 ## Included with Home
 
@@ -10,42 +12,46 @@ These controls are implemented in the **theme-enabled development candidate** on
 
 ## Change to an included theme
 
-1. Open Home, select **Settings → Appearance → Themes**. Home stays visible beneath a compact picker showing previews of built-in and all downloaded themes. Personal themes use their saved package preview, including offline and without a showcase listing. The separate Theme showcase button opens the published catalogue.
+1. Open Home, select **Settings → Appearance**. The Appearance pane itself contains preview cards for built-in and all downloaded themes, alongside the settings categories. Personal themes use their saved package preview, including offline and without a showcase listing. The separate Theme showcase button opens the published catalogue.
 2. Choose **Classic** or **Alpine** in the installed list. The choice applies and saves immediately, without a confirmation timer. Downloaded themes in this list work the same way.
 3. Return with **Back**, then **Back to Home**.
 
-The accepted choice is restored on the next launch. Only **Try theme** inside **Theme showcase** starts a 20-second trial, including for cached versions. If Home closes during an unconfirmed showcase trial, the next launch starts Classic. Changing appearance does not replace your app order, hidden apps, inputs or Home-button routing. Settings, confirmations and recovery keep their standard appearance.
+The accepted choice is restored on the next launch. Only **Try theme** inside **Theme showcase** starts a 20-second trial, after downloading a new theme. If Home closes during an unconfirmed showcase trial, the next launch starts Classic. Changing appearance does not replace your app order, hidden apps, inputs or Home-button routing. Settings, confirmations and recovery keep their standard appearance.
 
 ## Browse themes on TV
 
-Open **Settings → Appearance → Themes → Theme showcase**. Choose a miniature preview to see the theme's details. Classic and Alpine offer **Try theme** immediately; Channel offers **Download theme**, then **Try theme**. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
+Open **Settings → Appearance → Theme showcase**. Choose a miniature preview to see the theme's details. Only themes not installed on this TV appear here. Classic, Alpine and installed personal themes are hidden by identity, including when the catalogue has a newer version. Channel offers **Download theme**, then **Try theme**. After removal it returns to Showcase. Choose **Remove** on a downloaded theme and confirm. Removing the active theme restores Classic before deleting its files. Built-in themes cannot be removed. Use **Add by URL** or **Receive from computer** to update a hidden installed theme. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
 
-Opening Theme showcase or choosing Refresh checks the main project repository for reviewed catalogue updates without updating Home or reloading the page. After a normal merge, new entries become available; an unmerged candidate may still show the bundled fallback. Offline or failed requests use bundled previews and entries. Built-in themes match your installed Home version. Online catalogue data and previews come from one exact project commit resolved through GitHub; downloading an external theme needs Internet access. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository. Refreshing never installs a theme or changes the current selection. Physical-TV network acceptance remains pending.
+Opening Theme showcase or choosing Refresh checks the main project repository for reviewed catalogue updates without updating Home or reloading the page. After a normal merge, new entries become available; an unmerged candidate may still show the bundled fallback. Offline or failed requests use bundled previews and entries. Online catalogue data and previews come from one exact project commit resolved through GitHub; downloading an external theme needs Internet access. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository. Refreshing never installs a theme or changes the current selection. The scoped device check is recorded in [theme push acceptance](history/2026-10-29-theme-push-acceptance.md); complete release-package acceptance remains separate.
 
 ## Transfer a theme from your computer
 
-No showcase submission, public repository or source commit is required for a local development test.
+Use matching Home and service packages from the candidate. On an existing Root installation, updating the Home UI alone does not update its preserved private service; see the [provisioning requirements](development/TV-THEMES.md#pc--tv-push-primary-author-transfer). No Showcase submission, public repository or source commit is required for a local development test. The primary direction is **PC → TV**: the TV temporarily accepts the compiled theme; the computer makes an outgoing connection.
 
-1. Run your theme in the author toolkit's **preview** or **showcase**. Choose the theme and press **Send to TV**. The toolkit compiles the current source into a fixed snapshot; saving another edit does not silently change that snapshot.
-2. On TV open **Settings → Appearance → Themes → Receive from computer**.
-3. Enter the private IPv4 **Computer address** shown by the preview and its **Six-digit PIN**. Do not enter `http://`, a port or a file path. The address is remembered after a successful transfer; the PIN is never remembered.
-4. Choose **Receive theme**, then **Try theme** to apply and save the installed copy immediately, without a timer. The installed copy works offline after the computer stops sharing.
-5. After editing, press **Send to TV** again for a fresh snapshot and PIN. **Stop sharing**, closing the preview server or the ten-minute deadline closes access.
+1. On TV open **Settings → Appearance → Receive from computer**. Keep the pane open; it shows the **TV address**, six-digit PIN and expiry time.
+2. On the computer run your theme in the author toolkit's **preview** or **showcase**, select it and press **Send to TV**.
+3. Enter the address and PIN **from the TV** into the computer dialog, then choose **Send theme**. Enter just the private IPv4 address, without a URL or port.
+4. After the TV verifies the received package, choose **Apply theme**. It saves immediately, without a 20-second timer. The computer's Sent status means transport completed; finish installation/application on TV.
+5. Edit your theme on the computer as needed. For another snapshot, reopen Receive from computer on TV and send with its new PIN. Saving a file alone does not alter the TV copy.
 
-Both devices must be on the same trusted home network, with client isolation disabled and the computer firewall allowing TCP **8879**. The transfer uses local HTTP, not a cloud service; do not use an untrusted/shared network. Only compiled theme files are served, not the repository or source directory. The PIN limits casual access; it is not encryption. If several addresses are shown, use the interface connected to the TV's network. VPNs or a changed computer address may require selecting a different address. Native webOS network/origin and keyboard behavior still require physical-TV acceptance.
+Both devices must be on the same trusted home network. The receiver uses local HTTP and TCP **8879 on the TV**. No incoming computer port or Mac firewall exception is needed. Guest-network/client isolation can still prevent a connection. Only compiled theme data is accepted; the existing descriptor/hash/image/cache checks run before offering Apply. The PIN is not persisted. This is a temporary local transfer, not a cloud upload or automatic live editing.
 
-CLI alternative from the toolkit:
+The receiver closes after one upload, cancellation, leaving the pane, ten minutes, or too many invalid PIN attempts. Closing before a transfer completes cancels that session. Installed copies remain usable offline after the receiver closes or the computer turns off.
+
+CLI alternative from the toolkit (use the values currently shown on TV):
 
 ```sh
-npm run theme -- share ./my-theme --runtime .runtime/candidate
+npm run theme -- send ./my-theme --runtime .runtime/candidate --tv TV_PRIVATE_IPV4 --pin SIX_DIGIT_PIN
 ```
 
-Keep the command running and use the address and PIN it prints. Press Ctrl+C to stop it. See the toolkit walkthrough for preparing the candidate runtime.
+### Legacy: TV downloads from a computer
+
+**Use legacy computer sharing** opens the previous form on TV. On the computer run `npm run theme -- share ./my-theme --runtime .runtime/candidate`, then enter that computer's address/PIN on TV. This secondary method requires incoming TCP 8879 on the computer and can be blocked by managed Mac firewall policy. It is not started by the primary Send to TV dialog. Stop it with Ctrl+C. Prefer the PC → TV flow above on matching candidate versions.
 
 ## Add another repository by URL
 
 1. Browse the main project's showcase (the **Theme showcase** link on Preview Pages). Open a theme detail page and use **Copy TV link**. Transfer that exact URL using the TV keyboard or your normal TV text-entry method; the computer transfer above is the easier path for unpublished local work.
-2. On TV, open **Settings → Appearance → Themes → Add by URL**. Focus **Theme URL** and use OK/native keyboard to type or paste. Move to **Load** and select it.
+2. On TV, open **Settings → Appearance → Add by URL**. Focus **Theme URL** and use OK/native keyboard to type or paste. Move to **Load** and select it.
 3. Choose the returned theme. For a repository containing several themes, choose the specific entry; the installer does not select one silently. The download progress is shown. Cancel or Back stops the request.
 4. After validation/saving, choose the new **Downloaded** version in Themes. Review its author/license and select it to apply and save immediately, without a timer.
 
@@ -63,7 +69,7 @@ The cache is bounded at eight downloaded versions and 24 MiB of payload data, su
 
 ## Recovery
 
-Open **Settings → Appearance → Themes → Restore Classic** to discard theme appearance immediately. An interrupted trial/startup or invalid accepted theme also returns to Classic on the next launch. The downloaded library is retained unless you clear it. Use the existing emergency Home exit/recovery instructions if Home itself cannot be opened; theme recovery does not change that emergency mechanism.
+Open **Settings → Appearance → Restore Classic** to discard theme appearance immediately. An interrupted trial/startup or invalid accepted theme also returns to Classic on the next launch. The downloaded library is retained unless you clear it. Use the existing emergency Home exit/recovery instructions if Home itself cannot be opened; theme recovery does not change that emergency mechanism.
 
 Theme images/choice are not included in legacy profile backup/export. An authoritative profile restore resets the accepted theme to Classic; downloaded packages remain available for reselection if app storage is intact. Removing the application or resetting app data may erase its cache. Device storage behavior across updates, standby and cold boot still requires hardware acceptance.
 

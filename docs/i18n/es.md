@@ -1,10 +1,10 @@
 # Clean Your TV — guía de uso
 
-> Candidato 1.4.1 no publicado: compatibilidad Root OTA, disponibilidad de actualizaciones, acceso a la API de firmware y correcciones de paquetes/consola en Windows. Se registraron la actualización firmada y la reversión normal con alcance limitado al C3; las compilaciones finales y la publicación siguen pendientes; no es una descarga publicada. [1.4.1](../RELEASE-1.4.1.md).
+> Candidato 1.5.0 sin publicar: temas, galería y envío del PC al TV. La validación en TV está pendiente. La versión estable publicada es 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
 
 [Documentación](../README.md) · [Informar de un problema](../FEEDBACK.md)
 
-Esta guía describe la versión publicada **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**. La aceptación del C3 cubre las pruebas registradas de alimentación, Home, foco, estado desactivado y reversión manual. Otros televisores, audio eARC y dispositivos Android físicos siguen sin verificar; instalar correctamente no demuestra compatibilidad. [Alcance probado (inglés)](../RELEASE-1.4.0-ACCEPTANCE.md).
+Esta guía describe la versión publicada **[1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)**. La aceptación del C3 cubre las pruebas registradas de alimentación, Home, foco, estado desactivado y reversión manual. Otros televisores, audio eARC y dispositivos Android físicos siguen sin verificar; instalar correctamente no demuestra compatibilidad. [Alcance probado (inglés)](../RELEASE-1.4.0-ACCEPTANCE.md).
 
 ## Elegir edición
 
@@ -73,7 +73,9 @@ No-root: Para reiniciar el control de Home, abre Home Helper, elige Iniciar Help
 
 Tras una interrupción, ejecuta primero `status` y conserva los registros. `restore` recupera LG Home sin quitar aplicaciones; `uninstall` lo restaura antes de eliminarlas. Los datos de recuperación Root se conservan deliberadamente: no los borres para forzar otra instalación. Revisa los informes antes de compartirlos; no publiques claves ni carpetas de perfiles.
 
-Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Apariencia → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. Los temas con una distribución fija ocultan la opción Columnas y usan el valor del autor. Tu elección guardada se recupera al cambiar a un tema que admita este ajuste. En la vista previa candidata de Glasshouse, las apps forman una cinta horizontal circular: Izquierda/Derecha desplaza, Arriba abre los accesos y Abajo vuelve a la misma app. En la vista previa de Glasshouse también puedes desplazar la cinta con la rueda o el panel táctil; Home no se mueve detrás de un diálogo abierto.
+Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Apariencia → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. Los temas con una distribución fija ocultan la opción Columnas y usan el valor del autor. Tu elección guardada se recupera al cambiar a un tema que admita este ajuste. En la vista previa candidata de Alpine, las apps forman una cinta horizontal circular: Izquierda/Derecha desplaza, Arriba abre los accesos y Abajo vuelve a la misma app. En la vista previa de Alpine también puedes desplazar la cinta con la rueda o el panel táctil; Home no se mueve detrás de un diálogo abierto.
+
+Candidato aún no publicado, ambas ediciones: en **Ajustes de Home → Apariencia**, desactiva **Mostrar tarjeta «Añadir app»** para ocultar +. Está activada de forma predeterminada. Usa **Añadir app** en la misma sección para añadir o recuperar apps aunque + esté oculto. Puedes seguir ordenando y ocultando apps; la elección se conserva al reiniciar. Si ocultas todas las apps, los controles superiores y los ajustes siguen disponibles.
 
 En las vistas previas de temas del candidato no publicado con barra lateral opcional, Arriba/Abajo selecciona una opción del menú, Derecha pasa a las aplicaciones e Izquierda desde la primera columna de aplicaciones vuelve al menú.
 
@@ -112,15 +114,23 @@ Tras un fallo o interrupción, comprueba el estado y guarda el informe de diagn�
 
 ## Temas: candidato en desarrollo
 
-En el candidato compatible: **Ajustes → Apariencia → Temas**. **Classic** y **Alpine** están integrados y no necesitan descargar el tema; Classic sigue como predeterminado. **Channel** es externo, desde showcase. En las pruebas de la galería: Elige el tema y **Conservar tema** antes de **20 segundos**. **Revertir**, Back o el tiempo agotado recuperan el anterior. Una prueba interrumpida inicia Home con Classic. Los temas integrados y descargados elegidos en la lista instalada se aplican y guardan al instante, sin temporizador. Esto incluye los recibidos del ordenador o instalados por URL. Solo Probar tema dentro de la galería inicia una prueba de 20 segundos, incluso para una versión ya descargada.
+En el candidato compatible: **Ajustes → Apariencia**. **Classic** y **Alpine** están integrados y no necesitan descargar el tema; Classic sigue como predeterminado. **Channel** es externo, desde showcase. En las pruebas de la galería: Elige el tema y **Conservar tema** antes de **20 segundos**. **Revertir**, Back o el tiempo agotado recuperan el anterior. Una prueba interrumpida inicia Home con Classic. Los temas integrados y descargados elegidos en la lista instalada se aplican y guardan al instante, sin temporizador. Esto incluye los recibidos del ordenador o instalados por URL. Solo Probar tema dentro de la galería inicia una prueba de 20 segundos.
 
-Al abrir la galería o elegir Actualizar se consultan las novedades revisadas del repositorio principal sin actualizar Home ni recargar la página. Las nuevas entradas aparecen tras la integración normal; un candidato sin integrar puede mostrar el catálogo incluido. Sin conexión o ante errores se usan entradas y vistas previas incluidas. Los temas integrados corresponden a la versión instalada de Home. Abre una y elige **Probar tema** para los integrados o **Descargar tema** para Channel (requiere internet). Tras descargarlo, pruébalo y elige **Conservar tema** en **20 segundos**. Los temas instalados funcionan sin conexión. **Añadir por URL** sigue disponible para enlaces fijados.
+La galería solo muestra temas no instalados en este TV. Classic, Alpine y los descargados se ocultan, incluso si hay una versión más reciente. Al eliminar un tema vuelve a aparecer. Actualiza por URL o desde el ordenador.
 
-Para un tema sin publicar, abre la vista previa de autor en el ordenador y elige **Enviar al TV**; en el TV, **Recibir del ordenador**. Ambos deben estar en la misma red doméstica de confianza: se usa HTTP y el puerto TCP fijo **8879**, permitido en el cortafuegos del ordenador. Introduce su dirección IPv4 privada y el PIN de seis dígitos. Mantén el envío abierto; la sesión caduca en **10 minutos**. Se recuerda la dirección, pero no el PIN. No hace falta publicar en GitHub.
+Las tarjetas están integradas en Apariencia, junto a las categorías. La galería, la instalación por enlace y la transferencia desde el ordenador se abren ahí; solo una prueba de la galería muestra Home temporalmente.
+
+Al abrir la galería o elegir Actualizar se consultan las novedades revisadas del repositorio principal sin actualizar Home ni recargar la página. Las nuevas entradas aparecen tras la integración normal; un candidato sin integrar puede mostrar el catálogo incluido. Sin conexión o ante errores se usan entradas y vistas previas incluidas. Los temas integrados corresponden a la versión instalada de Home. Abre la vista previa de Channel y elige **Descargar tema** (requiere internet). Tras descargarlo, pruébalo y elige **Conservar tema** en **20 segundos**. Los temas instalados funcionan sin conexión. **Añadir por URL** sigue disponible para enlaces fijados.
+
+Para probar un tema no publicado, abre primero **Ajustes → Apariencia → Recibir del ordenador** en el TV. Introduce su dirección y PIN de seis dígitos en **Send to TV** de la vista previa del ordenador, envía y elige **Aplicar tema** en el TV. El método principal conecta desde el PC al puerto TCP **8879 del TV**, sin modificar el cortafuegos del ordenador. Ambos deben estar en la misma red doméstica de confianza. El receptor se cierra tras una carga, cancelar, salir o **10 minutos**. El PIN no se guarda; el tema instalado funciona sin conexión. El método anterior requiere TCP 8879 entrante en el ordenador. No es necesario publicar en GitHub.
 
 Los paquetes publicados quizá aún no tengan estos controles. Las pruebas de navegador no demuestran compatibilidad física. [Guía completa](../THEMES.md).
 
 Temas muestra vistas previas de los temas integrados y de todos los que hayas instalado, incluso sin conexión. Un botón aparte abre el catálogo de temas publicados; instalar un tema personal no lo publica.
+
+En la versión candidata, Apariencia muestra tarjetas grandes de los temas instalados y marca el elegido. La galería y recibir desde el ordenador son las acciones principales. Más opciones contiene añadir por URL, restaurar Classic y borrar temas descargados. Las flechas recorren tarjetas y botones; izquierda en el borde vuelve a las categorías.
+
+En la vista previa del navegador, Recibir del ordenador explica los pasos del televisor; no inicia un receptor de TV en el ordenador. Usa Send to TV encima de la vista previa. Eliminar un tema descargado requiere confirmación; si está activo, se restaura Classic primero. Cancelar conserva el tema.
 
 ## Categorías de ajustes (candidato no publicado)
 

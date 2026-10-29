@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "version": null,
+  "version": "1.5.0",
   "changes": [
     {
       "pr": 134,
@@ -30,6 +30,16 @@
         143
       ],
       "summary": "Add reviewed-source cancellation of never-activated Root installs, including pre-registration finalize failures and historical runtime inventories; device-specific recovery and firmware routing compatibility remain unverified (partial #101, #133, #143)."
+    },
+    {
+      "pr": 149,
+      "issues": [],
+      "summary": "Integrate theme showcase, Appearance controls and PC-to-TV transfer"
+    },
+    {
+      "pr": 151,
+      "issues": [],
+      "summary": "Add the optional Show Add app tile switch and Settings app picker in both editions; preserve app editing and empty Home navigation."
     }
   ],
   "excluded": [],

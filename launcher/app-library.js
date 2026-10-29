@@ -17,12 +17,13 @@
     });
   }
   function create(storage, inventory, config) {
-    var catalog = clean(inventory), hidden = unique(config.hiddenApps || []), ids, saved;
+    var catalog = clean(inventory), hidden = unique(config.hiddenApps || []), ids, saved, showAddApp = true;
     try {
       saved = JSON.parse(storage.getItem(KEY));
       if (!saved || saved.version !== 1 || !Array.isArray(saved.ids) || !Array.isArray(saved.hidden) || !Array.isArray(saved.catalog)) saved = null;
     } catch (_) { saved = null; }
     if (saved) {
+      showAddApp = saved.showAddApp !== false;
       catalog = clean(catalog.concat(saved.catalog)); hidden = unique(saved.hidden); ids = unique(saved.ids);
     } else {
       var legacy;
@@ -32,13 +33,15 @@
     }
     function visible() { return ids.map(find).filter(function(a) { return a && hidden.indexOf(a.id) < 0; }); }
     function find(id) { return catalog.filter(function(a) { return a.id === id; })[0]; }
-    function save(nextIds, nextHidden) {
-      var state = {version:1, ids:unique(nextIds), hidden:unique(nextHidden), catalog:catalog};
+    function save(nextIds, nextHidden, nextShowAddApp) {
+      var state = {version:1, ids:unique(nextIds), hidden:unique(nextHidden), catalog:catalog, showAddApp:nextShowAddApp === undefined ? showAddApp : nextShowAddApp};
       storage.setItem(KEY, JSON.stringify(state)); // Commit memory only after durable storage succeeds.
-      ids = state.ids; hidden = state.hidden;
+      ids = state.ids; hidden = state.hidden; showAddApp = state.showAddApp;
     }
     return {
       visible:visible,
+      showAddApp:function() { return showAddApp; },
+      setShowAddApp:function(value) { if (typeof value !== 'boolean') throw Error('invalid-add-app-visibility'); save(ids, hidden, value); },
       hidden:function() { return hidden.slice(); },
       available:function() { var shown = visible().map(function(a) { return a.id; }); return catalog.filter(function(a) { return shown.indexOf(a.id) < 0; }).sort(function(a,b) { return a.title.localeCompare(b.title); }); },
       save:save,

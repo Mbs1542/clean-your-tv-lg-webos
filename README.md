@@ -33,12 +33,13 @@ LG screens or obtain root access.
 
 ## Download and install
 
-> Candidate branch: v1.4.1 is not published. The public stable release remains
-> [v1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0).
-> The release metadata below describes the intended download after promotion.
+> Candidate branch: v1.5.0 is not published. The public stable release remains
+> [v1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1).
+> The metadata below describes the candidate's intended download after promotion;
+> the download buttons still follow the latest published release.
 
 <!-- release:downloads -->
-Current stable release: **[v1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)** — [release notes](docs/RELEASE-1.4.1.md).
+Current stable release: **[v1.5.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.5.0)** — [release notes](docs/RELEASE-1.5.0.md).
 <!-- /release:downloads -->
 
 [![Download Windows x64 graphical installer — GUI ZIP](assets/brand/downloads/windows.svg)](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/latest/download/cytv-windows-x64-desktop.zip)
@@ -118,16 +119,16 @@ For contributors: [build and technical references](docs/development/README.md),
 <!-- release:components -->
 | Component | Stable version |
 | --- | --- |
-| cytv installer | 0.5.1 |
-| Home | 1.5.1 |
-| Home Helper | 0.6.19 |
-| Root edition | 0.5.1 |
-| Both edition Updaters | 0.3.2 |
-| Android installer / versionCode | 0.4.1 / 14 |
+| cytv installer | 0.6.0 |
+| Home | 1.6.0 |
+| Home Helper | 0.6.20 |
+| Root edition | 0.6.0 |
+| Both edition Updaters | 0.3.3 |
+| Android installer / versionCode | 0.5.0 / 15 |
 <!-- /release:components -->
 
-Candidate System Updater: 1.1.1 / protocol 1 (existing supervisors stay pinned).
-See the [candidate release notes](docs/RELEASE-1.4.1.md)
+Candidate System Updater: 1.1.2 / protocol 1 (existing supervisors stay pinned).
+See the [candidate release notes](docs/RELEASE-1.5.0.md)
 and [C3 acceptance and limits](docs/RELEASE-1.4.0-ACCEPTANCE.md).
 
 </details>

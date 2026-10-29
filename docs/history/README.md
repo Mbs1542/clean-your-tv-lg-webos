@@ -6,6 +6,10 @@ These are historical records, not current setup instructions. They retain their
 original versions, dates, failed attempts and test limits. A recorded success on
 one model or artifact does not certify later releases or a different TV.
 
+## Scoped feature checks
+
+- [PC → TV theme push, 2026-10-29](2026-10-29-theme-push-acceptance.md): direct network transfer on the maintainer C3 fixture; production/unrooted acceptance remains separate.
+
 ## Release notes
 
 - [1.4.0](../RELEASE-1.4.0.md)

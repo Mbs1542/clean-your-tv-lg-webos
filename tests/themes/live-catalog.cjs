@@ -2,14 +2,14 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
 const real=require('../../launcher/theme-data.js');
 const local=JSON.parse(fs.readFileSync('launcher/theme-catalog.json'));
-const sha='a'.repeat(40),api='https://api.github.com/repos/Razdva122/clean-your-tv-lg-webos/commits/HEAD';
+const sha='a'.repeat(40),api='https://api.github.com/repos/Razdva122/clean-your-tv-lg-webos/git/ref/heads/main';
 let remote=structuredClone(local),mode='',calls=[];
 const context={Promise,ThemeData:Object.assign({},real,{request:async(url,limit,isLocal,signal)=>{
  calls.push({url,limit,isLocal});if(signal&&signal.cancelled)throw Error('Cancelled');
  if(isLocal)return real.encode(JSON.stringify(local));
  if(mode==='offline')throw Error('Network error');
  if(mode==='cancel'){signal.cancelled=true;throw Error('Cancelled');}
- return real.encode(JSON.stringify(url===api?{sha}:remote));
+ return real.encode(JSON.stringify(url===api?{ref:'refs/heads/main',object:{sha,type:'commit'}}:remote));
 }})};
 vm.runInNewContext(fs.readFileSync('launcher/theme-manager.js','utf8'),context);
 (async()=>{

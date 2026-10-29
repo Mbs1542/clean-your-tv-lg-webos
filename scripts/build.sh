@@ -45,17 +45,25 @@ helper=$(python3 -c 'import json; a=json.load(open("build/native-app/appinfo.jso
 python3 scripts/fix-package-data.py "$helper"
 fi
 python3 scripts/tv_web_build.py --input launcher --output build/home-app
-# Stage only public renewal sources, never local preferences or IPC files.
-python3 - <<'PYSERVICE'
+# Stage only public renewal sources, including the paired theme receiver.
+python3 - <<'PYRECEIVER'
+import runpy
 from pathlib import Path
+from scripts.theme_receiver import inject
 import shutil
-p=Path('build/home-service')
-if p.exists(): shutil.rmtree(p)
-shutil.copytree('renewal-service',p,ignore=shutil.ignore_patterns('state'))
-channel=p/'state/home-control'
+sources = runpy.run_path('scripts/build-cytv.py')['tracked_files']('renewal-service')
+files = inject({name: data for name, data in sources.items() if not name.startswith('state/')})
+output = Path('build/home-service')
+if output.exists():
+    shutil.rmtree(output)
+for name, data in files.items():
+    target = output / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+channel = output / 'state/home-control'
 channel.mkdir(parents=True)
-(channel/'.keep').write_bytes(b'')
-PYSERVICE
+(channel / '.keep').write_bytes(b'')
+PYRECEIVER
 "$ARES_PACKAGE" build/home-app build/home-service -o dist
 home=$(python3 -c 'import json; a=json.load(open("build/home-app/appinfo.json")); print("dist/"+a["id"]+"_"+a["version"]+"_all.ipk")')
 python3 scripts/fix-package-data.py "$home" --home-control
