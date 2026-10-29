@@ -7,6 +7,7 @@ const assert=require('node:assert/strict');
   for(const edition of ['launcher','root-launcher']){
    const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[];
    page.on('pageerror',error=>errors.push(error.message));
+   await page.route('https://**',route=>route.abort());
    await page.goto((process.env.PREVIEW_URL||'http://127.0.0.1:8876')+'/'+edition+'/index.html');
    await page.locator('#tiles .item').first().waitFor();await page.locator('#btnSettings').click();
    const nav=page.locator('.settings-categories');
@@ -14,22 +15,14 @@ const assert=require('node:assert/strict');
    await nav.locator('button').first().focus();
    await page.keyboard.press('ArrowDown');
    assert.equal(await nav.locator('[aria-selected=true]').getAttribute('data-category'),'appearance');
-   assert(await page.locator('#homeThemes').isVisible());
+   await page.locator('#homeThemePanel.theme-inline .theme-option').first().waitFor();assert.equal(await page.locator('#homeThemes').count(),0);
    assert(!(await page.locator('.home-routing-switch').first().isVisible()));
    await page.keyboard.press('ArrowRight');
-   assert.equal(await page.evaluate(()=>document.activeElement.id),'homeThemes');
-   await page.keyboard.press('ArrowDown');
-   await page.keyboard.press('ArrowDown');
-   assert(await page.locator('.settings-workspace .settings-footer button').evaluate(el=>el===document.activeElement),'D-pad reaches Back to Home');
-   await nav.locator('[data-category=appearance]').focus();
-   await page.keyboard.press('ArrowRight');
-   await page.keyboard.press('ArrowLeft');
-   assert.equal(await page.evaluate(()=>document.activeElement.getAttribute('data-category')),'appearance');
-   await page.keyboard.press('ArrowRight');
-   await page.keyboard.press('Enter');
-   await page.locator('#homeThemePanel').waitFor({state:'visible'});
-   await page.keyboard.press('Escape');
-   assert.equal(await page.evaluate(()=>document.activeElement.id),'homeThemes');
+   assert(await page.locator('#homeThemePanel').evaluate(el=>el.contains(document.activeElement)),'category enters installed cards');
+   await page.keyboard.press('ArrowLeft');assert.equal(await page.evaluate(()=>document.activeElement.getAttribute('data-category')),'appearance');
+   await page.locator('#themeCatalog').click();await page.locator('.theme-catalog-card').first().waitFor();await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();assert.equal(await page.locator('#homeThemePanel').getAttribute('aria-modal'),null,'ordinary theme views are inline regions');
+   await page.locator('#themeReceive').click();assert.equal(await page.locator('#themeReceiveLegacy').count(),0);await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();
+   await page.locator('#themeMore').click();await page.locator('#themeAddUrl').click();await page.locator('#themeUrl').fill('https://github.com/example/themes');for(const keyCode of [37,13])assert.equal(await page.locator('#themeUrl').evaluate((el,keyCode)=>el.dispatchEvent(new KeyboardEvent('keydown',{keyCode,bubbles:true,cancelable:true})),keyCode),true,'URL entry preserves native IME keys');await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();
    await page.evaluate(()=>HomeLayoutState.setThemeLayout({preset:'scenic-grid',columns:8,allowColumnOverride:false,spacingScale:1,textScale:1,focusScale:1.1}));
    assert(!(await page.locator('#homeColumns').isVisible()),'fixed themes hide Columns');
    await page.evaluate(()=>ThemeRuntime.reset());
@@ -60,6 +53,12 @@ const assert=require('node:assert/strict');
       assert.equal(await pane.count(),1);
       await page.keyboard.press('ArrowRight');
       assert(await page.evaluate(()=>{const el=document.activeElement,r=el.getBoundingClientRect();return el.offsetHeight>0&&r.top>=0&&r.bottom<=innerHeight;}),'focus stays visible');
+      if(await tab.getAttribute('data-category')==='appearance'){
+       await page.locator('#homeShowAddApp').focus();
+       await page.locator('#themeMore').waitFor();
+       const geometry=await page.locator('#homeShowAddApp').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,viewportWidth:innerWidth,viewportHeight:innerHeight};});
+       assert(geometry.top>=0&&geometry.bottom<=geometry.viewportHeight&&geometry.left>=0&&geometry.right<=geometry.viewportWidth&&geometry.scrollWidth<=geometry.clientWidth+1,'localized visibility switch stays visible: '+JSON.stringify({edition,locale,size,geometry}));
+      }
      }
     }
    }

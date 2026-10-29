@@ -6,6 +6,8 @@ listing, pinned to its separately committed toolkit distribution. The historical
 external Alpine record is archived; it is not an additional download.
 There are no votes, popularity counts or automatic built-in promotions.
 
+Start with the [complete author contribution walkthrough](../docs/development/CONTRIBUTING-THEMES.md) for setup, live PC preview, LAN testing, source/distribution commits and a step-by-step PR submission. This page is the registry and maintainer-review reference.
+
 ## Submit one fixed theme version
 
 Use the pinned author toolkit in `clean-your-tv-lg-theme` to validate/build your
@@ -142,6 +144,6 @@ community descriptor or a hardware acceptance claim.
 After approving or changing a registry entry, run `node scripts/build-tv-theme-catalog.cjs`
 and commit the generated launcher catalogue, previews, notices and inventory together.
 `node scripts/build-tv-theme-catalog.cjs --check` verifies freshness. Home Settings →
-Themes → Theme showcase uses this offline snapshot; external downloads retain the
+Appearance → Theme showcase uses this offline snapshot; external downloads retain the
 reviewed commit-pinned source. Removed/unavailable records are not installable cards.
 This does not publish a Home package or refresh installed TVs before the normal release.

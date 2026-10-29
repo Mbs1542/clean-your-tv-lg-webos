@@ -81,15 +81,21 @@ def repair_sdk_permissions(installed='/media/developer/apps',states=None,uid=0,v
         for fd in reversed(list(fds.values())):os.close(fd)
 
 
-def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2-dev', installed='/media/developer/apps/usr/palm', installation='/var/lib/clean-your-tv-installation', enable=True, lock_product=True, refresh=None, uid=0, automatic=False, repair=None):
-    """Register only configuration APIs; retain legacy ACLs and updater contracts."""
+def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2-dev', installed='/media/developer/apps/usr/palm', installation='/var/lib/clean-your-tv-installation', enable=True, lock_product=True, refresh=None, uid=0, automatic=False, repair=None, feature='firmware'):
+    """Attach fixed feature APIs; retain legacy ACLs and updater contracts."""
     import contextlib, fcntl, hashlib, json, os, re, stat, subprocess, tempfile
     from pathlib import Path
     root,base,installed,installation=map(Path,(root,base,installed,installation))
     app='com.cleanyourtv.root.preview';service=app+'.service';group=service+'.control'
-    api=root/'permissions/homebrew-configuration.api.json';receipt=root/'firmware-permissions.json'
+    features={
+        'firmware':('homebrew-configuration','firmware-permissions',['org.webosbrew.hbchannel.service/getConfiguration','org.webosbrew.hbchannel.service/setConfiguration']),
+        'theme-receiver':('theme-receiver','theme-receiver-permissions',[service+'/'+name for name in ('themeReceiverStart','themeReceiverStatus','themeReceiverRead','themeReceiverStop')])}
+    if feature not in features or repair is not None and feature!='firmware':raise ValueError('Invalid permission feature')
+    filename,receipt_name,methods=features[feature]
+    api=root/'permissions'/(filename+'.api.json');receipt=root/(receipt_name+'.json')
+    other=features['theme-receiver' if feature=='firmware' else 'firmware']
+    other_api=root/'permissions'/(other[0]+'.api.json')
     manifest=base/'manifests.d'/(app+'.json')
-    methods=['org.webosbrew.hbchannel.service/getConfiguration','org.webosbrew.hbchannel.service/setConfiguration']
     def digest(raw):return hashlib.sha256(raw).hexdigest()
     def encoded(value):return (json.dumps(value,sort_keys=True,indent=2)+'\n').encode()
     content=encoded({group:methods})
@@ -161,21 +167,32 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
         clients=read(paths['client']);original_clients=json.loads(snapshot['files'][str(paths['client'])]['original'])
         if not isinstance(clients,dict) or not isinstance(original_clients,dict) or {name for name,groups in clients.items() if isinstance(groups,list) and group in groups}!={app,app+'-*'} or any(isinstance(groups,list) and group in groups for groups in original_clients.values()):raise ValueError('Root Home group ownership changed')
         raw=secure(manifest);value=json.loads(raw);meta=manifest.stat()
-        # Revocation needs only the protected manifest, never SDK caller authority.
-        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True)) if enable and repair is None else value
+        # Own-service receiver grants and revocation use protected LS2 identity;
+        # firmware grants still require the independently checked SDK identity.
+        info=json.loads(secure(installed/'applications'/app/'appinfo.json',sdk=True)) if enable and repair is None and feature=='firmware' else value
         version=info.get('version') if isinstance(info,dict) else None
         if not isinstance(info,dict) or info.get('id')!=app or not isinstance(version,str) or not re.fullmatch(r'\d{1,4}\.\d{1,4}\.\d{1,4}',version):raise ValueError('Root Home identity changed')
         normal={'version':version,'id':app,'serviceFiles':[str(paths['service'])],'apiPermissionFiles':[str(paths['api'])],
             'roleFiles':[str(paths['role']),str(base/'roles.d'/(app+'.app.json'))],
             'clientPermissionFiles':[str(paths['client']),str(base/'client-permissions.d'/(app+'.app.json'))]}
-        granted=dict(normal,apiPermissionFiles=[str(paths['api']),str(api)])
+        baseline=normal
+        fields={'schema','phase','api_sha256','original','original_sha256','version'}
+        def valid_receipt(saved,expected):
+            if (not isinstance(saved,dict) or set(saved)!=fields or type(saved['schema']) is not int or saved['schema']!=1 or saved['phase'] not in ('enabling','enabled','disabling','disabled') or saved['api_sha256']!=digest(expected) or not isinstance(saved['original'],str) or digest(saved['original'].encode())!=saved['original_sha256']):raise ValueError('Firmware permission receipt changed')
+            prior=json.loads(saved['original'])
+            if not isinstance(prior,dict) or prior.get('version')!=saved['version'] or dict(prior,version=version)!=baseline:raise ValueError('Firmware manifest provenance changed')
+        # One writer coordinates both attachments. A sibling grant is retained
+        # only with exact private bytes and its own resumable receipt.
+        if str(other_api) in value.get('apiPermissionFiles',[]):
+            other_content=encoded({group:other[2]})
+            other_saved=read(root/(other[1]+'.json'));valid_receipt(other_saved,other_content)
+            if other_saved['phase']=='disabled' or secure(other_api)!=other_content:raise ValueError('Sibling permission drift')
+            normal=dict(baseline,apiPermissionFiles=[str(paths['api']),str(other_api)])
+        granted=dict(normal,apiPermissionFiles=[str(paths['api'])]+[str(root/'permissions'/(spec[0]+'.api.json')) for spec in features.values() if spec[0]==filename or str(root/'permissions'/(spec[0]+'.api.json')) in normal['apiPermissionFiles']])
         if value not in (normal,granted):raise ValueError('Unknown SDK manifest')
         saved=read(receipt) if os.path.lexists(receipt) else None
-        fields={'schema','phase','api_sha256','original','original_sha256','version'}
         if saved is not None:
-            if (not isinstance(saved,dict) or set(saved)!=fields or type(saved['schema']) is not int or saved['schema']!=1 or saved['phase'] not in ('enabling','enabled','disabling','disabled') or saved['api_sha256']!=digest(content) or not isinstance(saved['original'],str) or digest(saved['original'].encode())!=saved['original_sha256']):raise ValueError('Firmware permission receipt changed')
-            prior=json.loads(saved['original'])
-            if not isinstance(prior,dict) or prior.get('version')!=saved['version'] or dict(prior,version=version)!=normal:raise ValueError('Firmware manifest provenance changed')
+            valid_receipt(saved,content)
             if (saved['phase']=='disabling' and enable) or (saved['phase']=='enabling' and not enable):raise ValueError('Resume the same firmware permission action')
         elif value==granted or os.path.lexists(api):raise ValueError('Firmware permission collision')
         if os.path.lexists(api) and secure(api)!=content:raise ValueError('Firmware API drift')
@@ -188,7 +205,8 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
         if not enable and saved is None:return {'returnValue':True,'permissions_installed':False}
         if enable:
             if saved is None or value==normal and saved['version']!=version:
-                saved={'schema':1,'phase':'enabling','api_sha256':digest(content),'original':raw.decode(),'original_sha256':digest(raw),'version':version}
+                original=raw if value==baseline else encoded(baseline)
+                saved={'schema':1,'phase':'enabling','api_sha256':digest(content),'original':original.decode(),'original_sha256':digest(original),'version':version}
             else:saved=dict(saved,phase='enabling')
             atomic(receipt,encoded(saved))
             if not os.path.lexists(api.parent):api.parent.mkdir(mode=0o700);sync(api.parent.parent)
@@ -197,7 +215,7 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
             if value!=granted:atomic(manifest,encoded(granted),stat.S_IMODE(meta.st_mode),(meta.st_uid,meta.st_gid))
         else:
             saved=dict(saved,phase='disabling');atomic(receipt,encoded(saved))
-            original=saved['original'].encode() if saved['version']==version else encoded(normal)
+            original=saved['original'].encode() if saved['version']==version and normal==baseline else encoded(normal)
             if value!=normal:atomic(manifest,original,stat.S_IMODE(meta.st_mode),(meta.st_uid,meta.st_gid))
         if refresh is None:
             ctl=next((p for p in ('/usr/bin/ls-control','/usr/sbin/ls-control') if Path(p).is_file()),None)
@@ -216,12 +234,14 @@ def firmware_access(root='/var/lib/clean-your-tv-root', base='/var/luna-service2
 
 
 def reconcile_firmware_access():
-    try:
-        firmware_access(lock_product=False,automatic=True)
-    except Exception:
-        # Access maintenance must never prevent Home, emergency or rollback recovery.
-        return False
-    return True
+    ready=True
+    for feature in ('firmware','theme-receiver'):
+        try:
+            firmware_access(lock_product=False,automatic=True,feature=feature)
+        except Exception:
+            # Access maintenance must never prevent Home, emergency or rollback recovery.
+            ready=False
+    return ready
 
 
 def main(mode, transaction=None):

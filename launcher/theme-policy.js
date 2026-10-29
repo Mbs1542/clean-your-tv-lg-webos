@@ -146,8 +146,8 @@
         'image/webp': /\.webp$/i
       };
       if (!extension[a.mediaType].test(a.path)) fail('asset-invalid', 'asset.path');
-      number(a.width, 1, 1920, 'asset-invalid', 'width');
-      number(a.height, 1, 1080, 'asset-invalid', 'height');
+      number(a.width, 1, a.id === m.defaults.wallpaperAssetId ? 3840 : 1920, 'asset-invalid', 'width');
+      number(a.height, 1, a.id === m.defaults.wallpaperAssetId ? 2160 : 1080, 'asset-invalid', 'height');
       if (a.width % 1 || a.height % 1) fail('asset-invalid', 'dimensions');
       total += a.size;
     });

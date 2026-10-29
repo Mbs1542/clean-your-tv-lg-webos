@@ -50,7 +50,8 @@
     if (value.settings['tvhome.layout'] !== undefined) {
       text(value.settings['tvhome.layout'], LIMIT, true);
       var layout = JSON.parse(value.settings['tvhome.layout']);
-      fields(layout, ['version', 'ids', 'hidden', 'catalog']);
+      fields(layout, ['version', 'ids', 'hidden', 'catalog'], ['showAddApp']);
+      if (layout.showAddApp !== undefined && typeof layout.showAddApp !== 'boolean') throw Error('Invalid Add app visibility');
       if (layout.version !== 1 || !Array.isArray(layout.catalog) || layout.catalog.length > 200) throw Error('Invalid profile fields');
       ids(layout.ids); ids(layout.hidden);
       var seen = [];

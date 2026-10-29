@@ -40,8 +40,8 @@ missing resolution. Complex artwork may lose details under contrast filtering.
   Theme browser, geometry and legacy UI suites passed. Focused follow-up checks
   cover native icon fallbacks, the independent Root renderer version, eight Root
   build cases, theme lifecycle and Chromium 38 source compatibility.
-- The exact distribution passed the TV data verifier, file-hash checks, local LAN
-  transfer, wrong-PIN/foreign-origin rejection and ZIP CRC verification. Both Home
+- The initial local distribution passed the TV data verifier, file-hash checks, historical LAN
+  transfer, wrong-PIN/foreign-origin rejection and ZIP CRC verification. The candidate catalogue uses the current transfer workflow. Both Home
   IPKs were inspected for the CSS capability and matching shared renderer version.
 - Independent review found two defects during preparation (stale glyph sizing in
   an abandoned replacement approach, and invalid preferred native files preventing
@@ -62,5 +62,4 @@ Root and No-root browser verification is not physical-TV acceptance.
 TV model, firmware/webOS and actual remote: unknown/not tested. Installer platform:
 macOS source build. No physical installation, Home routing, sound, standby, cold
 boot, OTA or rollback test was performed, and no TV configuration was changed.
-No result was published to GitHub, no theme catalog entry was submitted and no
-software release was announced.
+The theme is submitted to the candidate showcase; no software release or physical-TV acceptance is claimed.

@@ -230,7 +230,7 @@ async function compileThemeCss(css, options = {}) {
 function hash(data) {
   return crypto.createHash('sha256').update(data).digest('hex');
 }
-function imageInfo(data, mediaType) {
+function imageInfo(data, mediaType, wallpaper = false) {
   if (data.length > 2097152) error('asset-invalid', 'image size');
   let width, height;
   if (mediaType === 'image/png') {
@@ -291,7 +291,7 @@ function imageInfo(data, mediaType) {
       height = (bits >>> 14 & 16383) + 1;
     }
   }
-  if (!width || !height || width > 1920 || height > 1080) error('asset-invalid', 'image dimensions');
+  if (!width || !height || width > (wallpaper ? 3840 : 1920) || height > (wallpaper ? 2160 : 1080)) error('asset-invalid', 'image dimensions');
   return {
     width,
     height
@@ -301,7 +301,7 @@ async function compileSource(input) {
   const source = JSON.parse(JSON.stringify(input.manifest));
   const assets = (input.assets || []).map(a => {
     const data = Buffer.from(a.data);
-    const info = imageInfo(data, a.mediaType);
+    const info = imageInfo(data, a.mediaType, !!source.defaults && a.id === source.defaults.wallpaperAssetId);
     if (a.width !== undefined && a.width !== info.width || a.height !== undefined && a.height !== info.height) error('asset-invalid', 'image metadata');
     return {
       id: a.id,

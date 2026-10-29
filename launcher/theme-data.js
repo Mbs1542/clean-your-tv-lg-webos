@@ -39,28 +39,19 @@
  }
 
  function request(url,limit,local,signal,deadline){return new Promise(function(resolve,reject){
-  if(local==='lan'&&!/^http:\/\/(?:10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+):8879\/\d{6}\/package\.json$/.test(url))return reject(Error('Invalid local theme endpoint'));
-  if(!local&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url))return reject(Error('Unsupported theme host'));
+  if(local!==true&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url)&&!/^https:\/\/is\.gd\/forward\.php\?format=json&shorturl=[A-Za-z0-9_]{5,30}$/.test(url))return reject(Error('Unsupported theme host'));
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
-  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){x.abort();finish(Error('Theme file exceeds its size limit'));}};
+  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){finish(Error('Theme file exceeds its size limit'));x.abort();}};
   x.onload=function(){if(!((local===true&&x.status===0)||x.status===200)){var error=Error(x.status===404?'Theme file not found':'Could not download theme');error.status=x.status;return finish(error);}if(!x.response||x.response.byteLength>limit)return finish(Error('Theme file exceeds its size limit'));if(local!==true&&x.responseURL&&x.responseURL!==url)return finish(Error('Theme redirects are not accepted'));finish();};
   x.onerror=function(){finish(Error('Theme network error'));};x.ontimeout=function(){finish(Error('Theme download timed out'));};x.onabort=function(){finish(Error('Cancelled'));};x.send();
  });}
- function lanSource(address,pin){
-  if(typeof address!=='string'||typeof pin!=='string')fail('Enter the computer address and six-digit PIN');
-  address=address.trim();pin=pin.trim();var parts=address.split('.');
-  if(parts.length!==4||parts.some(function(p){return !/^(0|[1-9][0-9]{0,2})$/.test(p)||Number(p)>255;}))fail('Enter a private IPv4 address from the computer preview');
-  var a=Number(parts[0]),b=Number(parts[1]);if(!(a===10||a===192&&b===168||a===172&&b>=16&&b<=31))fail('Use a computer on your home network');
-  if(!/^\d{6}$/.test(pin))fail('Enter the six-digit PIN shown on the computer');
-  return 'http://'+address+':8879/'+pin+'/package.json';
- }
  function base64(value,limit){
   if(typeof value!=='string'||value.length>4*Math.ceil(limit/3)||! /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value))fail('Invalid local theme data');
   var raw=atob(value);if(raw.length>limit)fail('Theme file exceeds its size limit');var bytes=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes;
  }
- function unpackLan(envelope,homeVersion){
+ function unpackEnvelope(envelope,homeVersion){
   if(!envelope||envelope.schemaVersion!==1||!envelope.files||Array.isArray(envelope.files)||typeof envelope.files!=='object')fail('Invalid local theme package');
   var descriptor=base64(envelope.descriptor,65536),m=policy.validateManifest(JSON.parse(decode(descriptor)));
   if(m.id.indexOf('github:')!==0)fail('Local development requires an external theme identity');
@@ -69,13 +60,24 @@
   files.forEach(function(f){pack.files[path(f.path)]=base64(envelope.files[f.path],f.size);});
   verify(pack,homeVersion);return pack;
  }
- function loadLan(address,pin,homeVersion,signal){var url=lanSource(address,pin);return request(url,10*1024*1024,'lan',signal).then(function(bytes){if(signal&&signal.cancelled)fail('Cancelled');return unpackLan(JSON.parse(decode(bytes)),homeVersion);});}
+
  function raw(s,p){return 'https://raw.githubusercontent.com/'+s.owner+'/'+s.repo+'/'+s.commit+'/'+path(p);}
- function resolve(url,signal){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
+ function shortLink(value){if(typeof value!=='string'||value.length>1000)return null;var match=/^(?:(?:https:\/\/)?is\.gd\/)?([A-Za-z0-9_]{5,30})$/i.exec(value.trim());return match?'https://is.gd/'+match[1]:null;}
+ function expandLink(url,signal){return Promise.resolve().then(function(){
+  if(typeof url!=='string')fail('Use a public GitHub repository or a commit-pinned theme descriptor');
+  var short=shortLink(url);
+  if(!short)return url;
+  return request('https://is.gd/forward.php?format=json&shorturl='+short.slice(short.lastIndexOf('/')+1),4096,false,signal).then(function(bytes){
+   var result=JSON.parse(decode(bytes));if(!result||result.errorcode||typeof result.url!=='string')fail('Short link unavailable. Retry later or use the full GitHub link.');
+   source(result.url);return result.url;
+  });
+ });}
+ function resolve(url,signal){return expandLink(url,signal).then(function(url){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
   return revision.then(function(){var p=s.path||'cytv-themes.json';return request(raw(s,p),65536,false,signal).catch(function(e){if(s.path||e.status!==404)throw e;p='cytv-theme.json';return request(raw(s,p),65536,false,signal);}).then(function(a){var m=JSON.parse(decode(a));if(/cytv-themes\.json$/.test(p)){m=policy.validateCollection(m);if(m.repository.toLowerCase()!==s.repository)fail('Collection repository mismatch');var dir=p.slice(0,p.lastIndexOf('/')+1);return m.themes.map(function(t){return {title:t.title,id:t.id,version:t.themeVersion,url:raw(s,dir+t.path),digest:t.sha256,repository:s.repository};});}
    m=policy.validateManifest(m);if(m.id.indexOf('github:')!==0||m.source.repository.toLowerCase()!==s.repository)fail('Theme repository mismatch');return [{title:m.title,id:m.id,version:m.themeVersion,url:raw(s,p),digest:hash(a),repository:s.repository}];});});
- }
- function imageInfo(a,type){
+ });}
+ function imageInfo(a,type,wallpaper){
+  var maxWidth=wallpaper?3840:1920,maxHeight=wallpaper?2160:1080;
   a=new Uint8Array(a);var v=new DataView(a.buffer,a.byteOffset,a.byteLength),w,h,i,n,kind;function str(at,count){return String.fromCharCode.apply(null,a.subarray(at,at+count));}
   if(type==='image/png'){
    if(a.length<45||str(1,3)!=='PNG'||a[0]!==137||a[4]!==13||a[5]!==10||a[6]!==26||a[7]!==10)fail('Invalid PNG');i=8;var ended=false,hasData=false;
@@ -83,14 +85,14 @@
    if(!ended||!hasData||i!==a.length)fail('Invalid PNG structure');
   }else if(type==='image/jpeg'){
    if(a.length<4||a[0]!==255||a[1]!==216||a[a.length-2]!==255||a[a.length-1]!==217)fail('Invalid JPEG');i=2;
-   while(i+4<=a.length){if(a[i++]!==255)fail('Invalid JPEG marker');while(a[i]===255)i++;kind=a[i++];if(kind===218)break;n=v.getUint16(i);if(n<2||i+n>a.length)fail('Invalid JPEG segment');if([192,193,194].indexOf(kind)>=0){if(n<8)fail('Invalid JPEG frame');h=v.getUint16(i+3);w=v.getUint16(i+5);if(w>1920||h>1080)fail('Image dimensions exceed limits');}i+=n;}
+   while(i+4<=a.length){if(a[i++]!==255)fail('Invalid JPEG marker');while(a[i]===255)i++;kind=a[i++];if(kind===218)break;n=v.getUint16(i);if(n<2||i+n>a.length)fail('Invalid JPEG segment');if([192,193,194].indexOf(kind)>=0){if(n<8)fail('Invalid JPEG frame');h=v.getUint16(i+3);w=v.getUint16(i+5);if(w>maxWidth||h>maxHeight)fail('Image dimensions exceed limits');}i+=n;}
   }else if(type==='image/webp'){
    if(a.length<30||str(0,4)!=='RIFF'||str(8,4)!=='WEBP'||v.getUint32(4,true)+8!==a.length)fail('Invalid WebP');kind=str(12,4);
    if(kind==='VP8X'){if(a[20]&2)fail('Animated images are not supported');w=1+a[24]+(a[25]<<8)+(a[26]<<16);h=1+a[27]+(a[28]<<8)+(a[29]<<16);var at=30,frame=false;while(at+8<=a.length){var chunk=str(at,4),size=v.getUint32(at+4,true),fw=null,fh=null;if(size>a.length-at-8)fail('Invalid WebP chunk');if(chunk==='ANIM'||chunk==='ANMF')fail('Animated images are not supported');if(chunk==='VP8 '){if(size<10||str(at+11,3)!=='\x9d\x01\x2a')fail('Invalid WebP frame');fw=v.getUint16(at+14,true)&16383;fh=v.getUint16(at+16,true)&16383;}else if(chunk==='VP8L'){if(size<5||a[at+8]!==47)fail('Invalid WebP frame');var lossless=v.getUint32(at+9,true);fw=(lossless&16383)+1;fh=((lossless>>>14)&16383)+1;}if(fw!==null){if(frame||fw!==w||fh!==h)fail('WebP canvas/frame dimensions mismatch');frame=true;}at+=8+size+(size%2);}if(!frame||at!==a.length)fail('Invalid WebP structure');}
    else if(kind==='VP8 '){if(str(23,3)!=='\x9d\x01\x2a')fail('Invalid WebP frame');w=v.getUint16(26,true)&16383;h=v.getUint16(28,true)&16383;}
    else if(kind==='VP8L'){if(a[20]!==47)fail('Invalid WebP frame');var bits=v.getUint32(21,true);w=(bits&16383)+1;h=((bits>>>14)&16383)+1;}else fail('Invalid WebP frame');
   }else fail('Unsupported image type');
-  if(!w||!h||w>1920||h>1080)fail('Image dimensions exceed limits');return {width:w,height:h};
+  if(!w||!h||w>maxWidth||h>maxHeight)fail('Image dimensions exceed limits');return {width:w,height:h};
  }
  function verify(pack,homeVersion){
   if(!pack||!(pack.descriptor instanceof Uint8Array||pack.descriptor instanceof ArrayBuffer))fail('Invalid cached theme');
@@ -99,11 +101,11 @@
   if(m.layout.spacingScale!==1||m.layout.textScale!==1||m.layout.focusScale!==1.1)fail('Unsupported layout scales');
   var files=[m.rules].concat(m.assets,m.documents),total=descriptor.length;if(!pack.files||Object.keys(pack.files).length!==files.length)fail('Unexpected cached theme files');files.forEach(function(f){path(f.path);var a=pack.files&&pack.files[f.path];if(!a)fail('Theme file missing');a=new Uint8Array(a);total+=a.length;if(a.length!==f.size||hash(a)!==f.sha256)fail('Theme file hash mismatch');});
   if(total>7*1024*1024)fail('Theme package exceeds limits');
-  m.assets.forEach(function(f){var info=imageInfo(pack.files[f.path],f.mediaType);if(info.width!==f.width||info.height!==f.height)fail('Image dimensions do not match descriptor');});
+  m.assets.forEach(function(f){var info=imageInfo(pack.files[f.path],f.mediaType,f.id===m.defaults.wallpaperAssetId);if(info.width!==f.width||info.height!==f.height)fail('Image dimensions do not match descriptor');});
   var rules=policy.validateRules(JSON.parse(decode(pack.files[m.rules.path])));return {manifest:m,rules:rules,size:total};
  }
  function load(entry,homeVersion,signal,progress,local){
-  var started=Date.now(),origin=local?null:source(entry.url,true);return request(entry.url,65536,local,signal,started+60000).then(function(a){if(entry.digest&&hash(a)!==entry.digest)fail('Descriptor hash mismatch');var m=policy.validateManifest(JSON.parse(decode(a)));if(entry.id&&m.id!==entry.id||entry.version&&m.themeVersion!==entry.version||entry.title&&entry.title!==m.title)fail('Theme identity/version mismatch');if(!local&&(m.id.indexOf('github:')!==0||m.source.repository.toLowerCase()!==origin.repository))fail('Theme repository mismatch');if(!versionAtLeast(homeVersion,m.requires.minimumHomeVersion))fail('Update Home before installing this theme');
+  var started=Date.now(),origin=local===true?null:source(entry.url,true);return request(entry.url,65536,local,signal,started+60000).then(function(a){if(entry.digest&&hash(a)!==entry.digest)fail('Descriptor hash mismatch');var m=policy.validateManifest(JSON.parse(decode(a)));if(entry.id&&m.id!==entry.id||entry.version&&m.themeVersion!==entry.version||entry.title&&entry.title!==m.title)fail('Theme identity/version mismatch');if(local!==true&&(m.id.indexOf('github:')!==0||m.source.repository.toLowerCase()!==origin.repository))fail('Theme repository mismatch');if(!versionAtLeast(homeVersion,m.requires.minimumHomeVersion))fail('Update Home before installing this theme');
    var pack={digest:hash(a),descriptor:a,files:Object.create(null),url:entry.url},files=[m.rules].concat(m.assets,m.documents),chain=Promise.resolve();
    files.forEach(function(f,index){chain=chain.then(function(){if(Date.now()-started>60000)fail('Theme download timed out');if(progress)progress(index+1,files.length);var base=entry.url.slice(0,entry.url.lastIndexOf('/')+1);return request(base+path(f.path),f.size,local,signal,started+60000).then(function(bytes){if(bytes.length!==f.size||hash(bytes)!==f.sha256)fail('Theme file hash mismatch');pack.files[f.path]=bytes;});});});
    return chain.then(function(){verify(pack,homeVersion);return pack;});
@@ -117,5 +119,5 @@
   return chain.then(function(){return {manifest:parsed.manifest,rules:parsed.rules,assetHandles:handles};},function(e){dispose(handles);throw e;});
  }
  function dispose(handles){Object.keys(handles||{}).forEach(function(k){URL.revokeObjectURL(handles[k]);});}
- return {lanSource:lanSource,unpackLan:unpackLan,loadLan:loadLan,encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
+ return {shortLink:shortLink,unpackEnvelope:unpackEnvelope,encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
 }));

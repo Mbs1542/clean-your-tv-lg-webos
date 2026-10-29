@@ -14,7 +14,7 @@ FILES = (
     'brand-v2-icon.png', 'brand-v2-largeIcon.png', 'splash.png',
     'fonts/outfit-300.ttf', 'fonts/outfit-400.ttf', 'fonts/outfit-500.ttf', 'fonts/outfit-700.ttf', 'fonts/NotoSans.ttf', 'fonts/NotoSans-OFL.txt', 'fonts/NotoSansDevanagari.ttf', 'fonts/NotoSansDevanagari-OFL.txt', 'fonts/NotoSansKR.ttf', 'fonts/NotoSansKR-OFL.txt', 'fonts/NotoSansSC.ttf', 'fonts/NotoSansSC-OFL.txt', 'fonts/NotoSansTC.ttf', 'fonts/NotoSansTC-OFL.txt', 'fonts/OFL.txt',
 )
-FILES += tuple(['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((SOURCE / 'builtin-theme-files.json').read_text()))
+FILES += tuple(['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-receiver.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((SOURCE / 'builtin-theme-files.json').read_text()))
 UI = Path(__file__).resolve().parent / 'ui'
 UI_FILES = ('root-audio-locales.js', 'root-audio.js', 'root-locales.js', 'root-exit.js', 'root-firmware-control.js', 'root-firmware.js', 'root-settings.js', 'root-settings.css', 'root-profile-data.js', 'root-profile.js', 'root-updates.js')
 
@@ -31,9 +31,7 @@ def prepare(version='0.0.1'):
     info = json.loads(files['appinfo.json'])
     if (info.get('id'), info.get('type'), info.get('main')) != ('com.gathin.tvhome', 'web', 'index.html'):
         raise ValueError('Unexpected launcher manifest')
-    renderer_version = info.get('version')
-    if not isinstance(renderer_version, str) or not re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+', renderer_version):
-        raise ValueError('Invalid shared Home renderer version')
+    info['themeEngineVersion'] = info['version']
     info.update(id=APP_ID, title='Home Root', version=version, appCategory=['home'], icon='home-root-icon.png', largeIcon='home-root-largeIcon.png')
     for name in ('brand-v2-icon.png', 'brand-v2-largeIcon.png'):
         path = UI.parent / 'assets' / ('home.png' if name == 'brand-v2-icon.png' else 'home-large.png')
@@ -58,7 +56,7 @@ def prepare(version='0.0.1'):
     entry = '<script src="profile-bootstrap.js"></script>'
     if html.count(entry) != 1:
         raise ValueError('Unexpected launcher entry')
-    files['index.html'] = html.replace(entry, '<link rel="stylesheet" href="root-settings.css">\n  <script>window.CYTV_THEME_RENDERER_VERSION = ' + json.dumps(renderer_version) + ';</script>\n  <script>window.ROOT_VERSION = ' + json.dumps(version) + ';</script>\n  <script src="root-locales.js"></script>\n  <script src="root-audio-locales.js"></script>\n  <script src="root-exit.js"></script>\n  <script src="root-firmware-control.js"></script>\n  <script src="root-firmware.js"></script>\n  <script src="root-audio.js"></script>\n  <script src="root-settings.js"></script>\n  <script src="root-updates.js"></script>\n  <script src="root-profile-data.js"></script>\n  <script src="root-profile.js"></script>').encode()
+    files['index.html'] = html.replace(entry, '<link rel="stylesheet" href="root-settings.css">\n  <script>window.ROOT_VERSION = ' + json.dumps(version) + ';</script>\n  <script src="root-locales.js"></script>\n  <script src="root-audio-locales.js"></script>\n  <script src="root-exit.js"></script>\n  <script src="root-firmware-control.js"></script>\n  <script src="root-firmware.js"></script>\n  <script src="root-audio.js"></script>\n  <script src="root-settings.js"></script>\n  <script src="root-updates.js"></script>\n  <script src="root-profile-data.js"></script>\n  <script src="root-profile.js"></script>').encode()
     files['appinfo.json'] = (json.dumps(info, indent=2) + '\n').encode()
     for name in UI_FILES:
         path = UI / name

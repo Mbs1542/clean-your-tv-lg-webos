@@ -1,10 +1,10 @@
 # Clean Your TV — Benutzeranleitung
 
-> Unveröffentlichter Kandidat 1.4.1: Root-OTA-Kompatibilität, Updateanzeige, Firmware-API-Zugriff und Windows-Paket-/Konsolenkorrekturen. Signiertes Update und gewöhnlicher Rollback sind im begrenzten C3-Prüfumfang dokumentiert; finale Builds und Veröffentlichung stehen noch aus; noch kein veröffentlichter Download. [1.4.1](../RELEASE-1.4.1.md).
+> Unveröffentlichter Kandidat 1.5.0: Designs, Galerie und Übertragung vom PC zum TV. TV-Abnahme steht aus. Veröffentlicht ist 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
 
 [Dokumentation](../README.md) · [Problem melden](../FEEDBACK.md)
 
-Diese Anleitung gilt für die veröffentlichte **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**. Die C3-Abnahme umfasst die dokumentierten Strom-, Home-, Fokus-, Aus-Zustand- und manuellen Rollback-Tests. Andere TVs, eARC-Audio und echte Android-Geräte sind nicht bestätigt; eine erfolgreiche Installation beweist keine Kompatibilität. [Prüfumfang (Englisch)](../RELEASE-1.4.0-ACCEPTANCE.md).
+Diese Anleitung gilt für die veröffentlichte **[1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)**. Die C3-Abnahme umfasst die dokumentierten Strom-, Home-, Fokus-, Aus-Zustand- und manuellen Rollback-Tests. Andere TVs, eARC-Audio und echte Android-Geräte sind nicht bestätigt; eine erfolgreiche Installation beweist keine Kompatibilität. [Prüfumfang (Englisch)](../RELEASE-1.4.0-ACCEPTANCE.md).
 
 ## Edition wählen
 
@@ -73,7 +73,9 @@ No-root: Öffnen Sie zum Neustart der Home-Steuerung Home Helper, wählen Sie He
 
 Nach einer Unterbrechung zuerst `status` ausführen und Protokolle behalten. `restore` stellt LG Home ohne App-Entfernung wieder her; `uninstall` stellt es vor der Entfernung wieder her. Root-Wiederherstellungsdaten bleiben absichtlich erhalten; nicht zum Erzwingen einer Neuinstallation löschen. Diagnoseberichte vor Weitergabe prüfen; Schlüssel und Profilordner nicht veröffentlichen.
 
-Nur im unveröffentlichten Kandidaten, in beiden Editionen: Öffne **Home-Einstellungen → Darstellung → Spalten** und wähle 1–8 Spalten oder **Nach Theme**, um dessen Wert zu verwenden (Classic: 5). Eine feste Zahl hat Vorrang vor dem Theme. Themes mit festem Layout blenden die Spaltenoption aus und verwenden den Wert des Autors. Deine gespeicherte Auswahl gilt wieder, sobald du zu einem Theme wechselst, das diese Einstellung unterstützt. In der Glasshouse-Kandidatenvorschau liegen Apps in einem endlosen horizontalen Band: Links/Rechts blättert im Kreis, Oben öffnet die Schnellzugriffe und Unten kehrt zur selben App zurück. In der Glasshouse-Vorschau lässt sich das Band auch mit Mausrad oder Touchpad bewegen; bei geöffnetem Dialog bleibt Home stehen.
+Nur im unveröffentlichten Kandidaten, in beiden Editionen: Öffne **Home-Einstellungen → Darstellung → Spalten** und wähle 1–8 Spalten oder **Nach Theme**, um dessen Wert zu verwenden (Classic: 5). Eine feste Zahl hat Vorrang vor dem Theme. Themes mit festem Layout blenden die Spaltenoption aus und verwenden den Wert des Autors. Deine gespeicherte Auswahl gilt wieder, sobald du zu einem Theme wechselst, das diese Einstellung unterstützt. In der Alpine-Kandidatenvorschau liegen Apps in einem endlosen horizontalen Band: Links/Rechts blättert im Kreis, Oben öffnet die Schnellzugriffe und Unten kehrt zur selben App zurück. In der Alpine-Vorschau lässt sich das Band auch mit Mausrad oder Touchpad bewegen; bei geöffnetem Dialog bleibt Home stehen.
+
+Unveröffentlichter Kandidat, beide Editionen: Schalte unter **Home-Einstellungen → Darstellung** die Option **Kachel „App hinzufügen“ anzeigen** aus, um + auszublenden. Standardmäßig ist sie eingeschaltet. Über **App hinzufügen** im selben Bereich kannst du weiterhin Apps hinzufügen oder zurückholen. Verschieben und Ausblenden bleiben möglich; die Auswahl bleibt nach einem Neustart erhalten. Sind alle Apps ausgeblendet, bleiben die oberen Schaltflächen und Einstellungen erreichbar.
 
 In Theme-Vorschauen des unveröffentlichten Kandidaten mit optionaler Seitenleiste wählst du mit Oben/Unten einen Menüpunkt, wechselst mit Rechts zu den Apps und kehrst mit Links aus der ersten App-Spalte zum Menü zurück.
 
@@ -84,6 +86,8 @@ Funktionierende Pakete und private Einstellungssicherungen behalten. Bei No-root
 Home-Einstellungen → Software-Updates öffnen und angebotene Versionen vor der Bestätigung prüfen. Updates/Rollback am TV benötigen **Root, Homebrew Channel** und vorbereitete passende Updater, auch bei der No-root-Edition. Ohne Root den Computer-Installer verwenden. Vollständige Systemupdates werden separat ausdrücklich vorbereitet: [Updates (Englisch)](../UPDATES.md). Unter Wiederherstellung steht die gespeicherte Rollback-Version; spätere Einstellungsänderungen können verloren gehen.
 
 **Bestehende 1.3.0:** Der ursprüngliche System Updater kann 1.4.0 wegen des geänderten erlaubten Dateibestands nicht installieren. Stoppt ein Versuch vor dem Austausch, Journal behalten und aufhören; Zustand nicht löschen oder blind wiederholen. Für den Wechsel geprüfte Wiederherstellung und frische 1.4.0-Einrichtung verwenden. Ein reines App-Update ersetzt keine behaltenen Root-Treiber. Die nächste OTA-Korrektur ist **noch nicht veröffentlicht**. [Umstieg und Wiederherstellung (Englisch)](../UPDATES.md#one-time-computer-preparation).
+
+Unveröffentlichte Korrektur des Home-Einstellungskanals: Home und Helper gemeinsam aktualisieren, sobald ein abgestimmter Kandidat verfügbar ist. Ein reines Home-Update reicht nicht aus. Die TV-Abnahme des endgültigen Release-Builds steht noch aus. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
 
 Root-HDMI-Tonwiederherstellung ist experimentell und **standardmäßig aus**; nur bei Bedarf aktivieren. Sie kann funktionierenden Ton unterbrechen und bestätigt keine eARC-Kompatibilität. [Tonwiederherstellung (Englisch)](../development/ROOT-AUDIO-RECOVERY.md). Der separate **CYTV Installer für Homebrew ist noch unveröffentlicht**; den veröffentlichten Computer-/Android-Installer verwenden.
 
@@ -110,15 +114,27 @@ Nach Fehlern oder Unterbrechungen Status prüfen und den Diagnosebericht dieses 
 
 ## Designs – Entwicklungskandidat
 
-Im Kandidaten mit Design-Unterstützung: **Einstellungen → Darstellung → Designs**. **Classic** und **Alpine** sind integriert und benötigen keinen Design-Download; Classic bleibt Standard. **Channel** ist ein externes Showcase-Design. Beim Galerietest: Nach der Auswahl innerhalb von **20 Sekunden** **Design behalten** wählen. **Zurücksetzen**, Back oder Zeitablauf stellt das vorherige Design wieder her. Ein unterbrochener Versuch startet beim nächsten Home-Aufruf mit Classic. Integrierte und heruntergeladene Designs aus der installierten Liste werden sofort ohne Bestätigungstimer angewendet und gespeichert. Das gilt auch für vom Computer oder per URL installierte Designs. Nur Design testen in der Galerie startet einen 20-Sekunden-Test, auch bei bereits heruntergeladenen Versionen.
+Im Kandidaten mit Design-Unterstützung: **Einstellungen → Darstellung**. **Classic** und **Alpine** sind integriert und benötigen keinen Design-Download; Classic bleibt Standard. **Channel** ist ein externes Showcase-Design. Beim Galerietest: Nach der Auswahl innerhalb von **20 Sekunden** **Design behalten** wählen. **Zurücksetzen**, Back oder Zeitablauf stellt das vorherige Design wieder her. Ein unterbrochener Versuch startet beim nächsten Home-Aufruf mit Classic. Integrierte und heruntergeladene Designs aus der installierten Liste werden sofort ohne Bestätigungstimer angewendet und gespeichert. Das gilt auch für vom Computer oder per URL installierte Designs. Nur Design testen in der Galerie startet einen 20-Sekunden-Test.
 
-Beim Öffnen der Design-Galerie oder mit Aktualisieren wird der Hauptprojekt-Repository auf geprüfte Katalogupdates geprüft, ohne Home-Update oder Neuladen der Seite. Nach einem regulären Merge erscheinen neue Einträge; ein noch nicht integrierter Kandidat kann den mitgelieferten Katalog anzeigen. Offline oder bei Fehlern werden mitgelieferte Einträge und Vorschauen verwendet. Integrierte Designs entsprechen der installierten Home-Version. Vorschau öffnen, dann für integrierte Designs **Design testen** oder für Channel **Design herunterladen** wählen (Internet erforderlich). Nach dem Download testen und innerhalb von **20 Sekunden** **Design behalten** wählen. Installierte Designs funktionieren offline. **Per URL hinzufügen** bleibt für festgelegte Links verfügbar.
+Installierte Designs stehen in einer horizontal scrollbaren Reihe. Das aktive Design steht immer zuerst und seine Karte ist hervorgehoben. Mit Links/Rechts wechseln Sie zwischen den Karten.
 
-Für unveröffentlichte Designs in der Autoren-Vorschau am Computer **An TV senden**, am TV **Vom Computer empfangen** wählen. Beide Geräte müssen im selben vertrauenswürdigen Heimnetz sein: HTTP über den festen TCP-Port **8879**, der in der Computer-Firewall erlaubt sein muss. Private IPv4-Adresse und sechsstellige PIN vom Computer eingeben. Freigabe geöffnet lassen; die Sitzung endet nach **10 Minuten**. Die Adresse wird gespeichert, die PIN nicht. Keine GitHub-Veröffentlichung nötig.
+Die Galerie zeigt nur auf diesem TV nicht installierte Designs. Classic, Alpine und heruntergeladene Designs bleiben verborgen, auch bei einer neueren Katalogversion. Nach dem Entfernen erscheint das Design wieder. Updates erfolgen per URL oder Computerübertragung.
+
+Die Designkarten sind direkt in Darstellung neben den Einstellungskategorien eingebettet. Katalog, Linkinstallation und Computerübertragung öffnen sich dort; nur ein Galerietest zeigt vorübergehend Home.
+
+Beim Öffnen der Design-Galerie oder mit Aktualisieren wird der Hauptprojekt-Repository auf geprüfte Katalogupdates geprüft, ohne Home-Update oder Neuladen der Seite. Nach einem regulären Merge erscheinen neue Einträge; ein noch nicht integrierter Kandidat kann den mitgelieferten Katalog anzeigen. Offline oder bei Fehlern werden mitgelieferte Einträge und Vorschauen verwendet. Integrierte Designs entsprechen der installierten Home-Version. Vorschau öffnen und für Channel **Design herunterladen** wählen (Internet erforderlich). Nach dem Download testen und innerhalb von **20 Sekunden** **Design behalten** wählen. Installierte Designs funktionieren offline. **Per URL hinzufügen** bleibt für festgelegte Links verfügbar.
+
+Für ein unveröffentlichtes Design zuerst am TV **Einstellungen → Darstellung → Vom Computer empfangen** öffnen. TV-Adresse und sechsstellige PIN dort im Computer-Vorschaufenster unter **Send to TV** eingeben, senden und am TV **Design anwenden** wählen. Die primäre Richtung nutzt eine ausgehende PC-Verbindung zu TV-TCP **8879**, ohne Computer-Firewalländerung. Beide Geräte müssen im selben vertrauenswürdigen Heimnetz sein. Der Empfänger schließt nach einem Upload, Abbruch, Verlassen der Ansicht oder **10 Minuten**. PINs werden nicht gespeichert; installierte Designs funktionieren offline. GitHub-Veröffentlichung ist nicht nötig.
+
+Für ein veröffentlichtes Design unter **Weitere Optionen → Über URL hinzufügen** die ID (z. B. `102300a209`), `is.gd/102300a209` oder die vollständige GitHub-URL eingeben. Home zeigt vor dem Laden die ergänzte is.gd-Adresse und prüft danach GitHub-Ziel und Designpaket. Die ID steht in den Versionshinweisen oder unter **TV link → Copy ID** in der Computer-Vorschau.
 
 Veröffentlichte Pakete enthalten diese Funktion möglicherweise noch nicht. Browserprüfungen sind kein TV-Kompatibilitätsnachweis. [Vollständige Anleitung](../THEMES.md).
 
 Designs zeigt Vorschauen der integrierten und aller selbst installierten Designs, auch offline. Die separate Schaltfläche für den Designkatalog öffnet veröffentlichte Designs; eine persönliche Installation veröffentlicht kein Design.
+
+Im Appearance-Kandidaten zeigen große Vorschaubilder die installierten Themes und markieren das ausgewählte. Theme showcase und Receive from computer sind die Hauptaktionen. More options enthält Add by URL, Restore Classic und Clear downloaded themes. Pfeiltasten bewegen den Fokus zwischen Karten und Schaltflächen; Links am Rand führt zu den Kategorien.
+
+In der Browser-Vorschau erklärt Vom Computer empfangen die Schritte am Fernseher; auf dem Computer wird kein TV-Empfänger gestartet. Nutzen Sie Send to TV über der Vorschau. Das Entfernen eines heruntergeladenen Themes muss bestätigt werden. Beim aktiven Theme wird zuerst Classic wiederhergestellt. Abbrechen behält das Theme.
 
 ## Einstellungskategorien (unveröffentlichter Kandidat)
 

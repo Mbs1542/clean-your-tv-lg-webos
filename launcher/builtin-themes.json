@@ -4,9 +4,9 @@
     {
       "id": "builtin:alpine",
       "title": "Alpine",
-      "version": "1.4.2",
+      "version": "1.4.4",
       "url": "themes/alpine/cytv-theme.json",
-      "digest": "13873772e05b5507cdb1a848c80e8dacfc4e632c5fe04aacc445c35128eeaad1"
+      "digest": "3192d976cbd9fead9c0f22d3f7cb13aaaa3671e3a038c737c477c5bd6de110e6"
     }
   ]
 }

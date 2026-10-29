@@ -136,6 +136,13 @@ def verify_baseline(baseline,bundle=None):
 def tgz(files,executable=None):
     buffer=io.BytesIO()
     with tarfile.open(fileobj=buffer,mode='w',format=tarfile.USTAR_FORMAT) as archive:
+        channel='usr/palm/services/com.gathin.tvhome.renewal/state/home-control/.keep'
+        if channel in files:
+            for name in ('usr/palm/services/com.gathin.tvhome.renewal/state',
+                         'usr/palm/services/com.gathin.tvhome.renewal/state/home-control'):
+                item=tarfile.TarInfo(name);item.type=tarfile.DIRTYPE;item.mtime=1704067200
+                item.uid,item.gid,item.mode=5999,5000,0o2770
+                item.uname,item.gname='prisoner','jailer';archive.addfile(item)
         for name,raw in sorted(files.items()):
             item=tarfile.TarInfo(name);item.size=len(raw);item.mode=0o644;item.mtime=1704067200
             # Helper native binaries must remain runnable after rollback.
@@ -199,10 +206,13 @@ def snapshot(bundle,edition,output,installed=INSTALLED,runtime=Path('/var/lib/cl
                 folder=Path(installed)/prefix
                 for path in sorted(folder.rglob('*')):
                     rel=path.relative_to(folder)
-                    if 'state' in rel.parts:continue
+                    channel=(name=='home' and prefix=='usr/palm/services/com.gathin.tvhome.renewal'
+                             and rel.as_posix()=='state/home-control/.keep')
+                    if 'state' in rel.parts and not channel:continue
                     if path.is_symlink():raise ValueError('Indirect installed package')
                     if path.is_file():
                         relative_name=prefix+'/'+rel.as_posix();files[relative_name]=safe(path)
+                        if channel and files[relative_name]!=b'':raise ValueError('Nonempty Home channel sentinel')
                         if path.stat().st_mode&0o111:executable.add(relative_name)
         control=('Package: '+app+'\nVersion: '+info['version']+'\nArchitecture: '+('arm' if name=='helper' else 'all')+'\nMaintainer: Clean Your TV\nDescription: Captured installed baseline\n').encode()
         raw=bytearray(b'!<arch>\n')

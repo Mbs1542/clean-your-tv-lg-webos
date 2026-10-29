@@ -19,20 +19,14 @@ The general CYTV Chromium 38 floor is unchanged, but this optional theme effect
 is not compatible with that oldest browser. This is a local candidate, not a
 published CYTV release or a physical-TV compatibility claim.
 
-## Install from computer
+## Install in the release candidate
 
-1. Extract the complete ZIP; install Node.js 22+ on the computer if needed.
-2. Run `sh share.command` on macOS/Linux, `share.cmd` on Windows, or
-   `node share.cjs` in the extracted directory.
-3. Keep the terminal open. On the TV open **Settings → Themes → From computer**,
-   enter the computer address and temporary PIN shown by the script, then review
-   and select the theme. Both devices must be on the same private network.
-4. Sharing expires after ten minutes; Ctrl+C stops it earlier. Installed assets
-   work offline. Run `node share.cjs --check` to check all package hashes.
-5. Select Classic to remove the theme CSS. Original app files never changed.
-
-The server reuses the existing toolkit's bounded LAN transport and does not
-install automatically. No TV changes were made while preparing this package.
+Open **Settings → Appearance → Themes → Theme showcase**, choose Itachi and
+review/try it. Keep within the confirmation period; accepted files work offline.
+The catalogue is included in the next Home candidate, not older published Homes.
+For a local ZIP, use the current author toolkit's PC-to-TV push workflow with the
+TV receiver code in Appearance. This ZIP contains only data, not an installer or
+replacement icons. Select Classic to remove the theme CSS.
 Root and No-root use the same theme. Physical-TV installation, remote controls,
 standby, cold boot, OTA and rollback remain untested.
 
@@ -76,7 +70,7 @@ node scripts/build-itachi-theme.cjs --runtime build/itachi-css-runtime --out bui
 ```
 
 Use fresh export/build output paths on another run. The sibling author toolkit is
-required only to build; the extracted sharing package uses Node standard modules.
+required only to build; the delivered theme contains data only.
 See LICENSE.txt/CREDITS.txt for wallpaper provenance.
 
 ## По-русски
@@ -85,6 +79,6 @@ See LICENSE.txt/CREDITS.txt for wallpaper provenance.
 остаётся исходной. Эффект белого логотипа подходит для светлого или прозрачного
 фона; для однотонных цветных фонов есть приближённое выделение контрастом, сложные картинки могут потерять детали. Нужен обновлённый Home с поддержкой
 `modern-icon-css-v1` и браузер с CSS filter/screen; старый Home тему не примет.
-Для передачи распакуйте ZIP, запустите share.command/share.cmd (Node.js 22+) и
-введите адрес/PIN из терминала в разделе получения темы с компьютера на ТВ.
-На физическом телевизоре этот кандидат ещё не проверен.
+В следующем кандидате: Настройки → Оформление → Темы → Showcase → Itachi.
+ZIP можно передать через актуальный авторский toolkit с кодом приёмника ТВ.
+На физическом телевизоре эта тема ещё не проверена.

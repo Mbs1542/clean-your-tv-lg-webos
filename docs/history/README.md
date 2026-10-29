@@ -6,6 +6,10 @@ These are historical records, not current setup instructions. They retain their
 original versions, dates, failed attempts and test limits. A recorded success on
 one model or artifact does not certify later releases or a different TV.
 
+## Scoped feature checks
+
+- [PC → TV theme push, 2026-10-29](2026-10-29-theme-push-acceptance.md): direct network transfer on the maintainer C3 fixture; production/unrooted acceptance remains separate.
+
 ## Release notes
 
 - [1.4.0](../RELEASE-1.4.0.md)
@@ -40,6 +44,8 @@ one model or artifact does not certify later releases or a different TV.
 - [Root initial stable record](../../root-edition/ROOT-STABLE-0.1.0.md), [Root 0.1.1](../../root-edition/ROOT-0.1.1.md), [earlier Root stable acceptance](../development/ROOT-STABLE-ACCEPTANCE.md), [RC19](../development/ROOT-RC19-VALIDATION.md), [update TV validation](../development/ROOT-UPDATES-TV-VALIDATION.md).
 
 ## Audits, investigations and original plans
+
+- [Home transport source QA, 2026-10-29](HOME-CONTROL-TRANSPORT-QA-2026-10-29.md): scoped project C3 jail, status/control and physical Home results; final release acceptance remains separate.
 
 - [Earlier documentation audit](../DOCUMENTATION-AUDIT.md), [1.2.0 documentation audit](../DOCUMENTATION-AUDIT-1.2.0.md), [issue-status audit](../ISSUE-STATUS-AUDIT.md).
 - [Research records](../research/), [design specifications](../superpowers/specs/), [implementation plans](../superpowers/plans/).
