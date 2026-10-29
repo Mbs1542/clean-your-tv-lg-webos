@@ -66,6 +66,11 @@
         155
       ],
       "summary": "Recover No-root Helper watchdog timeouts with bounded retries, persistent emergency stops and required input cleanup; exact-device acceptance remains pending (#155)."
+    },
+    {
+      "pr": 157,
+      "issues": [],
+      "summary": "Replace unpublished theme ID provider with da.gd"
     }
   ],
   "excluded": [],
