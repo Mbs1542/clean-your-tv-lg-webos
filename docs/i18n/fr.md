@@ -1,10 +1,10 @@
 # Clean Your TV — guide d’utilisation
 
-> Candidat 1.4.1 non publié : compatibilité OTA Root, disponibilité des mises à jour, accès à l’API du micrologiciel et corrections des paquets/de la console Windows. La mise à jour signée et le retour arrière normal sont consignés dans le périmètre limité au C3 ; les compilations finales et la publication restent à faire ; aucun téléchargement publié. [1.4.1](../RELEASE-1.4.1.md).
+> Candidat 1.5.0 non publié : thèmes, galerie et transfert du PC au téléviseur. Validation TV en attente. La version stable publiée est 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
 
 [Documentation](../README.md) · [Signaler un problème](../FEEDBACK.md)
 
-Ce guide décrit la version publiée **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**. La validation C3 couvre les essais consignés d’alimentation, Home, focus, maintien de la désactivation et retour manuel à la version précédente. Les autres TV, le son eARC et les appareils Android physiques restent non vérifiés ; une installation réussie ne prouve pas la compatibilité. [Périmètre testé (anglais)](../RELEASE-1.4.0-ACCEPTANCE.md).
+Ce guide décrit la version publiée **[1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)**. La validation C3 couvre les essais consignés d’alimentation, Home, focus, maintien de la désactivation et retour manuel à la version précédente. Les autres TV, le son eARC et les appareils Android physiques restent non vérifiés ; une installation réussie ne prouve pas la compatibilité. [Périmètre testé (anglais)](../RELEASE-1.4.0-ACCEPTANCE.md).
 
 ## Choisir une édition
 

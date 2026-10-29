@@ -1,10 +1,10 @@
 # Clean Your TV — 使用者指南
 
-> 未發佈候選版 1.4.1：修正 Root OTA 相容性、更新提示、韌體 API 存取及 Windows 套件/主控台問題。已記錄 C3 限定範圍內的簽章升級和一般回復版本；最終建置與發佈仍待完成；這不是已發佈的下載。 [1.4.1](../RELEASE-1.4.1.md).
+> 未發布候選版 1.5.0：主題、展示頁與電腦向電視傳輸。電視驗收尚未完成。已發布穩定版為 1.4.1。 [1.5.0](../RELEASE-1.5.0.md).
 
 [文件導覽](../README.md) · [回報問題](../FEEDBACK.md)
 
-本指南適用於已發佈的 **[1.4.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.0)**。C3 驗收僅涵蓋已記錄的電源、Home、焦點、保持關閉狀態及手動回復版本測試。其他電視、eARC 音訊和實體 Android 裝置仍未驗證；安裝成功不代表相容。[測試範圍（英文）](../RELEASE-1.4.0-ACCEPTANCE.md)。
+本指南適用於已發佈的 **[1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1)**。C3 驗收僅涵蓋已記錄的電源、Home、焦點、保持關閉狀態及手動回復版本測試。其他電視、eARC 音訊和實體 Android 裝置仍未驗證；安裝成功不代表相容。[測試範圍（英文）](../RELEASE-1.4.0-ACCEPTANCE.md)。
 
 ## 選擇版本
 
