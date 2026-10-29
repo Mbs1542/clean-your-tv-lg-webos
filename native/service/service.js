@@ -27,7 +27,7 @@ service.register('tick',function(m){try{
 
 function readDebug(p){try{return JSON.parse(fs.readFileSync(p,'utf8'));}catch(e){return null;}}
 
-function blocked(){try{fs.statSync('/media/developer/apps/usr/palm/applications/com.local.nativehome/state/blocked');return true;}catch(e){return e.code!=='ENOENT';}}
+function blocked(){return ['blocked','watchdog'].some(function(name){try{fs.statSync('/media/developer/apps/usr/palm/applications/com.local.nativehome/state/'+name);return true;}catch(e){return e.code!=='ENOENT';}});}
 
 var inventoryPending=null;
 service.register('listApps',function(message){
