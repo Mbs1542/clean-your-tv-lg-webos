@@ -46,6 +46,19 @@ npm run theme -- send ./my-theme --runtime .runtime/candidate --tv TV_PRIVATE_IP
 
 PC → TV is the only computer transfer direction. If the receiver is unavailable, update the matching Home and service set on TV and retry; the computer does not host a download server.
 
+## Install a published theme by ID or link
+
+In **More options → Add by URL**, enter an ID such as `102300a209`,
+`is.gd/102300a209`, `https://is.gd/102300a209`, or a supported full GitHub URL.
+The field shows the expanded is.gd address before Load. Home uses the bounded
+is.gd JSON lookup API and then validates the returned GitHub destination; it does
+not execute a shortener page or accept arbitrary hosts. Select the found theme
+before downloading. Short links install published packages, not local PC files.
+
+Authors can copy the ID from **TV link → Copy ID** in the toolkit preview or from
+the theme's GitHub release notes. Creating links uses no is.gd account or API key.
+If the service is unavailable, use the original full GitHub descriptor URL.
+
 ## Add another repository by URL
 
 1. Browse the main project's showcase (the **Theme showcase** link on Preview Pages). Open a theme detail page and use **Copy TV link**. Transfer that exact URL using the TV keyboard or your normal TV text-entry method; the computer transfer above is the easier path for unpublished local work.

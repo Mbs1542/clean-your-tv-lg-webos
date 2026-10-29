@@ -130,3 +130,25 @@ In the Appearance candidate, installed themes use preview cards with a separate 
 Browser preview is identified by a marker injected exclusively by `preview/bridge.js`; packages do not inject this bridge. The receiver page explains TV-side setup without opening a listener. Physical TV startup failures offer Retry and Back; no other transfer direction is suggested. Subviews hide the unrelated Columns entry without changing its theme capability flag. Removal asks for confirmation; the UI resets Classic before deleting the active package, preserving the manager’s active-package deletion guard.
 
 Catalogue refresh can render the bundled list before its network result. Each rebuild preserves the focused theme, Refresh or Back by stable identity and only restores focus if the theme pane owned it. A late result does not take focus from the settings footer. Deferred-response browser regressions cover both editions.
+
+
+## Keyless short installation IDs (next candidate)
+
+`ThemeData.shortLink` recognizes a bare 5–30 character is.gd ID or supported is.gd
+URL. The field displays the normalized HTTPS URL before Load. `resolve` performs
+one bounded 4 KiB JSON request to the exact `is.gd/forward.php` lookup endpoint;
+redirects, nested shorteners and non-GitHub destinations are rejected. Normal
+repository resolution and package integrity/version/image checks remain in place.
+No JavaScript page/JSONP is loaded, and no Root LS2 permission changes are required.
+The cached package retains its canonical GitHub source, so offline startup does
+not depend on the shortener.
+
+The author toolkit validates the public descriptor before creating a permanent
+short URL, verifies the returned destination, and preserves the full URL on a
+provider outage. Its pinned release workflow reads distributions as data and
+updates only its owned note block using fresh release notes and the standard job
+token. `tests/themes/short-links.cjs` covers target restrictions/cancellation and
+`short-links-ui.cjs` covers ID hints and installation in both editions. A live
+Chrome request resolved `102300a209`, fetched Channel 1.3.3 and verified all 12
+files with descriptor digest `da7da0848ac0ecd60ebbcd964cb65a68fdf4fab54f30eebd56218c9d3141e17c`.
+This is browser evidence, not physical-TV or published-app acceptance.

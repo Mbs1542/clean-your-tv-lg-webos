@@ -124,6 +124,8 @@ Beim Öffnen der Design-Galerie oder mit Aktualisieren wird der Hauptprojekt-Rep
 
 Für ein unveröffentlichtes Design zuerst am TV **Einstellungen → Darstellung → Vom Computer empfangen** öffnen. TV-Adresse und sechsstellige PIN dort im Computer-Vorschaufenster unter **Send to TV** eingeben, senden und am TV **Design anwenden** wählen. Die primäre Richtung nutzt eine ausgehende PC-Verbindung zu TV-TCP **8879**, ohne Computer-Firewalländerung. Beide Geräte müssen im selben vertrauenswürdigen Heimnetz sein. Der Empfänger schließt nach einem Upload, Abbruch, Verlassen der Ansicht oder **10 Minuten**. PINs werden nicht gespeichert; installierte Designs funktionieren offline. GitHub-Veröffentlichung ist nicht nötig.
 
+Für ein veröffentlichtes Design unter **Weitere Optionen → Über URL hinzufügen** die ID (z. B. `102300a209`), `is.gd/102300a209` oder die vollständige GitHub-URL eingeben. Home zeigt vor dem Laden die ergänzte is.gd-Adresse und prüft danach GitHub-Ziel und Designpaket. Die ID steht in den Versionshinweisen oder unter **TV link → Copy ID** in der Computer-Vorschau.
+
 Veröffentlichte Pakete enthalten diese Funktion möglicherweise noch nicht. Browserprüfungen sind kein TV-Kompatibilitätsnachweis. [Vollständige Anleitung](../THEMES.md).
 
 Designs zeigt Vorschauen der integrierten und aller selbst installierten Designs, auch offline. Die separate Schaltfläche für den Designkatalog öffnet veröffentlichte Designs; eine persönliche Installation veröffentlicht kein Design.

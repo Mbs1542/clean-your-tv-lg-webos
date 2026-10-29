@@ -125,6 +125,8 @@ Otwarcie galerii lub wybranie Odśwież sprawdza zatwierdzone aktualizacje katal
 
 Aby przetestować nieopublikowany motyw, najpierw otwórz na TV **Ustawienia → Wygląd → Odbierz z komputera**. Wpisz adres TV i sześciocyfrowy PIN w **Send to TV** w podglądzie na komputerze, wyślij i wybierz **Zastosuj motyw** na TV. Główna metoda łączy PC z TCP **8879 telewizora**, bez zmiany zapory komputera. Oba urządzenia muszą być w tej samej zaufanej sieci domowej. Odbiornik zamyka się po jednym wysłaniu, anulowaniu, wyjściu lub **10 minutach**. PIN nie jest zapisywany; motyw działa offline. Publikacja w GitHub nie jest wymagana.
 
+Dla opublikowanego motywu otwórz **Więcej opcji → Dodaj przez URL** i wpisz ID (np. `102300a209`), `is.gd/102300a209` lub pełny link GitHub. Home pokaże adres is.gd przed wczytaniem, a następnie sprawdzi cel GitHub i pakiet motywu. Autor może skopiować ID z opisu wydania albo **TV link → Copy ID** w podglądzie na komputerze.
+
 Opublikowane pakiety mogą jeszcze nie mieć tych opcji. Test przeglądarki nie potwierdza zgodności z fizycznym TV. [Pełny poradnik](../THEMES.md).
 
 Motywy pokazują podglądy wbudowanych i wszystkich samodzielnie zainstalowanych motywów, także offline. Osobny przycisk otwiera opublikowany katalog; prywatna instalacja nie publikuje motywu.

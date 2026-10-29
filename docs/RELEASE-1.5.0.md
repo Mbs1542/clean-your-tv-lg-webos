@@ -54,6 +54,12 @@ Computer theme transfer uses PC → TV only. The old PC-hosted sharing server,
 TV download form and `share` command are removed from the matching author tools.
 Instructions in all twelve user guides follow the TV-address/PIN workflow.
 
+Published themes can also be installed by their is.gd ID or full short link.
+Home shows the expanded address, uses a bounded JSON lookup and then applies the
+normal GitHub/package checks. The matching author toolkit provides TV link,
+Copy ID/Copy link and a keyless release workflow with one ID per theme/version.
+No new TV service method or listening endpoint is introduced by this feature.
+
 ## Upgrade boundaries
 
 Use a complete matching installer/update set. A standalone Home IPK does not

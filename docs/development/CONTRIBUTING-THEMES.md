@@ -464,7 +464,10 @@ THEME_DESCRIPTOR_URL="https://raw.githubusercontent.com/your-name/your-tv-themes
 ```
 
 Keep that commit reachable in the public repository. Do not force-push it away,
-replace its URL with `main`, use a shortening service, or require authentication.
+replace its URL with `main` or require authentication. Showcase submission records
+keep this full immutable URL. Personal installation may additionally use the
+keyless is.gd ID described in the toolkit’s release-link guide; it never replaces
+the canonical descriptor URL or digest in a reviewed record.
 All referenced files must be publicly available alongside the descriptor with
 unchanged bytes. Personal development can continue through LAN; public Showcase
 review requires these fixed remote bytes.
@@ -723,3 +726,22 @@ For unresolved authoring problems, include the theme ID/version, toolkit/runtime
 revisions, exact command, redacted error and a minimal public source reproduction.
 Keep device credentials, private paths, network details and unrelated app data out
 of issues and PRs.
+
+
+## Keyless release installation links
+
+The matching author toolkit provides **TV link**, **Copy ID** and **Copy link**.
+It checks a public commit-pinned descriptor against the selected ID/version before
+sending its URL to is.gd. Only published public URLs are sent to the shortener.
+The generated short link is looked up again to verify its destination. Shortener
+failures retain the full URL, with no repeated rate-limit retries.
+
+Run `theme release-workflow` from your theme repository using the trusted toolkit
+to generate a pinned GitHub Actions workflow. Commit it to your default branch,
+commit/push versioned distributions, then publish a `vX.Y.Z` GitHub release at
+that distribution commit. The workflow selects matching theme versions, generates
+`tv-links.json` and adds a theme/ID table while preserving current release notes.
+It needs no shortening-service secret; the standard job token updates only the
+author's release. Theme files are read as data, not executed. The preview can
+retrieve the matching release's metadata, or accept its full published descriptor
+URL manually. This does not submit anything to Showcase.

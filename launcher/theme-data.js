@@ -39,7 +39,7 @@
  }
 
  function request(url,limit,local,signal,deadline){return new Promise(function(resolve,reject){
-  if(local!==true&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url))return reject(Error('Unsupported theme host'));
+  if(local!==true&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url)&&!/^https:\/\/is\.gd\/forward\.php\?format=json&shorturl=[A-Za-z0-9_]{5,30}$/.test(url))return reject(Error('Unsupported theme host'));
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
@@ -62,10 +62,20 @@
  }
 
  function raw(s,p){return 'https://raw.githubusercontent.com/'+s.owner+'/'+s.repo+'/'+s.commit+'/'+path(p);}
- function resolve(url,signal){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
+ function shortLink(value){if(typeof value!=='string'||value.length>1000)return null;var match=/^(?:(?:https:\/\/)?is\.gd\/)?([A-Za-z0-9_]{5,30})$/i.exec(value.trim());return match?'https://is.gd/'+match[1]:null;}
+ function expandLink(url,signal){return Promise.resolve().then(function(){
+  if(typeof url!=='string')fail('Use a public GitHub repository or a commit-pinned theme descriptor');
+  var short=shortLink(url);
+  if(!short)return url;
+  return request('https://is.gd/forward.php?format=json&shorturl='+short.slice(short.lastIndexOf('/')+1),4096,false,signal).then(function(bytes){
+   var result=JSON.parse(decode(bytes));if(!result||result.errorcode||typeof result.url!=='string')fail('Short link unavailable. Retry later or use the full GitHub link.');
+   source(result.url);return result.url;
+  });
+ });}
+ function resolve(url,signal){return expandLink(url,signal).then(function(url){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
   return revision.then(function(){var p=s.path||'cytv-themes.json';return request(raw(s,p),65536,false,signal).catch(function(e){if(s.path||e.status!==404)throw e;p='cytv-theme.json';return request(raw(s,p),65536,false,signal);}).then(function(a){var m=JSON.parse(decode(a));if(/cytv-themes\.json$/.test(p)){m=policy.validateCollection(m);if(m.repository.toLowerCase()!==s.repository)fail('Collection repository mismatch');var dir=p.slice(0,p.lastIndexOf('/')+1);return m.themes.map(function(t){return {title:t.title,id:t.id,version:t.themeVersion,url:raw(s,dir+t.path),digest:t.sha256,repository:s.repository};});}
    m=policy.validateManifest(m);if(m.id.indexOf('github:')!==0||m.source.repository.toLowerCase()!==s.repository)fail('Theme repository mismatch');return [{title:m.title,id:m.id,version:m.themeVersion,url:raw(s,p),digest:hash(a),repository:s.repository}];});});
- }
+ });}
  function imageInfo(a,type,wallpaper){
   var maxWidth=wallpaper?3840:1920,maxHeight=wallpaper?2160:1080;
   a=new Uint8Array(a);var v=new DataView(a.buffer,a.byteOffset,a.byteLength),w,h,i,n,kind;function str(at,count){return String.fromCharCode.apply(null,a.subarray(at,at+count));}
@@ -109,5 +119,5 @@
   return chain.then(function(){return {manifest:parsed.manifest,rules:parsed.rules,assetHandles:handles};},function(e){dispose(handles);throw e;});
  }
  function dispose(handles){Object.keys(handles||{}).forEach(function(k){URL.revokeObjectURL(handles[k]);});}
- return {unpackEnvelope:unpackEnvelope,encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
+ return {shortLink:shortLink,unpackEnvelope:unpackEnvelope,encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
 }));
