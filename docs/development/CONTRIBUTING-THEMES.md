@@ -339,6 +339,7 @@ each must be an actual, hashed image asset in the reviewed distribution.
 | Resource | Current limit |
 | --- | --- |
 | Preview image | At most 960×540 and 300 KiB |
+| Wallpaper (`defaults.wallpaperAssetId`) | At most 3840×2160 and 2 MiB; downsample the original rather than upscale a thumbnail. Requires the UHD wallpaper candidate runtime. |
 | Other image | At most 1920×1080 and 2 MiB each |
 | All images | At most 16 assets and 6 MiB total |
 | Supported image formats | PNG, JPEG, WebP with matching extension/media type |

@@ -7,6 +7,7 @@ const assert=require('node:assert/strict');
   for(const edition of ['launcher','root-launcher']){
    const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[];
    page.on('pageerror',error=>errors.push(error.message));
+   await page.route('https://**',route=>route.abort());
    await page.goto((process.env.PREVIEW_URL||'http://127.0.0.1:8876')+'/'+edition+'/index.html');
    await page.locator('#tiles .item').first().waitFor();await page.locator('#btnSettings').click();
    const nav=page.locator('.settings-categories');
@@ -20,7 +21,7 @@ const assert=require('node:assert/strict');
    assert(await page.locator('#homeThemePanel').evaluate(el=>el.contains(document.activeElement)),'category enters installed cards');
    await page.keyboard.press('ArrowLeft');assert.equal(await page.evaluate(()=>document.activeElement.getAttribute('data-category')),'appearance');
    await page.locator('#themeCatalog').click();await page.locator('.theme-catalog-card').first().waitFor();await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();assert.equal(await page.locator('#homeThemePanel').getAttribute('aria-modal'),null,'ordinary theme views are inline regions');
-   await page.locator('#themeReceive').click();await page.locator('#themeComputer').fill('192.168.1.20');assert.equal(await page.locator('#themeComputer').evaluate(el=>el.dispatchEvent(new KeyboardEvent('keydown',{keyCode:37,bubbles:true,cancelable:true}))),true,'address cursor remains native');assert.equal(await page.locator('#themeComputer').evaluate(el=>el.dispatchEvent(new KeyboardEvent('keydown',{keyCode:13,bubbles:true,cancelable:true}))),true,'native IME keeps Enter');await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();
+   await page.locator('#themeReceive').click();await page.locator('#themeReceiveLegacy').click();await page.locator('#themeComputer').fill('192.168.1.20');assert.equal(await page.locator('#themeComputer').evaluate(el=>el.dispatchEvent(new KeyboardEvent('keydown',{keyCode:37,bubbles:true,cancelable:true}))),true,'address cursor remains native');assert.equal(await page.locator('#themeComputer').evaluate(el=>el.dispatchEvent(new KeyboardEvent('keydown',{keyCode:13,bubbles:true,cancelable:true}))),true,'native IME keeps Enter');await page.keyboard.press('Escape');await page.locator('.theme-option').first().waitFor();
    await page.evaluate(()=>HomeLayoutState.setThemeLayout({preset:'scenic-grid',columns:8,allowColumnOverride:false,spacingScale:1,textScale:1,focusScale:1.1}));
    assert(!(await page.locator('#homeColumns').isVisible()),'fixed themes hide Columns');
    await page.evaluate(()=>ThemeRuntime.reset());

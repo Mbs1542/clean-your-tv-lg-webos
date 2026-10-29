@@ -124,6 +124,8 @@ Published packages may not contain these controls yet. Browser tests are not phy
 
 Themes shows previews of built-in themes and every theme you installed yourself, including offline. A separate Theme showcase button opens the published catalogue; personal installation does not publish a theme.
 
+In the Appearance candidate, large preview cards show installed themes and mark the selected theme. Theme showcase and Receive from computer are the main actions. More options contains Add by URL, Restore Classic and Clear downloaded themes. Use the arrow keys between cards and controls; Left at the edge returns to categories.
+
 ## Settings categories (unpublished candidate)
 
 In both editions, Home settings has categories on the left and the selected settings on the right: Your Home screen, Appearance (Themes and Columns), Language, Software updates and Advanced. No-root also has Developer Mode; Root includes LG firmware updates under Software updates and HDMI sound under Advanced. Use Up/Down within a column, Right to enter its settings and Left to return to categories. Back returns to categories first, then closes settings; Tab also reaches Back to Home.

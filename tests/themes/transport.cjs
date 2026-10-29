@@ -32,3 +32,10 @@ const vm=require('vm');
 class OversizedXHR {open(){} send(){this.onprogress({loaded:65537,lengthComputable:true,total:65537});} abort(){this.onabort();}}
 const bounded={Promise,Uint8Array,XMLHttpRequest:OversizedXHR};vm.runInNewContext(fs.readFileSync('launcher/theme-data.js','utf8'),bounded);
 assert.rejects(bounded.ThemeData.request('https://api.github.com/test',65536,false),/size limit/).catch(e=>{console.error(e);process.exitCode=1;});
+
+// The decoder admits UHD only through an explicitly selected wallpaper slot.
+const uhdHeader=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aE1sAAAAASUVORK5CYII=','base64');
+uhdHeader.writeUInt32BE(3840,16);uhdHeader.writeUInt32BE(2160,20);
+assert.throws(()=>data.imageInfo(uhdHeader,'image/png'),/dimensions/);
+assert.deepEqual(data.imageInfo(uhdHeader,'image/png',true),{width:3840,height:2160});
+uhdHeader.writeUInt32BE(3841,16);assert.throws(()=>data.imageInfo(uhdHeader,'image/png',true),/dimensions/);

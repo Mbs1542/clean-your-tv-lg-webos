@@ -61,6 +61,22 @@
   },open:function(){select(0);tabs[0].focus();},key:function(e){
    var key=e.keyCode,active=document.activeElement,inNav=nav.contains(active),list=actions();
    if(key===27||key===461){if(!inNav){tabs[current].focus();return true;}return false;}
+   // Theme previews form a real grid. Match remote direction to visible geometry.
+   var themes=document.getElementById('homeThemePanel');
+   if(!inNav&&themes&&themes.contains(active)&&[37,38,39,40].indexOf(key)>=0){
+    var rect=active.getBoundingClientRect(),best=null,distance=Infinity;
+    list.forEach(function(el){if(el===active)return;var r=el.getBoundingClientRect(),vertical=key===38||key===40;
+     var overlap=vertical?r.right>rect.left+4&&r.left<rect.right-4:r.bottom>rect.top+4&&r.top<rect.bottom-4;
+     var delta=key===37?rect.left-r.right:key===39?r.left-rect.right:key===38?rect.top-r.bottom:r.top-rect.bottom;
+     if(!overlap||delta < -2)return;
+     var alignment=vertical?Math.abs(r.left+r.width/2-rect.left-rect.width/2):Math.abs(r.top+r.height/2-rect.top-rect.height/2),score=Math.max(0,delta)+alignment;
+     if(score<distance){distance=score;best=el;}
+    });
+    if(best){best.focus();return true;}
+    if(key===37||key===38){tabs[current].focus();return true;}
+    if(key===40){footer.querySelector('button').focus();return true;}
+    return true;
+   }
    if(key===37){tabs[current].focus();return true;}
    if(key===39){if(inNav)enter();return true;}
    if(footer.contains(active)&&(key===38||key===40)){

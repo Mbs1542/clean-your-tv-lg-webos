@@ -126,6 +126,8 @@ I pacchetti pubblicati potrebbero non avere ancora questi comandi. I test nel br
 
 Temi mostra le anteprime dei temi integrati e di tutti quelli installati personalmente, anche offline. Un pulsante separato apre il catalogo pubblicato; installare un tema personale non lo pubblica.
 
+Nel candidato, Aspetto mostra grandi anteprime dei temi installati e indica quello selezionato. La vetrina e la ricezione dal computer sono le azioni principali. Altre opzioni contiene aggiunta tramite URL, ripristino di Classic e cancellazione dei temi scaricati. Le frecce spostano il focus tra schede e pulsanti; a sinistra sul bordo si torna alle categorie.
+
 ## Categorie delle impostazioni (candidato non pubblicato)
 
 Entrambe le edizioni mostrano le categorie a sinistra e le impostazioni a destra: schermata Home, Aspetto (temi e colonne), Lingua, Aggiornamenti software e Avanzate. No-root aggiunge Developer Mode; Root include il firmware LG negli aggiornamenti e l’audio HDMI in Avanzate. Su/Giù naviga nella colonna, Destra entra nelle impostazioni e Sinistra torna alle categorie. Indietro torna prima alle categorie, poi chiude le impostazioni. Tab raggiunge anche il pulsante per tornare a Home.

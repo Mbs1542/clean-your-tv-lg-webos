@@ -72,3 +72,11 @@ for(const value of [null,0,'false',{}]) {
  const m=structuredClone(fixture);m.layout.allowColumnOverride=value;
  assert.throws(()=>p.validateManifest(m),/layout-invalid/);
 }
+
+// UHD is reserved for the wallpaper; previews and button artwork stay bounded.
+const uhd=structuredClone(fixture),wallpaper=structuredClone(uhd.assets[0]);
+wallpaper.id='wallpaper';wallpaper.path='wallpaper.png';wallpaper.width=3840;wallpaper.height=2160;
+uhd.assets.push(wallpaper);uhd.defaults.wallpaperAssetId='wallpaper';
+assert.equal(p.validateManifest(uhd).assets[1].width,3840);
+assert.throws(()=>p.validateManifest({...uhd,defaults:{...uhd.defaults,wallpaperAssetId:null}}),/asset-invalid/);
+for(const dimensions of [[3841,2160],[3840,2161]]){const invalid=structuredClone(uhd);[invalid.assets[1].width,invalid.assets[1].height]=dimensions;assert.throws(()=>p.validateManifest(invalid),/asset-invalid/);}
