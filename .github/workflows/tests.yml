@@ -126,6 +126,14 @@ jobs:
           BROWSER_CHANNEL=chromium TV_WEB_DIR=build/legacy-ui npm run test:legacy-ui
           BROWSER_CHANNEL=chromium TV_WEB_DIR=build/legacy-ui npm run test:geometry
           BROWSER_CHANNEL=chromium npm run test:themes:browser
+      - name: Check settings categories and update indicators
+        if: steps.reuse.outputs.hit != 'true' && runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
+        run: |
+          python scripts/preview.py --port 8876 > /tmp/cytv-settings-preview.log 2>&1 &
+          settings_preview_pid=$!
+          trap 'kill "$settings_preview_pid"' EXIT
+          BROWSER_CHANNEL=chromium node tests/settings-ui.cjs
+          BROWSER_CHANNEL=chromium node tests/settings-update-badges.cjs
       - name: Verify real webOS-style file ownership
         if: steps.reuse.outputs.hit != 'true' && runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
         run: sudo "$(command -v node)" native/prototype/test-state-permissions-linux.cjs

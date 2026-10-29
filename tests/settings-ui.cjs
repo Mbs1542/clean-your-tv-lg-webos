@@ -2,7 +2,7 @@
 const {chromium}=require('playwright');
 const assert=require('node:assert/strict');
 (async()=>{
- const browser=await chromium.launch({headless:true,channel:'chrome'});
+ const browser=await chromium.launch({headless:true,channel:process.env.BROWSER_CHANNEL||'chrome'});
  try {
   for(const edition of ['launcher','root-launcher']){
    const page=await browser.newPage({viewport:{width:1920,height:1080}}),errors=[];
