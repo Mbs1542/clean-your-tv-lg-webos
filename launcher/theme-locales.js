@@ -44,7 +44,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Введите адрес компьютера и шестизначный PIN",
     "Enter a private IPv4 address from the computer preview": "Введите частный IPv4-адрес из превью на компьютере",
     "Use a computer on your home network": "Используйте компьютер в своей домашней сети",
-    "Enter the six-digit PIN shown on the computer": "Введите шестизначный PIN с компьютера"
+    "Enter the six-digit PIN shown on the computer": "Введите шестизначный PIN с компьютера",
+    "Refresh": "Обновить",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Показаны темы из комплекта. Не удалось обновить каталог из репозитория.",
+    "Apply theme": "Применить тему"
   },
   "de": {
     "Themes": "Designs",
@@ -90,7 +93,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Computeradresse und sechsstellige PIN eingeben",
     "Enter a private IPv4 address from the computer preview": "Private IPv4-Adresse aus der Computer-Vorschau eingeben",
     "Use a computer on your home network": "Einen Computer im Heimnetz verwenden",
-    "Enter the six-digit PIN shown on the computer": "Die am Computer angezeigte sechsstellige PIN eingeben"
+    "Enter the six-digit PIN shown on the computer": "Die am Computer angezeigte sechsstellige PIN eingeben",
+    "Refresh": "Aktualisieren",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Enthaltene Designs werden angezeigt. Der Onlinekatalog konnte nicht aktualisiert werden.",
+    "Apply theme": "Design anwenden"
   },
   "es": {
     "Themes": "Temas",
@@ -136,7 +142,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Introduce la dirección del ordenador y el PIN de seis dígitos",
     "Enter a private IPv4 address from the computer preview": "Introduce la dirección IPv4 privada de la vista previa del ordenador",
     "Use a computer on your home network": "Usa un ordenador de tu red doméstica",
-    "Enter the six-digit PIN shown on the computer": "Introduce el PIN de seis dígitos mostrado en el ordenador"
+    "Enter the six-digit PIN shown on the computer": "Introduce el PIN de seis dígitos mostrado en el ordenador",
+    "Refresh": "Actualizar",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Se muestran los temas incluidos. No se pudo actualizar el catálogo en línea.",
+    "Apply theme": "Aplicar tema"
   },
   "pt-BR": {
     "Themes": "Temas",
@@ -182,7 +191,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Digite o endereço do computador e o PIN de seis dígitos",
     "Enter a private IPv4 address from the computer preview": "Digite o endereço IPv4 privado da prévia do computador",
     "Use a computer on your home network": "Use um computador na sua rede doméstica",
-    "Enter the six-digit PIN shown on the computer": "Digite o PIN de seis dígitos exibido no computador"
+    "Enter the six-digit PIN shown on the computer": "Digite o PIN de seis dígitos exibido no computador",
+    "Refresh": "Atualizar",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Exibindo temas incluídos. Não foi possível atualizar o catálogo online.",
+    "Apply theme": "Aplicar tema"
   },
   "fr": {
     "Themes": "Thèmes",
@@ -228,7 +240,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Saisissez l’adresse de l’ordinateur et le PIN à six chiffres",
     "Enter a private IPv4 address from the computer preview": "Saisissez l’adresse IPv4 privée de l’aperçu sur l’ordinateur",
     "Use a computer on your home network": "Utilisez un ordinateur sur votre réseau domestique",
-    "Enter the six-digit PIN shown on the computer": "Saisissez le PIN à six chiffres affiché sur l’ordinateur"
+    "Enter the six-digit PIN shown on the computer": "Saisissez le PIN à six chiffres affiché sur l’ordinateur",
+    "Refresh": "Actualiser",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Thèmes inclus affichés. Impossible d’actualiser le catalogue en ligne.",
+    "Apply theme": "Appliquer le thème"
   },
   "it": {
     "Themes": "Temi",
@@ -274,7 +289,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Inserisci indirizzo del computer e PIN di sei cifre",
     "Enter a private IPv4 address from the computer preview": "Inserisci l’indirizzo IPv4 privato dall’anteprima sul computer",
     "Use a computer on your home network": "Usa un computer sulla rete domestica",
-    "Enter the six-digit PIN shown on the computer": "Inserisci il PIN di sei cifre mostrato sul computer"
+    "Enter the six-digit PIN shown on the computer": "Inserisci il PIN di sei cifre mostrato sul computer",
+    "Refresh": "Aggiorna",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Temi inclusi visualizzati. Impossibile aggiornare il catalogo online.",
+    "Apply theme": "Applica tema"
   },
   "ko": {
     "Themes": "테마",
@@ -320,7 +338,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "컴퓨터 주소와 6자리 PIN을 입력하세요",
     "Enter a private IPv4 address from the computer preview": "컴퓨터 미리보기에 표시된 사설 IPv4 주소를 입력하세요",
     "Use a computer on your home network": "홈 네트워크의 컴퓨터를 사용하세요",
-    "Enter the six-digit PIN shown on the computer": "컴퓨터에 표시된 6자리 PIN을 입력하세요"
+    "Enter the six-digit PIN shown on the computer": "컴퓨터에 표시된 6자리 PIN을 입력하세요",
+    "Refresh": "새로고침",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "기본 테마를 표시합니다. 온라인 카탈로그를 새로고침하지 못했습니다.",
+    "Apply theme": "테마 적용"
   },
   "hi": {
     "Themes": "थीम",
@@ -366,7 +387,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "कंप्यूटर का पता और छह अंकों का PIN दर्ज करें",
     "Enter a private IPv4 address from the computer preview": "कंप्यूटर के पूर्वावलोकन से निजी IPv4 पता दर्ज करें",
     "Use a computer on your home network": "अपने घरेलू नेटवर्क के कंप्यूटर का उपयोग करें",
-    "Enter the six-digit PIN shown on the computer": "कंप्यूटर पर दिखाया गया छह अंकों का PIN दर्ज करें"
+    "Enter the six-digit PIN shown on the computer": "कंप्यूटर पर दिखाया गया छह अंकों का PIN दर्ज करें",
+    "Refresh": "रीफ़्रेश करें",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "शामिल थीम दिखाई जा रही हैं। ऑनलाइन कैटलॉग रीफ़्रेश नहीं हुआ।",
+    "Apply theme": "थीम लागू करें"
   },
   "pl": {
     "Themes": "Motywy",
@@ -412,7 +436,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Wpisz adres komputera i sześciocyfrowy PIN",
     "Enter a private IPv4 address from the computer preview": "Wpisz prywatny adres IPv4 z podglądu na komputerze",
     "Use a computer on your home network": "Użyj komputera w swojej sieci domowej",
-    "Enter the six-digit PIN shown on the computer": "Wpisz sześciocyfrowy PIN wyświetlony na komputerze"
+    "Enter the six-digit PIN shown on the computer": "Wpisz sześciocyfrowy PIN wyświetlony na komputerze",
+    "Refresh": "Odśwież",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Wyświetlane są dołączone motywy. Nie udało się odświeżyć katalogu online.",
+    "Apply theme": "Zastosuj motyw"
   },
   "zh-Hans": {
     "Themes": "主题",
@@ -458,7 +485,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "输入电脑地址和六位 PIN",
     "Enter a private IPv4 address from the computer preview": "输入电脑预览中的私有 IPv4 地址",
     "Use a computer on your home network": "请使用家庭网络中的电脑",
-    "Enter the six-digit PIN shown on the computer": "输入电脑上显示的六位 PIN"
+    "Enter the six-digit PIN shown on the computer": "输入电脑上显示的六位 PIN",
+    "Refresh": "刷新",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "正在显示内置主题。无法刷新在线目录。",
+    "Apply theme": "应用主题"
   },
   "zh-Hant": {
     "Themes": "主題",
@@ -504,7 +534,10 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "輸入電腦位址和六位 PIN",
     "Enter a private IPv4 address from the computer preview": "輸入電腦預覽中的私有 IPv4 位址",
     "Use a computer on your home network": "請使用家庭網路中的電腦",
-    "Enter the six-digit PIN shown on the computer": "輸入電腦上顯示的六位 PIN"
+    "Enter the six-digit PIN shown on the computer": "輸入電腦上顯示的六位 PIN",
+    "Refresh": "重新整理",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "正在顯示隨附主題。無法重新整理線上目錄。",
+    "Apply theme": "套用主題"
   },
   "en": {
     "Themes": "Themes",
@@ -550,6 +583,9 @@ HomeI18n.add({
     "Enter the computer address and six-digit PIN": "Enter the computer address and six-digit PIN",
     "Enter a private IPv4 address from the computer preview": "Enter a private IPv4 address from the computer preview",
     "Use a computer on your home network": "Use a computer on your home network",
-    "Enter the six-digit PIN shown on the computer": "Enter the six-digit PIN shown on the computer"
+    "Enter the six-digit PIN shown on the computer": "Enter the six-digit PIN shown on the computer",
+    "Refresh": "Refresh",
+    "Showing bundled themes. Live catalogue could not be refreshed.": "Showing bundled themes. Live catalogue could not be refreshed.",
+    "Apply theme": "Apply theme"
   }
 });

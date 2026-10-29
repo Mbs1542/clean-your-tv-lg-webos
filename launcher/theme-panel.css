@@ -29,3 +29,23 @@
 #homeThemePanel .theme-catalog-card small { display:block; margin:6px 0 0; color:#ccd6e5; }
 #homeThemePanel .theme-detail-preview img { display:block; width:480px; height:270px; max-width:100%; margin-bottom:12px; }
 #homeThemePanel label { display:block; margin:16px 8px; font-size:26px; }
+
+/* Installed theme choices sit above the live Home composition. */
+#homeThemePanel.theme-picker { background:transparent; align-items:flex-start; }
+#homeThemePanel.theme-picker .theme-settings-card { width:100%; max-width:none; max-height:36vh; padding:16px 28px; border-width:0 0 1px; border-radius:0; background:rgba(22,26,31,.97); box-sizing:border-box; box-shadow:0 8px 28px rgba(0,0,0,.4); }
+#homeThemePanel.theme-picker h2 { font-size:28px; margin:0 0 4px; }
+#homeThemePanel.theme-picker p { font-size:19px; margin:4px 0; }
+#homeThemePanel.theme-picker button { font-size:21px; min-height:46px; padding:7px 14px; margin:5px; border-width:2px; }
+#homeThemePanel.theme-picker .theme-option { display:inline-flex; vertical-align:top; width:200px; margin:6px 10px 8px 0; padding:0; border:0; }
+#homeThemePanel.theme-picker .theme-option button:first-child { display:block; width:100%; margin:0; text-align:left; }
+#homeThemePanel.theme-picker .theme-option img { display:block; width:100%; height:90px; object-fit:cover; margin-top:6px; border-radius:4px; }
+#homeThemePanel.theme-picker .theme-option small, #homeThemePanel.theme-picker .theme-meta { font-size:16px; margin:3px 5px; }
+#homeThemePanel.theme-picker .theme-option button:not(:first-child) { font-size:17px; min-height:36px; padding:4px 8px; margin:2px; }
+
+#homeThemePanel.theme-picker .theme-installed-grid { display:flex; overflow-x:auto; padding:2px 4px; }
+#homeThemePanel.theme-picker .theme-option { flex:0 0 200px; }
+#homeThemePanel.theme-picker .theme-picker-actions { display:flex; flex-wrap:wrap; align-items:center; }
+#homeThemePanel.theme-picker .theme-option { flex-direction:column; align-items:stretch; }
+#homeThemePanel.theme-picker .theme-option button:first-child { flex:none; box-sizing:border-box; }
+#homeThemePanel.theme-picker .theme-option img { height:auto; max-height:100px; }
+#homeThemePanel.theme-picker .theme-option .theme-meta { box-sizing:border-box; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
