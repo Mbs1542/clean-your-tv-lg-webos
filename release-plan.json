@@ -8,6 +8,13 @@
       "summary": "Reuse verified candidate builds and unchanged PR runtime checks, scope physical acceptance and refresh release gates automatically."
     },
     {
+      "pr": 139,
+      "issues": [
+        69
+      ],
+      "summary": "Integrate on-TV themes, offline personal previews and user Columns with categorized settings and synchronized update indicators in both editions; partial #69, retro/font contribution and physical-TV acceptance remain pending"
+    },
+    {
       "pr": 142,
       "issues": [
         133,
