@@ -1,7 +1,7 @@
 'use strict';
 var diagnostics=require('./diagnostics');
-// Same-package UI endpoint; the existing helper data directory is prisoner:jailer 0770.
-// Fixed request/response files avoid granting the launcher new cross-package bus access.
+// The service writes inside its own jail-visible package. The native controller
+// reads this provisioned prisoner:jailer 2770 channel; request files stay 0660.
 module.exports=function(fs,dir,options){
  options=options||{};
  var busy=false,now=options.now||Date.now,later=options.later||setTimeout;

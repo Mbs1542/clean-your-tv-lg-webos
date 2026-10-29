@@ -90,12 +90,33 @@ class BuildTests(unittest.TestCase):
                 for filename,data in files.items():
                     target=installed/filename;target.parent.mkdir(parents=True,exist_ok=True);target.write_bytes(data)
             mutable=installed/'usr/palm/services/com.local.nativehome.service/state/preferences.json';mutable.parent.mkdir();mutable.write_text('private preferences')
+            channel=installed/'usr/palm/services/com.gathin.tvhome.renewal/state/home-control'
+            channel.mkdir(parents=True);(channel/'.keep').write_bytes(b'')
+            (channel/'home-request.json').write_text('private transient request')
             bundle=path/'bundle';build.build(bundle)
             baseline=setup.snapshot(bundle,'no-root',path/'baseline',installed=installed)
             manifest=setup.verify_baseline(baseline)
             self.assertEqual([c['version'] for c in manifest['components']],['1.3.8','0.6.18','0.1.6'])
             for item in manifest['components']:
-                self.assertFalse(any('/state/' in n for n in package.data_files((baseline/'cache'/item['sha256']).read_bytes())))
+                raw=(baseline/'cache'/item['sha256']).read_bytes()
+                files=package.data_files(raw)
+                public_channel='usr/palm/services/com.gathin.tvhome.renewal/state/home-control/.keep'
+                self.assertFalse(any('/state/' in n and n!=public_channel for n in files))
+                if item['name']=='home':
+                    self.assertEqual(files[public_channel],b'')
+                    with tarfile.open(fileobj=io.BytesIO(package.read_ar(raw)['data.tar.gz']), mode='r:gz') as archive:
+                        for name in ('state','state/home-control'):
+                            entry=archive.getmember('usr/palm/services/com.gathin.tvhome.renewal/'+name)
+                            self.assertEqual((entry.uid,entry.gid,entry.mode),(5999,5000,0o2770))
+            sentinel=channel/'.keep'
+            for invalid in ('nonempty','symlink'):
+                with self.subTest(channel_sentinel=invalid):
+                    sentinel.unlink()
+                    if invalid=='nonempty':sentinel.write_text('private data')
+                    else:sentinel.symlink_to(channel/'home-request.json')
+                    with self.assertRaises(ValueError):
+                        setup.snapshot(bundle,'no-root',path/('rejected-'+invalid),installed=installed)
+            sentinel.unlink();sentinel.write_bytes(b'')
             def install(app,filename,timeout,on_ready,on_accepted):
                 original=Path(filename).read_bytes()
                 self.assertEqual((state/'cache'/(hashlib.sha256(original).hexdigest()+'.ipk')).read_bytes(),original)

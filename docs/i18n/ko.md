@@ -85,6 +85,8 @@ Home 설정 → 소프트웨어 업데이트에서 제시된 버전을 확인한
 
 **기존 1.3.0 설치:** 허용 파일 목록이 바뀌어 기존 System Updater로는 1.4.0을 적용할 수 없습니다. 교체 전에 중단되었다면 기록을 보관하고 멈추세요. 상태를 지우거나 무작정 재시도하지 마세요. 확인 절차를 거친 복구와 새로운 1.4.0 설치로 이전하세요. 앱만 업데이트하면 보존된 Root 드라이버는 교체되지 않습니다. 다음 OTA 수정은 **아직 공개되지 않았습니다**. [이전과 복구(영어)](../UPDATES.md#one-time-computer-preparation).
 
+Home 설정 통신 경로 수정은 아직 배포되지 않았습니다. 호환되는 후보 버전이 준비되면 Home과 Helper를 함께 업데이트하세요. Home만 업데이트하면 수정이 적용되지 않습니다. TV 실기 검증은 아직 완료되지 않았습니다. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
+
 Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다**. 필요할 때만 켜세요. 정상적인 소리를 끊을 수 있으며 eARC 호환성이 확인된 것은 아닙니다. [소리 복구(영어)](../development/ROOT-AUDIO-RECOVERY.md). 별도 **Homebrew CYTV Installer는 아직 출시되지 않았습니다**. 공개된 컴퓨터 또는 Android 설치 프로그램을 사용하세요.
 
 미출시 후보 전용: 이전 Root 디렉터리의 쓰기 권한 때문에 펌웨어 API 접근이 거부되면 `cytv enable-firmware-access --edition root --repair-package-permissions` 명령이 신뢰할 수 있는 비공개 패키지 기록으로 현재 파일을 검증한 뒤 Root 소유 경로의 그룹 및 기타 사용자 쓰기 권한만 제거합니다. 알 수 없거나 변경된 파일이 있으면 중단합니다. 프로필, Home 선택 및 펌웨어 차단 설정은 유지됩니다. [세부 정보(영어)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).

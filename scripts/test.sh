@@ -31,6 +31,7 @@ node tests/helper-service-status.cjs
 node tests/helper-published-ui.cjs
 node tests/home-control.cjs
 node tests/home-control-bridge.cjs
+node tests/home-control-jail.cjs
 node tests/resume.cjs
 node tests/controller-resume.cjs
 node --test tests/controller-resume-home.cjs

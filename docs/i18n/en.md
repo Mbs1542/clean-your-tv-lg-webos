@@ -83,6 +83,8 @@ Keep known-working packages and private settings backups. For computer-assisted 
 
 Open Home settings → Software updates and review the offered versions before confirming. On-TV updates/rollback require **root, Homebrew Channel** and prepared matching updater infrastructure, even for the No-root edition. An unrooted TV uses the computer installer. Full-system preparation is a separate explicit action; follow [updates (English)](../UPDATES.md). Check Recovery for the saved rollback version; later settings may be lost during rollback.
 
+Unpublished Home settings transport fix: update Home and Helper together when a coordinated candidate is available. Home-only updating does not deliver the fix. Device verification is still pending. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
+
 **Existing 1.3.0:** the original System Updater cannot apply 1.4.0 because its permitted file inventory changed. If an attempt stopped before replacement, preserve its journal and stop; do not clear state or retry blindly. Use checked recovery and fresh 1.4.0 setup for migration; an app-only update does not replace retained Root drivers. The next OTA correction is **not published**. [Migration and recovery (English)](../UPDATES.md#one-time-computer-preparation).
 
 Root HDMI sound recovery is experimental and **off by default**; opt in only if needed. It can interrupt healthy audio and does not establish eARC compatibility. [Sound recovery (English)](../development/ROOT-AUDIO-RECOVERY.md). The separate Homebrew **CYTV Installer remains unreleased**; use the published computer/Android installer.

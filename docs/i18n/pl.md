@@ -85,6 +85,8 @@ Otwórz ustawienia Home → Aktualizacje oprogramowania i sprawdź wersje przed 
 
 **Istniejąca instalacja 1.3.0:** pierwotny System Updater nie może zastosować 1.4.0 z powodu zmiany listy dozwolonych plików. Jeśli próba zatrzymała się przed wymianą, zachowaj dziennik i przerwij; nie kasuj stanu i nie ponawiaj w ciemno. Przejdź przez sprawdzane odzyskiwanie i nową instalację 1.4.0; aktualizacja samej aplikacji nie zastępuje zachowanych sterowników Root. Następna poprawka OTA **nie została opublikowana**. [Migracja i odzyskiwanie (angielski)](../UPDATES.md#one-time-computer-preparation).
 
+Nieopublikowana poprawka kanału ustawień Home: zaktualizuj Home i Helper razem, gdy będzie dostępny zgodny kandydat. Aktualizacja samego Home nie wystarczy. Weryfikacja na TV pozostaje do wykonania. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
+
 Odzyskiwanie dźwięku HDMI w Root jest eksperymentalne i **domyślnie wyłączone**; włączaj tylko w razie potrzeby. Może przerwać poprawny dźwięk i nie dowodzi zgodności eARC. [Odzyskiwanie dźwięku (angielski)](../development/ROOT-AUDIO-RECOVERY.md). Osobny **CYTV Installer dla Homebrew nie jest jeszcze wydany**; użyj opublikowanego instalatora komputerowego lub Android.
 
 Tylko nieopublikowany kandydat: gdy stare zapisywalne katalogi Root blokują dostęp do API oprogramowania TV, `cytv enable-firmware-access --edition root --repair-package-permissions` sprawdza bieżący pakiet według zaufanych danych prywatnych i usuwa zapis dla grupy/innych wyłącznie we własnych ścieżkach Root. Nieznane lub zmienione pliki zatrzymują naprawę. Profil, wybór Home i blokowanie aktualizacji pozostają bez zmian; [szczegóły (angielski)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).

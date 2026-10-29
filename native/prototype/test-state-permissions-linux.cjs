@@ -34,6 +34,15 @@ if(process.platform!=='linux'||process.getuid()!==0){
   fs.chmodSync(key,0o775);fs.chmodSync(state,0o755);
   run(5367,'if(require('+JSON.stringify(path.join(root,'state-permissions.js'))+')('+JSON.stringify(state)+'))process.exit(3);');
   a.equal(fs.statSync(key).mode&0o777,0o775);
-  console.log('PASS: real installer/developer/helper/service UIDs, shared group, reconfiguration, denied replacement');
+  const renewal=path.join(root,'renewal-state'),channel=path.join(renewal,'home-control');
+  fs.mkdirSync(renewal);fs.mkdirSync(channel);
+  for(const dir of [renewal,channel]){fs.chownSync(dir,5999,5000);fs.chmodSync(dir,0o2770);}
+  const request=path.join(channel,'home-request'),response=path.join(channel,'home-response');
+  run(5367,'var fs=require("fs"),p='+JSON.stringify(request)+';fs.writeFileSync(p+".tmp",JSON.stringify({id:"test"}),{mode:0o660});fs.chmodSync(p+".tmp",0o660);fs.renameSync(p+".tmp",p+".json");',5367);
+  a.equal(fs.statSync(request+'.json').gid,5000,'setgid overrides the service primary group');
+  run(6575,'var fs=require("fs");if(JSON.parse(fs.readFileSync('+JSON.stringify(request+'.json')+')).id!=="test")process.exit(5);var p='+JSON.stringify(response)+';fs.writeFileSync(p+".tmp",JSON.stringify({id:"test",enabled:true}),{mode:0o660});fs.chmodSync(p+".tmp",0o660);fs.renameSync(p+".tmp",p+".json");',6575);
+  a.equal(fs.statSync(response+'.json').gid,5000,'controller reply inherits the same group');
+  run(5367,'if(!JSON.parse(require("fs").readFileSync('+JSON.stringify(response+'.json')+')).enabled)process.exit(6);',5367);
+  console.log('PASS: real installer/developer/helper/service UIDs, shared group, reconfiguration, denied replacement and setgid Home IPC');
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 }

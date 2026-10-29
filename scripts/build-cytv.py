@@ -58,6 +58,8 @@ def pack_app(appfiles, servicefiles, architecture='all', helper=False):
     files.update({'usr/palm/services/' + service + '/' + n: b for n, b in servicefiles.items()})
     files['usr/palm/packages/' + app + '/packageinfo.json'] = json.dumps({
         'id': app, 'version': version, 'app': app, 'services': [service]}).encode()
+    if service == 'com.gathin.tvhome.renewal':
+        files['usr/palm/services/' + service + '/state/home-control/.keep'] = b''
     executables = set()
     if helper:
         # The service sandbox cannot import modules from the app directory.

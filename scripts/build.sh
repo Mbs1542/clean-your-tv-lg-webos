@@ -45,7 +45,20 @@ helper=$(python3 -c 'import json; a=json.load(open("build/native-app/appinfo.jso
 python3 scripts/fix-package-data.py "$helper"
 fi
 python3 scripts/tv_web_build.py --input launcher --output build/home-app
-"$ARES_PACKAGE" build/home-app renewal-service -o dist
+# Stage only public renewal sources, never local preferences or IPC files.
+python3 - <<'PYSERVICE'
+from pathlib import Path
+import shutil
+p=Path('build/home-service')
+if p.exists(): shutil.rmtree(p)
+shutil.copytree('renewal-service',p,ignore=shutil.ignore_patterns('state'))
+channel=p/'state/home-control'
+channel.mkdir(parents=True)
+(channel/'.keep').write_bytes(b'')
+PYSERVICE
+"$ARES_PACKAGE" build/home-app build/home-service -o dist
+home=$(python3 -c 'import json; a=json.load(open("build/home-app/appinfo.json")); print("dist/"+a["id"]+"_"+a["version"]+"_all.ipk")')
+python3 scripts/fix-package-data.py "$home" --home-control
 python3 - <<'PY'
 from pathlib import Path
 import hashlib

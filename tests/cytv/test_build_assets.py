@@ -18,6 +18,24 @@ class BuildAssetsTests(unittest.TestCase):
         self.assertEqual(files[prefix+'diagnostics.js'], (root/'renewal-service/diagnostics.js').read_bytes())
         self.assertIn(b"require('./diagnostics')", files[prefix+'service.js'])
 
+    def test_home_channel_is_provisioned_and_survives_personalization(self):
+        import io
+        import json
+        import tarfile
+        from cytv import package
+        root = Path(__file__).resolve().parents[2]
+        build = runpy.run_path(str(root / 'scripts/build-cytv.py'))
+        app = {'appinfo.json': json.dumps({'id':'com.gathin.tvhome','version':'1.0.0','type':'native'}).encode()}
+        raw = build['pack_app'](app, build['tracked_files']('renewal-service'))
+        personalized, _ = package.personalize(raw, 'com.gathin.tvhome', {'apps':[{'id':'test.app'}]})
+        channel = 'usr/palm/services/com.gathin.tvhome.renewal/state/home-control'
+        for data in (raw, personalized):
+            with tarfile.open(fileobj=io.BytesIO(package.read_ar(data)['data.tar.gz']), mode='r:gz') as archive:
+                entry = archive.getmember(channel)
+                self.assertEqual((entry.uid, entry.gid, entry.mode), (5999, 5000, 0o2770))
+                self.assertEqual(archive.extractfile(channel+'/.keep').read(), b'')
+                self.assertEqual(archive.getmember('usr/palm/services/com.gathin.tvhome.renewal').mode, 0o755)
+
     def test_https_service_assets_survive_the_public_source_filter(self):
         import json
         from cytv import package
