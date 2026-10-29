@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "themeApiVersion": 1,
+  "parts": [
+    "home",
+    "ambient",
+    "hero",
+    "header",
+    "greeting",
+    "clock",
+    "period",
+    "divider",
+    "date",
+    "shortcut",
+    "input-icon",
+    "network-icon",
+    "settings-icon",
+    "dock",
+    "focus",
+    "card",
+    "icon",
+    "label",
+    "library",
+    "library-panel",
+    "library-close",
+    "library-row",
+    "inputs",
+    "input-row"
+  ],
+  "states": [
+    "focused",
+    "selected",
+    "moving"
+  ],
+  "properties": {
+    "color": "color",
+    "background-color": "color",
+    "border-color": "color",
+    "outline-color": "color",
+    "background-image": "image",
+    "border-radius": "length",
+    "border-width": "length",
+    "border-style": "borderStyle",
+    "box-shadow": "shadow",
+    "text-shadow": "textShadow",
+    "font-family": "font",
+    "font-weight": "weight",
+    "font-style": "fontStyle",
+    "text-transform": "textTransform",
+    "text-decoration": "textDecoration",
+    "letter-spacing": "length",
+    "transition": "transition"
+  },
+  "limits": {
+    "rules": 512,
+    "declarations": 4096,
+    "bundleBytes": 131072,
+    "emittedCssBytes": 262144,
+    "sourceBytes": 131072,
+    "variableExpansionBytes": 131072,
+    "variableExpansionWork": 262144,
+    "descriptorBytes": 65536,
+    "assets": 16,
+    "assetBytes": 2097152,
+    "totalAssetBytes": 6291456
+  },
+  "layout": {
+    "preset": "dock-grid",
+    "columns": [
+      1,
+      8
+    ],
+    "spacingScale": [
+      0.8,
+      1.2
+    ],
+    "textScale": [
+      0.9,
+      1.25
+    ],
+    "focusScale": [
+      1.05,
+      1.15
+    ],
+    "presets": [
+      "dock-grid",
+      "icon-grid",
+      "side-grid",
+      "channel-list",
+      "scenic-grid"
+    ],
+    "allowColumnOverride": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "defaults": {
+    "columns": 5,
+    "spacingScale": 1,
+    "textScale": 1,
+    "focusScale": 1.1
+  }
+}

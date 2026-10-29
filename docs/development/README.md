@@ -12,9 +12,12 @@ before using a low-level recovery or installation procedure.
 - [Build requirements and packages](../BUILD.md), [TV web compatibility](../TV-WEB-BUILD.md), and [desktop build/previews](DESKTOP-BUILD.md).
 - [CLI reference](../CLI.md), [manual installation](../MANUAL_INSTALL.md), [Android development](../../android/DEVELOPMENT.md).
 - [Root bundle](../../root-edition/package/README.md), [Root development](../../root-edition/DEVELOPMENT.md), [Root runtime contract](../../root-edition/runtime/README.md).
+- [Home CSS styling surface](THEME-CSS.md): unreleased visual hooks, engine geometry and trusted dialog boundaries.
 - [Homebrew Installer](../../homebrew/README.md) is **unreleased**; [packaging and promotion gates](../../homebrew/DEVELOPMENT.md).
 
 ## Understand behavior and diagnose failures
+
+- [Theme development status](THEMES.md), [Home styling parts and CSS rules](THEME-CSS.md).
 
 - [Home installation gates](HOME-INSTALL-GATES.md): unreleased control-file ownership and Root firmware preflight fixes, packaging requirements and retained-recovery limits.
 - [Companion entry points](../COMPANION-APPS.md), [Helper diagnostics](../HELPER-DIAGNOSTICS.md), [Home/settings diagnostics](../SETTINGS-DIAGNOSTICS.md).

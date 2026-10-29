@@ -73,6 +73,10 @@ No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Help
 
 Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore` przywraca LG Home bez usuwania aplikacji; `uninstall` przywraca je przed usunięciem. Dane odzyskiwania Root pozostają celowo: nie kasuj ich, by wymusić ponowną instalację. Sprawdź raporty przed udostępnieniem; nie publikuj kluczy ani katalogów profili.
 
+Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Wygląd → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Glasshouse aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Glasshouse pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
+
+W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
+
 ## Aktualizacja i usuwanie
 
 Po połączeniu cytv pokazuje wersję zainstalowaną → dołączoną i rozróżnia pierwszą instalację, ponowną instalację i cofnięcie wersji. Sprawdź podsumowanie przed potwierdzeniem; `--yes` nie omija kontroli zgodności. Zachowaj działające pakiety i prywatne kopie ustawień. Przed wymianą pakietów z komputera zatrzymaj No-root Helper; nie odinstalowuj wcześniej aplikacji. Nie zastępuj działającego Root pojedynczym IPK: użyj odpowiedniej procedury cytv. Usunięcie aplikacji komputerowej nie usuwa aplikacji z TV.
@@ -103,3 +107,22 @@ Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej pró
 <a id="nowości-w-130--12"></a>
 <a id="nieopublikowany-kandydat-instalacja-root-przez-homebrew"></a>
 <a id="nieopublikowany-kandydat-odzyskiwanie-dźwięku-hdmi-root"></a>
+
+
+## Motywy – kandydat rozwojowy
+
+W kandydacie z obsługą motywów otwórz **Ustawienia → Wygląd → Motywy**. **Classic** i **Alpine** są wbudowane i nie wymagają pobierania motywu; domyślny pozostaje Classic. **Channel** jest zewnętrznym motywem ze showcase. Podczas próby w galerii: Wybierz motyw i **Zachowaj motyw** w ciągu **20 sekund**. **Przywróć**, Back lub upływ czasu przywraca poprzedni. Przerwana próba uruchomi Home z Classic. Motywy wbudowane i pobrane wybrane z listy zainstalowanych są stosowane i zapisywane od razu, bez odliczania. Dotyczy to również motywów z komputera lub URL. Tylko Wypróbuj motyw w galerii rozpoczyna próbę 20 sekund, także dla już pobranej wersji.
+
+Otwarcie galerii lub wybranie Odśwież sprawdza zatwierdzone aktualizacje katalogu w głównym repozytorium bez aktualizacji Home i przeładowania strony. Nowe wpisy pojawiają się po zwykłym scaleniu; niescalony kandydat może pokazywać katalog dołączony. Offline lub przy błędach używane są dołączone wpisy i podglądy. Wbudowane motywy odpowiadają zainstalowanej wersji Home. Otwórz podgląd i wybierz **Wypróbuj motyw** dla wbudowanego lub **Pobierz motyw** dla Channel (wymagany internet). Po pobraniu wypróbuj i wybierz **Zachowaj motyw** w ciągu **20 sekund**. Zainstalowane motywy działają offline. **Dodaj przez URL** nadal obsługuje przypięte linki.
+
+Dla nieopublikowanego motywu otwórz podgląd autora na komputerze i wybierz **Wyślij do TV**, a na TV **Odbierz z komputera**. Oba urządzenia muszą być w tej samej zaufanej sieci domowej: HTTP używa stałego portu TCP **8879**, który należy dopuścić w zaporze komputera. Wpisz prywatny adres IPv4 i sześciocyfrowy PIN z komputera. Pozostaw udostępnianie otwarte; sesja wygasa po **10 minutach**. Adres jest zapamiętywany, PIN nie. Publikacja na GitHub nie jest wymagana.
+
+Opublikowane pakiety mogą jeszcze nie mieć tych opcji. Test przeglądarki nie potwierdza zgodności z fizycznym TV. [Pełny poradnik](../THEMES.md).
+
+Motywy pokazują podglądy wbudowanych i wszystkich samodzielnie zainstalowanych motywów, także offline. Osobny przycisk otwiera opublikowany katalog; prywatna instalacja nie publikuje motywu.
+
+## Kategorie ustawień (nieopublikowany kandydat)
+
+W obu edycjach kategorie są po lewej, a ustawienia po prawej: ekran główny, Wygląd (motywy i kolumny), Język, Aktualizacje i Zaawansowane. No-root ma też Developer Mode; Root zawiera aktualizacje firmware LG w aktualizacjach i dźwięk HDMI w Zaawansowanych. Góra/dół porusza się w kolumnie, prawo otwiera ustawienia, a lewo wraca do kategorii. Wstecz najpierw wraca do kategorii, potem zamyka ustawienia. Tab pozwala też wybrać powrót do Home.
+
+Żółta kropka przy kategorii aktualizacji i jej przycisku oznacza dostępne uaktualnienie. Obie znikają, gdy udane sprawdzenie potwierdzi brak aktualizacji; przy błędzie pozostaje ostatni potwierdzony stan.

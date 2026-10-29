@@ -56,7 +56,7 @@
       error({errorCode:'unconfirmed'}); focus(1);
     });
   }
-  function close() { if (busy) return; generation++; panel.hidden = true; returnToSettings(); }
+  function close() { if (busy) return; generation++; panel.hidden = true; if (window.ThemeRuntime) window.ThemeRuntime.resume('firmware'); returnToSettings(); }
   function activate(index) { if (busy || buttons[index].disabled) return; if (index === 0) change(); else if (index === 1) refresh(); else close(); }
   function build() {
     panel = document.createElement('section'); panel.className = 'root-settings root-firmware'; panel.hidden = true;
@@ -95,6 +95,7 @@
     }, true);
   }
   window.RootFirmware = {open:function (call, back) {
+    if (window.ThemeRuntime) window.ThemeRuntime.suspend('firmware');
     if (busy) return;
     if (!control) control = window.createRootFirmwareControl(call);
     returnToSettings = back;

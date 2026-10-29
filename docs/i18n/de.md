@@ -73,6 +73,10 @@ No-root: Öffnen Sie zum Neustart der Home-Steuerung Home Helper, wählen Sie He
 
 Nach einer Unterbrechung zuerst `status` ausführen und Protokolle behalten. `restore` stellt LG Home ohne App-Entfernung wieder her; `uninstall` stellt es vor der Entfernung wieder her. Root-Wiederherstellungsdaten bleiben absichtlich erhalten; nicht zum Erzwingen einer Neuinstallation löschen. Diagnoseberichte vor Weitergabe prüfen; Schlüssel und Profilordner nicht veröffentlichen.
 
+Nur im unveröffentlichten Kandidaten, in beiden Editionen: Öffne **Home-Einstellungen → Darstellung → Spalten** und wähle 1–8 Spalten oder **Nach Theme**, um dessen Wert zu verwenden (Classic: 5). Eine feste Zahl hat Vorrang vor dem Theme. Themes mit festem Layout blenden die Spaltenoption aus und verwenden den Wert des Autors. Deine gespeicherte Auswahl gilt wieder, sobald du zu einem Theme wechselst, das diese Einstellung unterstützt. In der Glasshouse-Kandidatenvorschau liegen Apps in einem endlosen horizontalen Band: Links/Rechts blättert im Kreis, Oben öffnet die Schnellzugriffe und Unten kehrt zur selben App zurück. In der Glasshouse-Vorschau lässt sich das Band auch mit Mausrad oder Touchpad bewegen; bei geöffnetem Dialog bleibt Home stehen.
+
+In Theme-Vorschauen des unveröffentlichten Kandidaten mit optionaler Seitenleiste wählst du mit Oben/Unten einen Menüpunkt, wechselst mit Rechts zu den Apps und kehrst mit Links aus der ersten App-Spalte zum Menü zurück.
+
 ## Aktualisierung und Entfernung
 
 Funktionierende Pakete und private Einstellungssicherungen behalten. Bei No-root-Paketersatz vom Computer zuerst Helper stoppen und ohne vorherige Deinstallation aktualisieren, da diese Einstellungen löschen kann. Das Entfernen der Desktop-App entfernt keine TV-Apps. Keine einzelne IPK über eine aktive Root-Laufzeit installieren; den ausdrücklichen Wiederherstellungs- oder Neuinstallationsablauf von cytv verwenden.
@@ -102,3 +106,22 @@ Nach Fehlern oder Unterbrechungen Status prüfen und den Diagnosebericht dieses 
 <a id="neu-in-130--12"></a>
 <a id="unveröffentlichter-kandidat-root-über-homebrew-einrichten"></a>
 <a id="unveröffentlichter-kandidat-hdmi-ton-wiederherstellen-root"></a>
+
+
+## Designs – Entwicklungskandidat
+
+Im Kandidaten mit Design-Unterstützung: **Einstellungen → Darstellung → Designs**. **Classic** und **Alpine** sind integriert und benötigen keinen Design-Download; Classic bleibt Standard. **Channel** ist ein externes Showcase-Design. Beim Galerietest: Nach der Auswahl innerhalb von **20 Sekunden** **Design behalten** wählen. **Zurücksetzen**, Back oder Zeitablauf stellt das vorherige Design wieder her. Ein unterbrochener Versuch startet beim nächsten Home-Aufruf mit Classic. Integrierte und heruntergeladene Designs aus der installierten Liste werden sofort ohne Bestätigungstimer angewendet und gespeichert. Das gilt auch für vom Computer oder per URL installierte Designs. Nur Design testen in der Galerie startet einen 20-Sekunden-Test, auch bei bereits heruntergeladenen Versionen.
+
+Beim Öffnen der Design-Galerie oder mit Aktualisieren wird der Hauptprojekt-Repository auf geprüfte Katalogupdates geprüft, ohne Home-Update oder Neuladen der Seite. Nach einem regulären Merge erscheinen neue Einträge; ein noch nicht integrierter Kandidat kann den mitgelieferten Katalog anzeigen. Offline oder bei Fehlern werden mitgelieferte Einträge und Vorschauen verwendet. Integrierte Designs entsprechen der installierten Home-Version. Vorschau öffnen, dann für integrierte Designs **Design testen** oder für Channel **Design herunterladen** wählen (Internet erforderlich). Nach dem Download testen und innerhalb von **20 Sekunden** **Design behalten** wählen. Installierte Designs funktionieren offline. **Per URL hinzufügen** bleibt für festgelegte Links verfügbar.
+
+Für unveröffentlichte Designs in der Autoren-Vorschau am Computer **An TV senden**, am TV **Vom Computer empfangen** wählen. Beide Geräte müssen im selben vertrauenswürdigen Heimnetz sein: HTTP über den festen TCP-Port **8879**, der in der Computer-Firewall erlaubt sein muss. Private IPv4-Adresse und sechsstellige PIN vom Computer eingeben. Freigabe geöffnet lassen; die Sitzung endet nach **10 Minuten**. Die Adresse wird gespeichert, die PIN nicht. Keine GitHub-Veröffentlichung nötig.
+
+Veröffentlichte Pakete enthalten diese Funktion möglicherweise noch nicht. Browserprüfungen sind kein TV-Kompatibilitätsnachweis. [Vollständige Anleitung](../THEMES.md).
+
+Designs zeigt Vorschauen der integrierten und aller selbst installierten Designs, auch offline. Die separate Schaltfläche für den Designkatalog öffnet veröffentlichte Designs; eine persönliche Installation veröffentlicht kein Design.
+
+## Einstellungskategorien (unveröffentlichter Kandidat)
+
+In beiden Editionen stehen die Kategorien links und ihre Einstellungen rechts: Startbildschirm, Darstellung (Themes und Spalten), Sprache, Software-Updates und Erweitert. No-root bietet zusätzlich Developer Mode; Root bietet LG-Firmware-Updates unter Software-Updates und HDMI-Ton unter Erweitert. Oben/Unten navigiert innerhalb einer Spalte, Rechts öffnet die Einstellungen und Links kehrt zu den Kategorien zurück. Zurück führt zuerst zu den Kategorien und schließt danach die Einstellungen. Tab erreicht auch die Schaltfläche zur Rückkehr zu Home.
+
+Ein gelber Punkt bei Software-Updates und der zugehörigen Schaltfläche zeigt ein verfügbares Update an. Beide verschwinden, wenn eine erfolgreiche Prüfung kein Update bestätigt; bei einem Fehler bleibt der zuletzt bestätigte Stand erhalten.

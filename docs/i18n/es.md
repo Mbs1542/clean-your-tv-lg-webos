@@ -73,6 +73,10 @@ No-root: Para reiniciar el control de Home, abre Home Helper, elige Iniciar Help
 
 Tras una interrupción, ejecuta primero `status` y conserva los registros. `restore` recupera LG Home sin quitar aplicaciones; `uninstall` lo restaura antes de eliminarlas. Los datos de recuperación Root se conservan deliberadamente: no los borres para forzar otra instalación. Revisa los informes antes de compartirlos; no publiques claves ni carpetas de perfiles.
 
+Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Apariencia → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. Los temas con una distribución fija ocultan la opción Columnas y usan el valor del autor. Tu elección guardada se recupera al cambiar a un tema que admita este ajuste. En la vista previa candidata de Glasshouse, las apps forman una cinta horizontal circular: Izquierda/Derecha desplaza, Arriba abre los accesos y Abajo vuelve a la misma app. En la vista previa de Glasshouse también puedes desplazar la cinta con la rueda o el panel táctil; Home no se mueve detrás de un diálogo abierto.
+
+En las vistas previas de temas del candidato no publicado con barra lateral opcional, Arriba/Abajo selecciona una opción del menú, Derecha pasa a las aplicaciones e Izquierda desde la primera columna de aplicaciones vuelve al menú.
+
 ## Actualizaciones y eliminación
 
 Guarda paquetes funcionales y copias privadas de ajustes. Para sustituir paquetes No-root desde el ordenador, detén Helper primero y actualiza sin desinstalar, ya que podrías perder ajustes. Eliminar la aplicación del ordenador no elimina las aplicaciones del televisor. No sustituyas un entorno Root activo con una IPK suelta; usa el proceso explícito de recuperación o reinstalación de cytv.
@@ -102,3 +106,22 @@ Tras un fallo o interrupción, comprueba el estado y guarda el informe de diagn�
 <a id="novedades-de-130--12"></a>
 <a id="candidato-sin-publicar-instalar-root-mediante-homebrew"></a>
 <a id="candidato-sin-publicar-recuperación-de-sonido-hdmi-root"></a>
+
+
+## Temas: candidato en desarrollo
+
+En el candidato compatible: **Ajustes → Apariencia → Temas**. **Classic** y **Alpine** están integrados y no necesitan descargar el tema; Classic sigue como predeterminado. **Channel** es externo, desde showcase. En las pruebas de la galería: Elige el tema y **Conservar tema** antes de **20 segundos**. **Revertir**, Back o el tiempo agotado recuperan el anterior. Una prueba interrumpida inicia Home con Classic. Los temas integrados y descargados elegidos en la lista instalada se aplican y guardan al instante, sin temporizador. Esto incluye los recibidos del ordenador o instalados por URL. Solo Probar tema dentro de la galería inicia una prueba de 20 segundos, incluso para una versión ya descargada.
+
+Al abrir la galería o elegir Actualizar se consultan las novedades revisadas del repositorio principal sin actualizar Home ni recargar la página. Las nuevas entradas aparecen tras la integración normal; un candidato sin integrar puede mostrar el catálogo incluido. Sin conexión o ante errores se usan entradas y vistas previas incluidas. Los temas integrados corresponden a la versión instalada de Home. Abre una y elige **Probar tema** para los integrados o **Descargar tema** para Channel (requiere internet). Tras descargarlo, pruébalo y elige **Conservar tema** en **20 segundos**. Los temas instalados funcionan sin conexión. **Añadir por URL** sigue disponible para enlaces fijados.
+
+Para un tema sin publicar, abre la vista previa de autor en el ordenador y elige **Enviar al TV**; en el TV, **Recibir del ordenador**. Ambos deben estar en la misma red doméstica de confianza: se usa HTTP y el puerto TCP fijo **8879**, permitido en el cortafuegos del ordenador. Introduce su dirección IPv4 privada y el PIN de seis dígitos. Mantén el envío abierto; la sesión caduca en **10 minutos**. Se recuerda la dirección, pero no el PIN. No hace falta publicar en GitHub.
+
+Los paquetes publicados quizá aún no tengan estos controles. Las pruebas de navegador no demuestran compatibilidad física. [Guía completa](../THEMES.md).
+
+Temas muestra vistas previas de los temas integrados y de todos los que hayas instalado, incluso sin conexión. Un botón aparte abre el catálogo de temas publicados; instalar un tema personal no lo publica.
+
+## Categorías de ajustes (candidato no publicado)
+
+Ambas ediciones muestran categorías a la izquierda y ajustes a la derecha: pantalla de inicio, Apariencia (temas y columnas), Idioma, Actualizaciones de software y Avanzado. No-root añade Developer Mode; Root incluye el firmware LG en actualizaciones y sonido HDMI en Avanzado. Arriba/abajo recorre una columna; derecha entra en los ajustes e izquierda vuelve a las categorías. Atrás vuelve primero a las categorías y después cierra los ajustes. Tab también permite volver a Home.
+
+Un punto amarillo en Actualizaciones de software y en el botón interior indica que hay una actualización. Ambos desaparecen cuando una comprobación correcta confirma que no hay actualizaciones; si falla, se conserva el último estado confirmado.

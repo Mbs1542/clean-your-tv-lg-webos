@@ -7,16 +7,19 @@ import json
 import mimetypes
 import shutil
 import runpy
+import subprocess
 from pathlib import Path
 from urllib.parse import unquote, urlsplit
 import webbrowser
 
 ROOT = Path(__file__).resolve().parents[1]
 LAUNCHER_FILES = {
-    'index.html', 'style.css', 'renewal-panel.css', 'app.js', 'app-library.js', 'config.js',
+    'index.html', 'style.css', 'theme-defaults.css', 'theme-policy.js', 'theme-runtime.js', 'home-layout.js', 'layout-panel.js', 'settings-categories.js', 'layout-panel.css', 'renewal-panel.css', 'app.js', 'app-library.js', 'config.js',
     'user-data.js', 'release-notes.js', 'system-updates.js', 'update-panel.js', 'renewal-panel.js', 'helper-control.js', 'profile-bootstrap.js',
     'native-bootstrap.js', 'i18n.js', 'catalogs.js', 'i18n.css', 'fonts/outfit-300.ttf', 'fonts/outfit-400.ttf', 'fonts/outfit-500.ttf', 'fonts/outfit-700.ttf', 'fonts/NotoSans.ttf', 'fonts/NotoSans-OFL.txt', 'fonts/NotoSansDevanagari.ttf', 'fonts/NotoSansDevanagari-OFL.txt', 'fonts/NotoSansKR.ttf', 'fonts/NotoSansKR-OFL.txt', 'fonts/NotoSansSC.ttf', 'fonts/NotoSansSC-OFL.txt', 'fonts/NotoSansTC.ttf', 'fonts/NotoSansTC-OFL.txt', 'fonts/OFL.txt',
 }
+THEME_FILES = ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())
+LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
 DEMO_APPS = [
     ('youtube', 'YouTube', '#ffffff'),
     ('netflix', 'Netflix', '#ffffff'),
@@ -30,12 +33,15 @@ DEMO_APPS = [
     ('hbomax', 'HBO Max', '#5822b4'),
 ]
 ROOT_LAUNCHER_FILES = {
-    'index.html', 'app.js', 'app-library.js', 'style.css', 'config.js', 'apps.js',
+    'index.html', 'app.js', 'app-library.js', 'style.css', 'theme-defaults.css', 'theme-policy.js', 'theme-runtime.js', 'home-layout.js', 'layout-panel.js', 'settings-categories.js', 'layout-panel.css', 'config.js', 'apps.js',
     'fonts/outfit-300.ttf', 'fonts/outfit-400.ttf', 'fonts/outfit-500.ttf', 'fonts/outfit-700.ttf', 'fonts/NotoSans.ttf', 'fonts/NotoSans-OFL.txt', 'fonts/NotoSansDevanagari.ttf', 'fonts/NotoSansDevanagari-OFL.txt', 'fonts/NotoSansKR.ttf', 'fonts/NotoSansKR-OFL.txt', 'fonts/NotoSansSC.ttf', 'fonts/NotoSansSC-OFL.txt', 'fonts/NotoSansTC.ttf', 'fonts/NotoSansTC-OFL.txt', 'fonts/OFL.txt',
     'i18n.js', 'catalogs.js', 'i18n.css', 'root-locales.js', 'root-exit.js', 'root-firmware-control.js', 'root-firmware.js', 'root-audio.js', 'root-audio-locales.js', 'root-settings.js', 'root-settings.css',
     'root-profile-data.js', 'root-profile.js', 'release-notes.js', 'system-updates.js', 'root-updates.js',
 }
 ICON_FILES = {app_id + '.svg' for app_id, _, _ in DEMO_APPS}
+
+
+ROOT_LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
 
 
 def inventory():
@@ -71,7 +77,7 @@ def launcher_html():
 
 def root_launcher():
     # Reuse the isolated Root UI staging, without any installer or runtime services.
-    staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare']()
+    staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare'](json.loads((ROOT / 'launcher/appinfo.json').read_text())['version'])
     files = {name: staged[name] for name in ROOT_LAUNCHER_FILES}
     files['apps.js'] = ('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode()
     files['index.html'] = files['index.html'].replace(
@@ -79,13 +85,13 @@ def root_launcher():
     return files
 
 
-def preview_html(live=True):
+def preview_html(live=True, showcase=False):
     script = ('<script src="preview/live-reload.js" data-version="' + revision() + '"></script>') if live else ''
-    page = (ROOT / 'preview/index.html').read_text().replace('__LIVE_RELOAD__', script)
+    page = (ROOT / 'preview/index.html').read_text().replace('__LIVE_RELOAD__', script).replace('__THEME_SHOWCASE_LINK__', '' if not showcase else '<a class="theme-link" href="themes/index.html">Theme showcase ↗</a>')
     return page if live else page.replace('live reload enabled', 'latest main build').replace('Home · Local Preview', 'Home · Preview')
 
 
-def export_site(destination):
+def export_site(destination, showcase=False):
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     for name in sorted(LAUNCHER_FILES):
@@ -104,7 +110,10 @@ def export_site(destination):
         target = destination / 'root-launcher' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
-    (destination / 'index.html').write_text(preview_html(live=False), encoding='utf-8')
+    (destination / 'index.html').write_text(preview_html(live=False, showcase=showcase), encoding='utf-8')
+    if showcase:
+        subprocess.run(['node', str(ROOT / 'scripts/build-showcase.cjs'),
+                        str(destination / 'themes')], check=True, cwd=ROOT)
     (destination / '.nojekyll').touch()
     for name in ['LICENSE', 'THIRD_PARTY_NOTICES.md']:
         shutil.copyfile(ROOT / name, destination / name)
@@ -170,10 +179,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=8765)
     parser.add_argument('--open', action='store_true', help='open preview in the default browser')
+    parser.add_argument('--showcase', action='store_true', help='include the reviewed theme catalog in a static build (requires Node dependencies)')
     parser.add_argument('--build', type=Path, metavar='DIRECTORY', help='export a static preview for GitHub Pages')
     args = parser.parse_args()
     if args.build:
-        export_site(args.build)
+        export_site(args.build, showcase=args.showcase)
         print(f'Static preview: {args.build}')
         return
     with make_server(args.port) as server:

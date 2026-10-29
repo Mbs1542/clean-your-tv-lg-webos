@@ -2398,3 +2398,91 @@ HomeI18n.add({
     "This update requires a computer migration. Keep recovery records.": "請使用電腦安裝此更新，並保留復原記錄。"
   }
 });
+
+// Home column controls are shared by both editions.
+HomeI18n.add({
+  "en": {
+    "Columns": "Columns",
+    "By theme ({count})": "By theme ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Choose 1–8 columns. Your choice overrides the theme.",
+    "Columns: {count}": "Columns: {count}",
+    "Could not save columns. Please try again.": "Could not save columns. Please try again."
+  },
+  "de": {
+    "Columns": "Spalten",
+    "By theme ({count})": "Nach Theme ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Wähle 1–8 Spalten. Deine Auswahl hat Vorrang vor dem Theme.",
+    "Columns: {count}": "Spalten: {count}",
+    "Could not save columns. Please try again.": "Die Spaltenanzahl konnte nicht gespeichert werden. Bitte versuche es erneut."
+  },
+  "es": {
+    "Columns": "Columnas",
+    "By theme ({count})": "Según el tema ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Elige de 1 a 8 columnas. Tu elección tiene prioridad sobre el tema.",
+    "Columns: {count}": "Columnas: {count}",
+    "Could not save columns. Please try again.": "No se pudo guardar el número de columnas. Inténtalo de nuevo."
+  },
+  "pt-BR": {
+    "Columns": "Colunas",
+    "By theme ({count})": "Conforme o tema ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Escolha de 1 a 8 colunas. Sua escolha tem prioridade sobre o tema.",
+    "Columns: {count}": "Colunas: {count}",
+    "Could not save columns. Please try again.": "Não foi possível salvar o número de colunas. Tente novamente."
+  },
+  "fr": {
+    "Columns": "Colonnes",
+    "By theme ({count})": "Selon le thème ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Choisissez de 1 à 8 colonnes. Votre choix est prioritaire sur le thème.",
+    "Columns: {count}": "Colonnes : {count}",
+    "Could not save columns. Please try again.": "Impossible d’enregistrer le nombre de colonnes. Réessayez."
+  },
+  "it": {
+    "Columns": "Colonne",
+    "By theme ({count})": "Secondo il tema ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Scegli da 1 a 8 colonne. La tua scelta ha la precedenza sul tema.",
+    "Columns: {count}": "Colonne: {count}",
+    "Could not save columns. Please try again.": "Impossibile salvare il numero di colonne. Riprova."
+  },
+  "ko": {
+    "Columns": "열 수",
+    "By theme ({count})": "테마에 따름 ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "1~8열을 선택하세요. 선택한 값이 테마보다 우선합니다.",
+    "Columns: {count}": "열 수: {count}",
+    "Could not save columns. Please try again.": "열 수를 저장할 수 없습니다. 다시 시도하세요."
+  },
+  "hi": {
+    "Columns": "कॉलम",
+    "By theme ({count})": "थीम के अनुसार ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "1–8 कॉलम चुनें। आपकी पसंद को थीम पर प्राथमिकता दी जाएगी।",
+    "Columns: {count}": "कॉलम: {count}",
+    "Could not save columns. Please try again.": "कॉलम की संख्या सेव नहीं हो सकी। फिर से कोशिश करें।"
+  },
+  "pl": {
+    "Columns": "Kolumny",
+    "By theme ({count})": "Według motywu ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Wybierz od 1 do 8 kolumn. Twój wybór ma pierwszeństwo przed motywem.",
+    "Columns: {count}": "Kolumny: {count}",
+    "Could not save columns. Please try again.": "Nie udało się zapisać liczby kolumn. Spróbuj ponownie."
+  },
+  "ru": {
+    "Columns": "Столбцы",
+    "By theme ({count})": "Как в теме ({count})",
+    "Choose 1–8 columns. Your choice overrides the theme.": "Выберите от 1 до 8 столбцов. Ваш выбор имеет приоритет над темой.",
+    "Columns: {count}": "Столбцы: {count}",
+    "Could not save columns. Please try again.": "Не удалось сохранить число столбцов. Попробуйте ещё раз."
+  },
+  "zh-Hans": {
+    "Columns": "列数",
+    "By theme ({count})": "跟随主题（{count}）",
+    "Choose 1–8 columns. Your choice overrides the theme.": "选择 1–8 列。你的选择优先于主题设置。",
+    "Columns: {count}": "列数：{count}",
+    "Could not save columns. Please try again.": "无法保存列数。请重试。"
+  },
+  "zh-Hant": {
+    "Columns": "欄數",
+    "By theme ({count})": "跟隨主題（{count}）",
+    "Choose 1–8 columns. Your choice overrides the theme.": "選擇 1–8 欄。你的選擇優先於主題設定。",
+    "Columns: {count}": "欄數：{count}",
+    "Could not save columns. Please try again.": "無法儲存欄數。請重試。"
+  }
+});

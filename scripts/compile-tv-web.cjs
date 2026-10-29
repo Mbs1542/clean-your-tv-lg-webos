@@ -42,6 +42,9 @@ async function stylesheet(code, filename) {
     // Only the four original values are accepted, not the entire feature family.
     if (usage.feature === 'css-overflow' && /^overflow(?:-[xy])?$/.test(usage.usage.prop) &&
         /^(auto|hidden|scroll|visible)$/.test(usage.usage.value)) return;
+    // CSS1 scalar decorations predate the modern multi-value shorthand.
+    if (usage.feature === 'mdn-text-decoration-shorthand' && usage.usage.prop === 'text-decoration' &&
+        /^(none|underline)$/.test(usage.usage.value)) return;
     unsupported.push(usage.message);
   }})])
     .process(transformed.css, {from: filename, map: false});
@@ -103,6 +106,7 @@ async function compile(files) {
 }
 
 exports.compile = compile;
+exports.stylesheet = stylesheet;
 if (require.main === module) {
   let input = '';
   process.stdin.setEncoding('utf8');

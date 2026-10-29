@@ -34,7 +34,7 @@ class PreviewTest(unittest.TestCase):
 
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / 'clean-your-tv-lg-webos'
-            preview.export_site(output)
+            preview.export_site(output, showcase=True)
             for page in ['index.html', 'launcher/index.html', 'root-launcher/index.html']:
                 resources = Resources()
                 resources.feed((output / page).read_text())

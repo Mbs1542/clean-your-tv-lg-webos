@@ -10,24 +10,37 @@
     return window.HomeI18n ? HomeI18n.html(markup) : markup;
   }
   // Shared layout, focus and remote-control state.
+  var layoutState = window.HomeLayout ? HomeLayout.create(localStorage, CONFIG, window.RootProfileData || window.HomeData) : null;
+  window.HomeLayoutState = layoutState;
   var GRID_LEFT = 112,
     GRID_WIDTH = 1696,
-    MAX_CARD_WIDTH = 360,
-    MAX_CARD_HEIGHT = 202,
     FOCUS_SCALE = 1.1,
     FOCUS_PADDING = 12,
     CARD_GAP = 24,
     ROW_GAP = 90,
     DOCK_PADDING = 28,
     DOCK_TOP = 680,
-    columnCount = Math.max(1, CONFIG.columns || 4),
-    columnWidth = GRID_WIDTH / columnCount,
-    // Leave CARD_GAP between an enlarged focus frame and its idle neighbour.
-    CARD_WIDTH = Math.min(MAX_CARD_WIDTH, Math.floor((columnWidth - FOCUS_PADDING - CARD_GAP) / ((FOCUS_SCALE + 1) / 2))),
-    CARD_HEIGHT = Math.round(CARD_WIDTH * MAX_CARD_HEIGHT / MAX_CARD_WIDTH),
-    DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2,
+    columnCount = Math.max(1, Math.min(8, CONFIG.columns || 5)),
+    columnWidth, CARD_WIDTH, CARD_HEIGHT, DOCK_HEIGHT,
     TILE_BASE = DOCK_TOP + DOCK_PADDING,
-    HERO_OFFSET = 176;
+    HERO_OFFSET = 176,
+    layoutPreset = "dock-grid", layoutGeometry, ribbonStart = 0, ribbonWheelTime = 0;
+  function updateGeometry(columns, preset) {
+    layoutPreset = preset || 'dock-grid';
+    ribbonStart = 0;
+    layoutGeometry = HomeLayout.geometry(layoutPreset, columns);
+    columnCount = columns;
+    GRID_LEFT = layoutGeometry.left; GRID_WIDTH = layoutGeometry.width;
+    columnWidth = layoutGeometry.columnWidth;
+    CARD_WIDTH = layoutGeometry.cardWidth; CARD_HEIGHT = layoutGeometry.cardHeight;
+    DOCK_TOP = layoutGeometry.dockTop; DOCK_PADDING = layoutGeometry.padding;
+    TILE_BASE = layoutGeometry.top; ROW_GAP = layoutGeometry.rowGap;
+    DOCK_HEIGHT = CARD_HEIGHT + DOCK_PADDING * 2;
+    document.getElementById('homeSurface').setAttribute('data-layout', layoutPreset);
+    document.getElementById('homeSurface').classList.toggle('ctv-channel-multi', layoutPreset === 'channel-list' && columns > 1);
+    document.getElementById('homeSurface').classList.toggle('ctv-channel-compact', layoutPreset === 'channel-list' && columns >= 5);
+  }
+  updateGeometry(columnCount);
   var toastTimer,
     KEY_OK = 13,
     KEY_BACK = 461,
@@ -54,6 +67,7 @@
     inputRows = [],
     scrollOffset = 0,
     heroVisible = false,
+    channelArtwork = null,
     focusGlassVisible = false,
     moveState = null,
     activeBridges = [];
@@ -158,7 +172,20 @@
     undoBar,
     undoButton,
     pointerTimer = null,
+    pointerNavigation = true,
     suppressClick = false;
+  // A scrolling list can cross a stationary cursor and generate mouseover.
+  // Remote input owns focus until the pointer actually moves or is clicked.
+  document.addEventListener('mousemove', function () { pointerNavigation = true; }, true);
+  document.addEventListener('keydown', function (event) {
+    if ((layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') && [13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
+  }, true);
+  document.addEventListener('mousedown', function () { pointerNavigation = true; }, true);
+  function bindPointerFocus(element, action) {
+    function hover() { if ((layoutPreset !== 'channel-list' && layoutPreset !== 'scenic-grid') || pointerNavigation) action(); }
+    element.addEventListener('mouseover', hover);
+    element.addEventListener('mousemove', function () { if (layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') hover(); });
+  }
   function screenIds() {
     return tiles.filter(function (item) {
       return !item.add;
@@ -179,10 +206,10 @@
     tilesContainer.innerHTML = "";
     tiles = library.visible().map(createTile);
     var el = document.createElement('div');
-    el.className = 'item add-app';
+    el.className = 'item add-app ctv-tile';
     el.setAttribute('role', 'button');
     el.setAttribute('aria-label', tr('Add app'));
-    el.innerHTML = ht('<div class="card"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name">Add app</div>');
+    el.innerHTML = ht('<div class="card ctv-card"><svg class="ctv-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name ctv-label">Add app</div>');
     var item = {
       add: true,
       app: {
@@ -191,8 +218,8 @@
       el: el,
       color: [100, 110, 125]
     };
-    el.addEventListener('mouseover', function () {
-      if (!moveState && !pickerOpen && !undoState) {
+    bindPointerFocus(el, function () {
+      if (!moveState && !pickerOpen && !undoState && (focusZone !== 'grid' || tiles[focusedTile] !== item)) {
         focusTile(tiles.length - 1);
       }
     });
@@ -245,7 +272,7 @@
       item: item,
       snapshot: tiles.slice()
     };
-    item.el.classList.add('moving');
+    setPartState(item.el, 'moving', true);
     document.body.classList.add('editing');
     hideButton.hidden = false;
     editHint.hidden = false;
@@ -320,7 +347,7 @@
     }
     moveState = null;
     hideSelected = false;
-    item.el.classList.remove('moving');
+    setPartState(item.el, 'moving', false);
     document.body.classList.remove('editing');
     hideButton.hidden = true;
     editHint.hidden = true;
@@ -384,21 +411,25 @@
     pickerButtons = [];
     apps.forEach(function (app) {
       var button = document.createElement('button');
-      button.className = 'app-choice';
+      button.className = 'app-choice ctv-library-row';
       button.dataset.appId = app.id;
       var icon = document.createElement('img');
+      icon.className = 'ctv-icon';
       icon.src = app.icon || '';
       icon.alt = '';
       icon.onerror = function () {
         icon.style.visibility = 'hidden';
       };
       var title = document.createElement('span');
+      title.className = 'ctv-label';
       title.textContent = app.title;
       button.appendChild(icon);
       button.appendChild(title);
       button.addEventListener('focus', function () {
         pickerIndex = pickerButtons.indexOf(button);
+        setPartState(button, 'focused', true);
       });
+      button.addEventListener('blur', function () { setPartState(button, 'focused', false); });
       button.addEventListener('click', function () {
         try {
           library.add(app.id);
@@ -449,7 +480,7 @@
     hideButton.id = 'hideApp';
     hideButton.hidden = true;
     hideButton.innerHTML = ht('<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10 5.2c5.5-1 10 6.8 10 6.8a20 20 0 0 1-3 3M6 6C3.4 8 2 12 2 12s4 7 10 7c1.4 0 2.7-.4 4-1M9 9a4.2 4.2 0 0 0 6 6"/></svg><span>Hide from Home</span>');
-    hideButton.addEventListener('mouseover', selectHide);
+    bindPointerFocus(hideButton, function () { if (!hideSelected) selectHide(); });
     hideButton.addEventListener('click', hideApp);
     document.body.appendChild(hideButton);
     editHint = document.createElement('div');
@@ -475,12 +506,15 @@
     picker.setAttribute('role', 'dialog');
     picker.setAttribute('aria-modal', 'true');
     picker.setAttribute('aria-labelledby', 'appPickerTitle');
-    picker.innerHTML = ht('<div class="app-picker-card"><h2 id="appPickerTitle">Add app</h2><p id="appPickerStatus" role="status"></p><div id="appPickerList"></div><button id="appPickerClose">Back to Home</button></div>');
-    document.body.appendChild(picker);
+    picker.innerHTML = ht('<div class="app-picker-card ctv-library-panel"><h2 id="appPickerTitle">Add app</h2><p id="appPickerStatus" role="status"></p><div id="appPickerList"></div><button id="appPickerClose" class="ctv-library-close">Back to Home</button></div>');
+    picker.className = 'ctv-library';
+    getElement('homeSurface').appendChild(picker);
     pickerList = getElement('appPickerList');
     pickerStatus = getElement('appPickerStatus');
     pickerClose = getElement('appPickerClose');
     pickerClose.addEventListener('click', closePicker);
+    pickerClose.addEventListener('focus', function () { pickerIndex = pickerButtons.indexOf(pickerClose); setPartState(pickerClose, 'focused', true); });
+    pickerClose.addEventListener('blur', function () { setPartState(pickerClose, 'focused', false); });
     document.addEventListener('mouseup', function () {
       clearTimeout(pointerTimer);
       pointerTimer = null;
@@ -559,12 +593,12 @@
   // Tile rendering, icon colors and grid geometry.
   function createTile(app) {
     var element = document.createElement("div");
-    element.className = "item";
+    element.className = "item ctv-tile";
     element.dataset.appId = app.id;
     element.setAttribute("role", "button");
     element.setAttribute("aria-label", app.title);
     var card = document.createElement("div");
-    card.className = "card";
+    card.className = "card ctv-card";
     var image = document.createElement("img"),
       tile = {
         app: app,
@@ -572,6 +606,7 @@
         card: card,
         color: null
       };
+    image.className = 'ctv-icon';
     image.onload = function () {
       !function (e, t) {
         var n = null,
@@ -597,6 +632,8 @@
         } catch (e) {}
         var r = null;
         a && a[3] > 200 ? e.card.style.background = "rgb(" + a[0] + "," + a[1] + "," + a[2] + ")" : (e.card.classList.add("glyph"), e.card.style.background = tileBackground(e.app.iconColor), r = "#2c2c2e" === tileBackground(e.app.iconColor) ? null : parseHexColor(e.app.iconColor));
+        e.brandBackground = e.card.style.background;
+        if (layoutPreset === 'channel-list') e.card.style.background = '';
         e.color = r || (n ? function (e) {
           for (var t = null, n = -1, a = [0, 0, 0], i = 0, o = 0; o < e.length; o += 4) if (!(e[o + 3] < 128)) {
             var r = [e[o], e[o + 1], e[o + 2]];
@@ -630,39 +667,63 @@
     card.appendChild(image);
     element.appendChild(card);
     var label = document.createElement("div");
-    return label.className = "name", label.textContent = app.title, element.appendChild(label), element.addEventListener("mouseover", function () {
-      "inputs" === focusZone || pickerOpen || undoState || (moveState ? pointerMove(tile) : focusTile(tiles.indexOf(tile)));
+    return label.className = "name ctv-label", label.textContent = app.title, element.appendChild(label), bindPointerFocus(element, function () {
+      "inputs" === focusZone || pickerOpen || undoState || (moveState ? pointerMove(tile) : (focusZone !== 'grid' || tiles[focusedTile] !== tile) && focusTile(tiles.indexOf(tile)));
     }), element.addEventListener("click", function () {
       tileClick(tile);
     }), bindHold(tile), tilesContainer.appendChild(element), tile;
   }
+  function ribbonSlot(index) { return ((index - ribbonStart) % tiles.length + tiles.length) % tiles.length; }
+  function stepRibbon(direction) {
+    var index = (focusedTile + direction + tiles.length) % tiles.length;
+    if (tiles.length > columnCount && ribbonSlot(index) >= columnCount) {
+      ribbonStart = direction < 0 ? index : (index - columnCount + 1 + tiles.length) % tiles.length;
+    }
+    focusTile(index);
+  }
   function rowFor(index) {
-    return Math.floor(index / columnCount);
+    return layoutPreset === 'scenic-grid' ? 0 : Math.floor(index / columnCount);
   }
   function tileLeft(index) {
-    return GRID_LEFT + index % columnCount * columnWidth + (columnWidth - CARD_WIDTH) / 2;
+    return GRID_LEFT + (layoutPreset === 'scenic-grid' ? ribbonSlot(index) : index % columnCount) * columnWidth + (columnWidth - CARD_WIDTH) / 2;
   }
   function tileTop(index) {
     var row = rowFor(index);
-    return TILE_BASE + (CARD_HEIGHT + ROW_GAP) * row + (row > 0 ? 36 : 0);
+    return TILE_BASE + (CARD_HEIGHT + ROW_GAP) * row + (row > 0 ? layoutGeometry.rowExtra : 0);
   }
   function layoutTiles() {
     tiles.forEach(function (e, t) {
-      tilesContainer.appendChild(e.el);
+      if (layoutPreset !== 'scenic-grid') tilesContainer.appendChild(e.el);
+      else if (tilesContainer.children[t] !== e.el) tilesContainer.insertBefore(e.el, tilesContainer.children[t] || null);
       e.el.style.width = CARD_WIDTH + "px";
       e.el.querySelector(".card").style.height = CARD_HEIGHT + "px";
+      if (e.card && typeof e.brandBackground === 'string') e.card.style.background = layoutPreset === 'channel-list' ? '' : e.brandBackground;
+      var slot = layoutPreset === 'scenic-grid' ? ribbonSlot(t) : null;
+      var previousSlot = Number(e.el.getAttribute('data-ribbon-slot'));
+      e.el.style.transition = slot === null ? '' : e.el.hasAttribute('data-ribbon-slot') && Math.abs(previousSlot - slot) === 1 && previousSlot <= columnCount && slot <= columnCount ? 'left 160ms ease-out' : 'none';
+      e.el.style.pointerEvents = slot !== null && slot >= columnCount ? 'none' : '';
+      if (slot === null) e.el.removeAttribute('data-ribbon-slot'); else e.el.setAttribute('data-ribbon-slot', slot);
       e.el.style.left = tileLeft(t) + "px";
       e.el.style.top = tileTop(t) + "px";
-      e.el.classList.toggle("dock", 0 === rowFor(t));
+      e.el.classList.toggle("dock", layoutGeometry.dock && 0 === rowFor(t));
+      e.el.setAttribute("data-channel", t < 9 ? "0" + (t + 1) : String(t + 1));
     });
     var dockBand = getElement("dockBand"),
       dockCount = Math.min(columnCount, tiles.length);
-    dockBand.style.display = dockCount ? "block" : "none";
+    dockBand.style.display = dockCount && layoutGeometry.dock ? "block" : "none";
     dockBand.style.left = tileLeft(0) - DOCK_PADDING + "px";
     dockBand.style.top = DOCK_TOP + "px";
     dockBand.style.width = (dockCount - 1) * columnWidth + CARD_WIDTH + DOCK_PADDING * 2 + "px";
     dockBand.style.height = DOCK_HEIGHT + "px";
   }
+  if (layoutState) layoutState.onchange = function (state) {
+    updateGeometry(state.columns, state.preset);
+    scrollOffset = 0;
+    layoutTiles();
+    focusTile(focusedTile);
+    updateClock();
+    var event = document.createEvent('Event'); event.initEvent('home-layout-change', false, false); document.dispatchEvent(event);
+  };
   function animateTiles() {
     tiles.forEach(function (e, t) {
       e.el.classList.remove("shown");
@@ -708,20 +769,42 @@
     });
   }
   // Focus follows both remote navigation and Magic Remote hover.
+  function setPartState(element, state, enabled) {
+    if (!element) return;
+    element.classList.toggle(state, enabled);
+    element.classList.toggle('is-' + state, enabled);
+    var label = element.querySelector('.ctv-label');
+    if (label) label.classList.toggle('is-' + state, enabled);
+    var card = element.querySelector('.ctv-card');
+    if (card) card.classList.toggle('is-' + state, enabled);
+  }
   function focusTile(index) {
     if (tiles.length) {
       index = Math.max(0, Math.min(index, tiles.length - 1));
       setFocusZone("grid");
-      tiles[focusedTile] && tiles[focusedTile].el.classList.remove("focused");
+      tiles[focusedTile] && setPartState(tiles[focusedTile].el, 'focused', false);
       focusedTile = index;
-      tiles[index].el.classList.add("focused");
+      if (layoutPreset === 'scenic-grid') {
+        ribbonStart = ribbonStart % tiles.length;
+        if (ribbonSlot(index) >= Math.min(columnCount, tiles.length)) ribbonStart = (index - columnCount + 1 + tiles.length) % tiles.length;
+        layoutTiles();
+      }
+      setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
-      0 === row && !moveState ? scrollOffset = 0 : (top - scrollOffset + CARD_HEIGHT + 70 > (moveState ? 850 : 1060) && (scrollOffset = top + CARD_HEIGHT + 70 - (moveState ? 850 : 1060)), top - scrollOffset - 24 < 80 && (scrollOffset = top - 24 - 80));
+      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', '← ' + (index + 1) + ' / ' + tiles.length + ' →');
+      var ceiling = layoutGeometry.scrollTop;
+      var floor = moveState ? 850 : layoutGeometry.scrollBottom;
+      if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);
+      else if (row === 0 && !moveState) scrollOffset = 0;
+      else {
+        if (top - scrollOffset + CARD_HEIGHT + 70 > floor) scrollOffset = top + CARD_HEIGHT + 70 - floor;
+        if (top - scrollOffset - 24 < ceiling) scrollOffset = Math.max(0, top - 24 - ceiling);
+      }
       stage.style.transform = "translateY(" + -scrollOffset + "px)";
       var header = document.querySelector("header"),
         headerBottom = header.offsetTop + header.offsetHeight;
-      document.body.classList.toggle("scrolled", DOCK_TOP - scrollOffset < headerBottom + 24);
+      document.body.classList.toggle("scrolled", layoutPreset === "dock-grid" && DOCK_TOP - scrollOffset < headerBottom + 24);
       var glassWidth = FOCUS_SCALE * CARD_WIDTH + FOCUS_PADDING * 2,
         glassHeight = FOCUS_SCALE * CARD_HEIGHT + FOCUS_PADDING * 2,
         glassLeft = tileLeft(index) + CARD_WIDTH / 2 - glassWidth / 2,
@@ -730,10 +813,31 @@
       focusGlass.style.height = glassHeight + "px";
       focusGlass.style.transform = "translate(" + glassLeft + "px," + glassTop + "px)";
       focusGlassVisible || (focusGlass.style.transition = "none", focusGlass.offsetWidth, focusGlass.style.transition = "", focusGlass.style.opacity = "1", focusGlassVisible = true);
-      0 === row ? function (e) {
+      if (layoutPreset === 'channel-list') {
+        if (!channelArtwork) {
+          channelArtwork = document.createElement('img'); channelArtwork.id = 'channelArtwork';
+          channelArtwork.className = 'ctv-icon'; channelArtwork.alt = ''; channelArtwork.setAttribute('aria-hidden', 'true');
+          channelArtwork.onload = function () { channelArtwork.style.visibility = channelArtwork.naturalWidth > 0 ? 'visible' : 'hidden'; };
+          channelArtwork.onerror = function () { channelArtwork.style.visibility = 'hidden'; };
+          getElement('homeSurface').appendChild(channelArtwork);
+        }
+        if (tiles[index].app.icon) {
+          channelArtwork.style.visibility = channelArtwork.complete && channelArtwork.naturalWidth > 0 && channelArtwork.getAttribute('src') === tiles[index].app.icon ? 'visible' : 'hidden';
+          if (channelArtwork.getAttribute('src') !== tiles[index].app.icon) channelArtwork.src = tiles[index].app.icon;
+        } else { channelArtwork.style.visibility = 'hidden'; channelArtwork.removeAttribute('src'); }
+        heroTitle.setAttribute('data-position', (index + 1) + ' / ' + tiles.length);
+      }
+      (layoutPreset === "channel-list" || layoutPreset === "scenic-grid" || layoutPreset === "dock-grid" && 0 === row) ? function (e) {
         var t = e.app.title;
-        heroTitle.style.top = (TILE_BASE - HERO_OFFSET) + "px";
-        heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
+        heroTitle.style.fontSize = layoutPreset === "scenic-grid" && t.length > 100 ? (t.length > 160 ? "20px" : "26px") : "";
+        heroTitle.style.top = (layoutPreset === "channel-list" ? 548 : layoutPreset === "scenic-grid" ? TILE_BASE - 142 : TILE_BASE - HERO_OFFSET) + "px";
+        if (layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') {
+          clearTimeout(heroTitle.swap);
+          heroTitle.textContent = t;
+          heroTitle.style.transform = 'none';
+          heroTitle.style.opacity = '1';
+          heroVisible = true;
+        } else heroVisible ? heroTitle.textContent !== t && (heroTitle.style.opacity = "0", heroTitle.style.transform = "translateX(-24px)", clearTimeout(heroTitle.swap), heroTitle.swap = setTimeout(function () {
           heroTitle.textContent = t;
           heroTitle.style.transition = "none";
           heroTitle.style.transform = "translateX(24px)";
@@ -753,7 +857,17 @@
       if (color !== ambientColor) {
         ambientColor = color;
         var nextLayer = ambientLayers[1 - ambientIndex];
-        nextLayer.style.background = "radial-gradient(circle 1190px at 32% 42%, rgba(" + color + ",0.36) 0%, rgba(" + color + ",0.15) 50%, rgba(" + color + ",0) 100%)";
+        var ambientSheet = getElement('ctv-ambient-style');
+        if (!ambientSheet) {
+          ambientSheet = document.createElement('style'); ambientSheet.id = 'ctv-ambient-style';
+          document.head.appendChild(ambientSheet);
+        }
+        // A scoped author rule can override this trusted default; inline CSS could not.
+        var previousAmbient = ambientSheet.textContent.split('\n').filter(function (rule) {
+          return rule.indexOf('#' + nextLayer.id + '{') !== 0;
+        });
+        previousAmbient.push('#' + nextLayer.id + '{background-image:radial-gradient(circle 1190px at 32% 42%, rgba(' + color + ',0.36) 0%, rgba(' + color + ',0.15) 50%, rgba(' + color + ',0) 100%);}');
+        ambientSheet.textContent = previousAmbient.join('\n');
         nextLayer.style.opacity = "1";
         ambientLayers[ambientIndex].style.opacity = "0";
         ambientIndex = 1 - ambientIndex;
@@ -763,12 +877,12 @@
   function focusTopButton(index) {
     setFocusZone("top");
     document.body.classList.remove("scrolled");
-    topButtons[focusedTopButton].classList.remove("focused");
+    setPartState(topButtons[focusedTopButton], 'focused', false);
     focusedTopButton = Math.max(0, Math.min(index, topButtons.length - 1));
-    topButtons[focusedTopButton].classList.add("focused");
+    setPartState(topButtons[focusedTopButton], 'focused', true);
   }
   function setFocusZone(zone) {
-    focusZone !== zone && ("top" === focusZone && topButtons[focusedTopButton].classList.remove("focused"), "grid" === focusZone && (tiles[focusedTile] && tiles[focusedTile].el.classList.remove("focused"), focusGlassVisible = false, focusGlass.style.opacity = "0"), focusZone = zone);
+    focusZone !== zone && ("top" === focusZone && setPartState(topButtons[focusedTopButton], 'focused', false), "grid" === focusZone && (tiles[focusedTile] && setPartState(tiles[focusedTile].el, 'focused', false), focusGlassVisible = false, focusGlass.style.opacity = "0"), focusZone = zone);
   }
   function updateClock() {
     var now = new Date(),
@@ -778,8 +892,9 @@
       break;
     }
     if (window.HomeI18n) {
-      getElement("clock").textContent = HomeI18n.formatTime(now);
-      getElement("ampm").textContent = "";
+      var time = HomeI18n.formatTime(now), period = layoutPreset === 'scenic-grid' ? time.match(/\s+(AM|PM)$/i) : null;
+      getElement("clock").textContent = period ? time.slice(0, period.index) : time;
+      getElement("ampm").textContent = period ? period[1] : "";
       getElement("date").textContent = HomeI18n.formatDate(now);
     } else {
       getElement("clock").textContent = (hour % 12 || 12) + ":" + ("0" + now.getMinutes()).slice(-2);
@@ -797,7 +912,7 @@
         inputsPanel.style.top = e.bottom + 20 + "px";
         inputsPanel.style.minWidth = Math.max(e.width, 300) + "px";
         inputsPanel.classList.remove("hidden");
-        topButtons[focusedTopButton].classList.remove("focused");
+        setPartState(topButtons[focusedTopButton], 'focused', false);
         focusZone = "inputs";
         focusInput(0);
       } else {
@@ -812,12 +927,12 @@
   }
   function addInputRow(iconPath, label, appId) {
     var element = document.createElement("div");
-    element.className = "inputRow";
+    element.className = "inputRow ctv-input-row";
     element.innerHTML = ht('<svg viewBox="0 0 24 24"><path d="') + iconPath + '"/></svg>';
     element.appendChild(document.createTextNode(label));
     var index = inputRows.length;
-    element.addEventListener("mouseover", function () {
-      focusInput(index);
+    bindPointerFocus(element, function () {
+      if (focusedInput !== index) focusInput(index);
     });
     element.addEventListener("click", function () {
       closeInputs();
@@ -829,9 +944,9 @@
     inputsPanel.appendChild(element);
   }
   function focusInput(index) {
-    inputRows[focusedInput] && inputRows[focusedInput].classList.remove("focused");
+    inputRows[focusedInput] && setPartState(inputRows[focusedInput], 'focused', false);
     focusedInput = Math.max(0, Math.min(index, inputRows.length - 1));
-    inputRows[focusedInput].classList.add("focused");
+    setPartState(inputRows[focusedInput], 'focused', true);
   }
   function closeInputs() {
     inputsPanel.classList.add("hidden");
@@ -850,7 +965,7 @@
       tiles = moveState.snapshot;
     }
     moveState = null;
-    item.el.classList.remove("moving");
+    setPartState(item.el, 'moving', false);
     document.body.classList.remove("editing");
     hideSelected = false;
     hideButton.hidden = true;
@@ -869,7 +984,7 @@
     updateClock();
     "inputs" === focusZone && inputsPanel.classList.add("hidden");
     topButtons.forEach(function (e) {
-      e.classList.remove("focused");
+      setPartState(e, 'focused', false);
     });
     focusZone = "none";
     focusTile(focusedTile);
@@ -896,11 +1011,11 @@
     } else {
       if (key === KEY_OK && (okPressed = true), moveState) {
         if (37 === key) {
-          moveTile(focusedTile - 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile - 1 + tiles.length - 1) % (tiles.length - 1) : focusedTile - 1);
         } else if (39 === key) {
-          moveTile(focusedTile + 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile + 1) % (tiles.length - 1) : focusedTile + 1);
         } else if (38 === key) {
-          moveTile(focusedTile - columnCount);
+          if (layoutPreset !== 'scenic-grid') moveTile(focusedTile - columnCount);
         } else if (40 === key) {
           if (rowFor(focusedTile) >= rowFor(tiles.length - 2)) {
             selectHide();
@@ -935,7 +1050,11 @@
           closeInputs();
         }
       } else if ("top" === focusZone) {
-        if (37 === key) {
+        if (layoutPreset === 'side-grid' && (38 === key || 40 === key)) {
+          focusTopButton(focusedTopButton + (40 === key ? 1 : -1));
+        } else if (layoutPreset === 'side-grid' && 39 === key) {
+          focusTile(focusedTile);
+        } else if (37 === key) {
           focusTopButton(focusedTopButton - 1);
         } else if (39 === key) {
           focusTopButton(focusedTopButton + 1);
@@ -950,9 +1069,12 @@
         var column = focusedTile % columnCount,
           lastIndex = tiles.length - 1;
         if (37 === key) {
-          column > 0 && focusTile(focusedTile - 1);
+          if (layoutPreset === 'scenic-grid') stepRibbon(-1);
+          else if (column > 0) focusTile(focusedTile - 1);
+          else if (layoutPreset === 'side-grid') focusTopButton(focusedTopButton);
         } else if (39 === key) {
-          column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
+          if (layoutPreset === 'scenic-grid') stepRibbon(1);
+          else column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
         } else if (38 === key) {
           0 === rowFor(focusedTile) ? focusTopButton((tileCenter = tileLeft(focusedTile) + CARD_WIDTH / 2, nearestButton = 0, nearestDistance = 1 / 0, topButtons.forEach(function (e, t) {
             var n = e.getBoundingClientRect(),
@@ -975,8 +1097,8 @@
     }
   });
   topButtons.forEach(function (e, t) {
-    e.addEventListener("mouseover", function () {
-      "inputs" !== focusZone && !moveState && !pickerOpen && !undoState && focusTopButton(t);
+    bindPointerFocus(e, function () {
+      "inputs" !== focusZone && !moveState && !pickerOpen && !undoState && (focusZone !== 'top' || focusedTopButton !== t) && focusTopButton(t);
     });
     e.addEventListener("click", function () {
       if (!moveState && !pickerOpen && !undoState) {
@@ -984,8 +1106,22 @@
       }
     });
   });
+  getElement('viewport').addEventListener('wheel', function (event) {
+    if (layoutPreset !== 'scenic-grid' || focusZone !== 'grid' || moveState || pickerOpen || undoState ||
+        window.ThemeRuntime && ThemeRuntime.isSuspended && ThemeRuntime.isSuspended()) return;
+    var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+    if (!delta) return;
+    event.preventDefault();
+    if (ribbonWheelTime && event.timeStamp - ribbonWheelTime < 140) return;
+    ribbonWheelTime = event.timeStamp; pointerNavigation = false;
+    stepRibbon(delta > 0 ? 1 : -1);
+  }, false);
   document.addEventListener("webOSRelaunch", restoreFocus);
   document.addEventListener("visibilitychange", function () {
+    if (window.ThemeRuntime) {
+      if (document.hidden) ThemeRuntime.suspend('visibility');
+      else ThemeRuntime.resume('visibility');
+    }
     document.hidden || restoreFocus();
   });
   initializeApps();
@@ -1005,4 +1141,5 @@
   focusZone = "none";
   focusTile(0);
   window.RootLauncherRendered = true;
+  if (window.ThemeManager) ThemeManager.start();
 }();

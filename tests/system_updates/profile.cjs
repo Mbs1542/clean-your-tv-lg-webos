@@ -37,6 +37,11 @@ function harness(edition, {unavailable=false, corrupt=false, versionMismatch=fal
     h.memory.set('tvhome.language','de');
     h=harness(edition,{storage:h.memory});await tick();
     assert.equal(h.memory.get('tvhome.language'),'de',edition+' must restore a transaction only once and preserve later user settings');
+    h=harness(edition,{storage:new Map([['tvhome.columns.v1','{"version":1,"columns":8}']])});await tick();
+    assert.equal(h.memory.has('tvhome.columns.v1'),false,edition+' snapshot columns must not be overridden by a later local preference');
+    h.memory.set('tvhome.columns.v1','{"version":1,"columns":2}');
+    h=harness(edition,{storage:h.memory});await tick();
+    assert.equal(h.memory.get('tvhome.columns.v1'),'{"version":1,"columns":2}',edition+' repeated startup preserves a post-restore column choice');
     h=harness(edition,{noBackup:true});await tick();
     assert.equal(h.scripts.length,1,edition+' null independent snapshot must retain legacy startup');
     assert.equal(h.window.TV_APPS.apps[0].id,'packaged','null snapshot must not apply unrelated inventory');
