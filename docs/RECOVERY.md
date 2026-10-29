@@ -15,6 +15,15 @@ If controls fail again, leave LG Home active and save diagnostics. Do not repeat
 clear stop flags after a fault. A Quick Access assignment to Home offers another
 way to open it, but does not restart Helper.
 
+## No-root watchdog recovery (unpublished candidate)
+
+The source candidate can recover a transient relay/controller watchdog timeout,
+including the standby timing reported in #155, with at most five attempts in ten
+minutes. Stop and triple Home remain persistent stops and require explicit
+**Start Helper**. Repeated faults or failed input cleanup also leave Helper
+stopped. Physical-TV acceptance of this candidate is pending; see
+[recovery behavior and limits](HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+
 ## Interrupted setup or removal
 
 <a id="interrupted-setup-or-removal-in-110"></a>

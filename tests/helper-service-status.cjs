@@ -12,3 +12,6 @@ cmdline='unrelated-process\0';assert.equal(status().running,false,'stale PID is 
 cmdline='node\0/media/developer/apps/usr/palm/applications/com.local.nativehome/native.js\0';assert.equal(status().running,true,'recognize startup before process title changes');
 pid='../bad';assert.equal(status().running,false,'reject invalid PID before reading proc');
 console.log('PASS Helper status after process rename, startup, stale PID and invalid PID');
+
+// A watchdog orphan must suppress automatic boot just like an emergency stop.
+for(const name of ['blocked','watchdog']){fakefs.statSync=p=>{if(p.endsWith('/'+name))return {};throw Object.assign(Error('missing'),{code:'ENOENT'});};assert.equal(status().blocked,true,name+' latch visible to boot/status service');}

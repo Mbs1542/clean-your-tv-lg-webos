@@ -34,6 +34,8 @@ try {
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /PASS Helper runtime/);
   console.log(result.stdout.trim());
+  cp.execFileSync(process.execPath, ['--test', 'tests/controller-watchdog.cjs'], {env: {...process.env, HELPER_CONTROLLER_ROOT: output}, stdio: 'pipe'});
+  console.log('PASS compiled Helper watchdog recovery and stop regressions');
 } finally {
   fs.rmSync(output, {recursive: true, force: true});
 }
