@@ -81,7 +81,7 @@
       refreshMode().then(function () { message.textContent = t(error); });
     });
   }
-  var order = [3, 1, 9, 8, 5, 4, 0, 7, 6, 2];
+  var order = [3, 1, 9, 8, 10, 11, 5, 4, 0, 7, 6, 2];
   function focus(index) {
     selected = index;
     if (!buttons[selected].disabled && !buttons[selected].hidden) buttons[selected].focus();
@@ -106,6 +106,8 @@
     if (index === 5) { if (window.HomeI18n) window.HomeI18n.openLanguagePicker(); return; }
     if (index === 9) { if (window.HomeThemePanel) window.HomeThemePanel.open(); return; }
     if (index === 8) { if (window.HomeLayoutPanel) window.HomeLayoutPanel.open(); return; }
+    if (index === 10) { if (window.HomeAppControls) HomeAppControls.toggle(); return; }
+    if (index === 11) { if (window.HomeAppControls) { close(); HomeAppControls.add(); } return; }
     if (index === 3) return changeMode();
     if (index === 7) {
       if (!window.RootAudio) return;
@@ -149,16 +151,19 @@
     var more = document.createElement('section'); more.className = 'settings-section'; card.appendChild(more);
     var themes = document.createElement('div'); themes.className = 'renewal-actions settings-layout'; more.appendChild(themes);
     var layout = document.createElement('div'); layout.className = 'renewal-actions settings-layout'; more.appendChild(layout);
+    var apps = document.createElement('div'); apps.className = 'renewal-actions settings-layout'; more.appendChild(apps);
     var links = document.createElement('div'); links.className = 'renewal-actions settings-links'; more.appendChild(links);
     var firmware = document.createElement('div'); firmware.className = 'renewal-actions settings-firmware'; more.appendChild(firmware);
     var footer = document.createElement('div'); footer.className = 'settings-footer'; card.appendChild(footer);
     var back = document.createElement('div'); back.className = 'renewal-actions'; footer.appendChild(back);
     buttons = [];
     order.forEach(function (i) {
-      var labels = ['TV settings','Open LG Home','Back to Home','Change Home','Software updates','Language','LG firmware updates','HDMI sound','Columns','Themes'];
+      var labels = ['TV settings','Open LG Home','Back to Home','Change Home','Software updates','Language','LG firmware updates','HDMI sound','Columns','Themes','Show Add app tile','Add app'];
       var b = document.createElement('button'); b.textContent = t(labels[i]);
       if (i === 3) { b.className = 'home-routing-switch'; b.setAttribute('role','switch'); b.setAttribute('aria-checked','false'); }
-      var target = i === 9 ? themes : i === 8 ? layout : i === 6 || i === 7 ? firmware : i === 3 || i === 1 ? homeActions : i === 4 || i === 0 || i === 5 ? links : back;
+      var target = i === 10 || i === 11 ? apps : i === 9 ? themes : i === 8 ? layout : i === 6 || i === 7 ? firmware : i === 3 || i === 1 ? homeActions : i === 4 || i === 0 || i === 5 ? links : back;
+      if (i === 10) { b.id = 'homeShowAddApp'; b.className = 'home-routing-switch'; b.setAttribute('role','switch'); b.setAttribute('aria-checked','true'); }
+      if (i === 11) b.id = 'homeAddApp';
       if (i === 9) { b.hidden=true; b.disabled=true; }
       if (i === 8) b.id = 'homeColumns';
       if (i === 1) {
@@ -173,10 +178,11 @@
       buttons[i] = b;
     });
     themes.id='homeThemeHost';if(window.HomeThemePanel)HomeThemePanel.mount(themes);
+    var appsError = text(apps, 'p', ''); appsError.id = 'homeAppsError'; appsError.setAttribute('role','alert');
     text(home, 'p', 'Open LG Home once, keeping your Home choice.', 'home-visit-hint').id = 'rootHomeVisitHint';
     if(window.SettingsCategories) categories = SettingsCategories.attach(panel, card, [
       {id:'home',label:'Your Home screen',elements:[home]},
-      {id:'appearance',label:'Appearance',elements:[themes,layout]},
+      {id:'appearance',label:'Appearance',elements:[themes,layout,apps]},
       {id:'language',label:'Language',elements:[buttons[5]]},
       {id:'updates',label:'Software updates',elements:[buttons[4],buttons[6]]},
       {id:'advanced',label:'Advanced',elements:[buttons[0],buttons[7]]}
@@ -198,6 +204,7 @@
     open: function () {
       if (!panel) build();
       if (!panel.hidden) return;
+      if (window.HomeAppControls) HomeAppControls.refresh();
       if (window.HomeLayoutPanel) HomeLayoutPanel.refreshAvailability();
       if (window.ThemeRuntime) window.ThemeRuntime.suspend('settings');
       previous = document.activeElement;

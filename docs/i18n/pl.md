@@ -75,6 +75,8 @@ Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore`
 
 Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Wygląd → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Alpine aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Alpine pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
 
+Nieopublikowany kandydat, obie edycje: w **Ustawienia Home → Wygląd** wyłącz **Pokaż kafelek „Dodaj aplikację”**, aby ukryć +. Opcja jest domyślnie włączona. Użyj **Dodaj aplikację** w tej samej sekcji, aby dodawać lub przywracać aplikacje przy ukrytym +. Nadal można zmieniać kolejność i ukrywać aplikacje; wybór zostaje po ponownym uruchomieniu. Po ukryciu wszystkich aplikacji górne przyciski i ustawienia pozostają dostępne.
+
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 
 ## Aktualizacja i usuwanie

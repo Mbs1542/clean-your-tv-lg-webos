@@ -75,6 +75,8 @@ Após uma interrupção, execute primeiro `status` e preserve os registros. `res
 
 Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Aparência → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. Temas com disposição fixa ocultam a opção Colunas e usam o valor do autor. Sua escolha salva volta a valer ao mudar para um tema que ofereça esse ajuste. Na prévia candidata Alpine, os apps ficam em uma única faixa horizontal circular: Esquerda/Direita rola, Cima abre os atalhos e Baixo volta ao mesmo app. Na prévia Alpine, a roda do mouse ou o touchpad também rola a faixa; Home não se move atrás de uma caixa de diálogo aberta.
 
+Candidato ainda não publicado, ambas as edições: em **Configurações do Home → Aparência**, desative **Mostrar bloco «Adicionar app»** para ocultar +. A opção vem ativada. Use **Adicionar app** na mesma seção para adicionar ou restaurar apps mesmo com + oculto. Continua sendo possível mover e ocultar apps; a escolha permanece após reiniciar. Se todos os apps estiverem ocultos, os controles superiores e as configurações continuam disponíveis.
+
 Nas prévias de temas do candidato ainda não publicado com barra lateral opcional, Cima/Baixo seleciona um item do menu, Direita vai para os aplicativos e Esquerda na primeira coluna de aplicativos volta ao menu.
 
 ## Atualização e remoção

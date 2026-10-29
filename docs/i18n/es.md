@@ -75,6 +75,8 @@ Tras una interrupción, ejecuta primero `status` y conserva los registros. `rest
 
 Solo en el candidato no publicado, en ambas ediciones: abre **Ajustes de Home → Apariencia → Columnas** y elige de 1 a 8 columnas, o **Según el tema** para usar su valor (Classic: 5). Un número explícito tiene prioridad sobre el tema. Los temas con una distribución fija ocultan la opción Columnas y usan el valor del autor. Tu elección guardada se recupera al cambiar a un tema que admita este ajuste. En la vista previa candidata de Alpine, las apps forman una cinta horizontal circular: Izquierda/Derecha desplaza, Arriba abre los accesos y Abajo vuelve a la misma app. En la vista previa de Alpine también puedes desplazar la cinta con la rueda o el panel táctil; Home no se mueve detrás de un diálogo abierto.
 
+Candidato aún no publicado, ambas ediciones: en **Ajustes de Home → Apariencia**, desactiva **Mostrar tarjeta «Añadir app»** para ocultar +. Está activada de forma predeterminada. Usa **Añadir app** en la misma sección para añadir o recuperar apps aunque + esté oculto. Puedes seguir ordenando y ocultando apps; la elección se conserva al reiniciar. Si ocultas todas las apps, los controles superiores y los ajustes siguen disponibles.
+
 En las vistas previas de temas del candidato no publicado con barra lateral opcional, Arriba/Abajo selecciona una opción del menú, Derecha pasa a las aplicaciones e Izquierda desde la primera columna de aplicaciones vuelve al menú.
 
 ## Actualizaciones y eliminación

@@ -52,6 +52,12 @@ const assert=require('node:assert/strict');
       assert.equal(await pane.count(),1);
       await page.keyboard.press('ArrowRight');
       assert(await page.evaluate(()=>{const el=document.activeElement,r=el.getBoundingClientRect();return el.offsetHeight>0&&r.top>=0&&r.bottom<=innerHeight;}),'focus stays visible');
+      if(await tab.getAttribute('data-category')==='appearance'){
+       await page.locator('#homeShowAddApp').focus();
+       await page.locator('#themeMore').waitFor();
+       const geometry=await page.locator('#homeShowAddApp').evaluate(el=>{const r=el.getBoundingClientRect();return {top:r.top,bottom:r.bottom,left:r.left,right:r.right,scrollWidth:el.scrollWidth,clientWidth:el.clientWidth,viewportWidth:innerWidth,viewportHeight:innerHeight};});
+       assert(geometry.top>=0&&geometry.bottom<=geometry.viewportHeight&&geometry.left>=0&&geometry.right<=geometry.viewportWidth&&geometry.scrollWidth<=geometry.clientWidth+1,'localized visibility switch stays visible: '+JSON.stringify({edition,locale,size,geometry}));
+      }
      }
     }
    }

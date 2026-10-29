@@ -2228,3 +2228,67 @@ if (window.HomeI18n) window.HomeI18n.add({
     "Homebrew did not respond in time. Check status before trying again.": "Homebrew 未及時回應。重試前請檢查狀態。"
   }
 });
+
+// App management controls and profile validation.
+if (window.HomeI18n) window.HomeI18n.add({
+  "en": {
+    "Show Add app tile": "Show Add app tile",
+    "Add app": "Add app",
+    "Invalid Add app visibility": "Invalid Add app visibility"
+  },
+  "de": {
+    "Show Add app tile": "Kachel „App hinzufügen“ anzeigen",
+    "Add app": "App hinzufügen",
+    "Invalid Add app visibility": "Ungültige Sichtbarkeit der App-hinzufügen-Kachel"
+  },
+  "es": {
+    "Show Add app tile": "Mostrar tarjeta «Añadir app»",
+    "Add app": "Añadir aplicación",
+    "Invalid Add app visibility": "Visibilidad de Añadir app no válida"
+  },
+  "pt-BR": {
+    "Show Add app tile": "Mostrar bloco «Adicionar app»",
+    "Add app": "Adicionar aplicativo",
+    "Invalid Add app visibility": "Visibilidade de Adicionar app inválida"
+  },
+  "fr": {
+    "Show Add app tile": "Afficher la tuile « Ajouter une app »",
+    "Add app": "Ajouter une application",
+    "Invalid Add app visibility": "Visibilité de la tuile d’ajout non valide"
+  },
+  "it": {
+    "Show Add app tile": "Mostra riquadro «Aggiungi app»",
+    "Add app": "Aggiungi app",
+    "Invalid Add app visibility": "Visibilità di Aggiungi app non valida"
+  },
+  "ko": {
+    "Show Add app tile": "앱 추가 타일 표시",
+    "Add app": "앱 추가",
+    "Invalid Add app visibility": "앱 추가 타일 표시 설정이 잘못되었습니다"
+  },
+  "hi": {
+    "Show Add app tile": "ऐप जोड़ें टाइल दिखाएँ",
+    "Add app": "ऐप जोड़ें",
+    "Invalid Add app visibility": "ऐप जोड़ें की दृश्यता अमान्य है"
+  },
+  "pl": {
+    "Show Add app tile": "Pokaż kafelek „Dodaj aplikację”",
+    "Add app": "Dodaj aplikację",
+    "Invalid Add app visibility": "Nieprawidłowa widoczność kafelka dodawania aplikacji"
+  },
+  "ru": {
+    "Show Add app tile": "Показывать плитку «Добавить приложение»",
+    "Add app": "Добавить приложение",
+    "Invalid Add app visibility": "Недопустимое значение видимости плитки добавления приложения"
+  },
+  "zh-Hans": {
+    "Show Add app tile": "显示“添加应用”按钮",
+    "Add app": "添加应用",
+    "Invalid Add app visibility": "添加应用的显示设置无效"
+  },
+  "zh-Hant": {
+    "Show Add app tile": "顯示「新增應用程式」按鈕",
+    "Add app": "新增應用程式",
+    "Invalid Add app visibility": "新增應用程式圖塊的顯示設定無效"
+  }
+});

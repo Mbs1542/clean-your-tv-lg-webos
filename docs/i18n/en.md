@@ -75,6 +75,8 @@ After interruption, run `status` before retrying; retain journals and recovery f
 
 Unreleased candidate only, in both editions: open **Home settings → Appearance → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Themes with a fixed layout hide the Columns option and use the author’s value. Your saved choice returns when you switch to a theme that supports this setting. In the Alpine candidate preview, apps form one looping horizontal ribbon: Left/Right scrolls and wraps, Up opens shortcuts, and Down returns to the same app. In the Alpine preview, the mouse wheel or touchpad also scrolls the ribbon; it does not move Home behind an open dialog.
 
+Unreleased candidate, both editions: in **Home settings → Appearance**, turn off **Show Add app tile** to hide the + tile. It is on by default. Use **Add app** in the same section to add or restore apps while + is hidden. Ordering and hiding remain available; the choice survives restart. If every app is hidden, the top controls and Settings remain available.
+
 In candidate theme previews with the optional sidebar layout, Up/Down selects a menu item, Right enters the apps, and Left from the first app column returns to the menu.
 
 ## Updates and removal

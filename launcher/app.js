@@ -205,31 +205,33 @@
   function rebuild(focusId) {
     tilesContainer.innerHTML = "";
     tiles = library.visible().map(createTile);
-    var el = document.createElement('div');
-    el.className = 'item add-app ctv-tile';
-    el.setAttribute('role', 'button');
-    el.setAttribute('aria-label', tr('Add app'));
-    el.innerHTML = ht('<div class="card ctv-card"><svg class="ctv-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name ctv-label">Add app</div>');
-    var item = {
-      add: true,
-      app: {
-        title: tr('Add app')
-      },
-      el: el,
-      color: [100, 110, 125]
-    };
-    bindPointerFocus(el, function () {
-      if (!moveState && !pickerOpen && !undoState && (focusZone !== 'grid' || tiles[focusedTile] !== item)) {
-        focusTile(tiles.length - 1);
-      }
-    });
-    el.addEventListener('click', function () {
-      if (!moveState) {
-        openPicker();
-      }
-    });
-    tilesContainer.appendChild(el);
-    tiles.push(item);
+    if (library.showAddApp()) {
+      var el = document.createElement('div');
+      el.className = 'item add-app ctv-tile';
+      el.setAttribute('role', 'button');
+      el.setAttribute('aria-label', tr('Add app'));
+      el.innerHTML = ht('<div class="card ctv-card"><svg class="ctv-icon" viewBox="0 0 48 48" aria-hidden="true"><path d="M24 10v28M10 24h28"/></svg></div><div class="name ctv-label">Add app</div>');
+      var item = {
+        add: true,
+        app: {
+          title: tr('Add app')
+        },
+        el: el,
+        color: [100, 110, 125]
+      };
+      bindPointerFocus(el, function () {
+        if (!moveState && !pickerOpen && !undoState && (focusZone !== 'grid' || tiles[focusedTile] !== item)) {
+          focusTile(tiles.length - 1);
+        }
+      });
+      el.addEventListener('click', function () {
+        if (!moveState) {
+          openPicker();
+        }
+      });
+      tilesContainer.appendChild(el);
+      tiles.push(item);
+    }
     layoutTiles();
     tiles.forEach(function (tile) {
       tile.el.classList.add('shown');
@@ -397,7 +399,7 @@
     picker.hidden = true;
     cancelHold();
     focusZone = 'none';
-    focusTile(tiles.length - 1);
+    focusTile(library.showAddApp() ? tiles.length - 1 : focusedTile);
   }
   function focusPicker(index) {
     pickerIndex = Math.max(0, Math.min(index, pickerButtons.length - 1));
@@ -476,6 +478,23 @@
   }
   function initializeApps() {
     library = AppLibrary.create(localStorage, window.TV_APPS && TV_APPS.apps || [], CONFIG);
+    window.HomeAppControls = {
+      refresh: function () {
+        var button = getElement('homeShowAddApp');
+        if (button) button.setAttribute('aria-checked', String(library.showAddApp()));
+      },
+      toggle: function () {
+        var error = getElement('homeAppsError');
+        try {
+          library.setShowAddApp(!library.showAddApp());
+          if (error) error.textContent = '';
+          var id = tiles[focusedTile] && tiles[focusedTile].app.id;
+          rebuild(id);
+          window.HomeAppControls.refresh();
+        } catch (_) { if (error) error.textContent = tr("Couldn't save changes. Please try again."); }
+      },
+      add: openPicker
+    };
     hideButton = document.createElement('button');
     hideButton.id = 'hideApp';
     hideButton.hidden = true;
@@ -493,7 +512,7 @@
     undoBar.hidden = true;
     undoBar.setAttribute('role', 'status');
     var message = document.createElement('span');
-    message.textContent = tr('App hidden. Add it back with +.');
+    message.textContent = tr('App hidden. Restore it with Add app.');
     undoBar.appendChild(message);
     undoButton = document.createElement('button');
     undoButton.textContent = tr('Undo');
@@ -779,6 +798,16 @@
     if (card) card.classList.toggle('is-' + state, enabled);
   }
   function focusTile(index) {
+    if (!tiles.length) {
+      focusGlassVisible = false; focusGlass.style.opacity = '0';
+      scrollOffset = 0; stage.style.transform = 'translateY(0px)';
+      clearTimeout(heroTitle.swap); heroVisible = false; heroTitle.style.opacity = '0';
+      if (channelArtwork) channelArtwork.style.visibility = 'hidden';
+      getElement('viewport').removeAttribute('data-position');
+      heroTitle.removeAttribute('data-position');
+      focusTopButton(0);
+      return;
+    }
     if (tiles.length) {
       index = Math.max(0, Math.min(index, tiles.length - 1));
       setFocusZone("grid");
@@ -954,7 +983,7 @@
     focusTopButton(0);
   }
   function moveTile(index) {
-    index < 0 || index >= tiles.length - 1 || index === focusedTile || (tiles.splice(index, 0, tiles.splice(focusedTile, 1)[0]), focusedTile = index, layoutTiles(), focusTile(index));
+    index < 0 || index >= screenIds().length || index === focusedTile || (tiles.splice(index, 0, tiles.splice(focusedTile, 1)[0]), focusedTile = index, layoutTiles(), focusTile(index));
   }
   function finishMoving(commit) {
     var item = moveState.item;
@@ -1011,16 +1040,16 @@
     } else {
       if (key === KEY_OK && (okPressed = true), moveState) {
         if (37 === key) {
-          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile - 1 + tiles.length - 1) % (tiles.length - 1) : focusedTile - 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile - 1 + screenIds().length) % screenIds().length : focusedTile - 1);
         } else if (39 === key) {
-          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile + 1) % (tiles.length - 1) : focusedTile + 1);
+          moveTile(layoutPreset === 'scenic-grid' ? (focusedTile + 1) % screenIds().length : focusedTile + 1);
         } else if (38 === key) {
           if (layoutPreset !== 'scenic-grid') moveTile(focusedTile - columnCount);
         } else if (40 === key) {
-          if (rowFor(focusedTile) >= rowFor(tiles.length - 2)) {
+          if (rowFor(focusedTile) >= rowFor(screenIds().length - 1)) {
             selectHide();
           } else {
-            moveTile(Math.min(focusedTile + columnCount, tiles.length - 2));
+            moveTile(Math.min(focusedTile + columnCount, screenIds().length - 1));
           }
         } else if (key === KEY_OK) {
           finishMoving(true);
