@@ -307,3 +307,50 @@ No new permission, endpoint or persistent preference is introduced.
 
 The clipped next-card preview is noninteractive until revealed; this prevents
 stationary-pointer hover from repeatedly dragging the ribbon under the cursor.
+
+## Optional CSS icon effects
+
+`modern-icon-css-v1` is a separately gated candidate capability, not a change to
+the normal Chromium 38 floor. The compiler infers it from icon `filter` or
+`mix-blend-mode`; runtime requires browser support for both filter and screen
+blending and rejects an unsupported browser before mutation. Older Home rejects
+the unknown capability. Only typed `mix-blend-mode` and card-only `isolation` declarations are excluded
+from the legacy compiler's compatibility probe; all other typed CSS still passes
+through the unchanged compatibility checker.
+
+Effects are restricted to selectors ending in `.ctv-icon`: `filter` accepts at
+most four `grayscale(0..1)`, `invert(0..1)` or `brightness(0..2)` / `contrast(0..10)` functions (or
+`none`); `mix-blend-mode` accepts `normal`/`screen`. Card-only `isolation` accepts `auto`/`isolate` to bound the blend backdrop; runtime gates isolate support too. URLs, SVG filter uploads, blur,
+raw values and arbitrary properties remain rejected. Original image `src`, pixel
+bytes and dimensions are never modified. `is-glyph` exposes the existing alpha
+classification; `is-light` means the sampled background is opaque and every RGB
+channel is at least 240. Opaque corner luminance also exposes `is-dark` (<.25), `is-mid` (.25–.5), and `is-bright` (>=.5). These are renderer metadata, not author-supplied app data.
+
+In this optional mode, card `background-color` CSS is emitted with a narrow trusted
+cascade override so inline brand backgrounds cannot defeat transparency. An exact
+`.ctv-card.is-focused` CSS rule requesting both `border-style:none` and
+`border-width:0` in `scenic-grid` uses a trusted 110% scale and visible white caption
+instead of a card border. Other themes keep the existing border minimum. Themes
+still cannot hide or reposition interaction controls. Clock/date-only `font-size`
+is bounded to 22–176px; other text geometry remains trusted.
+
+The [Itachi source](../../themes/itachi/README.md) has only wallpaper/preview images
+and CSS. No replacement-logo support was introduced. Opaque colored backgrounds
+cannot all be extracted by this CSS effect, and original Netflix resolution is
+not improved by making it white. Browser tests do not establish TV acceptance.
+
+Decorative image scale is also authored as CSS: `.ctv-card .ctv-icon { transform:
+scale(1.6); }`. Only `scale(1..2)` on a card's icon is accepted, together with
+card-only `overflow:hidden/visible`. Scaling requires a fixed `scenic-grid` with
+at most five columns; other layouts/overrides reject before mutation so expanded
+logos cannot overlap neighboring interaction cells. `is-wide` means original
+image aspect ratio >1.5. Original sources and native pixel dimensions stay intact.
+The engine emits the validated icon transform with a narrow trusted cascade
+override against layout defaults, within the same stylesheet budget.
+
+Native inventory capture prefers available `extraLargeIcon`, `largeIcon`,
+`mediumLargeIcon`, `icon`, `miniicon`, then `favicon` resources from the same TV.
+The desktop reader retains its same-host/protocol/size checks; Root retains its
+existing filesystem boundary and per-image/total byte limits. Missing, rejected
+or too-large variants fall back. This is normal inventory acquisition, not
+a theme replacement map; the CSS renderer does not rewrite the selected source.

@@ -9,7 +9,7 @@ const policy = require('../launcher/theme-policy.js');
 const {
   imageInfo
 } = require('../theme-api/compile.cjs');
-const licenses = ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause', 'ISC', 'CC0-1.0', 'CC-BY-4.0', 'CC-BY-SA-4.0', 'MIT AND CC-BY-SA-3.0'];
+const licenses = ['MIT', 'Apache-2.0', 'BSD-2-Clause', 'BSD-3-Clause', 'ISC', 'CC0-1.0', 'CC-BY-4.0', 'CC-BY-SA-4.0', 'MIT AND CC-BY-SA-3.0', 'LicenseRef-Personal-Fan-Theme'];
 const tags = ['dark', 'light', 'minimal', 'colorful', 'photographic', 'high-contrast'];
 const fields = ['schemaVersion', 'id', 'title', 'description', 'author', 'sourceRepository', 'sourceCommit', 'descriptorUrl', 'descriptorSha256', 'themeVersion', 'themeApiVersion', 'license', 'creditsFile', 'previewFiles', 'tags', 'addedAt', 'reviewedAt', 'evidence'];
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
