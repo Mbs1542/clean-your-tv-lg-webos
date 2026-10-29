@@ -64,10 +64,12 @@ fixed supervisors are not automatically replaced. Verify both a newly captured
 corrected baseline and historical rollback packages at freeze. An old Home still
 uses its old channel and retains that version's limitations on jailed firmware.
 
-On the reported C1, verify the exact candidate versions and safe diagnostics,
+On the maintainer/project-owned test TV, record its model, firmware/webOS, remote
+and exact candidate versions, then verify safe diagnostics,
 then status, explicit Home off/on, one-time LG Home visit, physical Home/Back and
 unrelated keys, triple-Home stop and intentional resume. Separate standby from
 true AC-off cold boot. Also verify renewal persistence and no automatic enabling,
 a signed whole-edition update/rollback, and service/controller access in their
 actual execution contexts. Keep #146 open until delivery and requested device
-acceptance; host tests do not establish C1 or other-model compatibility.
+acceptance on the project test device; a C1 retest is not a release gate.
+Results on the project device do not establish C1 or other-model compatibility.
