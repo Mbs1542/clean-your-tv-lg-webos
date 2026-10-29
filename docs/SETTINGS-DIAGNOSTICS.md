@@ -77,7 +77,8 @@ parents. Effective C1/C5 service/controller access remains unverified.
 
 Reported acceptance target: OLED65C5RLA, webOS26 / 11.2.0-3706. Expected: show
 the exact safe failure category while preserving actual Home-button behavior.
-No physical TV was contacted for implementation; C5 status/control and renewal
+The initial implementation used host tests. Subsequent [project C3 source QA](history/HOME-CONTROL-TRANSPORT-QA-2026-10-29.md)
+verified the new channel in actual unprivileged jails; C5 status/control and renewal
 persistence remain unverified. Standby and cold boot require separate checks.
 The original C2 acceptance request in #59 remains independent.
 

@@ -85,7 +85,7 @@ No-root: 要重新启动 Home 控制，请打开 Home Helper，选择启动 Help
 
 **现有 1.3.0 安装：**由于允许的文件清单发生变化，原有 System Updater 无法应用 1.4.0。如果尝试在替换前停止，请保留日志并停止操作；不要清除状态或盲目重试。迁移需经过检查的恢复流程和全新 1.4.0 设置；只更新应用不会替换保留的 Root 驱动。下一次 OTA 修正**尚未发布**。[迁移与恢复（英文）](../UPDATES.md#one-time-computer-preparation)。
 
-Home 设置通信修复尚未发布：有配套候选版后，请同时更新 Home 和 Helper。仅更新 Home 无法应用此修复。电视实机验证仍待完成。 [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
+Home 设置通信修复尚未发布：有配套候选版后，请同时更新 Home 和 Helper。仅更新 Home 无法应用此修复。最终发布构建的电视实机验证仍待完成。 [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
 
 Root HDMI 声音恢复是实验功能，**默认关闭**，仅在需要时自行启用。它可能中断正常音频，并不证明 eARC 兼容性。[声音恢复（英文）](../development/ROOT-AUDIO-RECOVERY.md)。独立的 **Homebrew CYTV Installer 尚未发布**；请使用已发布的电脑或 Android 安装程序。
 

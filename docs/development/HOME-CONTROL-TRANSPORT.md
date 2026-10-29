@@ -12,19 +12,23 @@ A hidden application mount produces `home / write / ENOENT` before the controlle
 can receive the request. A working native Home controller does not establish
 visibility from the renewal service's separate filesystem namespace.
 
+Scoped [project C3 source QA](../history/HOME-CONTROL-TRANSPORT-QA-2026-10-29.md) confirms the
+channel and actual jail visibility; it is not frozen release or C1 acceptance.
+
 The regression runs the actual service entry point with a filesystem adapter
 that exposes only its own package. Before the correction it reproduces the
 reported `write / ENOENT`; afterward the authorized Home RPC completes through
 the service-owned channel. This models mount visibility, not an observed C1 mount
-table. No TV was contacted; the exact C1 namespace and effective permissions
-remain unmeasured.
+table. The exact C1 namespace and effective permissions remain unmeasured;
+the subsequent C3 source-QA observations are recorded separately.
 
 ## Ownership and protocol
 
 Home submits to `__dirname/state/home-control`. The native controller polls the
 corresponding installed renewal-service directory and replies there. The native
-Developer Mode environment must expose that directory; this remains a physical
-acceptance requirement. No jail configuration or platform mount is changed.
+Developer Mode environment must expose that directory. This was observed in
+the project C3 source-QA run; other devices remain unverified. No jail
+configuration or platform mount is changed.
 
 Both the renewal `state` directory and its `home-control` child are packaged as
 `prisoner:jailer` (5999:5000), mode 2770. The setgid bit makes files inherit the

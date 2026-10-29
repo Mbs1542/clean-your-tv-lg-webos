@@ -85,7 +85,7 @@ Ouvrez les paramètres Home → Mises à jour et vérifiez les versions avant co
 
 **Installation 1.3.0 existante :** le System Updater d’origine ne peut pas appliquer 1.4.0 car la liste des fichiers autorisés a changé. Si un essai s’arrête avant le remplacement, conservez son journal et arrêtez ; n’effacez pas l’état et ne réessayez pas à l’aveugle. Passez par la récupération vérifiée puis une nouvelle installation 1.4.0 ; une mise à jour de l’app seule ne remplace pas les pilotes Root conservés. La prochaine correction OTA **n’est pas publiée**. [Migration et récupération (anglais)](../UPDATES.md#one-time-computer-preparation).
 
-Correction non publiée du canal des réglages Home : mettre à jour Home et Helper ensemble lorsqu’un candidat coordonné sera disponible. Une mise à jour de Home seul ne suffit pas. La vérification sur TV reste à faire. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
+Correction non publiée du canal des réglages Home : mettre à jour Home et Helper ensemble lorsqu’un candidat coordonné sera disponible. Une mise à jour de Home seul ne suffit pas. La validation sur TV de la compilation finale reste à faire. [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146).
 
 La récupération audio HDMI Root est expérimentale et **désactivée par défaut** ; activez-la uniquement si nécessaire. Elle peut interrompre un son fonctionnel et ne valide pas eARC. [Récupération audio (anglais)](../development/ROOT-AUDIO-RECOVERY.md). Le **CYTV Installer Homebrew reste non publié** ; utilisez l’installateur publié pour ordinateur ou Android.
 
