@@ -97,7 +97,7 @@ Theme images/choice are not included in legacy profile backup/export. An authori
 
 ## Create a theme and preview on a computer
 
-Start with the [tested toolkit candidate and bundled runtime](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/43cae503d244ee2aa57e89ce96f4bd68cacb1b98/docs/CANDIDATE.md). Use [the author toolkit](https://github.com/Razdva122/clean-your-tv-lg-theme) and its [author walkthrough](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/43cae503d244ee2aa57e89ce96f4bd68cacb1b98/docs/tutorial.md). The toolkit's local showcase is an author preview, separate from on-TV installed selection. Apps/services are simulated; it does not establish TV compatibility. See [submission rules](../showcase/README.md) to request a public listing. Personal installation does not require a showcase PR.
+Start with the [tested toolkit candidate and bundled runtime](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/CANDIDATE.md). Use [the author toolkit](https://github.com/Razdva122/clean-your-tv-lg-theme) and its [author walkthrough](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/tutorial.md). The toolkit's local showcase is an author preview, separate from on-TV installed selection. Apps/services are simulated; it does not establish TV compatibility. See [submission rules](../showcase/README.md) to request a public listing. Personal installation does not require a showcase PR.
 
 From the main checkout, build the preview website including the catalog into a fresh directory:
 

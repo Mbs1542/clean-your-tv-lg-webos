@@ -64,9 +64,9 @@ You need Node.js **22 or newer** and npm. The optional source-export route also
 needs Git and Python 3. A GitHub account and a public repository are needed for Showcase
 submission, but not for a local PC/LAN preview.
 
-The [tested toolkit candidate](https://github.com/Razdva122/clean-your-tv-lg-theme/actions/runs/40909225278)
+The [tested toolkit candidate](https://github.com/Razdva122/clean-your-tv-lg-theme/actions/runs/40917741387)
 includes the runtime. Download its `theme-toolkit-candidate` artifact and follow
-the [archive instructions](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/43cae503d244ee2aa57e89ce96f4bd68cacb1b98/docs/CANDIDATE.md); no manual runtime export is needed for that bundle.
+the [archive instructions](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/CANDIDATE.md); no manual runtime export is needed for that bundle.
 
 For development from source, use three separate directories: the main project, the author toolkit, and your
 own theme repository. The following shell examples use POSIX syntax suitable for
@@ -78,8 +78,8 @@ commands and current theme-settings flow:
 
 | Repository | Candidate revision |
 | --- | --- |
-| `Razdva122/clean-your-tv-lg-webos` | `6f0d2fe495eb47e7dbb4689e01459fd8a18f2187` |
-| `Razdva122/clean-your-tv-lg-theme` | `43cae503d244ee2aa57e89ce96f4bd68cacb1b98` |
+| `Razdva122/clean-your-tv-lg-webos` | `5c612dc60c0374de89052f46bebfeb63f0080f17` |
+| `Razdva122/clean-your-tv-lg-theme` | `b3905665e2261e2c25d0678b8696265af1e9c8bc` |
 
 These are source candidates, not signed releases. Maintainers may provide a newer
 reviewed pair. Do not mix an older runtime with hooks introduced by newer tools,
@@ -92,11 +92,11 @@ git clone https://github.com/Razdva122/clean-your-tv-lg-webos.git
 git clone https://github.com/Razdva122/clean-your-tv-lg-theme.git
 
 cd clean-your-tv-lg-webos
-git checkout --detach 6f0d2fe495eb47e7dbb4689e01459fd8a18f2187
+git checkout --detach 5c612dc60c0374de89052f46bebfeb63f0080f17
 npm ci --ignore-scripts
 python3 scripts/export-theme-runtime.py --out build/theme-author-runtime
 cd ../clean-your-tv-lg-theme
-git checkout --detach 43cae503d244ee2aa57e89ce96f4bd68cacb1b98
+git checkout --detach b3905665e2261e2c25d0678b8696265af1e9c8bc
 npm ci --ignore-scripts
 mkdir -p .runtime
 cp -R ../clean-your-tv-lg-webos/build/theme-author-runtime .runtime/candidate
@@ -130,7 +130,7 @@ loading its compiler. Hashes detect changed files; use a trusted source to estab
 who supplied the runtime.
 
 There is no working `runtime:fetch` download to substitute at this stage. See the
-[toolkit runtime reference](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/43cae503d244ee2aa57e89ce96f4bd68cacb1b98/docs/runtime.md)
+[toolkit runtime reference](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/runtime.md)
 for the candidate trust model.
 
 ## 3. Create your theme repository
@@ -244,7 +244,7 @@ Home shortcut artwork uses `.ctv-input-icon`, `.ctv-network-icon` and
 
 Keep the visible button label and focused contrast. Theme-uploaded SVGs, remote
 URLs and data URLs are not accepted. See the toolkit's
-[icon recipe and layout examples](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/43cae503d244ee2aa57e89ce96f4bd68cacb1b98/docs/authoring.md).
+[icon recipe and layout examples](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/authoring.md).
 Alpine's source directory/old external ID uses `glasshouse`; its display name is
 Alpine. Channel's source directory/ID uses `terminal`. Give your own theme an
 independent identity rather than reusing either historical name.
