@@ -28,7 +28,7 @@ const {buildShowcase}=require('../../scripts/build-showcase.cjs'),fixture=requir
   assert.equal(await page.locator('.preview img').first().evaluate(img=>img.complete&&img.naturalWidth===1),true);
   const longSource=path.join(root,'long-source');fixture(longSource,'long','A'.repeat(100));buildShowcase(path.join(root,'repo/long'),{showcaseRoot:longSource});
   await page.setViewportSize({width:320,height:780});await page.goto(origin+'/repo/long/');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,'long card title must wrap');
-  await page.locator('.card-copy a').click();assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,'long detail title must wrap');
+  await page.locator('.card-copy a').click();await page.locator('.detail-heading h1').waitFor();await page.waitForLoadState('load');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true,'long detail title must wrap');
   await page.setViewportSize({width:1440,height:1000});
   const shot=process.env.SHOWCASE_SCREENSHOT;if(shot){buildShowcase(path.join(root,'repo/empty'));await page.goto(origin+'/repo/empty/');await page.screenshot({path:path.resolve(shot),fullPage:true});}
   assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
