@@ -59,7 +59,7 @@
 #homeThemePanel.theme-inline button { box-sizing:border-box; width:auto; min-height:56px; font-size:24px; padding:12px 18px; margin:0; border:2px solid transparent; border-radius:8px; }
 #homeThemePanel.theme-inline button:focus { outline:3px solid #dbe9ff; outline-offset:3px; background:#384b65; color:#fff; }
 #homeThemePanel.theme-inline .theme-installed-grid { display:flex; flex-wrap:wrap; margin:0 -8px 16px; }
-#homeThemePanel.theme-inline .theme-option { box-sizing:border-box; display:flex; flex-direction:column; width:calc(50% - 16px); max-width:440px; margin:8px; padding:8px; border:2px solid #39434f; border-radius:12px; background:#171e27; align-items:stretch; }
+#homeThemePanel.theme-inline .theme-option { box-sizing:border-box; display:flex; flex-direction:column; width:calc(50% - 16px); max-width:400px; margin:8px; padding:8px; border:2px solid #39434f; border-radius:12px; background:#171e27; align-items:stretch; }
 #homeThemePanel.theme-inline .theme-option[data-selected="true"] { border-color:#afc9ed; }
 #homeThemePanel.theme-inline .theme-option .theme-choice { flex:none; display:block; width:100%; min-width:0; padding:0 0 8px; background:transparent; text-align:left; border-radius:6px; }
 #homeThemePanel.theme-inline .theme-choice img { display:block; width:100%; height:auto; margin:0 0 12px; border-radius:4px; }
@@ -70,7 +70,7 @@
 #homeThemePanel.theme-inline .theme-card-actions button { flex:1; min-width:0; margin:4px; }
 #homeThemePanel.theme-inline .theme-card-actions .theme-remove { flex:0 1 auto; color:#f2b7b7; background:transparent; }
 #homeThemePanel.theme-inline .theme-picker-actions { display:flex; margin:0 -8px 12px; }
-#homeThemePanel.theme-inline .theme-entry-action { flex:1; min-width:0; max-width:440px; margin:8px; padding:18px; text-align:left; background:#283b54; border-color:#526d90; font-weight:bold; }
+#homeThemePanel.theme-inline .theme-entry-action { flex:1; min-width:0; max-width:400px; margin:8px; padding:18px; text-align:left; background:#283b54; border-color:#526d90; font-weight:bold; }
 #homeThemePanel.theme-inline .theme-entry-action small { display:block; margin:6px 0 0; font-size:19px; line-height:1.3; font-weight:normal; color:#c4d0df; }
 #homeThemePanel.theme-inline #themeMore { background:transparent; color:#bfccdd; border-color:#465362; }
 #homeThemePanel.theme-inline .theme-advanced { margin-top:14px; padding:12px; border:1px solid #465362; border-radius:8px; }
@@ -79,7 +79,7 @@
 #homeThemePanel.theme-inline .theme-catalog-card strong { font-size:26px; }
 #homeThemeHost { width:100%; min-width:0; }
 @media (max-height:800px) {
- #homeThemePanel.theme-inline .theme-choice img { max-height:150px; object-fit:cover; }
+ #homeThemePanel.theme-inline .theme-choice img { max-height:150px; object-fit:contain; }
  #homeThemePanel.theme-inline .theme-choice strong { font-size:24px; }
  #homeThemePanel.theme-inline .theme-entry-action { padding:12px 16px; }
 }

@@ -1,6 +1,7 @@
 /* Standard theme settings, twelve UI languages. */
 HomeI18n.add({
   "ru": {
+    "Community themes": "Темы сообщества",
     "Send a theme from your computer": "Отправьте тему с компьютера",
     "More options": "Дополнительные параметры",
     "Themes": "Темы",
@@ -67,6 +68,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Некорректный фрагмент полученной темы"
   },
   "de": {
+    "Community themes": "Themes der Community",
     "Send a theme from your computer": "Ein Theme vom Computer senden",
     "More options": "Weitere Optionen",
     "Themes": "Designs",
@@ -133,6 +135,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Ungültiger empfangener Designabschnitt"
   },
   "es": {
+    "Community themes": "Temas de la comunidad",
     "Send a theme from your computer": "Envía un tema desde el ordenador",
     "More options": "Más opciones",
     "Themes": "Temas",
@@ -199,6 +202,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Fragmento del tema recibido no válido"
   },
   "pt-BR": {
+    "Community themes": "Temas da comunidade",
     "Send a theme from your computer": "Envie um tema do computador",
     "More options": "Mais opções",
     "Themes": "Temas",
@@ -265,6 +269,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Fragmento inválido do tema recebido"
   },
   "fr": {
+    "Community themes": "Thèmes de la communauté",
     "Send a theme from your computer": "Envoyez un thème depuis votre ordinateur",
     "More options": "Plus d’options",
     "Themes": "Thèmes",
@@ -331,6 +336,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Fragment du thème reçu invalide"
   },
   "it": {
+    "Community themes": "Temi della community",
     "Send a theme from your computer": "Invia un tema dal computer",
     "More options": "Altre opzioni",
     "Themes": "Temi",
@@ -397,6 +403,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Frammento del tema ricevuto non valido"
   },
   "ko": {
+    "Community themes": "커뮤니티 테마",
     "Send a theme from your computer": "컴퓨터에서 테마 보내기",
     "More options": "추가 옵션",
     "Themes": "테마",
@@ -463,6 +470,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "받은 테마 조각이 올바르지 않습니다"
   },
   "hi": {
+    "Community themes": "समुदाय की थीम",
     "Send a theme from your computer": "कंप्यूटर से थीम भेजें",
     "More options": "अन्य विकल्प",
     "Themes": "थीम",
@@ -529,6 +537,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "प्राप्त थीम का अंश अमान्य है"
   },
   "pl": {
+    "Community themes": "Motywy społeczności",
     "Send a theme from your computer": "Wyślij motyw z komputera",
     "More options": "Więcej opcji",
     "Themes": "Motywy",
@@ -595,6 +604,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "Nieprawidłowy fragment odebranego motywu"
   },
   "zh-Hans": {
+    "Community themes": "社区主题",
     "Send a theme from your computer": "从电脑发送主题",
     "More options": "更多选项",
     "Themes": "主题",
@@ -661,6 +671,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "收到的主题分块无效"
   },
   "zh-Hant": {
+    "Community themes": "社群主題",
     "Send a theme from your computer": "從電腦傳送主題",
     "More options": "更多選項",
     "Themes": "主題",
@@ -727,6 +738,7 @@ HomeI18n.add({
     "Invalid received theme chunk": "收到的主題區塊無效"
   },
   "en": {
+    "Community themes": "Community themes",
     "Send a theme from your computer": "Send a theme from your computer",
     "More options": "More options",
     "Themes": "Themes",
