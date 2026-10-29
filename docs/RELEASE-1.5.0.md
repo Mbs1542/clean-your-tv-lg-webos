@@ -50,6 +50,16 @@ Helper rollback compatibility and remaining release gates are tracked in
 - #145: reviewed-source cancellation of exact never-activated Root installs,
   including historical inventories and pre-registration finalize failures.
   Device-specific recovery for #101/#133/#143 remains separate and unverified.
+- #154 (#152): retry a failed installer TLS handshake once on the same secure
+  endpoint, adding only the two static-RSA AES-GCM suites while retaining the
+  default TLS minimum/security level. No plaintext fallback. Actual pairing and
+  launcher/Helper compatibility on the reported EF950V remain unverified.
+- #156 (#155): bounded No-root Helper recovery after watchdog timeout or its own
+  confirmed watchdog kill, with a separate orphan-protection latch. Stop and
+  triple Home remain persistent; input cleanup must finish before retry, and
+  buffered events cannot revive a killed relay. At most five attempts per ten
+  minutes. Actual NANO80T standby/input acceptance is pending; #96 is not claimed
+  fixed by this change.
 - #134: reusable candidate-build evidence and scoped acceptance tooling. The
   first release still follows the trusted policy currently present on main.
 
@@ -108,7 +118,15 @@ No physical No-root/Helper or Android phone acceptance is claimed by Root testin
    verify fallback to Classic and its return to Showcase.
 5. Send an unpublished local theme from PC to TV, validate/Apply/restart/remove;
    test cancellation and receiver closure, fresh PIN and invalid transfer rejection.
-6. Record actual package hashes, model/firmware, input method and expected/actual
+6. Verify the rebuilt No-root Helper after standby/wake: Home routing and
+   arrows/OK/Back/volume/pointer, triple Home/manual resume, Stop during recovery
+   and persistent fault behavior. Keep cold boot separate. Revalidate Helper
+   rollback against the new archive; earlier 0.6.20 source builds are different.
+7. Validate installer pairing against the relevant legacy TLS endpoint, including
+   first pairing and saved-key reconnect. A connection fix does not establish
+   full webOS 2.2.3 compatibility. Published-version reporter confirmation remains
+   pending for #152.
+8. Record actual package hashes, model/firmware, input method and expected/actual
    results. Home routing, sound, standby, cold boot, full OTA/rollback and other
    devices remain separate gates unless directly exercised on these artifacts.
 
