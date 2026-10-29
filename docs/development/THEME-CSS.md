@@ -338,3 +338,19 @@ The [Itachi source](../../themes/itachi/README.md) has only wallpaper/preview im
 and CSS. No replacement-logo support was introduced. Opaque colored backgrounds
 cannot all be extracted by this CSS effect, and original Netflix resolution is
 not improved by making it white. Browser tests do not establish TV acceptance.
+
+Decorative image scale is also authored as CSS: `.ctv-card .ctv-icon { transform:
+scale(1.6); }`. Only `scale(1..2)` on a card's icon is accepted, together with
+card-only `overflow:hidden/visible`. Scaling requires a fixed `scenic-grid` with
+at most five columns; other layouts/overrides reject before mutation so expanded
+logos cannot overlap neighboring interaction cells. `is-wide` means original
+image aspect ratio >1.5. Original sources and native pixel dimensions stay intact.
+The engine emits the validated icon transform with a narrow trusted cascade
+override against layout defaults, within the same stylesheet budget.
+
+Native inventory capture prefers available `extraLargeIcon`, `largeIcon`,
+`mediumLargeIcon`, `icon`, `miniicon`, then `favicon` resources from the same TV.
+The desktop reader retains its same-host/protocol/size checks; Root retains its
+existing filesystem boundary and per-image/total byte limits. Missing, rejected
+or too-large variants fall back. This is normal inventory acquisition, not
+a theme replacement map; the CSS renderer does not rewrite the selected source.

@@ -28,3 +28,9 @@
 .ctv-label.is-focused { color: white; text-shadow: 0 1px 6px black; }
 
 .ctv-card { isolation: isolate; }
+
+/* Larger painted logos, keeping each app's original image and native resolution. */
+.ctv-card { overflow: visible; }
+.ctv-card .ctv-icon { transform: scale(1.6); }
+.ctv-card .ctv-icon.is-wide { transform: scale(2); }
+.ctv-card .ctv-icon.is-glyph { transform: scale(1.25); }

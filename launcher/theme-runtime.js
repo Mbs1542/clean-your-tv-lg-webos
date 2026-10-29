@@ -35,9 +35,10 @@
     if (!policy) fail('api-unsupported', 'ThemePolicy');
     var manifest = policy.validateManifest(input.manifest), rules = policy.validateRules(input.rules);
     var modernIcons = manifest.requires.capabilities.indexOf('modern-icon-css-v1') >= 0;
-    var hasIconEffects = rules.rules.some(function (rule) { return rule.declarations.some(function (d) { return d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation'; }); });
+    var hasIconEffects = rules.rules.some(function (rule) { return rule.declarations.some(function (d) { return d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation' || d.property === 'transform' || d.property === 'overflow'; }); });
     if (hasIconEffects && !modernIcons) fail('api-unsupported', 'icon CSS capability');
     if (modernIcons && (!root.CSS || !root.CSS.supports || !root.CSS.supports('isolation', 'isolate') || !root.CSS.supports('mix-blend-mode', 'screen') || !root.CSS.supports('filter', 'grayscale(1) invert(1) brightness(1.3)'))) fail('api-unsupported', 'modern icon CSS');
+    if (rules.rules.some(function (rule) { return rule.declarations.some(function (d) { return d.property === 'transform'; }); }) && (manifest.layout.preset !== 'scenic-grid' || manifest.layout.columns > 5 || manifest.layout.allowColumnOverride !== false)) fail('layout-invalid', 'icon scale requires fixed scenic-grid with at most five columns');
     /* Trusted layouts currently implement only the Classic scale values. */
     if (manifest.layout.spacingScale !== 1 || manifest.layout.textScale !== 1 || manifest.layout.focusScale !== 1.1) fail('layout-invalid', 'unsupported scale preset');
     if (manifest.layout.preset !== 'dock-grid' && (!root.HomeLayoutState || !root.HomeLayoutState.setThemeLayout)) fail('layout-invalid', 'unsupported renderer preset');
@@ -71,9 +72,9 @@
     else appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:' + (manifest.layout.preset === 'scenic-grid' ? '3' : '2') + 'px!important;}');
     if (modernIcons) rules.rules.forEach(function (rule) {
       var part = rule.selector[rule.selector.length - 1].part;
-      if (part !== 'card' && part !== 'clock' && part !== 'date') return;
+      if (part !== 'card' && part !== 'clock' && part !== 'date' && part !== 'icon') return;
       rule.declarations.forEach(function (d) {
-        if (!(part === 'card' && d.property === 'background-color') && !((part === 'clock' || part === 'date') && d.property === 'font-size')) return;
+        if (!(part === 'card' && d.property === 'background-color') && !((part === 'clock' || part === 'date') && d.property === 'font-size') && !(part === 'icon' && d.property === 'transform')) return;
         var background = policy.compileRules({schemaVersion: 1, rules: [{selector: rule.selector, declarations: [d]}]}, handles);
         appendCss('\n' + background.replace(/;\}$/, '!important;}'));
       });

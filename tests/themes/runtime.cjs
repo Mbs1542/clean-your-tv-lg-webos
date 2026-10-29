@@ -91,3 +91,10 @@ assert.match(nodes['ctv-theme-style'].textContent,/background-color:rgba\(0,0,0,
 assert.doesNotMatch(nodes['ctv-theme-style'].textContent,/border-width:3px!important/);
 context.ThemeRuntime.reset();
 console.log('PASS CSS-only icon feature gate, trusted scale focus and background cascade');
+const enlargedIcons={schemaVersion:1,rules:[{selector:[{part:'card',states:[]},{part:'icon',states:[]}],declarations:[{property:'transform',value:{type:'scale',amount:1.6}}]}]};
+assert.throws(()=>context.ThemeRuntime.apply({manifest:modernManifest,rules:enlargedIcons,assetHandles:{}}),/fixed scenic-grid/,'image enlargement cannot bypass a saved column override');
+assert.throws(()=>context.ThemeRuntime.apply({manifest:{...modernManifest,layout:{...modernManifest.layout,columns:8,allowColumnOverride:false}},rules:enlargedIcons,assetHandles:{}}),/fixed scenic-grid/,'eight-column images cannot overlap');
+context.ThemeRuntime.apply({manifest:{...modernManifest,layout:{...modernManifest.layout,allowColumnOverride:false}},rules:enlargedIcons,assetHandles:{}});
+assert.match(nodes['ctv-theme-style'].textContent,/transform:scale\(1.6\)!important/);
+context.ThemeRuntime.reset();
+console.log('PASS bounded CSS enlargement, fixed-column guard and trusted icon cascade');

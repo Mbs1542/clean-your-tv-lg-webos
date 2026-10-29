@@ -35,7 +35,8 @@
     "light",
     "dark",
     "mid",
-    "bright"
+    "bright",
+    "wide"
   ],
   "properties": {
     "color": "color",
@@ -58,7 +59,9 @@
     "filter": "filter",
     "mix-blend-mode": "blendMode",
     "font-size": "fontSize",
-    "isolation": "isolation"
+    "isolation": "isolation",
+    "overflow": "overflow",
+    "transform": "iconScale"
   },
   "limits": {
     "rules": 512,
@@ -147,7 +150,21 @@
           "auto",
           "isolate"
         ]
-      }
+      },
+      "decorativeScale": {
+        "selector": "card icon",
+        "range": [
+          1,
+          2
+        ],
+        "preset": "scenic-grid",
+        "maxColumns": 5,
+        "allowColumnOverride": false
+      },
+      "cardOverflow": [
+        "hidden",
+        "visible"
+      ]
     }
   },
   "clockDateFontSize": [

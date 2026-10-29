@@ -5,7 +5,7 @@
   'use strict';
 
   var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'input-icon', 'network-icon', 'settings-icon', 'dock', 'focus', 'card', 'icon', 'label', 'library', 'library-panel', 'library-close', 'library-row', 'inputs', 'input-row'];
-  var states = ['focused', 'selected', 'moving', 'glyph', 'light', 'dark', 'mid', 'bright'];
+  var states = ['focused', 'selected', 'moving', 'glyph', 'light', 'dark', 'mid', 'bright', 'wide'];
   var properties = {
     'color': 'color',
     'background-color': 'color',
@@ -27,7 +27,9 @@
     'transition': 'transition',
     'filter': 'filter',
     'mix-blend-mode': 'blendMode',
-    'isolation': 'isolation'
+    'isolation': 'isolation',
+    'overflow': 'overflow',
+    'transform': 'iconScale'
   };
   var limits = {
     rules: 512,
@@ -189,6 +191,7 @@
   function value(v, family, handles) {
     if (!v || typeof v !== 'object') fail('css-value', 'value');
     if (family === 'color' && v.type === 'color') return color(v);
+    if (family === 'iconScale' && v.type === 'scale') { object(v, ['type', 'amount'], 'css-value', 'icon scale'); return 'scale(' + decimal(number(v.amount, 1, 2, 'css-value', 'icon scale')) + ')'; }
     if (family === 'fontSize' && v.type === 'length') return length(v, 22, 176);
     if (family === 'length' && v.type === 'length') return length(v, 0, 32);
     if (family === 'image' && v.type === 'asset') {
@@ -243,6 +246,7 @@
       borderStyle: ['solid', 'none'],
       blendMode: ['normal', 'screen'],
       isolation: ['auto', 'isolate'],
+      overflow: ['hidden', 'visible'],
       font: ['sans-serif', 'serif', 'monospace'],
       weight: ['400', '500', '600', '700'],
       fontStyle: ['normal', 'italic'],
@@ -281,6 +285,8 @@
         if ((d.property === 'filter' || d.property === 'mix-blend-mode') && r.selector[r.selector.length - 1].part !== 'icon') fail('css-property', 'icon effects scope');
         if (d.property === 'font-size' && ['clock', 'date'].indexOf(r.selector[r.selector.length - 1].part) < 0) fail('css-property', 'clock/date font size scope');
         if (d.property === 'isolation' && r.selector[r.selector.length - 1].part !== 'card') fail('css-property', 'card isolation scope');
+        if (d.property === 'overflow' && r.selector[r.selector.length - 1].part !== 'card') fail('css-property', 'card overflow scope');
+        if (d.property === 'transform' && (r.selector.length < 2 || r.selector[r.selector.length - 1].part !== 'icon' || r.selector[r.selector.length - 2].part !== 'card')) fail('css-property', 'card icon scale scope');
         props[d.property] = true;
         value(d.value, properties[d.property]);
         count++;

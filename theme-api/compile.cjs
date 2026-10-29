@@ -55,6 +55,7 @@ function scalar(raw) {
   return parseFloat(raw);
 }
 function typed(raw, family, assets) {
+  if (family === 'iconScale') { const m = /^scale\((\d+(?:\.\d+)?)\)$/.exec(raw); if (!m) error('css-value', 'icon scale'); return {type: 'scale', amount: Number(m[1])}; }
   if (family === 'filter') {
     if (raw === 'none') return {type: 'filter', functions: []};
     const nodes = parseValue(raw).nodes.filter(n => n.type !== 'space');
@@ -331,7 +332,7 @@ async function compileSource(input) {
   source.source = input.source || source.source;
   source.requires = {
     minimumHomeVersion: input.minimumHomeVersion || '0.0.0',
-    capabilities: compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation')) ? ['modern-icon-css-v1'] : []
+    capabilities: compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation' || d.property === 'transform' || d.property === 'overflow')) ? ['modern-icon-css-v1'] : []
   };
   source.layout = Object.assign({
     preset: 'dock-grid',
@@ -340,6 +341,7 @@ async function compileSource(input) {
     textScale: 1,
     focusScale: 1.1
   }, source.layout);
+  if (compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'transform')) && (source.layout.preset !== 'scenic-grid' || source.layout.columns > 5 || source.layout.allowColumnOverride !== false)) error('layout-invalid', 'icon scale requires fixed scenic-grid with at most five columns');
   source.defaults = Object.assign({
     wallpaperAssetId: null,
     dim: .3,

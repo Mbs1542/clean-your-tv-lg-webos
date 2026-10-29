@@ -2,7 +2,10 @@
 
 Dark Itachi wallpaper, crimson eyes and a bottom scenic app ribbon. Every app
 image remains the original source supplied by Home. There are no replacement
-icons, icon mappings, image downloads, canvas conversions or upscaled logos.
+icons, icon mappings, external image downloads, canvas conversions or generated logos.
+Fresh installer capture and Root inventory listing prefer an available larger native icon from
+the same TV app, with the existing address/path/size limits and fallback. The theme
+does not choose a brand-specific file or change application resources.
 The theme contains two images only: wallpaper and preview.
 
 ## Requirements
@@ -49,13 +52,14 @@ PNG alpha or source bytes. Dark, middle and bright flat backdrops additionally u
 filters selected by sampled background luminance. This is approximate and can
 lose details on complex/gradient artwork; it is not universal background removal.
 
-Netflix stays at its original TV resolution. A vector-derived replacement would
+Netflix stays at the resolution of the native TV resource selected by Home. A vector-derived replacement would
 be sharper, but it was explicitly excluded by the user. Sharpening cannot recover
 missing detail. No Netflix/YouTube or other brand image is included in the theme.
 
 CSS requests transparent card backgrounds and no focused-card border. The trusted
 renderer retains a 110% focused-card scale and readable selected caption. Five
-visible columns are fixed. Clock/date sizes are set in CSS. Settings/recovery
+visible columns are fixed. CSS enlarges the original image paint by 1.6×, or 2×
+for wide images and 1.25× for transparent glyphs; original resolution is unchanged. Clock/date sizes are set in CSS. Settings/recovery
 remain standard and suspend the effects.
 
 ## Rebuild from source

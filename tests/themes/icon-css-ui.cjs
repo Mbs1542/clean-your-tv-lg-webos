@@ -12,6 +12,7 @@ const sourceRoot=path.resolve('themes/itachi'),source=JSON.parse(fs.readFileSync
  try{for(const edition of ['launcher','root-launcher']){
   const context=await browser.newContext({viewport:{width:1920,height:1080},locale:'ru-RU',timezoneId:'Asia/Yekaterinburg'}),page=await context.newPage(),errors=[];
   await page.clock.setFixedTime(new Date('2026-10-29T16:42:00Z'));page.on('pageerror',e=>errors.push(e.message));await context.route('https://**',r=>r.abort());await context.route('**/appinfo.json',r=>r.fulfill({json:{version}}));
+  await context.route('**/config.js',r=>r.fulfill({body:'window.CONFIG='+JSON.stringify({columns:5,dockApps:['preview.youtube','preview.netflix','preview.apple','preview.spotify','preview.browser'],hiddenApps:[],liveTvApp:'preview.live'})+';'}));
   // White-background fixtures model the live TV samples while remaining public synthetic artwork.
   const state={window:{}};vm.runInNewContext(fs.readFileSync(path.join(site,edition,'apps.js'),'utf8'),state);const apps=state.window.TV_APPS;
   for(const [id,title] of [['youtube','YouTube'],['netflix','NETFLIX']]){
@@ -28,6 +29,7 @@ const sourceRoot=path.resolve('themes/itachi'),source=JSON.parse(fs.readFileSync
   assert.equal(await page.locator('#tiles .focused .card').evaluate(e=>getComputedStyle(e).borderTopWidth),'0px');
   await page.keyboard.press('ArrowRight');
   for(let n=0;n<15&&await page.locator('#tiles .focused').getAttribute('data-app-id')!=='preview.netflix';n++)await page.keyboard.press('ArrowRight');
+  assert((await netflix.boundingBox()).width>=200,'original Netflix is visibly enlarged through CSS');
   fs.writeFileSync(path.resolve('build/itachi-css-styles-'+edition+'.json'),JSON.stringify(await page.locator('#tiles img').evaluateAll(images=>images.map(i=>({id:i.closest('.item').dataset.appId,classes:i.className,filter:getComputedStyle(i).filter,blend:getComputedStyle(i).mixBlendMode,rect:i.getBoundingClientRect().toJSON()}))),null,2));
   await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:path.resolve('build/itachi-css-'+edition+'.png'),animations:'disabled'});
   if(edition==='launcher'){await page.setViewportSize({width:960,height:540});await page.screenshot({path:path.resolve('build/itachi-css-preview.jpg'),type:'jpeg',quality:85,animations:'disabled'});await page.setViewportSize({width:1920,height:1080});}
