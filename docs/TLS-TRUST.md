@@ -45,3 +45,34 @@ See [transition and recovery](UPDATES.md).
 
 Wrong TV time, expired leaf certificates, a proxy's private CA and unsupported TLS
 protocols still cause a safe failure. The bundled roots do not bypass those checks.
+
+
+## Computer installer: local TV control TLS compatibility (unreleased)
+
+The `cytv` installer first connects to the TV's SSAP endpoint at
+`wss://TV:3001` using Python's default TLS cipher policy. If this connection
+raises an SSL error before pairing starts, it retries once at the same encrypted
+endpoint, adding only `AES128-GCM-SHA256` and `AES256-GCM-SHA384` to the end of the
+default cipher list. Some older TV endpoints offer these static-RSA suites but
+none of the default forward-secret suites. The retry retains the default TLS
+1.2 minimum and OpenSSL security level; it does not enable TLS 1.0/1.1, CBC,
+3DES or RC4, lower `SECLEVEL`, or fall back to plaintext `ws://TV:3000`.
+Static RSA does not provide forward secrecy, so the normal cipher policy is
+always attempted first.
+
+The TV's local certificate is accepted under the existing SSAP policy; this
+change adds no new trust exception. Internet downloads and their certificate
+verification are outside this compatibility path. Connection timeouts, refused
+connections, WebSocket upgrade failures and pairing rejections are not SSL
+handshake retries. A second SSL failure propagates normally. Pairing keys are
+sent only after a successful TLS and WebSocket connection; this mode does not
+store a transport preference or change the registration manifest.
+
+This change covers installer SSAP pairing, not the separate legacy `lgtv.py`
+manual scripts or the on-TV Helper's TLS implementation. It requires a rebuilt
+computer installer to ship. Local loopback tests exercise both RSA/AES-GCM
+suites with real TLS 1.2 WebSocket connections, first pairing and saved-key
+reconnection. They do not establish compatibility on a physical TV, or verify
+Home routing, sound, standby, cold boot, OTA or rollback.
+
+Related issue: [#152](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/152).
