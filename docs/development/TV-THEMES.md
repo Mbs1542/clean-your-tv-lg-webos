@@ -137,7 +137,7 @@ Catalogue refresh can render the bundled list before its network result. Each re
 `ThemeData.shortLink` recognizes a bare 5–30 character is.gd ID or supported is.gd
 URL. The field displays the normalized HTTPS URL before Load. `resolve` performs
 one bounded 4 KiB JSON request to the exact `is.gd/forward.php` lookup endpoint;
-redirects, nested shorteners and non-GitHub destinations are rejected. Normal
+exposed redirect destinations, nested shorteners and non-GitHub destinations are rejected. Normal
 repository resolution and package integrity/version/image checks remain in place.
 No JavaScript page/JSONP is loaded, and no Root LS2 permission changes are required.
 The cached package retains its canonical GitHub source, so offline startup does
