@@ -14,6 +14,15 @@
         140
       ],
       "summary": "Fix No-root Helper control ownership while preserving pairing; reject unsupported Root Home interfaces before installation (partial #133; retained recovery remains unresolved)."
+    },
+    {
+      "pr": 145,
+      "issues": [
+        101,
+        133,
+        143
+      ],
+      "summary": "Add reviewed-source cancellation of never-activated Root installs, including pre-registration finalize failures and historical runtime inventories; device-specific recovery and firmware routing compatibility remain unverified (partial #101, #133, #143)."
     }
   ],
   "excluded": [],
