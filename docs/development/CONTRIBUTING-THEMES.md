@@ -74,7 +74,7 @@ commands and current theme-settings flow:
 
 | Repository | Candidate revision |
 | --- | --- |
-| `Razdva122/clean-your-tv-lg-webos` | `3044a539bd4e437a422e1f1b4f8e4fbcaa2c27ff` |
+| `Razdva122/clean-your-tv-lg-webos` | `c3efdb0013096bbcb77f544e93858844206d49f0` |
 | `Razdva122/clean-your-tv-lg-theme` | `c9e3bf4af26961473f8a4be549643dca0f7db207` |
 
 These are source candidates, not signed releases. Maintainers may provide a newer
@@ -88,7 +88,7 @@ git clone https://github.com/Razdva122/clean-your-tv-lg-webos.git
 git clone https://github.com/Razdva122/clean-your-tv-lg-theme.git
 
 cd clean-your-tv-lg-webos
-git checkout --detach 3044a539bd4e437a422e1f1b4f8e4fbcaa2c27ff
+git checkout --detach c3efdb0013096bbcb77f544e93858844206d49f0
 npm ci --ignore-scripts
 python3 scripts/export-theme-runtime.py --out build/theme-author-runtime
 cd ../clean-your-tv-lg-theme
