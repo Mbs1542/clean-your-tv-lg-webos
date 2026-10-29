@@ -46,9 +46,9 @@ def code_inventory(bundle):
     from updater.bootstrap import verify_bundle
     from updater.store import encode
     manifest=verify_bundle(bundle)
-    module=(PROJECT/'root-edition/cancel_install.py').read_bytes()
-    pin=hashlib.sha256(encode(dict(bundle=manifest,recovery_sha256=hashlib.sha256(module).hexdigest()))).hexdigest()
-    return manifest,module,pin
+    modules={name:(PROJECT/'root-edition'/name).read_bytes() for name in ('cancel_install.py','cancel_provision.py')}
+    pin=hashlib.sha256(encode(dict(bundle=manifest,recovery={name:hashlib.sha256(raw).hexdigest() for name,raw in modules.items()}))).hexdigest()
+    return manifest,modules,pin
 
 
 def main():
@@ -59,8 +59,10 @@ def main():
     parser.add_argument('--candidate')
     parser.add_argument('--code-sha256')
     parser.add_argument('--proof-sha256')
+    parser.add_argument('--confirm-lg-home',action='store_true',help='Confirm LG Home and normal remote controls work immediately before removal')
     args=parser.parse_args()
-    manifest,module,pin=code_inventory(args.code_bundle)
+    if args.action=='remove' and not args.confirm_lg_home:parser.error('remove requires fresh LG Home/control confirmation with --confirm-lg-home')
+    manifest,modules,pin=code_inventory(args.code_bundle)
     if args.action=='digest':print(pin);return
     for field,length in (('operation',32),('candidate',64),('code_sha256',64)):
         if not isinstance(getattr(args,field),str) or not re.fullmatch('[a-f0-9]{'+str(length)+'}',getattr(args,field)):
@@ -86,7 +88,7 @@ def main():
                     remote.run('mkdir -p '+shlex.quote(stage+'/'+directory))
                 for name in (*manifest['files'],'bundle.json'):
                     remote.upload(stage+'/'+name,(args.code_bundle/name).read_bytes(),mode=0o600)
-                remote.upload(stage+'/cancel_install.py',module,mode=0o600)
+                for name,raw in modules.items():remote.upload(stage+'/'+name,raw,mode=0o600)
                 def invoke(action,identifier,candidate):
                     command=[installer._python(),'-B',stage+'/cancel_install.py',action,'--operation',identifier,'--candidate',candidate,'--code-sha256',pin]
                     if action=='remove':command+=['--proof-sha256',args.proof_sha256]
