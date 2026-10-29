@@ -538,7 +538,7 @@ class Device:
             spec=importlib.util.spec_from_file_location('system_root_provision',self.root_updater/'code/provision.py');provision=importlib.util.module_from_spec(spec);spec.loader.exec_module(provision)
             snapshot=json.loads(safe_bytes(self.root_state/'ls2-provision-snapshot.json',limit=65536,uid=self.uid))
             if snapshot.get('phase') is not None:raise ValueError('Root removal in progress')
-            original={key:snapshot['files'][str(path)]['original'] for key,path in provision.FILES.items()};planned=provision.plan(original)
+            original={key:snapshot['files'][str(path)]['original'] for key,path in provision.FILES.items()};planned=provision.plan(original,provision.snapshot_capabilities(snapshot)) if 'capabilities' in snapshot else provision.plan(original)
             for key,path in provision.FILES.items():
                 record=snapshot['files'][str(path)];current=safe_bytes(path,limit=65536,uid=self.uid)
                 if digest(planned[key])!=record['installed_sha256'] or digest(current) not in (record['original_sha256'],record['installed_sha256']):raise ValueError('Root service registration conflict')

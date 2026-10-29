@@ -7,7 +7,7 @@
  panel.innerHTML=ht([
   "<div id=\"settingsMain\" class=\"renewal-card settings-main\"><div class=\"settings-heading\"><h2>Home settings</h2><span class=\"settings-edition\">No-root Edition</span></div><section class=\"settings-home\"><h3>Your Home screen</h3><p>Home is your app screen. Home Helper makes the Home button open it.</p><p id=\"homeRoutingStatus\" class=\"settings-status\" aria-live=\"polite\">Checking Home control…</p>",
   "<div class=\"renewal-actions home-routing-actions\"><button id=\"homeRoutingToggle\" class=\"home-routing-switch\" role=\"switch\" aria-checked=\"false\" hidden disabled>Change Home</button><button id=\"homeVisit\" class=\"home-visit-button\" aria-describedby=\"homeVisitHint\">Open LG Home</button></div><p id=\"homeVisitHint\" class=\"home-visit-hint\">Open LG Home once, keeping your Home choice.</p>",
-  "<div class=\"renewal-actions settings-layout\"><button id=\"homeThemes\">Themes</button></div><div class=\"renewal-actions settings-layout\"><button id=\"homeColumns\">Columns</button></div></section>",
+  "<div class=\"renewal-actions settings-layout\"><div id=\"homeThemeHost\"></div></div><div class=\"renewal-actions settings-layout\"><button id=\"homeColumns\">Columns</button></div></section>",
   "<div id=\"homeAppSettings\" class=\"renewal-actions settings-layout\"><button id=\"homeShowAddApp\" class=\"home-routing-switch\" role=\"switch\" aria-checked=\"true\">Show Add app tile</button><button id=\"homeAddApp\">Add app</button><p id=\"homeAppsError\" role=\"alert\"></p></div>",
   "<div class=\"renewal-actions settings-links settings-section\"><button id=\"homeLanguage\">Language<span class=\"settings-chevron\" aria-hidden=\"true\"></span></button><button id=\"renewalUpdates\">Software updates<span class=\"settings-update-dot\" aria-hidden=\"true\"></span><span class=\"settings-chevron\" aria-hidden=\"true\"></span></button><button id=\"renewalTV\">TV settings<span class=\"settings-chevron\" aria-hidden=\"true\"></span></button></div><div class=\"renewal-actions settings-developer\"><button id=\"developerOpen\" aria-controls=\"developerSettings\" aria-describedby=\"renewalSummary\"><span><span>Developer Mode</span> <span class=\"settings-beta\">Beta</span><span id=\"renewalSummary\" class=\"renewal-summary\" aria-live=\"polite\">Checking auto-renewal…</span></span><span class=\"settings-chevron\" aria-hidden=\"true\"></span></button></div><div class=\"settings-footer\">",
   "<div class=\"renewal-actions\"><button id=\"renewalClose\">Back to Home</button></div></div>",
@@ -149,18 +149,22 @@
  }
  document.getElementById('developerOpen').onclick=function(){showDeveloper(true);};
  document.getElementById('developerBack').onclick=function(){showDeveloper(false);};
- function close(){panel.classList.add('hidden');if(window.ThemeRuntime)ThemeRuntime.resume('settings');if(previous&&previous.focus)previous.focus();}
+ function close(){if(window.HomeThemePanel)HomeThemePanel.unmount();panel.classList.add('hidden');if(window.ThemeRuntime)ThemeRuntime.resume('settings');if(previous&&previous.focus)previous.focus();}
  document.getElementById('renewalClose').onclick=close;
  document.getElementById('homeLanguage').onclick=function(){if(window.HomeI18n)HomeI18n.openLanguagePicker();};
  document.addEventListener('home-layout-change',function(){if(openNow()&&buttons[index].hidden)focus(index+1);});
- document.getElementById('homeThemes').onclick=function(){if(window.HomeThemePanel)HomeThemePanel.open();};
+ if(window.HomeThemePanel)HomeThemePanel.mount(document.getElementById('homeThemeHost'));
  document.getElementById('homeShowAddApp').onclick=function(){if(window.HomeAppControls)HomeAppControls.toggle();};
  document.getElementById('homeAddApp').onclick=function(){if(window.HomeAppControls){close();HomeAppControls.add();}};
  document.getElementById('homeColumns').onclick=function(){if(window.HomeLayoutPanel)HomeLayoutPanel.open();};
  document.getElementById('renewalUpdates').onclick=function(){panel.classList.add('hidden');window.HomeUpdates.open({onClose:function(){panel.classList.remove('hidden');focus(buttons.indexOf(document.getElementById('renewalUpdates')));checkUpdates();}});};
  document.getElementById('renewalTV').onclick=function(){close();try{var b=new PalmServiceBridge();b.onservicecallback=function(){b.cancel();};b.call('luna://com.webos.applicationManager/launch',JSON.stringify({id:'com.palm.app.settings',params:{}}));}catch(_){}};
- buttons.forEach(function(b,i){b.onfocus=function(){index=i;};b.addEventListener('mouseover',function(){focus(i);});});
- document.addEventListener('keydown',function(e){if(!openNow())return;var k=e.keyCode;
+ // Reflow can move Columns beneath a parked cursor. Only real pointer movement
+ // may take focus back from the remote or category navigation.
+ var pointerX=null,pointerY=null,pointerMoved=false;
+ document.addEventListener('mousemove',function(e){pointerMoved=e.clientX!==pointerX||e.clientY!==pointerY;pointerX=e.clientX;pointerY=e.clientY;},true);
+ buttons.forEach(function(b,i){b.onfocus=function(){index=i;};b.addEventListener('mousemove',function(){if(pointerMoved)focus(i);});});
+ document.addEventListener('keydown',function(e){if(!openNow()||window.HomeThemePanel&&HomeThemePanel.handlesKey(e))return;var k=e.keyCode;
   if([9,37,38,39,40,13,461,27].indexOf(k)<0)return;
   e.preventDefault();e.stopImmediatePropagation();
   if(document.activeElement===details&&(k===38||k===40)){
@@ -172,7 +176,7 @@
  },true);
  if(window.SettingsCategories)categories=SettingsCategories.attach(panel,main,[
   {id:'home',label:'Your Home screen',elements:[main.querySelector('.settings-home')]},
-  {id:'appearance',label:'Appearance',elements:[document.getElementById('homeThemes').parentNode,document.getElementById('homeColumns').parentNode,document.getElementById('homeAppSettings')]},
+  {id:'appearance',label:'Appearance',elements:[document.getElementById('homeThemeHost').parentNode,document.getElementById('homeColumns').parentNode,document.getElementById('homeAppSettings')]},
   {id:'language',label:'Language',elements:[document.getElementById('homeLanguage')]},
   {id:'updates',label:'Software updates',elements:[document.getElementById('renewalUpdates')]},
   {id:'advanced',label:'Advanced',elements:[document.getElementById('renewalTV')]},

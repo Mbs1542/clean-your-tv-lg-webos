@@ -44,7 +44,7 @@
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
-  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){x.abort();finish(Error('Theme file exceeds its size limit'));}};
+  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){finish(Error('Theme file exceeds its size limit'));x.abort();}};
   x.onload=function(){if(!((local===true&&x.status===0)||x.status===200)){var error=Error(x.status===404?'Theme file not found':'Could not download theme');error.status=x.status;return finish(error);}if(!x.response||x.response.byteLength>limit)return finish(Error('Theme file exceeds its size limit'));if(local!==true&&x.responseURL&&x.responseURL!==url)return finish(Error('Theme redirects are not accepted'));finish();};
   x.onerror=function(){finish(Error('Theme network error'));};x.ontimeout=function(){finish(Error('Theme download timed out'));};x.onabort=function(){finish(Error('Cancelled'));};x.send();
  });}
@@ -75,7 +75,8 @@
   return revision.then(function(){var p=s.path||'cytv-themes.json';return request(raw(s,p),65536,false,signal).catch(function(e){if(s.path||e.status!==404)throw e;p='cytv-theme.json';return request(raw(s,p),65536,false,signal);}).then(function(a){var m=JSON.parse(decode(a));if(/cytv-themes\.json$/.test(p)){m=policy.validateCollection(m);if(m.repository.toLowerCase()!==s.repository)fail('Collection repository mismatch');var dir=p.slice(0,p.lastIndexOf('/')+1);return m.themes.map(function(t){return {title:t.title,id:t.id,version:t.themeVersion,url:raw(s,dir+t.path),digest:t.sha256,repository:s.repository};});}
    m=policy.validateManifest(m);if(m.id.indexOf('github:')!==0||m.source.repository.toLowerCase()!==s.repository)fail('Theme repository mismatch');return [{title:m.title,id:m.id,version:m.themeVersion,url:raw(s,p),digest:hash(a),repository:s.repository}];});});
  }
- function imageInfo(a,type){
+ function imageInfo(a,type,wallpaper){
+  var maxWidth=wallpaper?3840:1920,maxHeight=wallpaper?2160:1080;
   a=new Uint8Array(a);var v=new DataView(a.buffer,a.byteOffset,a.byteLength),w,h,i,n,kind;function str(at,count){return String.fromCharCode.apply(null,a.subarray(at,at+count));}
   if(type==='image/png'){
    if(a.length<45||str(1,3)!=='PNG'||a[0]!==137||a[4]!==13||a[5]!==10||a[6]!==26||a[7]!==10)fail('Invalid PNG');i=8;var ended=false,hasData=false;
@@ -83,14 +84,14 @@
    if(!ended||!hasData||i!==a.length)fail('Invalid PNG structure');
   }else if(type==='image/jpeg'){
    if(a.length<4||a[0]!==255||a[1]!==216||a[a.length-2]!==255||a[a.length-1]!==217)fail('Invalid JPEG');i=2;
-   while(i+4<=a.length){if(a[i++]!==255)fail('Invalid JPEG marker');while(a[i]===255)i++;kind=a[i++];if(kind===218)break;n=v.getUint16(i);if(n<2||i+n>a.length)fail('Invalid JPEG segment');if([192,193,194].indexOf(kind)>=0){if(n<8)fail('Invalid JPEG frame');h=v.getUint16(i+3);w=v.getUint16(i+5);if(w>1920||h>1080)fail('Image dimensions exceed limits');}i+=n;}
+   while(i+4<=a.length){if(a[i++]!==255)fail('Invalid JPEG marker');while(a[i]===255)i++;kind=a[i++];if(kind===218)break;n=v.getUint16(i);if(n<2||i+n>a.length)fail('Invalid JPEG segment');if([192,193,194].indexOf(kind)>=0){if(n<8)fail('Invalid JPEG frame');h=v.getUint16(i+3);w=v.getUint16(i+5);if(w>maxWidth||h>maxHeight)fail('Image dimensions exceed limits');}i+=n;}
   }else if(type==='image/webp'){
    if(a.length<30||str(0,4)!=='RIFF'||str(8,4)!=='WEBP'||v.getUint32(4,true)+8!==a.length)fail('Invalid WebP');kind=str(12,4);
    if(kind==='VP8X'){if(a[20]&2)fail('Animated images are not supported');w=1+a[24]+(a[25]<<8)+(a[26]<<16);h=1+a[27]+(a[28]<<8)+(a[29]<<16);var at=30,frame=false;while(at+8<=a.length){var chunk=str(at,4),size=v.getUint32(at+4,true),fw=null,fh=null;if(size>a.length-at-8)fail('Invalid WebP chunk');if(chunk==='ANIM'||chunk==='ANMF')fail('Animated images are not supported');if(chunk==='VP8 '){if(size<10||str(at+11,3)!=='\x9d\x01\x2a')fail('Invalid WebP frame');fw=v.getUint16(at+14,true)&16383;fh=v.getUint16(at+16,true)&16383;}else if(chunk==='VP8L'){if(size<5||a[at+8]!==47)fail('Invalid WebP frame');var lossless=v.getUint32(at+9,true);fw=(lossless&16383)+1;fh=((lossless>>>14)&16383)+1;}if(fw!==null){if(frame||fw!==w||fh!==h)fail('WebP canvas/frame dimensions mismatch');frame=true;}at+=8+size+(size%2);}if(!frame||at!==a.length)fail('Invalid WebP structure');}
    else if(kind==='VP8 '){if(str(23,3)!=='\x9d\x01\x2a')fail('Invalid WebP frame');w=v.getUint16(26,true)&16383;h=v.getUint16(28,true)&16383;}
    else if(kind==='VP8L'){if(a[20]!==47)fail('Invalid WebP frame');var bits=v.getUint32(21,true);w=(bits&16383)+1;h=((bits>>>14)&16383)+1;}else fail('Invalid WebP frame');
   }else fail('Unsupported image type');
-  if(!w||!h||w>1920||h>1080)fail('Image dimensions exceed limits');return {width:w,height:h};
+  if(!w||!h||w>maxWidth||h>maxHeight)fail('Image dimensions exceed limits');return {width:w,height:h};
  }
  function verify(pack,homeVersion){
   if(!pack||!(pack.descriptor instanceof Uint8Array||pack.descriptor instanceof ArrayBuffer))fail('Invalid cached theme');
@@ -99,7 +100,7 @@
   if(m.layout.spacingScale!==1||m.layout.textScale!==1||m.layout.focusScale!==1.1)fail('Unsupported layout scales');
   var files=[m.rules].concat(m.assets,m.documents),total=descriptor.length;if(!pack.files||Object.keys(pack.files).length!==files.length)fail('Unexpected cached theme files');files.forEach(function(f){path(f.path);var a=pack.files&&pack.files[f.path];if(!a)fail('Theme file missing');a=new Uint8Array(a);total+=a.length;if(a.length!==f.size||hash(a)!==f.sha256)fail('Theme file hash mismatch');});
   if(total>7*1024*1024)fail('Theme package exceeds limits');
-  m.assets.forEach(function(f){var info=imageInfo(pack.files[f.path],f.mediaType);if(info.width!==f.width||info.height!==f.height)fail('Image dimensions do not match descriptor');});
+  m.assets.forEach(function(f){var info=imageInfo(pack.files[f.path],f.mediaType,f.id===m.defaults.wallpaperAssetId);if(info.width!==f.width||info.height!==f.height)fail('Image dimensions do not match descriptor');});
   var rules=policy.validateRules(JSON.parse(decode(pack.files[m.rules.path])));return {manifest:m,rules:rules,size:total};
  }
  function load(entry,homeVersion,signal,progress,local){
