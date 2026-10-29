@@ -59,6 +59,7 @@ class BuildTests(unittest.TestCase):
             prefix = 'usr/palm/applications/com.cleanyourtv.root.preview/'
             self.assertTrue(all(n.startswith(prefix) or n.startswith('usr/palm/services/com.cleanyourtv.root.preview.service/') or n == 'usr/palm/packages/com.cleanyourtv.root.preview/packageinfo.json' for n in files))
             self.assertEqual(json.loads(files[prefix + 'appinfo.json'])['id'], 'com.cleanyourtv.root.preview')
+            self.assertEqual(json.loads(files[prefix + 'appinfo.json'])['themeEngineVersion'], json.loads((ROOT.parent/'launcher/appinfo.json').read_text())['version'])
             self.assertEqual(json.loads(files['usr/palm/packages/com.cleanyourtv.root.preview/packageinfo.json'])['services'], ['com.cleanyourtv.root.preview.service'])
             service_prefix = 'usr/palm/services/com.cleanyourtv.root.preview.service/'
             self.assertEqual({n[len(service_prefix):] for n in files if n.startswith(service_prefix)}, {'service.js', 'startup-diagnostics.js', 'app-inventory.js', 'handlers.js', 'services.json', 'package.json', 'boot-recover.sh', 'activity.json', 'theme-receiver.js', 'theme-receiver/core.js', 'theme-receiver/register.js'})

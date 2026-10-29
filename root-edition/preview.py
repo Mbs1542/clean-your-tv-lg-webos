@@ -31,6 +31,7 @@ def prepare(version='0.0.1'):
     info = json.loads(files['appinfo.json'])
     if (info.get('id'), info.get('type'), info.get('main')) != ('com.gathin.tvhome', 'web', 'index.html'):
         raise ValueError('Unexpected launcher manifest')
+    info['themeEngineVersion'] = info['version']
     info.update(id=APP_ID, title='Home Root', version=version, appCategory=['home'], icon='home-root-icon.png', largeIcon='home-root-largeIcon.png')
     for name in ('brand-v2-icon.png', 'brand-v2-largeIcon.png'):
         path = UI.parent / 'assets' / ('home.png' if name == 'brand-v2-icon.png' else 'home-large.png')
