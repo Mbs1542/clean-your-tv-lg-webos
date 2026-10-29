@@ -791,3 +791,80 @@
   position: relative;
   padding-right: 128px;
 }
+
+/* Two-column settings: persistent categories and a focused reading area. */
+.settings-workspace.settings-main {
+  display: flex;
+  flex-direction: column;
+  width: 1640px;
+  height: 88vh;
+  max-height: 1000px;
+  padding: 36px 44px 24px;
+  overflow: hidden;
+  background: #0e1319;
+  border-color: #303842;
+  border-radius: 18px;
+}
+.settings-workspace .settings-heading { flex-shrink: 0; padding-bottom: 28px; }
+.settings-columns { display: flex; flex: 1; min-height: 0; }
+.settings-categories.renewal-actions { display: block; flex: 0 0 340px; padding: 8px 24px 8px 8px; overflow-y: auto; }
+.settings-categories button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 70px;
+  margin: 0 0 8px;
+  padding: 14px 18px;
+  text-align: left;
+  background: transparent;
+  border: 3px solid transparent;
+  border-radius: 10px;
+  font-size: 25px;
+  line-height: 1.25;
+}
+.settings-categories button[aria-selected="true"] { background: #242b34; }
+.settings-categories button[aria-selected="true"]:before {
+  content: ""; position: absolute; left: -10px; top: 14px; bottom: 14px;
+  width: 4px; border-radius: 4px; background: #72aaff;
+}
+.settings-categories button:focus { outline: 3px solid #b8d3ff; outline-offset: 2px; background: #303f54; }
+.settings-categories svg { width: 28px; height: 28px; flex-shrink: 0; margin-right: 16px; fill: none; stroke: #b4becb; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.settings-content { flex: 1; min-width: 0; border-left: 1px solid #303842; padding-left: 44px; overflow-y: auto; }
+.settings-pane { display: block; padding: 8px 10px 16px; }
+.settings-pane[hidden] { display: none; }
+.renewal-card .settings-pane>h3,.root-settings .settings-pane>h3 { font-size: 36px; padding-bottom: 24px; margin: 0 0 28px; border-bottom: 1px solid #303842; }
+.settings-workspace .settings-home { margin-top: 0; }
+.settings-pane .settings-layout,.settings-pane .settings-developer { margin-top: 16px; }
+.settings-pane>button,.settings-pane .settings-layout>button { display: flex; align-items: center; width: 100%; min-height: 76px; margin: 0 0 18px; text-align: left; }
+.settings-workspace .home-routing-actions { display: block; }
+.settings-workspace .home-routing-actions>button { display: block; width: 100%; margin: 16px 0 0; }
+.settings-workspace .settings-footer { justify-content: flex-end; flex-shrink: 0; margin-top: 24px; padding-top: 18px; }
+.settings-pane [data-update-available="true"] .settings-update-dot { display: inline-block; }
+.settings-pane .settings-chevron { margin-left: auto; }
+.settings-pane .settings-update-dot { margin-right: 18px; }
+@media(max-height:800px) {
+ .settings-workspace.settings-main { height: 92vh; padding: 22px 32px 16px; }
+ .settings-workspace .settings-heading { padding-bottom: 18px; }
+ .settings-categories.renewal-actions { flex-basis: 280px; padding-right: 20px; }
+ .settings-categories button { min-height: 58px; font-size: 21px; padding: 10px 12px; margin-bottom: 6px; }
+ .settings-categories svg { width: 24px; height: 24px; margin-right: 12px; }
+ .settings-content { padding-left: 28px; }
+ .renewal-card .settings-pane>h3,.root-settings .settings-pane>h3 { font-size: 30px; padding-bottom: 18px; margin-bottom: 20px; }
+ .settings-pane>button,.settings-pane .settings-layout>button { min-height: 64px; font-size: 22px; }
+}
+@media(max-width:700px) {
+ .settings-workspace.settings-main { max-width: 98vw; padding: 18px 12px; }
+ .settings-categories.renewal-actions { flex-basis: 34%; padding-right: 10px; }
+ .settings-categories button { font-size: 17px; padding: 10px 6px; }
+ .settings-categories svg { display: none; }
+ .settings-content { padding-left: 12px; }
+ .settings-workspace .settings-edition { white-space: normal; }
+}
+
+.settings-workspace .settings-home>h2,.settings-workspace .settings-home>h3 { display: none; }
+
+.settings-pane button[hidden],.settings-pane .settings-layout.hidden { display: none; }
+
+.settings-categories button[data-update-available="true"] .settings-update-dot { display: inline-block; }
+.settings-categories .settings-update-dot { margin-left: 16px; width: 12px; height: 12px; }

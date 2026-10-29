@@ -3,12 +3,13 @@
   'use strict';
   function t(source, params) { if (window.HomeI18n) return window.HomeI18n.t(source, params); return String(source).replace(/\{(\w+)\}/g, function (_, key) { return params && params[key] !== undefined ? params[key] : '{' + key + '}'; }); }
   var panel, message, buttons, selected = 0, busy = false, previous, rootStatus = null;
-  var checkingUpdates = false;
+  var checkingUpdates = false, categories;
   function checkUpdates() {
     if (checkingUpdates || !window.RootUpdates || !window.RootUpdates.rpc) return;
     checkingUpdates = true;
     function badge(available) {
       buttons[4].setAttribute('data-update-available', String(available));
+      if (categories) categories.setUpdateAvailable(available);
       buttons[4].setAttribute('aria-label', t(available ? 'Software updates. Update available.' : 'Software updates'));
     }
     function legacy() {
@@ -150,7 +151,6 @@
     var links = document.createElement('div'); links.className = 'renewal-actions settings-links'; more.appendChild(links);
     var firmware = document.createElement('div'); firmware.className = 'renewal-actions settings-firmware'; more.appendChild(firmware);
     var footer = document.createElement('div'); footer.className = 'settings-footer'; card.appendChild(footer);
-    text(footer, 'p', 'Hold Back for 1.2 seconds to open LG Home.');
     var back = document.createElement('div'); back.className = 'renewal-actions'; footer.appendChild(back);
     buttons = [];
     order.forEach(function (i) {
@@ -172,6 +172,13 @@
       buttons[i] = b;
     });
     text(home, 'p', 'Open LG Home once, keeping your Home choice.', 'home-visit-hint').id = 'rootHomeVisitHint';
+    if(window.SettingsCategories) categories = SettingsCategories.attach(panel, card, [
+      {id:'home',label:'Your Home screen',elements:[home]},
+      {id:'appearance',label:'Appearance',elements:[themes,layout]},
+      {id:'language',label:'Language',elements:[buttons[5]]},
+      {id:'updates',label:'Software updates',elements:[buttons[4],buttons[6]]},
+      {id:'advanced',label:'Advanced',elements:[buttons[0],buttons[7]]}
+    ]);
     document.body.appendChild(panel);
     document.addEventListener('keydown', function (e) {
       if (panel.hidden) return;
@@ -193,7 +200,7 @@
       if (window.ThemeRuntime) window.ThemeRuntime.suspend('settings');
       previous = document.activeElement;
       message.textContent = t('Checking whether Home control is on…');
-      panel.hidden = false; focus(3); refreshMode().then(function () { if (!panel.hidden && !busy && !buttons[3].disabled) focus(3); });
+      panel.hidden = false; focus(3); refreshMode(); if(categories)categories.open();
       checkUpdates();
     }
   };
