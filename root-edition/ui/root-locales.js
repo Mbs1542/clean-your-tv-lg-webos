@@ -2282,12 +2282,12 @@ if (window.HomeI18n) window.HomeI18n.add({
     "Invalid Add app visibility": "Недопустимое значение видимости плитки добавления приложения"
   },
   "zh-Hans": {
-    "Show Add app tile": "显示“添加应用”卡片",
+    "Show Add app tile": "显示“添加应用”按钮",
     "Add app": "添加应用",
-    "Invalid Add app visibility": "添加应用卡片的显示设置无效"
+    "Invalid Add app visibility": "添加应用的显示设置无效"
   },
   "zh-Hant": {
-    "Show Add app tile": "顯示「新增應用程式」圖塊",
+    "Show Add app tile": "顯示「新增應用程式」按鈕",
     "Add app": "新增應用程式",
     "Invalid Add app visibility": "新增應用程式圖塊的顯示設定無效"
   }

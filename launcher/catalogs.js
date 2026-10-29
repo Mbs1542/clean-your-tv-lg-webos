@@ -2520,9 +2520,9 @@ HomeI18n.add({
     "Show Add app tile": "Показывать плитку «Добавить приложение»"
   },
   "zh-Hans": {
-    "Show Add app tile": "显示“添加应用”卡片"
+    "Show Add app tile": "显示“添加应用”按钮"
   },
   "zh-Hant": {
-    "Show Add app tile": "顯示「新增應用程式」圖塊"
+    "Show Add app tile": "顯示「新增應用程式」按鈕"
   }
 });
