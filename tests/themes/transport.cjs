@@ -26,3 +26,9 @@ function chunk(kind,bytes){const header=Buffer.alloc(8);header.write(kind);heade
 const canvas=Buffer.alloc(10);canvas.writeUIntLE(1,4,3);canvas.writeUIntLE(1,7,3);const frame=Buffer.from([47,1,64,0,0]),body=Buffer.concat([Buffer.from('WEBP'),chunk('VP8X',canvas),chunk('VP8L',frame),chunk('EXIF',Buffer.from([0,0]))]),riff=Buffer.alloc(8);riff.write('RIFF');riff.writeUInt32LE(body.length,4);const webp=Buffer.concat([riff,body]);
 assert.deepEqual(data.imageInfo(webp,'image/webp'),{width:2,height:2});canvas.writeUIntLE(2,4,3);const mismatchBody=Buffer.concat([Buffer.from('WEBP'),chunk('VP8X',canvas),chunk('VP8L',frame)]);riff.writeUInt32LE(mismatchBody.length,4);assert.throws(()=>data.imageInfo(Buffer.concat([riff,mismatchBody]),'image/webp'),/canvas/);
 console.log('Theme transport: extended WebP canvas/frame bounds passed');
+
+// Native XHR dispatches abort synchronously: preserve the size-limit diagnosis.
+const vm=require('vm');
+class OversizedXHR {open(){} send(){this.onprogress({loaded:65537,lengthComputable:true,total:65537});} abort(){this.onabort();}}
+const bounded={Promise,Uint8Array,XMLHttpRequest:OversizedXHR};vm.runInNewContext(fs.readFileSync('launcher/theme-data.js','utf8'),bounded);
+assert.rejects(bounded.ThemeData.request('https://api.github.com/test',65536,false),/size limit/).catch(e=>{console.error(e);process.exitCode=1;});

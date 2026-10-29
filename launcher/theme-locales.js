@@ -47,7 +47,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Введите шестизначный PIN с компьютера",
     "Refresh": "Обновить",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Показаны темы из комплекта. Не удалось обновить каталог из репозитория.",
-    "Apply theme": "Применить тему"
+    "Apply theme": "Применить тему",
+    "All available themes are already installed": "Все доступные темы уже установлены"
   },
   "de": {
     "Themes": "Designs",
@@ -96,7 +97,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Die am Computer angezeigte sechsstellige PIN eingeben",
     "Refresh": "Aktualisieren",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Enthaltene Designs werden angezeigt. Der Onlinekatalog konnte nicht aktualisiert werden.",
-    "Apply theme": "Design anwenden"
+    "Apply theme": "Design anwenden",
+    "All available themes are already installed": "Alle verfügbaren Themes sind bereits installiert"
   },
   "es": {
     "Themes": "Temas",
@@ -145,7 +147,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Introduce el PIN de seis dígitos mostrado en el ordenador",
     "Refresh": "Actualizar",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Se muestran los temas incluidos. No se pudo actualizar el catálogo en línea.",
-    "Apply theme": "Aplicar tema"
+    "Apply theme": "Aplicar tema",
+    "All available themes are already installed": "Todos los temas disponibles ya están instalados"
   },
   "pt-BR": {
     "Themes": "Temas",
@@ -194,7 +197,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Digite o PIN de seis dígitos exibido no computador",
     "Refresh": "Atualizar",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Exibindo temas incluídos. Não foi possível atualizar o catálogo online.",
-    "Apply theme": "Aplicar tema"
+    "Apply theme": "Aplicar tema",
+    "All available themes are already installed": "Todos os temas disponíveis já estão instalados"
   },
   "fr": {
     "Themes": "Thèmes",
@@ -243,7 +247,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Saisissez le PIN à six chiffres affiché sur l’ordinateur",
     "Refresh": "Actualiser",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Thèmes inclus affichés. Impossible d’actualiser le catalogue en ligne.",
-    "Apply theme": "Appliquer le thème"
+    "Apply theme": "Appliquer le thème",
+    "All available themes are already installed": "Tous les thèmes disponibles sont déjà installés"
   },
   "it": {
     "Themes": "Temi",
@@ -292,7 +297,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Inserisci il PIN di sei cifre mostrato sul computer",
     "Refresh": "Aggiorna",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Temi inclusi visualizzati. Impossibile aggiornare il catalogo online.",
-    "Apply theme": "Applica tema"
+    "Apply theme": "Applica tema",
+    "All available themes are already installed": "Tutti i temi disponibili sono già installati"
   },
   "ko": {
     "Themes": "테마",
@@ -341,7 +347,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "컴퓨터에 표시된 6자리 PIN을 입력하세요",
     "Refresh": "새로고침",
     "Showing bundled themes. Live catalogue could not be refreshed.": "기본 테마를 표시합니다. 온라인 카탈로그를 새로고침하지 못했습니다.",
-    "Apply theme": "테마 적용"
+    "Apply theme": "테마 적용",
+    "All available themes are already installed": "사용 가능한 모든 테마가 이미 설치되어 있습니다"
   },
   "hi": {
     "Themes": "थीम",
@@ -390,7 +397,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "कंप्यूटर पर दिखाया गया छह अंकों का PIN दर्ज करें",
     "Refresh": "रीफ़्रेश करें",
     "Showing bundled themes. Live catalogue could not be refreshed.": "शामिल थीम दिखाई जा रही हैं। ऑनलाइन कैटलॉग रीफ़्रेश नहीं हुआ।",
-    "Apply theme": "थीम लागू करें"
+    "Apply theme": "थीम लागू करें",
+    "All available themes are already installed": "सभी उपलब्ध थीम पहले से इंस्टॉल हैं"
   },
   "pl": {
     "Themes": "Motywy",
@@ -439,7 +447,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Wpisz sześciocyfrowy PIN wyświetlony na komputerze",
     "Refresh": "Odśwież",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Wyświetlane są dołączone motywy. Nie udało się odświeżyć katalogu online.",
-    "Apply theme": "Zastosuj motyw"
+    "Apply theme": "Zastosuj motyw",
+    "All available themes are already installed": "Wszystkie dostępne motywy są już zainstalowane"
   },
   "zh-Hans": {
     "Themes": "主题",
@@ -488,7 +497,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "输入电脑上显示的六位 PIN",
     "Refresh": "刷新",
     "Showing bundled themes. Live catalogue could not be refreshed.": "正在显示内置主题。无法刷新在线目录。",
-    "Apply theme": "应用主题"
+    "Apply theme": "应用主题",
+    "All available themes are already installed": "所有可用主题均已安装"
   },
   "zh-Hant": {
     "Themes": "主題",
@@ -537,7 +547,8 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "輸入電腦上顯示的六位 PIN",
     "Refresh": "重新整理",
     "Showing bundled themes. Live catalogue could not be refreshed.": "正在顯示隨附主題。無法重新整理線上目錄。",
-    "Apply theme": "套用主題"
+    "Apply theme": "套用主題",
+    "All available themes are already installed": "所有可用佈景主題均已安裝"
   },
   "en": {
     "Themes": "Themes",
@@ -586,6 +597,7 @@ HomeI18n.add({
     "Enter the six-digit PIN shown on the computer": "Enter the six-digit PIN shown on the computer",
     "Refresh": "Refresh",
     "Showing bundled themes. Live catalogue could not be refreshed.": "Showing bundled themes. Live catalogue could not be refreshed.",
-    "Apply theme": "Apply theme"
+    "Apply theme": "Apply theme",
+    "All available themes are already installed": "All available themes are already installed"
   }
 });

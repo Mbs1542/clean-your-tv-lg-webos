@@ -44,7 +44,7 @@
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
-  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){x.abort();finish(Error('Theme file exceeds its size limit'));}};
+  x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){finish(Error('Theme file exceeds its size limit'));x.abort();}};
   x.onload=function(){if(!((local===true&&x.status===0)||x.status===200)){var error=Error(x.status===404?'Theme file not found':'Could not download theme');error.status=x.status;return finish(error);}if(!x.response||x.response.byteLength>limit)return finish(Error('Theme file exceeds its size limit'));if(local!==true&&x.responseURL&&x.responseURL!==url)return finish(Error('Theme redirects are not accepted'));finish();};
   x.onerror=function(){finish(Error('Theme network error'));};x.ontimeout=function(){finish(Error('Theme download timed out'));};x.onabort=function(){finish(Error('Cancelled'));};x.send();
  });}

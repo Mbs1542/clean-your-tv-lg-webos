@@ -66,9 +66,9 @@
   var local,project='https://raw.githubusercontent.com/Razdva122/clean-your-tv-lg-webos/';
   function cancelled(){if(signal&&signal.cancelled)throw Error('Cancelled');}
   return Promise.resolve().then(function(){cancelled();return data.request('theme-catalog.json',65536,true,signal);}).then(function(bytes){
-   cancelled();var bundled=catalogEntries(bytes);if(onLocal)onLocal(bundled);local=bundled;return data.request('https://api.github.com/repos/Razdva122/clean-your-tv-lg-webos/commits/HEAD',65536,false,signal);
+   cancelled();var bundled=catalogEntries(bytes);if(onLocal)onLocal(bundled);local=bundled;return data.request('https://api.github.com/repos/Razdva122/clean-your-tv-lg-webos/git/ref/heads/main',65536,false,signal);
   }).then(function(bytes){
-   cancelled();var commit=JSON.parse(data.decode(bytes));if(!commit||! /^[a-f0-9]{40}$/.test(commit.sha))throw Error('Invalid theme catalog commit');
+   cancelled();var ref=JSON.parse(data.decode(bytes)),commit=ref&&ref.object;if(!ref||ref.ref!=='refs/heads/main'||!commit||commit.type!=='commit'||! /^[a-f0-9]{40}$/.test(commit.sha))throw Error('Invalid theme catalog commit');
    var base=project+commit.sha+'/launcher/';return data.request(base+'theme-catalog.json',65536,false,signal).then(function(bytes){
     cancelled();var remote=catalogEntries(bytes),items=local.filter(function(item){return item.builtin===true;});
     remote.forEach(function(item){if(item.builtin!==true){item.preview=base+item.preview;items.push(item);}});return items;
