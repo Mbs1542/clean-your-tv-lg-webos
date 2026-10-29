@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "github:razdva122/clean-your-tv-lg-webos:itachi",
+  "title": "Itachi · Sharingan",
+  "description": "Dark Itachi wallpaper and CSS-only white logo effects. Original application images remain unchanged.",
+  "author": {
+    "name": "CYTV personal themes",
+    "sourceProfile": "https://github.com/razdva122"
+  },
+  "sourceRepository": "https://github.com/razdva122/clean-your-tv-lg-webos",
+  "sourceCommit": "90aaa48d8d45cef57479eae122efa9531d7ad303",
+  "descriptorUrl": "https://raw.githubusercontent.com/razdva122/clean-your-tv-lg-webos/d3e50fe71403679442c75269e779a1c485fc8878/distributions/itachi/1.0.0/cytv-theme.json",
+  "descriptorSha256": "d4433b759c3ef07823bdddd7e6c82a380330507ce077d2aca76ed4a279f855b9",
+  "themeVersion": "1.0.0",
+  "themeApiVersion": 1,
+  "license": "LicenseRef-Personal-Fan-Theme",
+  "creditsFile": "assets/razdva122--clean-your-tv-lg-webos--itachi/d4433b759c3ef07823bdddd7e6c82a380330507ce077d2aca76ed4a279f855b9/documents/1-9ebf9099a6a2e8e8140416d9dc0b86c911ff74bb359d47b5cf4009be04507f9c.txt",
+  "previewFiles": [
+    "assets/razdva122--clean-your-tv-lg-webos--itachi/d4433b759c3ef07823bdddd7e6c82a380330507ce077d2aca76ed4a279f855b9/assets/preview-6d0d42e7a89d6b03d60704a07cbe91a987b2b25985ce9a5d1588b7190d4d0ccd.jpg"
+  ],
+  "tags": [
+    "dark",
+    "minimal",
+    "high-contrast"
+  ],
+  "addedAt": "2026-10-29",
+  "reviewedAt": "2026-10-29",
+  "evidence": [
+    {
+      "kind": "browser",
+      "summary": "Actual Root and No-root Home renderers: unchanged native icon sources/dimensions, CSS-only white filters and bounded enlargement, bright Sharingan artwork, cache/offline restore, Settings suspension and Classic reset. Synthetic app list, fixed clock; no physical-TV acceptance.",
+      "url": "https://github.com/razdva122/clean-your-tv-lg-webos/pull/158"
+    }
+  ]
+}

@@ -42,7 +42,7 @@ owner and the manifest. Tags are `dark`, `light`, `minimal`, `colorful`,
 `CC-BY-SA-4.0`, and the specifically reviewed composite
 `MIT AND CC-BY-SA-3.0` used by Alpine (MIT styling and CC BY-SA 3.0 wallpaper).
 This is an exact allowlisted value, not a general SPDX-expression parser. Individual asset permissions still need review. Public license and
-credits files use `.txt`; images use their actual PNG/JPEG/WebP extension. Other
+credits files use `.txt`; images use their actual PNG/JPEG/WebP extension. The exact `LicenseRef-Personal-Fan-Theme` value is additionally reviewed for Itachi: MIT CSS, generated wallpaper for personal non-commercial fan use with its notice retained; underlying character rights are not granted. It is not an open-source character license or a commercial-use grant. Other
 licenses require a reviewed policy change, not a misleading identifier.
 
 Dates use `YYYY-MM-DD`. Maintainers assign `addedAt` and `reviewedAt`; drafts can

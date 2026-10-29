@@ -5,7 +5,7 @@
   'use strict';
 
   var parts = ['home', 'ambient', 'hero', 'header', 'greeting', 'clock', 'period', 'divider', 'date', 'shortcut', 'input-icon', 'network-icon', 'settings-icon', 'dock', 'focus', 'card', 'icon', 'label', 'library', 'library-panel', 'library-close', 'library-row', 'inputs', 'input-row'];
-  var states = ['focused', 'selected', 'moving'];
+  var states = ['focused', 'selected', 'moving', 'glyph', 'light', 'dark', 'mid', 'bright', 'wide'];
   var properties = {
     'color': 'color',
     'background-color': 'color',
@@ -18,12 +18,18 @@
     'box-shadow': 'shadow',
     'text-shadow': 'textShadow',
     'font-family': 'font',
+    'font-size': 'fontSize',
     'font-weight': 'weight',
     'font-style': 'fontStyle',
     'text-transform': 'textTransform',
     'text-decoration': 'textDecoration',
     'letter-spacing': 'length',
-    'transition': 'transition'
+    'transition': 'transition',
+    'filter': 'filter',
+    'mix-blend-mode': 'blendMode',
+    'isolation': 'isolation',
+    'overflow': 'overflow',
+    'transform': 'iconScale'
   };
   var limits = {
     rules: 512,
@@ -110,7 +116,7 @@
     if (m.id.indexOf('github:') === 0 && m.id.split(':')[1] !== m.source.repository.slice(19).toLowerCase()) fail('manifest-invalid', 'source.identity');
     object(m.requires, ['minimumHomeVersion', 'capabilities'], 'manifest-invalid', 'requires');
     version(m.requires.minimumHomeVersion);
-    list(m.requires.capabilities, 0, 'api-unsupported', 'capabilities');
+    list(m.requires.capabilities, 1, 'api-unsupported', 'capabilities').forEach(function (capability) { if (capability !== 'modern-icon-css-v1') fail('api-unsupported', 'capabilities'); });
     object(m.layout, ['preset', 'columns', 'spacingScale', 'textScale', 'focusScale'], 'layout-invalid', 'layout', ['allowColumnOverride']);
     if (['dock-grid', 'icon-grid', 'side-grid', 'channel-list', 'scenic-grid'].indexOf(m.layout.preset) < 0) fail('layout-invalid', 'preset');
     if (Object.prototype.hasOwnProperty.call(m.layout, 'allowColumnOverride') && typeof m.layout.allowColumnOverride !== 'boolean') fail('layout-invalid', 'allowColumnOverride');
@@ -185,6 +191,8 @@
   function value(v, family, handles) {
     if (!v || typeof v !== 'object') fail('css-value', 'value');
     if (family === 'color' && v.type === 'color') return color(v);
+    if (family === 'iconScale' && v.type === 'scale') { object(v, ['type', 'amount'], 'css-value', 'icon scale'); return 'scale(' + decimal(number(v.amount, 1, 2, 'css-value', 'icon scale')) + ')'; }
+    if (family === 'fontSize' && v.type === 'length') return length(v, 22, 176);
     if (family === 'length' && v.type === 'length') return length(v, 0, 32);
     if (family === 'image' && v.type === 'asset') {
       object(v, ['type', 'id'], 'css-value', 'asset');
@@ -219,6 +227,16 @@
         return decimal(number(s.x, -24, 24, 'css-value', 'x')) + 'px ' + decimal(number(s.y, -24, 24, 'css-value', 'y')) + 'px ' + decimal(number(s.blur, 0, 40, 'css-value', 'blur')) + 'px ' + (family === 'textShadow' ? (number(s.spread, 0, 0, 'css-value', 'spread'), '') : decimal(number(s.spread, 0, 8, 'css-value', 'spread')) + 'px ') + color(s.color);
       }).join(',');
     }
+    if (family === 'filter' && v.type === 'filter') {
+      object(v, ['type', 'functions'], 'css-value', 'filter');
+      list(v.functions, 4, 'css-value', 'filter.functions');
+      if (!v.functions.length) return 'none';
+      return v.functions.map(function (f) {
+        object(f, ['name', 'amount'], 'css-value', 'filter.function');
+        if (['grayscale', 'invert', 'brightness', 'contrast'].indexOf(f.name) < 0) fail('css-value', 'filter.name');
+        return f.name + '(' + decimal(number(f.amount, 0, f.name === 'contrast' ? 10 : f.name === 'brightness' ? 2 : 1, 'css-value', 'filter.amount')) + ')';
+      }).join(' ');
+    }
     if (family === 'transition' && v.type === 'transition') {
       object(v, ['type', 'property', 'duration', 'easing'], 'css-value', 'transition');
       if (['color', 'background-color', 'border-color', 'box-shadow'].indexOf(v.property) < 0 || ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out'].indexOf(v.easing) < 0) fail('css-value', 'transition');
@@ -226,6 +244,9 @@
     }
     var keywords = {
       borderStyle: ['solid', 'none'],
+      blendMode: ['normal', 'screen'],
+      isolation: ['auto', 'isolate'],
+      overflow: ['hidden', 'visible'],
       font: ['sans-serif', 'serif', 'monospace'],
       weight: ['400', '500', '600', '700'],
       fontStyle: ['normal', 'italic'],
@@ -261,6 +282,11 @@
       list(r.declarations, 64, 'css-budget', 'declarations').forEach(function (d) {
         object(d, ['property', 'value'], 'css-property', 'declaration');
         if (!Object.prototype.hasOwnProperty.call(properties, d.property) || props[d.property]) fail('css-property', 'property');
+        if ((d.property === 'filter' || d.property === 'mix-blend-mode') && r.selector[r.selector.length - 1].part !== 'icon') fail('css-property', 'icon effects scope');
+        if (d.property === 'font-size' && ['clock', 'date'].indexOf(r.selector[r.selector.length - 1].part) < 0) fail('css-property', 'clock/date font size scope');
+        if (d.property === 'isolation' && r.selector[r.selector.length - 1].part !== 'card') fail('css-property', 'card isolation scope');
+        if (d.property === 'overflow' && r.selector[r.selector.length - 1].part !== 'card') fail('css-property', 'card overflow scope');
+        if (d.property === 'transform' && (r.selector.length < 2 || r.selector[r.selector.length - 1].part !== 'icon' || r.selector[r.selector.length - 2].part !== 'card')) fail('css-property', 'card icon scale scope');
         props[d.property] = true;
         value(d.value, properties[d.property]);
         count++;

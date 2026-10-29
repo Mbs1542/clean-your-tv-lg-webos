@@ -55,8 +55,15 @@ function scalar(raw) {
   return parseFloat(raw);
 }
 function typed(raw, family, assets) {
+  if (family === 'iconScale') { const m = /^scale\((\d+(?:\.\d+)?)\)$/.exec(raw); if (!m) error('css-value', 'icon scale'); return {type: 'scale', amount: Number(m[1])}; }
+  if (family === 'filter') {
+    if (raw === 'none') return {type: 'filter', functions: []};
+    const nodes = parseValue(raw).nodes.filter(n => n.type !== 'space');
+    if (!nodes.length || nodes.some(n => n.type !== 'function' || n.nodes.length !== 1 || n.nodes[0].type !== 'word' || !/^(?:\d+(?:\.\d+)?|\.\d+)$/.test(n.nodes[0].value))) error('css-value', 'filter');
+    return {type: 'filter', functions: nodes.map(n => ({name: n.value, amount: Number(n.nodes[0].value)}))};
+  }
   if (family === 'color') return color(raw);
-  if (family === 'length') return {
+  if (family === 'length' || family === 'fontSize') return {
     type: 'length',
     unit: 'px',
     value: scalar(raw)
@@ -208,7 +215,10 @@ async function compileThemeCss(css, options = {}) {
   (options.assets || []).forEach(a => handles[a.id] = 'data:' + a.mediaType + ';base64,AA==');
   const output = policy.compileRules(bundle, handles);
   try {
-    await compat.stylesheet(output, 'theme.css');
+    // Screen blending is a separately gated optional capability, not a Chromium 38 promise.
+    // All other typed output still uses the unchanged compatibility checker.
+    const legacy = {schemaVersion: 1, rules: bundle.rules.map(r => ({...r, declarations: r.declarations.filter(d => d.property !== 'mix-blend-mode' && d.property !== 'isolation')}))};
+    await compat.stylesheet(policy.compileRules(legacy, handles), 'theme.css');
   } catch (_) {
     error('css-value', 'unsupported Chromium 38 feature; use API 1 properties');
   }
@@ -322,7 +332,7 @@ async function compileSource(input) {
   source.source = input.source || source.source;
   source.requires = {
     minimumHomeVersion: input.minimumHomeVersion || '0.0.0',
-    capabilities: []
+    capabilities: compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'filter' || d.property === 'mix-blend-mode' || d.property === 'isolation' || d.property === 'transform' || d.property === 'overflow')) ? ['modern-icon-css-v1'] : []
   };
   source.layout = Object.assign({
     preset: 'dock-grid',
@@ -331,6 +341,7 @@ async function compileSource(input) {
     textScale: 1,
     focusScale: 1.1
   }, source.layout);
+  if (compiled.bundle.rules.some(r => r.declarations.some(d => d.property === 'transform')) && (source.layout.preset !== 'scenic-grid' || source.layout.columns > 5 || source.layout.allowColumnOverride !== false)) error('layout-invalid', 'icon scale requires fixed scenic-grid with at most five columns');
   source.defaults = Object.assign({
     wallpaperAssetId: null,
     dim: .3,

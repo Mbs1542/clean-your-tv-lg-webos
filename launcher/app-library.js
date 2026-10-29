@@ -49,9 +49,9 @@
       refresh:function(apps) {
         // TV queries can return only part of the installed inventory. Absence
         // from a response must not erase saved tiles or apps hidden from Home.
-        // Preserve packaged icons when the service supplies metadata without an icon.
+        // Preserve embedded icons for incomplete/raw-URL metadata, but accept a fresh embedded native resource.
         var previous = catalog;
-        var updates = clean(apps).map(function(a) { var old = previous.filter(function(b) { return b.id === a.id; })[0]; if (old && old.icon) a.icon = old.icon; return a; });
+        var updates = clean(apps).map(function(a) { var old = previous.filter(function(b) { return b.id === a.id; })[0]; if (old && old.icon && !/^data:image\/(?:png|jpeg|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(a.icon)) a.icon = old.icon; return a; });
         catalog = clean(updates.concat(previous));
       }
     };

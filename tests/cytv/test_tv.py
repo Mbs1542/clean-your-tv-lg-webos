@@ -76,5 +76,32 @@ class InventoryTests(unittest.TestCase):
         self.assertNotIn('PRIVATE-REMOTE-TEXT', str(caught.exception))
 
 
+
+class NativeIconQualityTests(unittest.TestCase):
+    def test_largest_native_url_precedes_small_and_unreachable_variants_fall_back(self):
+        import base64
+        calls = []
+        png = b'\x89PNG\r\n\x1a\noriginal'
+        def fetch(url):
+            calls.append(url)
+            if url.endswith('extra.png'):
+                raise OSError('unavailable')
+            return png
+        source = {'extraLargeIcon': 'http://192.0.2.10/extra.png',
+                  'largeIcon': 'http://192.0.2.10/large.png',
+                  'icon': 'http://192.0.2.10/small.png'}
+        value = Inventory('192.0.2.10', b'fallback', fetch).icon(source)
+        self.assertEqual(calls, ['http://192.0.2.10/extra.png', 'http://192.0.2.10/large.png'])
+        self.assertEqual(base64.b64decode(value.split(',')[1]), png)
+
+    def test_optional_native_icon_metadata_with_wrong_type_falls_back(self):
+        png = b'\x89PNG\r\n\x1a\noriginal'
+        for value in (None, 123, {}, []):
+            with self.subTest(value=value):
+                result = Inventory('192.0.2.10', b'fallback', lambda _: png).icon({
+                    'extraLargeIcon': value, 'icon': 'http://192.0.2.10/icon.png'})
+                self.assertTrue(result.startswith('data:image/png;base64,'))
+
+
 if __name__ == '__main__':
     unittest.main()

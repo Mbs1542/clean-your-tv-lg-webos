@@ -11,12 +11,18 @@ module.exports=function(execFile,getuid){
     var fs=require('fs'),path=require('path'),iconBudget=512*1024;
     var apps=result.apps.slice(0,200).map(function(a){
      var icon='';
-     if(typeof a.icon==='string'&&typeof a.folderPath==='string'){
-      var file=path.resolve(a.folderPath,a.icon);
+     var variants=['extraLargeIcon','largeIcon','mediumLargeIcon','icon','miniicon','favicon'];
+     for(var variant=0;variant<variants.length;variant++){
+      if(typeof a[variants[variant]]!=='string'||typeof a.folderPath!=='string')continue;
+      var file=path.resolve(a.folderPath,a[variants[variant]]);
       var allowed=/^\/(usr\/palm|media\/(developer|cryptofs)\/apps\/usr\/palm|mnt\/otncabi\/usr\/palm)\/applications\//;
       if(allowed.test(file)&&/\.(png|jpe?g|webp)$/i.test(file))try{
        var real=fs.realpathSync(file),stat=fs.statSync(real);
-       if(allowed.test(real)&&stat.isFile()&&stat.size<=32768&&stat.size<=iconBudget){var ext=/\.webp$/i.test(real)?'webp':/\.jpe?g$/i.test(real)?'jpeg':'png';iconBudget-=stat.size;icon='data:image/'+ext+';base64,'+fs.readFileSync(real).toString('base64');}
+       if(allowed.test(real)&&stat.isFile()&&stat.size>0&&stat.size<=32768&&stat.size<=iconBudget){
+        var data=fs.readFileSync(real),ext=data.length>=8&&data.slice(0,8).toString('hex')==='89504e470d0a1a0a'?'png':data.length>=3&&data[0]===255&&data[1]===216&&data[2]===255?'jpeg':data.length>=12&&data.slice(0,4).toString()==='RIFF'&&data.slice(8,12).toString()==='WEBP'?'webp':'';
+        if(!ext||data.length!==stat.size)continue;
+        iconBudget-=data.length;icon='data:image/'+ext+';base64,'+data.toString('base64');break;
+       }
       }catch(_){}
      }
      return {id:a.id,title:a.title,icon:icon,iconColor:a.iconColor||a.bgColor||'',hidden:a.visible===false||a.hidden===true};
