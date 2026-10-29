@@ -28,7 +28,8 @@
   "evidence": [
     {
       "kind": "browser",
-      "summary": "Actual Root and No-root Home renderers: unchanged native icon sources/dimensions, CSS-only white filters and bounded enlargement, bright Sharingan artwork, cache/offline restore, Settings suspension and Classic reset. Synthetic app list, fixed clock; no physical-TV acceptance."
+      "summary": "Actual Root and No-root Home renderers: unchanged native icon sources/dimensions, CSS-only white filters and bounded enlargement, bright Sharingan artwork, cache/offline restore, Settings suspension and Classic reset. Synthetic app list, fixed clock; no physical-TV acceptance.",
+      "url": "https://github.com/razdva122/clean-your-tv-lg-webos/pull/158"
     }
   ]
 }

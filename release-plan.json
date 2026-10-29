@@ -52,6 +52,11 @@
       "pr": 153,
       "issues": [],
       "summary": "Prepare Root candidate QA and preserve Showcase focus"
+    },
+    {
+      "pr": 158,
+      "issues": [],
+      "summary": "Add reviewed CSS-only Itachi Sharingan theme to showcase, generic native icon quality preference and optional bounded white-logo styling; physical-TV acceptance remains untested."
     }
   ],
   "excluded": [],
