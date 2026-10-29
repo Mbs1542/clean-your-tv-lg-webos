@@ -148,7 +148,7 @@ retain the horizontal top-menu navigation. These controls are candidate-only
 preview behavior until theme activation is wired into a release.
 
 The shared Columns control is available in the unreleased candidate through
-**Home settings → Columns** in both editions. Values are integer 1–8 or **By
+**Home settings → Appearance → Columns** in both editions. Values are integer 1–8 or **By
 theme**. Precedence is explicit saved user number, then accepted theme
 `layout.columns`, then Classic's 5. Selecting By theme clears the explicit
 number; it does not change app IDs, hidden apps, input choices or ordering.

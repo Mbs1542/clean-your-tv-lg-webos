@@ -1,6 +1,6 @@
 # Choose and install themes
 
-These controls are implemented in the **theme-enabled development candidate**, prepared for the next release cycle. Published packages may not include them yet. If Settings has no Themes entry, use a package from that candidate after its normal release/acceptance; copying a link into an older Home cannot add the feature. Physical-TV acceptance is still required.
+These controls are implemented in the **theme-enabled development candidate** on `release/next`. Published packages may not include them yet. If Settings has no Themes entry, use a package from that candidate after its normal release/acceptance; copying a link into an older Home cannot add the feature. Physical-TV acceptance is still required.
 
 ## Included with Home
 
@@ -10,7 +10,7 @@ These controls are implemented in the **theme-enabled development candidate**, p
 
 ## Change to an included theme
 
-1. Open Home, select **Settings**, then **Themes**. Home stays visible beneath a compact picker of installed themes.
+1. Open Home, select **Settings → Appearance → Themes**. Home stays visible beneath a compact picker of installed themes.
 2. Choose **Classic** or **Alpine** in the installed list. The choice applies and saves immediately, without a confirmation timer. Downloaded themes in this list work the same way.
 3. Return with **Back**, then **Back to Home**.
 
@@ -18,7 +18,7 @@ The accepted choice is restored on the next launch. Only **Try theme** inside **
 
 ## Browse themes on TV
 
-Open **Settings → Themes → Theme showcase**. Choose a miniature preview to see the theme's details. Classic and Alpine offer **Try theme** immediately; Channel offers **Download theme**, then **Try theme**. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
+Open **Settings → Appearance → Themes → Theme showcase**. Choose a miniature preview to see the theme's details. Classic and Alpine offer **Try theme** immediately; Channel offers **Download theme**, then **Try theme**. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
 
 Opening Theme showcase or choosing Refresh checks the main project repository for reviewed catalogue updates without updating Home or reloading the page. After a normal merge, new entries become available; an unmerged candidate may still show the bundled fallback. Offline or failed requests use bundled previews and entries. Built-in themes match your installed Home version. Online catalogue data and previews come from one exact project commit resolved through GitHub; downloading an external theme needs Internet access. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository. Refreshing never installs a theme or changes the current selection. Physical-TV network acceptance remains pending.
 
@@ -27,7 +27,7 @@ Opening Theme showcase or choosing Refresh checks the main project repository fo
 No showcase submission, public repository or source commit is required for a local development test.
 
 1. Run your theme in the author toolkit's **preview** or **showcase**. Choose the theme and press **Send to TV**. The toolkit compiles the current source into a fixed snapshot; saving another edit does not silently change that snapshot.
-2. On TV open **Settings → Themes → Receive from computer**.
+2. On TV open **Settings → Appearance → Themes → Receive from computer**.
 3. Enter the private IPv4 **Computer address** shown by the preview and its **Six-digit PIN**. Do not enter `http://`, a port or a file path. The address is remembered after a successful transfer; the PIN is never remembered.
 4. Choose **Receive theme**, then **Try theme** to apply and save the installed copy immediately, without a timer. The installed copy works offline after the computer stops sharing.
 5. After editing, press **Send to TV** again for a fresh snapshot and PIN. **Stop sharing**, closing the preview server or the ten-minute deadline closes access.
@@ -45,7 +45,7 @@ Keep the command running and use the address and PIN it prints. Press Ctrl+C to 
 ## Add another repository by URL
 
 1. Browse the main project's showcase (the **Theme showcase** link on Preview Pages). Open a theme detail page and use **Copy TV link**. Transfer that exact URL using the TV keyboard or your normal TV text-entry method; the computer transfer above is the easier path for unpublished local work.
-2. On TV, open **Settings → Themes → Add by URL**. Focus **Theme URL** and use OK/native keyboard to type or paste. Move to **Load** and select it.
+2. On TV, open **Settings → Appearance → Themes → Add by URL**. Focus **Theme URL** and use OK/native keyboard to type or paste. Move to **Load** and select it.
 3. Choose the returned theme. For a repository containing several themes, choose the specific entry; the installer does not select one silently. The download progress is shown. Cancel or Back stops the request.
 4. After validation/saving, choose the new **Downloaded** version in Themes. Review its author/license and select it to apply and save immediately, without a timer.
 
@@ -63,7 +63,7 @@ The cache is bounded at eight downloaded versions and 24 MiB of payload data, su
 
 ## Recovery
 
-Open **Settings → Themes → Restore Classic** to discard theme appearance immediately. An interrupted trial/startup or invalid accepted theme also returns to Classic on the next launch. The downloaded library is retained unless you clear it. Use the existing emergency Home exit/recovery instructions if Home itself cannot be opened; theme recovery does not change that emergency mechanism.
+Open **Settings → Appearance → Themes → Restore Classic** to discard theme appearance immediately. An interrupted trial/startup or invalid accepted theme also returns to Classic on the next launch. The downloaded library is retained unless you clear it. Use the existing emergency Home exit/recovery instructions if Home itself cannot be opened; theme recovery does not change that emergency mechanism.
 
 Theme images/choice are not included in legacy profile backup/export. An authoritative profile restore resets the accepted theme to Classic; downloaded packages remain available for reselection if app storage is intact. Removing the application or resetting app data may erase its cache. Device storage behavior across updates, standby and cold boot still requires hardware acceptance.
 

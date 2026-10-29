@@ -1,7 +1,9 @@
 # Theme development status (unreleased)
 
-This work is prepared for the cycle after the current 1.4.1 candidate. It has not
-been merged into that candidate and does not establish physical-TV acceptance.
+The maintainer has authorized integrating this current implementation, including
+Themes, Columns and categorized settings, into the unfrozen `release/next`
+candidate. Published packages do not yet contain this work, and integration does
+not establish physical-TV acceptance.
 The complete design remains in the [theme ecosystem specification](../superpowers/specs/2026-10-28-theme-ecosystem-design.md).
 
 ## Implemented in this preparation branch
