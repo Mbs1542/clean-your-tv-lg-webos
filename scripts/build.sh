@@ -45,6 +45,7 @@ helper=$(python3 -c 'import json; a=json.load(open("build/native-app/appinfo.jso
 python3 scripts/fix-package-data.py "$helper"
 fi
 python3 scripts/tv_web_build.py --input launcher --output build/home-app
+# Stage only public renewal sources, including the paired theme receiver.
 python3 - <<'PYRECEIVER'
 import runpy
 from pathlib import Path
@@ -59,8 +60,13 @@ for name, data in files.items():
     target = output / name
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
+channel = output / 'state/home-control'
+channel.mkdir(parents=True)
+(channel / '.keep').write_bytes(b'')
 PYRECEIVER
 "$ARES_PACKAGE" build/home-app build/home-service -o dist
+home=$(python3 -c 'import json; a=json.load(open("build/home-app/appinfo.json")); print("dist/"+a["id"]+"_"+a["version"]+"_all.ipk")')
+python3 scripts/fix-package-data.py "$home" --home-control
 python3 - <<'PY'
 from pathlib import Path
 import hashlib

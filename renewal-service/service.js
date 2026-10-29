@@ -60,7 +60,7 @@ function fromUpdater(m){
  });
 });
 
-var homeControl=require('./home-control')(fs,'/media/developer/apps/usr/palm/applications/com.local.nativehome/state');
+var homeControl=require('./home-control')(fs,__dirname+'/state/home-control');
 ['homeStatus','setHomeControl','openLGHome'].forEach(function(method){
  service.register(method,function(m){
   var raw=m.ls2Message,id=raw&&raw.applicationID&&raw.applicationID();

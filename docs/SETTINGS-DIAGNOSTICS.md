@@ -3,7 +3,8 @@
 [Documentation](README.md) · [Feedback and privacy](FEEDBACK.md)
 
 The published diagnostics help identify failures; they do not by themselves fix
-the unresolved C5/webOS26 status transport.
+the unresolved C5/webOS26 status transport. The [unreleased transport correction](development/HOME-CONTROL-TRANSPORT.md)
+for [#146](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/146) moves requests into the renewal service's own package; it requires coordinated Home/Helper packaging and physical acceptance.
 
 ## Collecting a report
 
@@ -68,13 +69,16 @@ and the separate cross-package status denial in
 
 This change does not alter storage locations/ownership, grant permissions,
 introduce a service endpoint, change the file protocol, restart Helper, or clear
-an emergency stop. The missing writable renewal-state directory in the published
-package remains an access/provisioning hypothesis until effective service
-permissions are measured. No blanket chmod or migration is attempted.
+an emergency stop. In published packages, the missing writable renewal-state directory remains an
+access/provisioning hypothesis until effective service permissions are measured.
+The unreleased #146 source change provisions only the renewal service's two owned
+state/channel directories; it does not change platform mounts or shared SDK
+parents. Effective C1/C5 service/controller access remains unverified.
 
 Reported acceptance target: OLED65C5RLA, webOS26 / 11.2.0-3706. Expected: show
 the exact safe failure category while preserving actual Home-button behavior.
-No physical TV was contacted for implementation; C5 status/control and renewal
+The initial implementation used host tests. Subsequent [project C3 source QA](history/HOME-CONTROL-TRANSPORT-QA-2026-10-29.md)
+verified the new channel in actual unprivileged jails; C5 status/control and renewal
 persistence remain unverified. Standby and cold boot require separate checks.
 The original C2 acceptance request in #59 remains independent.
 

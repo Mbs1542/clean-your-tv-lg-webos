@@ -29,18 +29,28 @@ class PackageTests(unittest.TestCase):
             self.stage_home_service(root)
             for directory in ('scripts', 'native/app', 'native/published', 'launcher'):
                 (root/directory).mkdir(parents=True)
-            for name in ('build.sh', 'build-cytv.py', 'tv_web_build.py', 'compile-tv-web.cjs', 'helper_build.py', 'compile-helper.cjs'):
+            for name in ('build.sh', 'build-cytv.py', 'fix-package-data.py', 'tv_web_build.py', 'compile-tv-web.cjs', 'helper_build.py', 'compile-helper.cjs'):
                 shutil.copy(ROOT/'scripts'/name, root/'scripts'/name)
             shutil.copy(ROOT/'package.json', root/'package.json')
             helper = 'com.local.nativehome_0.6.17_arm.ipk'
             shutil.copy(ROOT/'native/published'/helper, root/'native/published'/helper)
             (root/'native/app/appinfo.json').write_text(json.dumps({'id':'com.local.nativehome','version':'0.6.17'}))
+            (root/'launcher/appinfo.json').write_text(json.dumps({'id':'com.gathin.tvhome','version':'9.8.7','type':'web'}))
+            (root/'renewal-service/services.json').write_text('{}')
             (root/'launcher/index.html').write_text('<html><head></head><body></body></html>')
             zig = root/'zig'
             zig.write_text('#!/bin/sh\nexit 99\n')
             zig.chmod(0o755)
             packager = root/'packager'
-            packager.write_text('#!/bin/sh\ntest "$1" = build/home-app\n')
+            packager.write_text('#!' + sys.executable + "\n" + '''
+from pathlib import Path
+from cytv.package import ipk
+assert Path('build/home-service/state/home-control/.keep').is_file()
+assert Path('build/home-service/theme-receiver/core.js').is_file()
+assert Path('build/home-service/theme-receiver/register.js').is_file()
+files={'usr/palm/services/com.gathin.tvhome.renewal/state/home-control/.keep':b''}
+Path('dist/com.gathin.tvhome_9.8.7_all.ipk').write_bytes(ipk('com.gathin.tvhome','9.8.7',files))
+''')
             packager.chmod(0o755)
             env = dict(os.environ, ZIG=str(zig), ARES_PACKAGE=str(packager),
                        PYTHONPATH=str(ROOT), NODE_PATH=str(ROOT/'node_modules'))
@@ -56,14 +66,16 @@ class PackageTests(unittest.TestCase):
             for name in ('build.sh', 'build-cytv.py', 'fix-package-data.py', 'tv_web_build.py', 'compile-tv-web.cjs', 'helper_build.py', 'compile-helper.cjs'):
                 shutil.copy(ROOT/'scripts'/name, root/'scripts'/name)
             shutil.copy(ROOT/'package.json', root/'package.json')
-            for directory in ('native/app', 'native/service', 'launcher'):
+            for directory in ('native/app', 'native/service', 'launcher', 'renewal-service'):
                 path = root/directory
-                path.mkdir(parents=True)
+                path.mkdir(parents=True, exist_ok=True)
                 (path/'example.js').write_text('// fixture')
                 (path/'icon.png').write_bytes(b'fixture')
                 (path/'appinfo.json').write_text(json.dumps({
                     'id': 'com.local.nativehome' if directory == 'native/app' else 'com.gathin.tvhome',
                     'version': '9.8.7'}))
+            (root/'renewal-service/state').mkdir()
+            (root/'renewal-service/state/settings.json').write_text('PRIVATE')
             shutil.copy(ROOT/'native/app/state-permissions.js', root/'native/app/state-permissions.js')
             (root/'native/app/vendor').mkdir()
             (root/'bin').mkdir()
@@ -81,6 +93,10 @@ files = {'usr/palm/applications/'+app['id']+'/state/.keep': b''}
 if helper:
     assert (Path(sys.argv[2])/'state-permissions.js').read_bytes() == (Path(sys.argv[1])/'state-permissions.js').read_bytes()
     files['usr/palm/services/com.local.nativehome.service/state/.keep'] = b''
+else:
+    assert (Path(sys.argv[2])/'state/home-control/.keep').is_file()
+    assert not (Path(sys.argv[2])/'state/settings.json').exists()
+    files['usr/palm/services/com.gathin.tvhome.renewal/state/home-control/.keep'] = b''
 arch = 'arm' if helper else 'all'
 (Path('dist')/(app['id']+'_'+app['version']+'_'+arch+'.ipk')).write_bytes(
     ipk(app['id'], app['version'], files, architecture=arch))
@@ -103,10 +119,23 @@ arch = 'arm' if helper else 'all'
                     entry = archive.getmember(name)
                     self.assertEqual((entry.uid, entry.gid, entry.mode), (5999, 5000, 0o770))
 
+    def test_home_archive_sets_only_the_two_owned_state_directories(self):
+        from cytv.package import ipk, read_ar
+        prefix = 'usr/palm/services/com.gathin.tvhome.renewal/'
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp)/'home.ipk'
+            path.write_bytes(ipk('com.gathin.tvhome', '1.0.0', {prefix+'state/home-control/.keep':b''}))
+            subprocess.run([sys.executable, str(ROOT/'scripts/fix-package-data.py'), str(path), '--home-control'], check=True, capture_output=True)
+            with tarfile.open(fileobj=io.BytesIO(read_ar(path.read_bytes())['data.tar.gz']), mode='r:gz') as archive:
+                for name in ('state','state/home-control'):
+                    entry = archive.getmember(prefix+name)
+                    self.assertEqual((entry.uid,entry.gid,entry.mode), (5999,5000,0o2770))
+                self.assertEqual(archive.getmember(prefix.rstrip('/')).mode, 0o755)
+
     def test_archive_members_and_state_permissions(self):
         payload = io.BytesIO()
-        names = ['usr/palm/applications/com.local.nativehome/state',
-                 'usr/palm/services/com.local.nativehome.service/state']
+        names = ['./usr/palm/applications/com.local.nativehome/state',
+                 './usr/palm/services/com.local.nativehome.service/state']
         with tarfile.open(fileobj=payload, mode='w:gz') as archive:
             for name in names:
                 entry = tarfile.TarInfo(name); entry.type = tarfile.DIRTYPE

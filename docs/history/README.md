@@ -45,6 +45,8 @@ one model or artifact does not certify later releases or a different TV.
 
 ## Audits, investigations and original plans
 
+- [Home transport source QA, 2026-10-29](HOME-CONTROL-TRANSPORT-QA-2026-10-29.md): scoped project C3 jail, status/control and physical Home results; final release acceptance remains separate.
+
 - [Earlier documentation audit](../DOCUMENTATION-AUDIT.md), [1.2.0 documentation audit](../DOCUMENTATION-AUDIT-1.2.0.md), [issue-status audit](../ISSUE-STATUS-AUDIT.md).
 - [Research records](../research/), [design specifications](../superpowers/specs/), [implementation plans](../superpowers/plans/).
 - [Changelog](../../CHANGELOG.md).

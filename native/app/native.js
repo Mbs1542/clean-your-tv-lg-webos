@@ -71,16 +71,19 @@ var homeControl=require('./home-control')(fs,data,function(enabled){
  cancelResume();if(screenPolicy)screenPolicy.reset();
  if(child)child.stdin.write(enabled?'E':'D');
 },visitLG);
-var lastHomeRequest='';
-function readHomeRequest(){
+// Keep the legacy channel for older Home packages during upgrade/rollback.
+// New Home submits only through its own service directory, visible in its jail.
+var homeChannels=[{directory:data,last:''},{directory:'/media/developer/apps/usr/palm/services/com.gathin.tvhome.renewal/state/home-control',last:''}];
+function readHomeRequest(channel){
+ var directory=channel.directory;
  var request;
- try{request=JSON.parse(fs.readFileSync(data+'/home-request.json','utf8'));}catch(e){return;}
- if(!request||typeof request.id!=='string'||!/^[a-f0-9]{32}$/.test(request.id)||request.id===lastHomeRequest)return;
- lastHomeRequest=request.id;
+ try{request=JSON.parse(fs.readFileSync(directory+'/home-request.json','utf8'));}catch(e){return;}
+ if(!request||typeof request.id!=='string'||!/^[a-f0-9]{32}$/.test(request.id)||request.id===channel.last)return;
+ channel.last=request.id;
  if(typeof request.expires!=='number'||request.expires<Date.now()||request.expires>Date.now()+6000)return;
  function respond(result){
   result.id=request.id;
-  try{fs.writeFileSync(data+'/home-response.tmp',JSON.stringify(result),{mode:432});fs.chmodSync(data+'/home-response.tmp',432);fs.renameSync(data+'/home-response.tmp',data+'/home-response.json');}catch(e){log({event:'home-response-error',error:String(e)});}
+  try{fs.writeFileSync(directory+'/home-response.tmp',JSON.stringify(result),{mode:432});fs.chmodSync(directory+'/home-response.tmp',432);fs.renameSync(directory+'/home-response.tmp',directory+'/home-response.json');}catch(e){log({event:'home-response-error',error:String(e)});}
  }
  try{
   if(request.method==='homeStatus')respond({returnValue:true,enabled:homeControl.enabled()});
@@ -103,7 +106,7 @@ function start(){lastAck=monotonic();child=cp.spawn(root+'/relay',[],{stdio:['pi
  child.stdout.on('data',function(b){buffer+=b;var i;while((i=buffer.indexOf('\n'))>=0){var line=buffer.slice(0,i);buffer=buffer.slice(i+1);if(line==='P'){lastAck=monotonic();continue;}log({event:'worker',message:line});if(line==='BACK_DOWN'){cancelResume();screenPolicy.back(true,monotonic());}if(line==='BACK_UP')screenPolicy.back(false,monotonic());if(line==='HOME'){screenPolicy.clearBack();homeSequence++;lastHomeAt=monotonic();diagnostic('home');}if(line==='READY'){ready=true;lastAck=monotonic();child.stdin.write(homeControl.enabled()?'E':'D');}if(line==='LGHOME'&&!stopping)visitLG();if(line==='HOME'&&homeControl.enabled()&&!visitingLG&&!stopping&&!launching){suppressReturnUntil=0;launching=true;launch('com.gathin.tvhome',function(ok){launching=false;if(!ok)child.stdin.end();});}}});
  child.stdin.on('error',function(){});
 }
-var timer=setInterval(function(){if(stopping)return;readHomeRequest();try{var raw=fs.readFileSync(data+'/control.json','utf8');if(raw!==lastCommand){lastCommand=raw;var command=JSON.parse(raw);diagnosticCommand(command.cmd,command.nonce);if(command.cmd==='startup-status')service.call('luna://com.local.nativehome.service/status',{},function(r){log({event:'startup-status',result:r.payload});});if(command.cmd==='stop'&&child)child.stdin.write('Q');if(command.cmd==='stall-worker'&&child)child.stdin.write('S');if(command.cmd==='stall-controller'){cp.spawn(root+'/resume',[String(process.pid)],{stdio:'ignore'});log({event:'simulate-controller-stall'});process.kill(process.pid,'SIGSTOP');}}}catch(e){}
+var timer=setInterval(function(){if(stopping)return;homeChannels.forEach(readHomeRequest);try{var raw=fs.readFileSync(data+'/control.json','utf8');if(raw!==lastCommand){lastCommand=raw;var command=JSON.parse(raw);diagnosticCommand(command.cmd,command.nonce);if(command.cmd==='startup-status')service.call('luna://com.local.nativehome.service/status',{},function(r){log({event:'startup-status',result:r.payload});});if(command.cmd==='stop'&&child)child.stdin.write('Q');if(command.cmd==='stall-worker'&&child)child.stdin.write('S');if(command.cmd==='stall-controller'){cp.spawn(root+'/resume',[String(process.pid)],{stdio:'ignore'});log({event:'simulate-controller-stall'});process.kill(process.pid,'SIGSTOP');}}}catch(e){}
  if(resumePendingUntil&&ready&&!launching&&!visitingLG&&homeControl.enabled()){
   var resumeDue=resumePendingUntil;resumePendingUntil=0;
   if(!shouldResumeLaunch(lastForeground)){log({event:'resume-already-foreground'});}
