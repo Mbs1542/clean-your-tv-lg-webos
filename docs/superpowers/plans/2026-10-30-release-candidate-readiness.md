@@ -17,5 +17,5 @@ Existing research and other worktrees remain untouched.
 - [x] Exercise supported native host entrypoint runtime without TV mutation.
 - [x] Read TV identity, installed versions, update/recovery baseline without changes.
 - [x] Record observed results, honest unsupported/supervised cases and issue statuses.
-- [ ] Integrate reviewed preparation docs into release/next and update PR141.
+- [x] Integrate reviewed preparation docs into release/next and update PR141.
 - [x] Turn TV off through existing authenticated control and verify the outcome.
