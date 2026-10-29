@@ -74,7 +74,7 @@ The installer verifies API/Home version, rule/asset limits, file sizes and SHA-2
 
 After a successful install, files are stored in this Home application's IndexedDB cache. A normal restart does not contact the author. The TV still needs network access for apps and services that require it; the theme itself can be restored offline.
 
-To update, install a new reviewed catalogue version, use a new version's link, or transfer a fresh development snapshot; select the installed version, or try and keep it through showcase. Updates are explicit: installed themes do not follow GitHub branches automatically. Several versions may be cached independently. Switch away from an active version before selecting **Remove** beside it.
+To update, install a new reviewed catalogue version, use a new version's link, or transfer a fresh development snapshot; select the installed version, or try and keep it through showcase. Updates are explicit: installed themes do not follow GitHub branches automatically. Several versions may be cached independently. Select **Remove** beside a downloaded version and confirm. Removing the active version restores Classic before its files are deleted; cancellation keeps the theme.
 
 The cache is bounded at eight downloaded versions and 24 MiB of payload data, subject to a lower device quota. Remove inactive versions if saving fails. **Clear downloaded themes** asks for confirmation, restores Classic and clears only this theme cache. Built-ins cannot be removed.
 
@@ -97,7 +97,7 @@ Theme images/choice are not included in legacy profile backup/export. An authori
 
 ## Create a theme and preview on a computer
 
-Start with the [tested toolkit candidate and bundled runtime](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/CANDIDATE.md). Use [the author toolkit](https://github.com/Razdva122/clean-your-tv-lg-theme) and its [author walkthrough](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/b3905665e2261e2c25d0678b8696265af1e9c8bc/docs/tutorial.md). The toolkit's local showcase is an author preview, separate from on-TV installed selection. Apps/services are simulated; it does not establish TV compatibility. See [submission rules](../showcase/README.md) to request a public listing. Personal installation does not require a showcase PR.
+Start with the [tested toolkit candidate and bundled runtime](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/48a7594c872794229801f0a6495952d3733a3f99/docs/CANDIDATE.md). Use [the author toolkit](https://github.com/Razdva122/clean-your-tv-lg-theme) and its [author walkthrough](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/48a7594c872794229801f0a6495952d3733a3f99/docs/tutorial.md). The toolkit's local showcase is an author preview, separate from on-TV installed selection. Apps/services are simulated; it does not establish TV compatibility. See [submission rules](../showcase/README.md) to request a public listing. Personal installation does not require a showcase PR.
 
 From the main checkout, build the preview website including the catalog into a fresh directory:
 
