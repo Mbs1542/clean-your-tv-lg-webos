@@ -126,6 +126,8 @@ Themes shows previews of built-in themes and every theme you installed yourself,
 
 In the Appearance candidate, large preview cards show installed themes and mark the selected theme. Theme showcase and Receive from computer are the main actions. More options contains Add by URL, Restore Classic and Clear downloaded themes. Use the arrow keys between cards and controls; Left at the edge returns to categories.
 
+In the browser preview, Receive from computer explains the steps to perform on the TV; it does not start a TV receiver on the computer. Use Send to TV above the preview. Removing a downloaded theme asks for confirmation; removing the active theme restores Classic first. Cancel keeps the theme.
+
 ## Settings categories (unpublished candidate)
 
 In both editions, Home settings has categories on the left and the selected settings on the right: Your Home screen, Appearance (Themes and Columns), Language, Software updates and Advanced. No-root also has Developer Mode; Root includes LG firmware updates under Software updates and HDMI sound under Advanced. Use Up/Down within a column, Right to enter its settings and Left to return to categories. Back returns to categories first, then closes settings; Tab also reaches Back to Home.

@@ -127,6 +127,8 @@ Temas mostra prévias dos temas integrados e de todos os que você instalou, inc
 
 No candidato, Aparência mostra prévias grandes dos temas instalados e indica o selecionado. A vitrine e receber do computador são as ações principais. Mais opções contém adicionar por URL, restaurar Classic e limpar temas baixados. As setas movem o foco entre cartões e botões; esquerda na borda volta às categorias.
 
+Na prévia do navegador, Receber do computador explica os passos na TV; não inicia um receptor de TV no computador. Use Send to TV acima da prévia. Remover um tema baixado exige confirmação; se estiver ativo, Classic é restaurado primeiro. Cancelar mantém o tema.
+
 ## Categorias de configurações (candidato não publicado)
 
 Nas duas edições, as categorias ficam à esquerda e as configurações à direita: tela inicial, Aparência (temas e colunas), Idioma, Atualizações de software e Avançado. No-root também tem Developer Mode; Root inclui firmware LG nas atualizações e som HDMI em Avançado. Cima/baixo navega na coluna, direita entra nas configurações e esquerda volta às categorias. Voltar retorna primeiro às categorias e depois fecha as configurações. Tab também alcança o botão para voltar ao Home.

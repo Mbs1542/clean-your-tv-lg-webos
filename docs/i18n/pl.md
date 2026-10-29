@@ -127,6 +127,8 @@ Motywy pokazują podglądy wbudowanych i wszystkich samodzielnie zainstalowanych
 
 W kandydacie Wygląd pokazuje duże podglądy zainstalowanych motywów i oznacza wybrany. Galeria motywów i odbieranie z komputera to główne działania. Więcej opcji zawiera dodawanie przez URL, przywracanie Classic i usuwanie pobranych motywów. Strzałki przenoszą fokus między kartami i przyciskami; lewa strzałka na krawędzi wraca do kategorii.
 
+W podglądzie przeglądarki Odbierz z komputera wyjaśnia kroki na telewizorze i nie uruchamia odbiornika TV na komputerze. Użyj Send to TV nad podglądem. Usunięcie pobranego motywu wymaga potwierdzenia; przy aktywnym motywie najpierw przywracany jest Classic. Anulowanie zachowuje motyw.
+
 ## Kategorie ustawień (nieopublikowany kandydat)
 
 W obu edycjach kategorie są po lewej, a ustawienia po prawej: ekran główny, Wygląd (motywy i kolumny), Język, Aktualizacje i Zaawansowane. No-root ma też Developer Mode; Root zawiera aktualizacje firmware LG w aktualizacjach i dźwięk HDMI w Zaawansowanych. Góra/dół porusza się w kolumnie, prawo otwiera ustawienia, a lewo wraca do kategorii. Wstecz najpierw wraca do kategorii, potem zamyka ustawienia. Tab pozwala też wybrać powrót do Home.

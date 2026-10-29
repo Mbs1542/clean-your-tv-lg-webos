@@ -126,6 +126,8 @@ Designs zeigt Vorschauen der integrierten und aller selbst installierten Designs
 
 Im Appearance-Kandidaten zeigen große Vorschaubilder die installierten Themes und markieren das ausgewählte. Theme showcase und Receive from computer sind die Hauptaktionen. More options enthält Add by URL, Restore Classic und Clear downloaded themes. Pfeiltasten bewegen den Fokus zwischen Karten und Schaltflächen; Links am Rand führt zu den Kategorien.
 
+In der Browser-Vorschau erklärt Vom Computer empfangen die Schritte am Fernseher; auf dem Computer wird kein TV-Empfänger gestartet. Nutzen Sie Send to TV über der Vorschau. Das Entfernen eines heruntergeladenen Themes muss bestätigt werden. Beim aktiven Theme wird zuerst Classic wiederhergestellt. Abbrechen behält das Theme.
+
 ## Einstellungskategorien (unveröffentlichter Kandidat)
 
 In beiden Editionen stehen die Kategorien links und ihre Einstellungen rechts: Startbildschirm, Darstellung (Themes und Spalten), Sprache, Software-Updates und Erweitert. No-root bietet zusätzlich Developer Mode; Root bietet LG-Firmware-Updates unter Software-Updates und HDMI-Ton unter Erweitert. Oben/Unten navigiert innerhalb einer Spalte, Rechts öffnet die Einstellungen und Links kehrt zu den Kategorien zurück. Zurück führt zuerst zu den Kategorien und schließt danach die Einstellungen. Tab erreicht auch die Schaltfläche zur Rückkehr zu Home.

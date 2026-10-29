@@ -1,6 +1,7 @@
 /* Browser-only webOS simulation. Injected by scripts/preview.py, never packaged. */
 (function () {
   'use strict';
+  window.CYTV_BROWSER_PREVIEW = true;
   var homeEnabled = true;
   var enabled = false, rootPhase = 'disabled';
   var firmwareBlocked = false, audioAutomatic = false, audioLast = null;

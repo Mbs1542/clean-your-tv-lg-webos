@@ -126,6 +126,8 @@ Thèmes affiche les aperçus des thèmes intégrés et de tous ceux que vous ave
 
 Dans la version candidate, Apparence affiche de grandes vignettes des thèmes installés et indique le thème sélectionné. La galerie et la réception depuis un ordinateur sont les actions principales. Plus d’options regroupe l’ajout par URL, le retour à Classic et la suppression des thèmes téléchargés. Les flèches parcourent les vignettes et boutons ; à gauche au bord, elles reviennent aux catégories.
 
+Dans l’aperçu du navigateur, Recevoir depuis un ordinateur explique les étapes sur le téléviseur sans démarrer de récepteur TV sur l’ordinateur. Utilisez Send to TV au-dessus de l’aperçu. La suppression d’un thème téléchargé demande confirmation ; si le thème est actif, Classic est rétabli d’abord. Annuler conserve le thème.
+
 ## Catégories des paramètres (candidat non publié)
 
 Dans les deux éditions, les catégories sont à gauche et leurs réglages à droite : écran d’accueil, Apparence (thèmes et colonnes), Langue, Mises à jour et Avancé. No-root ajoute Developer Mode ; Root place le firmware LG dans les mises à jour et le son HDMI dans Avancé. Haut/Bas parcourt une colonne, Droite entre dans les réglages et Gauche revient aux catégories. Retour revient aux catégories, puis ferme les paramètres. Tab permet aussi d’atteindre le bouton de retour à Home.

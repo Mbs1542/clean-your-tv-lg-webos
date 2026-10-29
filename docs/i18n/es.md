@@ -126,6 +126,8 @@ Temas muestra vistas previas de los temas integrados y de todos los que hayas in
 
 En la versión candidata, Apariencia muestra tarjetas grandes de los temas instalados y marca el elegido. La galería y recibir desde el ordenador son las acciones principales. Más opciones contiene añadir por URL, restaurar Classic y borrar temas descargados. Las flechas recorren tarjetas y botones; izquierda en el borde vuelve a las categorías.
 
+En la vista previa del navegador, Recibir del ordenador explica los pasos del televisor; no inicia un receptor de TV en el ordenador. Usa Send to TV encima de la vista previa. Eliminar un tema descargado requiere confirmación; si está activo, se restaura Classic primero. Cancelar conserva el tema.
+
 ## Categorías de ajustes (candidato no publicado)
 
 Ambas ediciones muestran categorías a la izquierda y ajustes a la derecha: pantalla de inicio, Apariencia (temas y columnas), Idioma, Actualizaciones de software y Avanzado. No-root añade Developer Mode; Root incluye el firmware LG en actualizaciones y sonido HDMI en Avanzado. Arriba/abajo recorre una columna; derecha entra en los ajustes e izquierda vuelve a las categorías. Atrás vuelve primero a las categorías y después cierra los ajustes. Tab también permite volver a Home.
