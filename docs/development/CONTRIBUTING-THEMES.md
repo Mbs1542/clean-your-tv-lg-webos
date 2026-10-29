@@ -466,7 +466,7 @@ THEME_DESCRIPTOR_URL="https://raw.githubusercontent.com/your-name/your-tv-themes
 Keep that commit reachable in the public repository. Do not force-push it away,
 replace its URL with `main` or require authentication. Showcase submission records
 keep this full immutable URL. Personal installation may additionally use the
-keyless is.gd ID described in the toolkit’s release-link guide; it never replaces
+keyless da.gd ID described in the toolkit’s release-link guide; it never replaces
 the canonical descriptor URL or digest in a reviewed record.
 All referenced files must be publicly available alongside the descriptor with
 unchanged bytes. Personal development can continue through LAN; public Showcase
@@ -732,7 +732,7 @@ of issues and PRs.
 
 The matching author toolkit provides **TV link**, **Copy ID** and **Copy link**.
 It checks a public commit-pinned descriptor against the selected ID/version before
-sending its URL to is.gd. Only published public URLs are sent to the shortener.
+sending its URL to da.gd. Only published public URLs are sent to the shortener.
 The generated short link is looked up again to verify its destination. Shortener
 failures retain the full URL, with no repeated rate-limit retries.
 

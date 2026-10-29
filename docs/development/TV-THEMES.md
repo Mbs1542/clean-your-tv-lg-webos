@@ -134,9 +134,9 @@ Catalogue refresh can render the bundled list before its network result. Each re
 
 ## Keyless short installation IDs (next candidate)
 
-`ThemeData.shortLink` recognizes a bare 5–30 character is.gd ID or supported is.gd
+`ThemeData.shortLink` recognizes a bare 5–30 character da.gd ID or supported da.gd
 URL. The field displays the normalized HTTPS URL before Load. `resolve` performs
-one bounded 4 KiB JSON request to the exact `is.gd/forward.php` lookup endpoint;
+one bounded 4 KiB plain-text request to the exact `da.gd/coshorten/ID` lookup endpoint;
 exposed redirect destinations, nested shorteners and non-GitHub destinations are rejected. Normal
 repository resolution and package integrity/version/image checks remain in place.
 No JavaScript page/JSONP is loaded, and no Root LS2 permission changes are required.
@@ -151,7 +151,7 @@ token. `tests/themes/short-links.cjs` covers target restrictions/cancellation an
 `short-links-ui.cjs` covers ID hints and installation in both editions. A live
 Chrome request resolved `102300a209`, fetched Channel 1.3.3 and verified all 12
 files with descriptor digest `da7da0848ac0ecd60ebbcd964cb65a68fdf4fab54f30eebd56218c9d3141e17c`.
-This is browser evidence, not physical-TV or published-app acceptance.
+This is browser evidence, not physical-TV or published-app acceptance. The unpublished is.gd experiment is replaced rather than retained as a second ID namespace; full GitHub sources and PC-to-TV delivery are unchanged.
 
 
 ## Installed theme ribbon and Alpine inputs (next candidate)
@@ -169,7 +169,7 @@ The built-in descriptor and rules are regenerated from toolkit source
 `95f812e505e81b1d4b706bd203f0e96306b1b18c`; hashed assets and license notices are unchanged.
 The freshly exported candidate runtime requires Home/theme engine 1.6.0.
 
-Physical short-ID testing on the C3 candidate exposed an unresolved network/TLS
+Earlier is.gd short-ID testing on the C3 candidate exposed a network/TLS
 limitation: is.gd DNS agrees with the computer, IPv4 TCP connects but HTTPS does not
 complete, and IPv6 is unavailable. Both is.gd and its www host were tested without
 changing TV network settings or certificate validation. The same TV fetched the
@@ -177,3 +177,10 @@ pinned GitHub descriptor successfully; PC-to-TV delivery of Channel 1.3.3 passed
 This is a device/network observation, not proof of an is.gd service outage or of
 a client-side fix. Use the full pinned GitHub URL or PC-to-TV transfer while this
 path is unavailable. See the scoped [physical QA record](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141#issuecomment-6502701028).
+
+
+The unpublished short-ID implementation now uses da.gd instead. On the same C3
+and original network path, the new development data module resolved both
+`102300a209` and `https://da.gd/102300a209`, loaded Channel 1.3.3 and verified all
+12 files against the digest above. The installed application was not patched by
+that module test. Signed-candidate UI acceptance remains separate.
