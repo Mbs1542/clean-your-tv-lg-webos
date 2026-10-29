@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Internal trusted-source recovery of one terminal, never-provisioned install.
+"""Internal trusted-source cancellation of one never-activated failed install.
 
 Not an install continuation. Original submission, snapshot, request and SDK
 terminal stay unchanged. This module is deliberately outside normal worker
@@ -13,11 +13,13 @@ import os
 from pathlib import Path
 import re
 
-from install_driver import operation_id, candidate_digest, _verified_payload
+from install_driver import operation_id, candidate_digest
 from install_device import ROOT, UPDATER, SUPERVISOR, APP, LocalDevice, checked_store
 from installation import Ownership, _optional_record, terminal_install, terminal_removal
 from updater.package import safe_bytes, inspect_package
 from updater.store import encode
+
+RECOVERY_FILES=('cancel_install.py','cancel_provision.py')
 
 
 def digest(value):return hashlib.sha256(encode(value)).hexdigest()
@@ -29,6 +31,32 @@ class Recovery:
         self.device,self.owner,self.store=device,ownership,ownership.store
         self.root,self.system,self.proc=Path(root),Path(system),Path(proc)
         self.code_sha256=code_sha256
+
+    def original_inventories(self, snapshot, submission):
+        """Read known historical layouts as data; never use them for install."""
+        import deploy
+        from updater.bootstrap import verify_bundle
+        root=snapshot/'root'
+        def read(path,**kwargs):
+            os.close(self.store._walk(str(path.parent)))
+            return safe_bytes(path,uid=self.store.uid,**kwargs)
+        manifest=json.loads(read(root/'bundle.json'));release=json.loads(read(root/'release.json'))
+        version=release.get('version')
+        if not isinstance(version,str) or not re.fullmatch(r'\d{1,4}\.\d{1,4}\.\d{1,4}',version):raise ValueError('invalid_original_root_version')
+        package=APP+'_'+version+'_all.ipk'
+        required=set(deploy.SUPPORT_FILES)|{'runtime/'+n for n in deploy.RUNTIME_FILES}|{package,'release.json','SHA256SUMS'}
+        if (manifest.get('package')!=package or release.get('application_id')!=APP
+                or not isinstance(manifest.get('files'),dict)
+                or set(manifest['files']) not in (required,required|{'runtime/audio_recovery.py'})):
+            raise ValueError('unknown_original_root_inventory')
+        for name,sha in manifest['files'].items():
+            if hashlib.sha256(read(root/name)).hexdigest()!=sha:raise ValueError('original_root_bundle_changed')
+        inventories={'root':manifest,'root-updater':verify_bundle(snapshot/'root-updater',reader=read)}
+        options=submission.get('options',{})
+        if options.get('prepare_supervisor') is True:
+            from system_setup import verify_bundle as verify_system
+            inventories['supervisor']=verify_system(snapshot/'supervisor')
+        return inventories
 
     def idle(self, snapshot):
         # An existing worker is rejected even when waiting on the ownership lock.
@@ -43,11 +71,12 @@ class Recovery:
         if self.device.rpc('com.webos.appInstallService/status',{'subscribe':True}).get('status',{}).get('apps')!=[]:
             raise ValueError('installer_not_idle')
 
-    def baseline(self):
-        settings=self.device.rpc('com.webos.settingsservice/getSystemSettings',{'category':'general','keys':['defaultApps']})
-        profiles=self.device.rpc('com.webos.service.systemprofile/getProfiles',{'names':['defaultApps','idleApp'],'subscribe':False})['profiles']
-        if (settings['settings']['defaultApps']['home'],profiles['defaultApps']['categories']['home'],profiles['idleApp']['appId'])!=('com.webos.app.home',)*3:
-            raise ValueError('lg_home_routing_unconfirmed')
+    def baseline(self, provision=None):
+        if provision is None:
+            settings=self.device.rpc('com.webos.settingsservice/getSystemSettings',{'category':'general','keys':['defaultApps']})
+            profiles=self.device.rpc('com.webos.service.systemprofile/getProfiles',{'names':['defaultApps','idleApp'],'subscribe':False})['profiles']
+            if (settings['settings']['defaultApps']['home'],profiles['defaultApps']['categories']['home'],profiles['idleApp']['appId'])!=('com.webos.app.home',)*3:
+                raise ValueError('lg_home_routing_unconfirmed')
         # Original SDK registrations are expected; project overrides are not.
         paths=['var/webos-profile/override/clean-your-tv-root.json',
                'var/luna-service2/manifests.d/com.cleanyourtv.root.preview.recovery.json']
@@ -65,7 +94,8 @@ class Recovery:
             os.close(self.store._walk(str(directory)))
             for path in directory.iterdir():
                 if path.name.startswith(tuple(a+'.' for a in apps[1:])):raise ValueError('other_product_registration_present')
-                if path.name.startswith(APP+'.') and str(self.root).encode() in safe_bytes(path,uid=self.store.uid):
+                allowed=provision is not None and str(path) in provision['snapshot']['files']
+                if not allowed and path.name.startswith(APP+'.') and str(self.root).encode() in safe_bytes(path,uid=self.store.uid):
                     raise ValueError('private_root_registration_present')
 
     def original(self, identifier, candidate, recovery):
@@ -81,9 +111,9 @@ class Recovery:
                 or submission.get('candidate_sha256')!=candidate):raise ValueError('original_failed_install_required')
         snapshot=Path(self.store.root)/('request-'+identifier)
         os.close(self.store._walk(str(snapshot)))
-        options=self.device.verify_resume(snapshot,submission)
+        inventories=self.original_inventories(snapshot,submission)
+        options=self.device.verify_snapshot(snapshot,submission,inventories=inventories)
         if options['migrate']:raise ValueError('migration_cancellation_unsupported')
-        inventories=_verified_payload(snapshot,options['prepare_supervisor'])
         if candidate_digest(snapshot,inventories)!=candidate:raise ValueError('original_candidate_changed')
         lease=self.owner.status()
         if (lease is None or lease['id']!=request.get('lease') or lease['owner']!='product'
@@ -91,14 +121,23 @@ class Recovery:
         if lease['terminal'] and (recovery is None or recovery.get('stage')!='cancelled-and-removed'
                                   or lease['stage']!='cancelled-and-removed'):raise ValueError('unexpected_terminal_lease')
         if recovery is None and lease['stage']!='root-deploy':raise ValueError('original_lease_stage_required')
-        self.idle(snapshot);self.baseline()
+        self.idle(snapshot)
         root_store=checked_store(self.root,self.store.uid)
         os.close(root_store._directory())
+        journal=root_store.read('deploy')
+        original_journal=recovery['original']['deploy'] if recovery else journal
+        if original_journal not in [dict(version=1,app=APP,stage=stage) for stage in ('install-observed','provision-finalize-starting')]:
+            raise ValueError('never_activated_failed_install_required')
+        pending_provision=original_journal['stage']=='provision-finalize-starting'
+        provision=None
         # Reject every unexpected private entry, including dangling symlinks.
         import deploy
         allowed={Path(n).parts[0] for n in deploy.SUPPORT_FILES}|{'runtime','bundle.json','release.json','deploy.json','install-terminal.json','python-launcher','python-runtime.json','provision.lock'}
+        if pending_provision:
+            from cancel_provision import EXTRA
+            allowed|=EXTRA
         if {p.name for p in self.root.iterdir()}-allowed:raise ValueError('provisioning_or_unknown_private_state')
-        files=(*deploy.SUPPORT_FILES,*('runtime/'+n for n in deploy.RUNTIME_FILES),'bundle.json','release.json')
+        files=(*sorted(set(inventories['root']['files'])-{inventories['root']['package'],'SHA256SUMS'}),'bundle.json')
         retained={}
         for name in files:
             os.close(self.store._walk(str((self.root/name).parent)))
@@ -109,22 +148,26 @@ class Recovery:
         verify_binding(self.root)
         terminal=root_store.read('install-terminal')
         if not terminal_install(terminal,APP):raise ValueError('actual_install_terminal_required')
-        journal=root_store.read('deploy')
-        original_journal=recovery['original']['deploy'] if recovery else journal
-        if original_journal!={'version':1,'app':APP,'stage':'install-observed'}:raise ValueError('never_provisioned_install_required')
+        if pending_provision:
+            from cancel_provision import PendingProvision
+            removed=recovery is not None and recovery['stage'] in ('remove-observed','cancelled-and-removed')
+            provision=PendingProvision(self).inspect(admitted=recovery is not None,removed=removed,
+                                                     restored=recovery is not None and recovery['stage']!='admitted')
+        self.baseline(provision)
         if recovery:
-            admitted={k:v for k,v in recovery.items() if k!='removal_terminal'}
+            admitted={k:v for k,v in recovery.items() if k not in ('removal_terminal','provision_restored')}
             admitted['stage']='admitted'
             allowed_journals=[dict(version=1,app=APP,stage='cancellation-admitted',cancellation=admitted)]
             if recovery['stage'] in ('remove-observed','cancelled-and-removed') and terminal_removal(recovery.get('removal_terminal'),APP):
                 allowed_journals.append(dict(version=1,app=APP,stage='uninstalled-state-retained',
-                                             evidence=recovery['removal_terminal'],provisioning_not_started=True))
+                                             evidence=recovery['removal_terminal'],**({'provisioning_rolled_back':True} if pending_provision else {'provisioning_not_started':True})))
             if journal not in allowed_journals:raise ValueError('cancellation_deploy_changed')
         release=json.loads(safe_bytes(snapshot/'root/release.json',uid=self.store.uid))
         manifest=inventories['root'];raw=safe_bytes(snapshot/'root'/manifest['package'],uid=self.store.uid)
         hashes=inspect_package(raw,{'version':release['version'],'sha256':hashlib.sha256(raw).hexdigest(),'size':len(raw),'local':True})
         if hashes!=release['files']:raise ValueError('original_package_inventory_changed')
         original=dict(request=request,submission=submission,deploy=original_journal,install_terminal=terminal,private=retained)
+        if provision is not None:original['provision']=provision
         if recovery and original!=recovery['original']:raise ValueError('original_cancellation_proof_changed')
         return original,hashes,lease,root_store
 
@@ -153,20 +196,20 @@ class Recovery:
         elif recovery['stage']=='remove-submitting':raise ValueError('removal_terminal_unknown_no_replay')
         else:
             if not terminal_removal(recovery.get('removal_terminal'),APP):raise ValueError('actual_remove_terminal_required')
-            if recovery['stage']=='cancelled-and-removed':self.verify_absent(recovery['removal_terminal'])
+            if recovery['stage']=='cancelled-and-removed':self.verify_absent(recovery['removal_terminal'],provision=original.get('provision'))
         proof=digest(dict(original=original,candidate_sha256=candidate,code_sha256=self.code_sha256))
         if recovery and recovery.get('proof_sha256')!=proof:raise ValueError('cancellation_proof_changed')
         state=recovery['stage'] if recovery else 'admissible'
         if state=='cancelled-and-removed' and not lease['terminal']:state='cancellation-terminal-pending'
         return dict(operation=identifier,state=state,lease_terminal=lease['terminal'],proof_sha256=proof,payload_files=len(hashes),home_changed=False)
 
-    def verify_absent(self, terminal, *, cleanup=False):
+    def verify_absent(self, terminal, *, cleanup=False, provision=None):
         if not terminal_removal(terminal,APP):raise ValueError('actual_remove_terminal_required')
         import deploy
         if cleanup:deploy.verify_removed(terminal)
         else:self.device.absent(APP)
         if APP in self.device.apps():raise ValueError('root_registration_remains')
-        self.baseline()
+        self.baseline(provision)
         bus=self.system/'var/luna-service2-dev'
         for folder in ('services.d','roles.d','client-permissions.d','api-permissions.d','manifests.d'):
             directory=bus/folder
@@ -204,13 +247,19 @@ class Recovery:
                 self.store.write(name,record)
             if record['stage']=='admitted':
                 self.store.write(name,record)
+                if record['original'].get('provision') is not None:
+                    from cancel_provision import PendingProvision
+                    PendingProvision(self).restore(record['original']['provision'])
+                    record['provision_restored']=True;self.store.write(name,record)
                 record['stage']='remove-submitting';self.store.write(name,record)
                 from observed_install import remove
                 terminal=remove(APP,timeout=120)
                 record.update(stage='remove-observed',removal_terminal=terminal);self.store.write(name,record)
             terminal=record['removal_terminal']
-            self.verify_absent(terminal,cleanup=True)
-            root_store.write('deploy',dict(version=1,app=APP,stage='uninstalled-state-retained',evidence=terminal,provisioning_not_started=True))
+            provision=record['original'].get('provision')
+            self.verify_absent(terminal,cleanup=True,provision=provision)
+            root_store.write('deploy',dict(version=1,app=APP,stage='uninstalled-state-retained',evidence=terminal,
+                                         **({'provisioning_rolled_back':True} if provision is not None else {'provisioning_not_started':True})))
             record['stage']='cancelled-and-removed';self.store.write(name,record)
             # This must precede archival. Old workers now take only their
             # terminal readback branch, even when the live Root tree is absent.
@@ -223,7 +272,7 @@ def trusted_code_digest(code):
     from updater.bootstrap import verify_bundle
     code=Path(code)
     manifest=verify_bundle(code)
-    return digest(dict(bundle=manifest,recovery_sha256=hashlib.sha256(safe_bytes(code/'cancel_install.py',uid=0)).hexdigest()))
+    return digest(dict(bundle=manifest,recovery={name:hashlib.sha256(safe_bytes(code/name,uid=0)).hexdigest() for name in RECOVERY_FILES}))
 
 
 def main():

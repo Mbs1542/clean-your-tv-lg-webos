@@ -54,18 +54,26 @@ class HostCancellationTests(unittest.TestCase):
             # argparse has already made a real LOCAL bundle Path; only later
             # remote parent conversions should see simulated Windows semantics.
             self.tool.Path=PureWindowsPath
-            return manifest,b'recovery','c'*64
+            return manifest,{'cancel_install.py':b'recovery','cancel_provision.py':b'provision'},'c'*64
         argv=['recovery','inspect','--code-bundle',str(folder),'--operation',self.identifier,'--candidate','d'*64,'--code-sha256','c'*64]
         with patch.object(self.tool.state,'Store',return_value=self.store),patch.object(self.tool,'Path',Path), \
              patch.object(self.tool,'code_inventory',side_effect=inventory),patch.object(sys,'argv',argv), \
              patch('cytv.transport.SSH.connect',return_value=remote),patch('cytv.operations.Installer._python',return_value='/usr/bin/python3'),contextlib.redirect_stdout(io.StringIO()):
             self.tool.main()
-        self.assertEqual(remote.uploads,{'install_driver.py','system_updater/support/core.py','bundle.json','cancel_install.py'})
+        self.assertEqual(remote.uploads,{'install_driver.py','system_updater/support/core.py','bundle.json','cancel_install.py','cancel_provision.py'})
         self.assertEqual(self.store.pending(self.profile),self.original)
 
     def test_other_host_operation_does_not_even_request_reconciliation(self):
         inspect=Mock();self.store.checkpoint(self.profile,product_operation='d'*32)
         with self.assertRaises(ValueError):self.tool.reconcile(self.store,self.profile,self.identifier,'c'*64,self.proof,inspect)
         inspect.assert_not_called();self.assertIsNotNone(self.store.pending(self.profile))
+
+    def test_removal_requires_fresh_control_confirmation_before_connecting(self):
+        import contextlib,io,sys
+        from unittest.mock import patch
+        with patch.object(sys,'argv',['recovery','remove','--code-bundle','/unused']), \
+             patch('cytv.transport.SSH.connect') as connect,contextlib.redirect_stderr(io.StringIO()),self.assertRaises(SystemExit):
+            self.tool.main()
+        connect.assert_not_called();self.assertEqual(self.store.pending(self.profile),self.original)
 
 if __name__=='__main__':unittest.main()

@@ -31,11 +31,15 @@ Removal payload validation does not acquire install-only prerequisites.
 
 Missing System Profile is an unsupported routing/recovery interface, regardless
 of webOS marketing version. This change does not add a Settings-only adapter or
-make an already retained installation recoverable. The existing
-[never-provisioned cancellation](../ROOT-INSTALL-CANCELLATION.md) rejects a
-`provision-finalize` failure. Preserve the original operation and provisioning
-evidence; no broad restore/remove recommendation follows from a successful app
-launch or working LG Home controls.
+make an already retained installation recoverable by itself. The separate,
+reviewed-source [cancellation tool](../ROOT-INSTALL-CANCELLATION.md) now admits
+only exact never-activated finalize failures before recovery registration,
+subject to original snapshot/runtime/package proofs and safe LS2 rollback.
+It refuses stock-Home initialization, active processes, recovery readiness,
+activity or activation state and unknown edits. Preserve the original operation
+and provisioning evidence; no broad restore/remove recommendation follows from
+a successful app launch or working LG Home controls. This tool is not public
+Root compatibility support and has no target-TV acceptance yet.
 
 ## Packaging and acceptance
 
