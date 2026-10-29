@@ -129,7 +129,7 @@ Abrir a galeria ou escolher Atualizar consulta as novidades revisadas no reposit
 
 Para testar um tema não publicado, abra primeiro **Configurações → Aparência → Receber do computador** na TV. Digite o endereço da TV e PIN de seis dígitos em **Send to TV** na prévia do computador, envie e escolha **Aplicar tema** na TV. O método principal conecta o PC à porta TCP **8879 da TV**, sem alterar o firewall do computador. Ambos devem estar na mesma rede doméstica confiável. O receptor fecha após um envio, cancelamento, saída ou **10 minutos**. O PIN não é salvo; o tema instalado funciona offline. Não é necessário publicar no GitHub.
 
-Para um tema publicado, abra **Mais opções → Adicionar por URL** e digite o ID (por exemplo `102300a209`), `is.gd/102300a209` ou o link completo do GitHub. Home mostra o endereço is.gd antes de carregar e verifica o destino GitHub e o pacote. O autor pode copiar o ID das notas da versão ou de **TV link → Copy ID** na prévia.
+Para um tema publicado, abra **Mais opções → Adicionar por URL** e digite o ID (por exemplo `102300a209`), `da.gd/102300a209` ou o link completo do GitHub. Home mostra o endereço da.gd antes de carregar e verifica o destino GitHub e o pacote. O autor pode copiar o ID das notas da versão ou de **TV link → Copy ID** na prévia.
 
 Os pacotes publicados podem ainda não incluir esses controles. Testes de navegador não comprovam compatibilidade na TV. [Guia completo](../THEMES.md).
 

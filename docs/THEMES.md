@@ -49,14 +49,14 @@ PC → TV is the only computer transfer direction. If the receiver is unavailabl
 ## Install a published theme by ID or link
 
 In **More options → Add by URL**, enter an ID such as `102300a209`,
-`is.gd/102300a209`, `https://is.gd/102300a209`, or a supported full GitHub URL.
-The field shows the expanded is.gd address before Load. Home uses the bounded
-is.gd JSON lookup API and then validates the returned GitHub destination; it does
+`da.gd/102300a209`, `https://da.gd/102300a209`, or a supported full GitHub URL.
+The field shows the expanded da.gd address before Load. Home uses the bounded
+da.gd plain-text lookup API and then validates the returned GitHub destination; it does
 not execute a shortener page or accept arbitrary hosts. Select the found theme
 before downloading. Short links install published packages, not local PC files.
 
 Authors can copy the ID from **TV link → Copy ID** in the toolkit preview or from
-the theme's GitHub release notes. Creating links uses no is.gd account or API key.
+the theme's GitHub release notes. Creating links uses no da.gd account or API key.
 If the service is unavailable, use the original full GitHub descriptor URL.
 
 ## Add another repository by URL

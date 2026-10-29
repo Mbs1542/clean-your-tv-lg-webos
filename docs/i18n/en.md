@@ -128,7 +128,7 @@ Opening Theme showcase or choosing Refresh checks the main project repository fo
 
 To test an unpublished theme, first open **Settings → Appearance → Receive from computer** on TV. Enter the TV address and six-digit PIN shown there into **Send to TV** in the computer preview, then send and choose **Apply theme** on TV. This primary direction uses an outgoing PC connection to TV TCP **8879**, without changing the computer firewall. Both devices must be on the same trusted home network. The receiver closes after one upload, cancellation, leaving the pane or **10 minutes**. PINs are not saved; the installed theme works offline. GitHub publication is not required.
 
-For a published theme, open **More options → Add by URL** and enter its ID (for example `102300a209`), `is.gd/102300a209`, or the full GitHub link. Home shows the expanded is.gd address before loading and then checks the GitHub destination and theme package. The author can provide the ID in the release notes or with **TV link → Copy ID** in the computer preview.
+For a published theme, open **More options → Add by URL** and enter its ID (for example `102300a209`), `da.gd/102300a209`, or the full GitHub link. Home shows the expanded da.gd address before loading and then checks the GitHub destination and theme package. The author can provide the ID in the release notes or with **TV link → Copy ID** in the computer preview.
 
 Published packages may not contain these controls yet. Browser tests are not physical-TV acceptance. See the [complete theme guide](../THEMES.md) for supported URLs, storage limits and recovery.
 

@@ -67,15 +67,16 @@ Computer theme transfer uses PC → TV only. The old PC-hosted sharing server,
 TV download form and `share` command are removed from the matching author tools.
 Instructions in all twelve user guides follow the TV-address/PIN workflow.
 
-Published themes can also be installed by their is.gd ID or full short link.
-Home shows the expanded address, uses a bounded JSON lookup and then applies the
+Published themes can also be installed by their da.gd ID or full short link.
+Home shows the expanded address, uses a bounded plain-text lookup and then applies the
 normal GitHub/package checks. The matching author toolkit provides TV link,
 Copy ID/Copy link and a keyless release workflow with one ID per theme/version.
 No new TV service method or listening endpoint is introduced by this feature.
-Physical C3 testing currently blocks short-ID acceptance: is.gd HTTPS handshakes
-do not complete on the TV despite matching DNS and working IPv4 TCP. The pinned
-GitHub URL and PC-to-TV transfer remain the fallback; no certificate checks were
-disabled. This limitation remains open.
+The earlier is.gd experiment failed at TLS on the C3 original network path and is
+replaced before publication. The da.gd development resolver loaded the pinned
+Channel descriptor and verified all 12 files on that same TV without a network
+workaround. Signed-candidate UI acceptance remains separate; the full GitHub URL
+and PC-to-TV transfer remain available. No certificate checks are disabled.
 
 ## Upgrade boundaries
 

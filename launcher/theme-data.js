@@ -39,7 +39,7 @@
  }
 
  function request(url,limit,local,signal,deadline){return new Promise(function(resolve,reject){
-  if(local!==true&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url)&&!/^https:\/\/is\.gd\/forward\.php\?format=json&shorturl=[A-Za-z0-9_]{5,30}$/.test(url))return reject(Error('Unsupported theme host'));
+  if(local!==true&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url)&&!/^https:\/\/da\.gd\/coshorten\/[A-Za-z0-9_]{5,30}$/.test(url))return reject(Error('Unsupported theme host'));
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
@@ -62,14 +62,13 @@
  }
 
  function raw(s,p){return 'https://raw.githubusercontent.com/'+s.owner+'/'+s.repo+'/'+s.commit+'/'+path(p);}
- function shortLink(value){if(typeof value!=='string'||value.length>1000)return null;var match=/^(?:(?:https:\/\/)?is\.gd\/)?([A-Za-z0-9_]{5,30})$/i.exec(value.trim());return match?'https://is.gd/'+match[1]:null;}
+ function shortLink(value){if(typeof value!=='string'||value.length>1000)return null;var match=/^(?:(?:https:\/\/)?da\.gd\/)?([A-Za-z0-9_]{5,30})$/i.exec(value.trim());return match?'https://da.gd/'+match[1]:null;}
  function expandLink(url,signal){return Promise.resolve().then(function(){
   if(typeof url!=='string')fail('Use a public GitHub repository or a commit-pinned theme descriptor');
   var short=shortLink(url);
   if(!short)return url;
-  return request('https://is.gd/forward.php?format=json&shorturl='+short.slice(short.lastIndexOf('/')+1),4096,false,signal).then(function(bytes){
-   var result=JSON.parse(decode(bytes));if(!result||result.errorcode||typeof result.url!=='string')fail('Short link unavailable. Retry later or use the full GitHub link.');
-   source(result.url);return result.url;
+  return request('https://da.gd/coshorten/'+short.slice(short.lastIndexOf('/')+1),4096,false,signal).then(function(bytes){
+   var target=decode(bytes).trim();source(target);return target;
   });
  });}
  function resolve(url,signal){return expandLink(url,signal).then(function(url){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
