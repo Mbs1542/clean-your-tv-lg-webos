@@ -44,6 +44,9 @@ class TVTLSTests(unittest.TestCase):
     def pair_loopback(self, cipher=None, reject=False, saved=True):
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(self.cert_path, self.key_path)
+        # Sync peers start their readers before the WebSocket upgrade. Keep TLS 1.3
+        # but avoid post-handshake tickets racing the client's first write.
+        context.num_tickets = 0
         if cipher:
             context.minimum_version = context.maximum_version = ssl.TLSVersion.TLSv1_2
             context.set_ciphers(cipher)
