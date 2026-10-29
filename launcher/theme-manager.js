@@ -17,6 +17,18 @@
  function payload(s){if(s.id==='builtin:alpine'){var entry=builtin.themes[0];return data.load(entry,homeVersion,null,null,true);}return root.ThemeStore.get(s.digest).then(function(pack){if(!pack)throw Error('Saved theme files are missing');var parsed=data.verify(pack,homeVersion);if(parsed.manifest.id!==s.id)throw Error('Saved theme identity mismatch');return pack;});}
  function apply(pack,s,boot,token){return data.prepare(pack,homeVersion,function(){return token!==undefined&&token!==generation;}).then(function(input){try{if(token!==undefined&&token!==generation)throw Error('Cancelled');root.ThemeRuntime.apply(input);active={id:s.id,title:input.manifest.title,digest:pack.digest};if(boot){return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(function(){try{localStorage.removeItem(trialKey);}catch(_){}emit();resolve();});});});}emit();}catch(e){data.dispose(input.assetHandles);throw e;}});}
  function list(){return start().then(environment).then(function(){return root.ThemeStore.list().catch(function(e){notice=e.message;return [];});}).then(function(packages){var items=[{id:'builtin:classic',title:'Classic',builtin:true},{id:'builtin:alpine',title:'Alpine',builtin:true}];packages.forEach(function(pack){try{var parsed=data.verify(pack,homeVersion);if(parsed.manifest.id.indexOf('github:')!==0)throw Error('Invalid external identity');items.push({id:parsed.manifest.id,title:parsed.manifest.title,digest:pack.digest,version:parsed.manifest.themeVersion,license:parsed.manifest.license.identifier,author:parsed.manifest.author.name});}catch(_){notice='An invalid cached theme was ignored';}});return items;});}
+ function preview(item){
+  if(!item||typeof item.id!=='string'||item.id.indexOf('github:')!==0||! /^[a-f0-9]{64}$/.test(item.digest))return Promise.reject(Error('Invalid installed preview'));
+  return environment().then(function(){return root.ThemeStore.get(item.digest);}).then(function(pack){
+   if(!pack)throw Error('Installed theme files are missing');
+   if(pack.digest!==item.digest)throw Error('Installed preview digest mismatch');
+   var parsed=data.verify(pack,homeVersion),m=parsed.manifest;if(m.id!==item.id)throw Error('Installed preview identity mismatch');
+   var asset=m.assets.filter(function(a){return a.id===m.previewAssetId;})[0];if(!asset)throw Error('Installed preview asset is missing');
+   var url=root.URL.createObjectURL(new root.Blob([pack.files[asset.path]],{type:asset.mediaType})),disposed=false;
+   return {url:url,dispose:function(){if(!disposed){disposed=true;root.URL.revokeObjectURL(url);}}};
+  });
+ }
+
  function begin(s,immediate){if(trial)return Promise.reject(Error('Finish the current theme preview first'));var token=++generation;return start().then(environment).then(function(){if(token!==generation)throw Error('Cancelled');var previous=selection();localStorage.setItem(trialKey,JSON.stringify({kind:'trial',id:s.id,previous:previous}));trial={previous:previous,choice:s,expires:Date.now()+20000,timer:null};
    return (s.id==='builtin:classic'?Promise.resolve().then(classic):payload(s).then(function(pack){return apply(pack,s,false,token);})).then(function(){if(token!==generation)throw Error('Cancelled');trial.expires=Date.now()+20000;if(!immediate)trial.timer=setTimeout(cancel,20000);emit();},function(e){if(token!==generation)throw e;return cancel().then(function(){throw e;});});
   });}
@@ -65,5 +77,5 @@
  }
 
  function remove(s){if(trial||active.digest===s.digest)return Promise.reject(Error('Switch to another theme before removing this version'));return root.ThemeStore.remove(s.digest).then(emit);}
- root.ThemeManager={start:start,list:list,current:current,begin:begin,selectInstalled:selectInstalled,cancel:cancel,confirm:confirm,install:install,installLan:installLan,catalog:catalog,remove:remove,resolve:function(url,signal){return start().then(environment).then(function(){return data.resolve(url,signal);});},remaining:function(){return trial?Math.max(0,Math.ceil((trial.expires-Date.now())/1000)):0;},reset:function(){generation++;if(trial)clearTimeout(trial.timer);trial=null;recover('Classic restored');},choiceKey:choiceKey,trialKey:trialKey};
+ root.ThemeManager={start:start,list:list,preview:preview,current:current,begin:begin,selectInstalled:selectInstalled,cancel:cancel,confirm:confirm,install:install,installLan:installLan,catalog:catalog,remove:remove,resolve:function(url,signal){return start().then(environment).then(function(){return data.resolve(url,signal);});},remaining:function(){return trial?Math.max(0,Math.ceil((trial.expires-Date.now())/1000)):0;},reset:function(){generation++;if(trial)clearTimeout(trial.timer);trial=null;recover('Classic restored');},choiceKey:choiceKey,trialKey:trialKey};
 }(this));

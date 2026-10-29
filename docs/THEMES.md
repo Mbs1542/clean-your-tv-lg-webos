@@ -10,7 +10,7 @@ These controls are implemented in the **theme-enabled development candidate** on
 
 ## Change to an included theme
 
-1. Open Home, select **Settings → Appearance → Themes**. Home stays visible beneath a compact picker of installed themes.
+1. Open Home, select **Settings → Appearance → Themes**. Home stays visible beneath a compact picker showing previews of built-in and all downloaded themes. Personal themes use their saved package preview, including offline and without a showcase listing. The separate Theme showcase button opens the published catalogue.
 2. Choose **Classic** or **Alpine** in the installed list. The choice applies and saves immediately, without a confirmation timer. Downloaded themes in this list work the same way.
 3. Return with **Back**, then **Back to Home**.
 

@@ -118,6 +118,8 @@ To receive an unpublished theme, open the author preview on a computer and choos
 
 Published packages may not contain these controls yet. Browser tests are not physical-TV acceptance. See the [complete theme guide](../THEMES.md) for supported URLs, storage limits and recovery.
 
+Themes shows previews of built-in themes and every theme you installed yourself, including offline. A separate Theme showcase button opens the published catalogue; personal installation does not publish a theme.
+
 ## Settings categories (unpublished candidate)
 
 In both editions, Home settings has categories on the left and the selected settings on the right: Your Home screen, Appearance (Themes and Columns), Language, Software updates and Advanced. No-root also has Developer Mode; Root includes LG firmware updates under Software updates and HDMI sound under Advanced. Use Up/Down within a column, Right to enter its settings and Left to return to categories. Back returns to categories first, then closes settings; Tab also reaches Back to Home.

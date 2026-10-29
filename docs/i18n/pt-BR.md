@@ -119,6 +119,8 @@ Para um tema não publicado, abra a prévia de autoria no computador e escolha *
 
 Os pacotes publicados podem ainda não incluir esses controles. Testes de navegador não comprovam compatibilidade na TV. [Guia completo](../THEMES.md).
 
+Temas mostra prévias dos temas integrados e de todos os que você instalou, inclusive offline. Um botão separado abre o catálogo publicado; instalar um tema pessoal não o publica.
+
 ## Categorias de configurações (candidato não publicado)
 
 Nas duas edições, as categorias ficam à esquerda e as configurações à direita: tela inicial, Aparência (temas e colunas), Idioma, Atualizações de software e Avançado. No-root também tem Developer Mode; Root inclui firmware LG nas atualizações e som HDMI em Avançado. Cima/baixo navega na coluna, direita entra nas configurações e esquerda volta às categorias. Voltar retorna primeiro às categorias e depois fecha as configurações. Tab também alcança o botão para voltar ao Home.

@@ -119,6 +119,8 @@ Dla nieopublikowanego motywu otwórz podgląd autora na komputerze i wybierz **W
 
 Opublikowane pakiety mogą jeszcze nie mieć tych opcji. Test przeglądarki nie potwierdza zgodności z fizycznym TV. [Pełny poradnik](../THEMES.md).
 
+Motywy pokazują podglądy wbudowanych i wszystkich samodzielnie zainstalowanych motywów, także offline. Osobny przycisk otwiera opublikowany katalog; prywatna instalacja nie publikuje motywu.
+
 ## Kategorie ustawień (nieopublikowany kandydat)
 
 W obu edycjach kategorie są po lewej, a ustawienia po prawej: ekran główny, Wygląd (motywy i kolumny), Język, Aktualizacje i Zaawansowane. No-root ma też Developer Mode; Root zawiera aktualizacje firmware LG w aktualizacjach i dźwięk HDMI w Zaawansowanych. Góra/dół porusza się w kolumnie, prawo otwiera ustawienia, a lewo wraca do kategorii. Wstecz najpierw wraca do kategorii, potem zamyka ustawienia. Tab pozwala też wybrać powrót do Home.

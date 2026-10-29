@@ -118,6 +118,8 @@ Pour un thème non publié, ouvrez l’aperçu de création sur l’ordinateur e
 
 Les versions publiées peuvent ne pas encore proposer ces commandes. Les tests navigateur ne prouvent pas la compatibilité TV. [Guide complet](../THEMES.md).
 
+Thèmes affiche les aperçus des thèmes intégrés et de tous ceux que vous avez installés, même hors ligne. Un bouton séparé ouvre le catalogue publié ; une installation personnelle ne publie pas le thème.
+
 ## Catégories des paramètres (candidat non publié)
 
 Dans les deux éditions, les catégories sont à gauche et leurs réglages à droite : écran d’accueil, Apparence (thèmes et colonnes), Langue, Mises à jour et Avancé. No-root ajoute Developer Mode ; Root place le firmware LG dans les mises à jour et le son HDMI dans Avancé. Haut/Bas parcourt une colonne, Droite entre dans les réglages et Gauche revient aux catégories. Retour revient aux catégories, puis ferme les paramètres. Tab permet aussi d’atteindre le bouton de retour à Home.
