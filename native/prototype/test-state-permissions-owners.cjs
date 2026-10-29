@@ -29,7 +29,7 @@ function fixture(options={}){
  });
  const sandbox={module:{exports:{}},Buffer,process:{getuid:()=>actor,getgid:()=>primaryGroup,getgroups:()=>[5000,primaryGroup]},require:n=>n==='fs'?io:require(n)};
  vm.runInNewContext(source,sandbox);const logs=[];
- return {state,key,owners,logs,run(uid=5367){actor=uid;return sandbox.module.exports(state,x=>logs.push(x));},close(){fs.rmSync(root,{recursive:true,force:true});}};
+ return {state,key,owners,logs,run(uid=5367,initializeControl=false){actor=uid;return sandbox.module.exports(state,x=>logs.push(x),initializeControl);},close(){fs.rmSync(root,{recursive:true,force:true});}};
 }
 function test(name,options,check){const f=fixture(options);try{check(f);console.log('PASS: '+name);}finally{f.close();}}
 test('foreign 0775 directory with protected developer-owned key remains usable',{keyMode:0o640},f=>{
@@ -82,4 +82,23 @@ test('recovered key enables foreground and power subscriptions with existing Bac
  foreground('test.app',200);policy.back(true,300);policy.back(false,1400);foreground('com.webos.app.home',1500);a.equal(returns,1);
  socket.emit('message',JSON.stringify({id:'power',payload:{state:'Active'}}));a.equal(power,1);
  watch.close();
+});
+
+for(const mode of [0o640,0o660])test('startup replaces foreign control without losing pairing at '+mode.toString(8),{keyMode:0o640,primaryGroup:6575},f=>{
+ const control=path.join(f.state,'control.json');fs.writeFileSync(control,'{"cmd":"stop"}');fs.chmodSync(control,mode);
+ f.owners.set(control,{uid:5999,gid:5000});const original=fs.statSync(control).ino;
+ a.equal(f.run(6575,true),true);a.notEqual(fs.statSync(control).ino,original);
+ a.equal(fs.readFileSync(control,'utf8'),'{}');a.equal(fs.statSync(control).mode&0o777,0o660);
+ a.deepEqual(f.owners.get(control),{uid:6575,gid:5000});
+ a.equal(fs.readFileSync(f.key,'utf8'),'{"key":"test-private-key"}');a.equal(f.owners.get(f.key).uid,5580);
+ a.equal(fs.readdirSync(f.state).length,3);
+});
+test('ordinary permission checks preserve pending control commands',{keyMode:0o640},f=>{
+ const control=path.join(f.state,'control.json');fs.writeFileSync(control,'{"cmd":"stop"}');
+ a.equal(f.run(),true);a.equal(fs.readFileSync(control,'utf8'),'{"cmd":"stop"}');
+});
+test('failed control replacement preserves existing command and pairing',{keyMode:0o640,renameFailure:true},f=>{
+ const control=path.join(f.state,'control.json');fs.writeFileSync(control,'{"cmd":"stop"}');
+ a.equal(f.run(6575,true),false);a.equal(fs.readFileSync(control,'utf8'),'{"cmd":"stop"}');
+ a.equal(fs.readFileSync(f.key,'utf8'),'{"key":"test-private-key"}');a.equal(fs.readdirSync(f.state).length,3);
 });

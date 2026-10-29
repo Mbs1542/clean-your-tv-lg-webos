@@ -4,8 +4,8 @@ Base: `main`. Head: `release/next` in this repository.
 Keep this PR in draft while collecting changes. Choose the version at freeze.
 
 Maintain this description after every implementation merge, scope change,
-version decision and validation run. Updating `release-plan.json` alone is not
-enough. Follow [the release record requirements](../../docs/RELEASE-FLOW.md#maintain-the-release-candidate-pr-description).
+version decision and validation run. The candidate workflow regenerates its marked block from committed
+`release-plan.json`; maintain human observations and reasons outside that block. Follow [the release record requirements](../../docs/RELEASE-FLOW.md#maintain-the-release-candidate-pr-description).
 
 ## Scope
 
@@ -58,8 +58,9 @@ Do not claim hardware acceptance from automated tests or package installation. -
 - [ ] README stable release links and component versions pass automated metadata validation.
 - [ ] Candidate documentation pass is complete; affected guides/translations match the release and remaining limitations are recorded above.
 - [ ] Rebuilt packages contain the intended changes; pinned baselines and delivery limitations are recorded.
-- [ ] TV acceptance evidence and untested paths are recorded in `acceptance`.
-- [ ] Complete platform builds and required tests pass for the current candidate.
+- [ ] TV acceptance rows include artifact hashes, device/state preconditions and untested paths.
+- [ ] Selected build run/attempt matches `acceptance_build`; changed bytes have affected acceptance.
+- [ ] Complete platform builds and full tests pass for the selected build; candidate inputs are equivalent.
 - [ ] Rollback baseline is verified.
 
 A merge integrates the release. Shipping notices follow verified publication.

@@ -1,6 +1,6 @@
 # Clean Your TV — 사용자 안내
 
-> 미공개 후보 1.4.1: Root OTA 호환성, 업데이트 표시, 펌웨어 API 접근 및 Windows 패키지/콘솔 수정입니다. TV 검증과 서명된 업데이트/롤백은 아직 완료되지 않았으며, 공개 다운로드가 아닙니다. [1.4.1](../RELEASE-1.4.1.md).
+> 미공개 후보 1.4.1: Root OTA 호환성, 업데이트 표시, 펌웨어 API 접근 및 Windows 패키지/콘솔 수정입니다. C3에서 제한된 범위의 서명된 업데이트와 일반 롤백을 기록했습니다. 최종 빌드와 배포는 아직 남아 있으며, 공개 다운로드가 아닙니다. [1.4.1](../RELEASE-1.4.1.md).
 
 [문서](../README.md) · [문제 신고](../FEEDBACK.md)
 
@@ -12,6 +12,8 @@ No-root와 Root는 서로 다른 TV 환경에 맞는 동등한 선택지입니�
 
 - **No-root:** LG Developer Mode와 Key Server를 켜세요. TV에 표시된 암호 문구를 입력하고 별도로 표시되는 페어링 요청을 TV에서 승인하세요. Developer Mode를 계속 활성화해야 합니다. 세션이 만료되면 설치한 앱이 삭제될 수 있습니다. 베타 자동 갱신을 켰더라도 공식 타이머를 확인하세요. Helper의 상태 감시에는 로컬 네트워크가 필요합니다.
 - **Root:** 기존 root SSH 접근 권한이 필요합니다. 설치 프로그램은 TV를 루팅하지 않습니다. 이미 루팅한 TV에는 Developer Mode를 켜지 마세요. root 접근 및 복구 서비스를 유지하세요.
+
+Root에는 Settings Service 및 System Profile (`com.webos.service.systemprofile`)의 정상적인 Home 인터페이스가 필요합니다. root 권한만으로 호환성이 보장되지는 않습니다.
 
 ## 설치 전 준비
 
@@ -86,6 +88,10 @@ Home 설정 → 소프트웨어 업데이트에서 제시된 버전을 확인한
 Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다**. 필요할 때만 켜세요. 정상적인 소리를 끊을 수 있으며 eARC 호환성이 확인된 것은 아닙니다. [소리 복구(영어)](../development/ROOT-AUDIO-RECOVERY.md). 별도 **Homebrew CYTV Installer는 아직 출시되지 않았습니다**. 공개된 컴퓨터 또는 Android 설치 프로그램을 사용하세요.
 
 미출시 후보 전용: 이전 Root 디렉터리의 쓰기 권한 때문에 펌웨어 API 접근이 거부되면 `cytv enable-firmware-access --edition root --repair-package-permissions` 명령이 신뢰할 수 있는 비공개 패키지 기록으로 현재 파일을 검증한 뒤 Root 소유 경로의 그룹 및 기타 사용자 쓰기 권한만 제거합니다. 알 수 없거나 변경된 파일이 있으면 중단합니다. 프로필, Home 선택 및 펌웨어 차단 설정은 유지됩니다. [세부 정보(영어)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+미공개 후보 버전 전용: `cytv recover-system-rollback --edition root`는 검증된 Root 롤백에서 모든 패키지 설치가 끝났지만 런처 준비 시간이 초과된 경우에만 사용합니다. 실제 런처의 준비 신호가 필요하며 설치 결과가 불명확하면 거부합니다. 패키지, 고정된 코드·키, 실패 증거와 명시적으로 끈 Home 제어 상태를 보존합니다. 제한된 시도를 비공개 기록으로 남깁니다. 일반 재시도는 기한을 연장하지 않습니다. 이전 120초 기한이 지난 뒤 승인된 준비 신호나 불명확한 설치 결과가 없을 때만 `--new-recovery-attempt`가 이전 기록 전체를 UUID/해시로 보관하고 명시적으로 새 시도를 시작합니다. 완료된 복구는 다시 시작하지 않으며 자동 반복 시도는 없습니다. [절차와 제한 사항(영어)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+미공개 1.4.1 후보 전용: TV에서 Root 업데이트를 하려면 System Updater 1.1.1이 필요합니다. TV OTA 전에 `cytv replace-system-updater --edition root`로 1.1.0을 명시적으로 교체하세요. System Updater만 교체하며 Root/Root Updater 앱, 전체 프로필과 Home 선택은 보존하고 이전 상태는 보관합니다. 불명확하거나 미완료된 작업이 있으면 중단합니다. 이 요구 사항은 No-root 피드에는 적용되지 않습니다. [교체 절차(영어)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## 도움말과 자세한 안내
 

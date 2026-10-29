@@ -299,6 +299,25 @@ a compatible TV loader/libc and additional staging space; it does not replace
 Node.js, root services or input compatibility. [Runtime details](OPTIONAL-PYTHON.md).
 Status, doctor, restore and uninstall never download a new interpreter.
 
+## Candidate Root System Updater replacement
+
+The unpublished 1.4.1 Root candidate requires System Updater 1.1.1 for on-TV
+updates. With the existing trusted Root connection:
+
+```sh
+cytv replace-system-updater --edition root
+```
+
+This explicitly replaces only the supervisor, after checking that installation,
+rollback and Home resumption are finished. Root packages, launcher storage and
+preferences are preserved; the old supervisor state is archived. Normal trusted
+connection options apply; confirmation defaults to No (`--yes` accepts this
+summary). A matching interrupted replacement resumes with the same bundle;
+foreign pending operations and uncertain package outcomes remain blocked. Any
+existing legacy Root Updater transaction/backup also blocks replacement, including
+a completed one; keep that evidence for review, never delete it to force progress.
+See [replacement and recovery](RECOVERY.md#replace-the-root-system-updater-candidate).
+
 ## Interrupted operations
 
 A private local receipt is synchronized before installation/removal, and
@@ -320,6 +339,31 @@ Optional early input restoration is tracked separately. A rejected registration
 uses the guarded fallback. Rejection alone does not establish that an older
 registration is absent: an EIM input-list readback establishes absence when
 available. An unknown EIM result still requires confirmed cleanup before uninstall.
+
+## Candidate: Root System rollback readiness
+
+**Unpublished candidate only:** after a verified Root System rollback reaches a
+launcher-readiness timeout with all package installers completed, use the same
+saved/trusted Root connection:
+
+```sh
+cytv recover-system-rollback --edition root
+```
+
+Normal connection options such as `--host`, `--port`, `--identity`, `--data-dir`
+and `--non-interactive` remain available. This is a Root-only maintenance command,
+not an installation retry. It verifies retained evidence, requires the restored
+launcher's genuine authenticated readiness within a fresh 120-second window, and
+keeps a durable audit. Unknown installer results or changed/conflicting state stop
+recovery. Packages, pinned supervisor code/keys and an explicit Home-off choice
+are preserved. Ordinary retries resume the same unexpired attempt without
+extending its deadline. After diagnosis, `--new-recovery-attempt` explicitly opens
+a new audited attempt only after the old 120-second deadline expires, with no
+accepted health receipt and no unknown installer outcome. It archives the entire
+old audit under its UUID and hash before creating a fresh UUID/window; it never
+automatically chains attempts. Completed recovery is idempotent and does not roll
+over. The normal confirmation defaults to No; state checks still apply. See
+[the recovery procedure and limits](RECOVERY.md#root-system-rollback-readiness-candidate).
 
 ## Report a problem
 

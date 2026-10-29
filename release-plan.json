@@ -1,105 +1,28 @@
 {
   "schema": 1,
-  "version": "1.4.1",
+  "version": null,
   "changes": [
     {
-      "pr": 118,
-      "issues": [
-        115
-      ],
-      "summary": "Restore the original v1.3.0 Root OTA path/LS2 contract, guarded retained rollback and signed computer recovery; physical signed upgrade/rollback acceptance pending"
-    },
-    {
-      "pr": 119,
-      "issues": [
-        108,
-        109
-      ],
-      "summary": "Suppress same-component-version update offers and align settings badges with the edition-specific System Updater; physical-TV confirmation pending"
-    },
-    {
-      "pr": 120,
-      "issues": [
-        110
-      ],
-      "summary": "Restore Root Home access to Homebrew configuration APIs and localized diagnostics; C3 switch accepted, effective blocking after TV restart and full lifecycle acceptance pending"
-    },
-    {
-      "pr": 121,
-      "issues": [
-        107
-      ],
-      "summary": "Preserve LF in Windows-built POSIX payload scripts and prevent redirected legacy-console encoding crashes; partial #107, BX routing/recovery remains unresolved"
-    },
-    {
-      "pr": 122,
+      "pr": 134,
       "issues": [],
-      "summary": "Correct published 1.4.0 README metadata and Android download labeling; enforce stable release links/component versions in candidate policy and required README CI checks"
+      "summary": "Reuse verified candidate builds and unchanged PR runtime checks, scope physical acceptance and refresh release gates automatically."
     },
     {
-      "pr": 123,
-      "issues": [],
-      "summary": "Reorganize user docs and all twelve guides around tasks, preserve historical evidence and links, and require explicit user consent for redacted installation-result issues"
-    },
-    {
-      "pr": 124,
-      "issues": [],
-      "summary": "Move edition choice below README installation and replace the hero with a current international-app demo screenshot"
-    },
-    {
-      "pr": 125,
-      "issues": [],
-      "summary": "Add prominent native-language links to all twelve installation guides before the README demo and screenshot"
-    },
-    {
-      "pr": 126,
+      "pr": 142,
       "issues": [
-        110
+        133,
+        140
       ],
-      "summary": "Fix Windows discovery of POSIX firmware registration tests"
+      "summary": "Fix No-root Helper control ownership while preserving pairing; reject unsupported Root Home interfaces before installation (partial #133; retained recovery remains unresolved)."
     },
     {
-      "pr": 127,
+      "pr": 145,
       "issues": [
-        115
+        101,
+        133,
+        143
       ],
-      "summary": "Add private signed Root candidate acceptance admission"
-    },
-    {
-      "pr": 128,
-      "issues": [],
-      "summary": "Fix compact settings spacing across TV locales"
-    },
-    {
-      "pr": 129,
-      "issues": [
-        110
-      ],
-      "summary": "Keep owned firmware grants revocable without SDK app metadata (partial #110; strict enabling and original access/lifecycle work remain unresolved)"
-    },
-    {
-      "pr": 130,
-      "issues": [],
-      "summary": "Refresh synthetic browser acceptance fixtures for current profile/System updater contracts and both packaged recovery apps; no product changes"
-    },
-    {
-      "pr": 131,
-      "issues": [],
-      "summary": "Fix launcher card/focus geometry for one through eight columns; preserve sparse layouts and add compiled-browser navigation/scroll regressions; physical-TV acceptance pending"
-    },
-    {
-      "pr": 132,
-      "issues": [
-        110
-      ],
-      "summary": "Add explicit authenticated Root SDK package permission repair before firmware-access registration; retain strict default/automatic checks and require private package byte authority; no automatic SDK chmod or published delivery"
-    },
-    {
-      "pr": 135,
-      "issues": [
-        110
-      ],
-      "summary": "Distinguish authorized maintainer QA records from other-user installation report consent; preserve privacy and record scoped C3 update-control/geometry/firmware follow-up without finalizing release acceptance"
+      "summary": "Add reviewed-source cancellation of never-activated Root installs, including pre-registration finalize failures and historical runtime inventories; device-specific recovery and firmware routing compatibility remain unverified (partial #101, #133, #143)."
     }
   ],
   "excluded": [],

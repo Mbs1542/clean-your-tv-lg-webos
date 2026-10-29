@@ -132,3 +132,12 @@ the reference above. Current release publication instructions are in the
 
 <!-- Anchors retained for links to earlier guide headings. -->
 <a id="updates-and-recovery--110"></a>
+
+## Candidate 1.4.1 Root supervisor prerequisite
+
+Unpublished Root 1.4.1 updates require System Updater 1.1.1. Existing 1.1.0
+installations must use the explicit [supervisor-only replacement](RECOVERY.md#replace-the-root-system-updater-candidate)
+with a complete candidate installer before on-TV updating. New signed Root offers
+reject the old supervisor; a failed check is not permission to bypass its checks.
+The fixed service waits briefly for the same update's ownership lock when
+accepting actual launcher readiness, without extending its health deadline.

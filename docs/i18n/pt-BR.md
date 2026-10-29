@@ -1,6 +1,6 @@
 # Clean Your TV — guia de uso
 
-> Candidato 1.4.1 não publicado: compatibilidade OTA Root, disponibilidade de atualizações, acesso à API de firmware e correções de pacotes/console Windows. A validação na TV e a atualização/reversão assinada continuam pendentes; não é um download publicado. [1.4.1](../RELEASE-1.4.1.md).
+> Candidato 1.4.1 não publicado: compatibilidade OTA Root, disponibilidade de atualizações, acesso à API de firmware e correções de pacotes/console Windows. A atualização assinada e a reversão normal foram registradas no escopo limitado ao C3; as compilações finais e a publicação continuam pendentes; não é um download publicado. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentação](../README.md) · [Relatar um problema](../FEEDBACK.md)
 
@@ -12,6 +12,8 @@ No-root e Root são opções equivalentes para diferentes configurações da TV.
 
 - **No-root:** ative LG Developer Mode e Key Server. Digite a frase de acesso exibida na TV e aceite nela o pedido separado de pareamento. Developer Mode deve continuar ativo: a expiração pode remover aplicativos instalados por esse método. Confira o cronômetro oficial mesmo com a renovação Beta ativada. O monitoramento do Helper depende da rede local.
 - **Root:** é necessário acesso SSH root já existente. O instalador não faz root. Não ative Developer Mode em uma TV que já tenha root. Mantenha o acesso root e os serviços de recuperação disponíveis.
+
+Root exige interfaces Home funcionais de Settings Service e System Profile (`com.webos.service.systemprofile`); ter acesso root não garante compatibilidade.
 
 ## Requisitos
 
@@ -86,6 +88,10 @@ Abra configurações do Home → Atualizações de software e revise as versões
 A recuperação de som HDMI do Root é experimental e **desativada por padrão**; ative somente se precisar. Ela pode interromper áudio saudável e não comprova compatibilidade eARC. [Recuperação de som (inglês)](../development/ROOT-AUDIO-RECOVERY.md). O **CYTV Installer do Homebrew continua sem publicação**; use o instalador publicado para computador ou Android.
 
 Somente candidato não publicado: se o acesso à API de firmware falhar por diretórios Root antigos graváveis, `cytv enable-firmware-access --edition root --repair-package-permissions` verifica o pacote atual com dados privados confiáveis e remove a escrita de grupo/outros apenas nos caminhos próprios do Root. Arquivos desconhecidos ou alterados interrompem o reparo. Perfil, escolha de Home e bloqueio de firmware são preservados; [detalhes (inglês)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+Somente no candidato não publicado: `cytv recover-system-rollback --edition root` trata uma reversão Root verificada em que todos os instaladores terminaram, mas o prazo de prontidão do launcher expirou. Exige o sinal real do launcher e recusa resultados de instalação desconhecidos. Preserva pacotes, código e chaves fixados, evidências de falha e a desativação explícita do controle Home. Um registro privado documenta a tentativa limitada. Repetir normalmente não estende o prazo. Só após os 120 segundos expirarem, sem sinal de prontidão aceito nem resultado de instalação desconhecido, `--new-recovery-attempt` arquiva todo o registro anterior por UUID/hash e abre explicitamente outra tentativa. A recuperação concluída permanece idempotente; não há tentativas automáticas. [Procedimento e limites (inglês)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+Somente candidato 1.4.1 não publicado: atualizações Root na TV exigem System Updater 1.1.1. Antes do OTA, substitua explicitamente 1.1.0 com `cytv replace-system-updater --edition root`. Apenas o System Updater muda; apps Root/Root Updater, perfil completo e escolha de Home são preservados, e o estado anterior é arquivado. Operações desconhecidas ou incompletas bloqueiam a substituição. O requisito não bloqueia feeds No-root. [Procedimento (inglês)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Ajuda e outras instruções
 

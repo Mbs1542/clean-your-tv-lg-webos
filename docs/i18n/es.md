@@ -1,6 +1,6 @@
 # Clean Your TV — guía de uso
 
-> Candidato 1.4.1 no publicado: compatibilidad Root OTA, disponibilidad de actualizaciones, acceso a la API de firmware y correcciones de paquetes/consola en Windows. La aceptación en TV y la actualización/reversión firmada siguen pendientes; no es una descarga publicada. [1.4.1](../RELEASE-1.4.1.md).
+> Candidato 1.4.1 no publicado: compatibilidad Root OTA, disponibilidad de actualizaciones, acceso a la API de firmware y correcciones de paquetes/consola en Windows. Se registraron la actualización firmada y la reversión normal con alcance limitado al C3; las compilaciones finales y la publicación siguen pendientes; no es una descarga publicada. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentación](../README.md) · [Informar de un problema](../FEEDBACK.md)
 
@@ -12,6 +12,8 @@ No-root y Root son opciones equivalentes para distintas configuraciones del tele
 
 - **No-root:** activa LG Developer Mode y Key Server. Introduce la frase de acceso que muestra el televisor y acepta en él la solicitud de emparejamiento independiente. Developer Mode debe permanecer activo: su caducidad puede eliminar aplicaciones instaladas por este método. Vigila el temporizador oficial incluso con la renovación Beta activada. La supervisión de Helper necesita la red local.
 - **Root:** necesitas acceso SSH root previo. El instalador no obtiene root. No actives Developer Mode sobre una instalación ya rooteada. Conserva el acceso root y los servicios de recuperación.
+
+Root necesita las interfaces de Home de Settings Service y System Profile (`com.webos.service.systemprofile`); tener acceso root no garantiza la compatibilidad.
 
 ## Requisitos
 
@@ -86,6 +88,10 @@ Abre ajustes de Home → Actualizaciones de software y revisa las versiones ante
 La recuperación de sonido HDMI de Root es experimental y está **desactivada por defecto**; actívala solo si la necesitas. Puede interrumpir audio que funciona y no demuestra compatibilidad eARC. [Recuperación de sonido (inglés)](../development/ROOT-AUDIO-RECOVERY.md). El **CYTV Installer de Homebrew sigue sin publicarse**; usa el instalador publicado para ordenador o Android.
 
 Solo candidato no publicado: si el acceso a la API de firmware falla por directorios Root antiguos con permisos de escritura, `cytv enable-firmware-access --edition root --repair-package-permissions` verifica el paquete actual con datos privados de confianza y elimina la escritura para grupo/otros solo en rutas propias de Root. Los archivos desconocidos o modificados detienen la reparación. Conserva el perfil, Home y el bloqueo de firmware; [detalles (inglés)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+Solo en el candidato no publicado: `cytv recover-system-rollback --edition root` recupera una reversión Root verificada cuyos instaladores terminaron, pero venció el plazo de disponibilidad del lanzador. Exige la señal auténtica del lanzador y rechaza resultados de instalación desconocidos. Conserva paquetes, código y claves fijados, pruebas del fallo y la desactivación explícita de Home. Un registro privado conserva el intento limitado. Repetir normalmente no amplía el plazo. Solo tras vencer los 120 segundos, sin señal de disponibilidad aceptada ni resultado de instalación desconocido, `--new-recovery-attempt` archiva el registro anterior completo con su UUID/hash e inicia explícitamente otro intento. Una recuperación completada sigue siendo idempotente; no hay intentos automáticos. [Procedimiento y límites (inglés)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+Solo candidato 1.4.1 no publicado: las actualizaciones Root desde la TV requieren System Updater 1.1.1. Antes de OTA, sustituye explícitamente 1.1.0 con `cytv replace-system-updater --edition root`. Solo cambia System Updater; se conservan las apps Root/Root Updater, el perfil completo y Home, y se archiva el estado anterior. Las operaciones desconocidas o pendientes bloquean la sustitución. Este requisito no bloquea los feeds No-root. [Procedimiento (inglés)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Ayuda y más instrucciones
 

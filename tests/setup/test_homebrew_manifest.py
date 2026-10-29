@@ -260,7 +260,7 @@ assert.throws(()=>verify({source_commit:'0'.repeat(40),homebrew:approval},provid
                     # An ignored job can fail while the workflow succeeds. A selected
                     # accepted job remains mandatory even if that overall success is forged.
                     jobs=[{'name':name,'conclusion':'success'} for name in required_jobs]+[{'name':'homebrew','conclusion':'failure'}]
-                    with patch.dict(resolver.__globals__,github=Mock(side_effect=[run,{'jobs':jobs}])):
+                    with patch.dict(resolver.__globals__,github=Mock(side_effect=[run,jobs])):
                         if selected:
                             with self.assertRaisesRegex(ValueError,'successful exact candidate'):resolver(commit,123)
                         else:self.assertEqual(resolver(commit,123),run)

@@ -178,6 +178,8 @@ def verify_system_assets(manifests,build,files):
     if set(manifests)!=set(expected):raise ValueError('Both system release sets required')
     for edition,names in expected.items():
         manifest=manifests[edition]
+        if edition=='root' and manifest.get('minimumSupervisorVersion')!='1.1.1':raise ValueError('Root minimum supervisor 1.1.1 required')
+        if edition=='no-root' and 'minimumSupervisorVersion' in manifest:raise ValueError('Unexpected No-root minimum supervisor')
         if manifest.get('edition')!=edition or manifest.get('release')!=build['tag'] or manifest.get('schema')!=1 or manifest.get('supervisor')!=1 or {c['name'] for c in manifest['components']}!=names or len(manifest['components'])!=len(names):raise ValueError('Invalid system release set')
         for item in manifest['components']:
             filename=item['url'].rsplit('/',1)[1]

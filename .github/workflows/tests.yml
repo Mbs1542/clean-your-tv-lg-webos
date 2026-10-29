@@ -1,7 +1,5 @@
 name: Tests
 on:
-  push:
-    branches: [main, release/next]
   pull_request:
   workflow_call:
     inputs:
@@ -10,6 +8,7 @@ on:
         type: string
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: tests-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}-${{ inputs.source_sha }}
   cancel-in-progress: ${{ inputs.source_sha == '' }}
@@ -18,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       any: ${{ steps.scope.outputs.any }}
+      runtime: ${{ steps.scope.outputs.runtime }}
       tv: ${{ steps.scope.outputs.tv }}
       installer: ${{ steps.scope.outputs.installer }}
       android: ${{ steps.scope.outputs.android }}
@@ -61,8 +61,41 @@ jobs:
           python-version: "3.12"
       - run: npm ci --ignore-scripts --no-audit --no-fund
         if: needs.scope.outputs.any == 'true'
+      - run: python -m pip install -r cytv/requirements.txt
+        if: needs.scope.outputs.any == 'true'
+      - name: Identify merged test inputs and installed runtime
+        id: fingerprint
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && inputs.source_sha == '' && needs.scope.outputs.runtime == 'true'
+        env:
+          TEST_SELECTION: ${{ needs.scope.outputs.tv }},${{ needs.scope.outputs.installer }},${{ needs.scope.outputs.android }},${{ needs.scope.outputs.preview }}
+        run: python scripts/release-inputs.py --test-key
+      - uses: actions/cache/restore@v4
+        continue-on-error: true
+        id: cached
+        if: steps.fingerprint.outputs.key != '' && github.run_attempt == 1
+        with:
+          path: ${{ runner.temp }}/cytv-test-success
+          key: cytv-tests-${{ github.event.pull_request.number }}-${{ matrix.os }}-${{ steps.fingerprint.outputs.key }}
+      - name: Verify cached success is still the latest passing evidence
+        id: reuse
+        if: steps.cached.outputs.cache-hit == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python scripts/release-inputs.py --check-test-cache "$RUNNER_TEMP/cytv-test-success"
+      - name: Validate current release metadata independently of runtime reuse
+        if: needs.scope.outputs.any == 'true'
+        run: |
+          python -m unittest discover -s tests/setup -p test_readme_release.py
+          python - <<'PYTHON'
+          import json, runpy
+          from pathlib import Path
+          runpy.run_path('scripts/release-flow.py')['validate_shape'](json.loads(Path('release-plan.json').read_text()))
+          PYTHON
+      - name: Check affected setup and packaging
+        if: needs.scope.outputs.setup == 'true'
+        run: scripts/test.sh setup
       - name: Prepare pinned Node 0.12.2 for Helper regression
-        if: runner.os == 'Linux' && (needs.scope.outputs.tv == 'true' || needs.scope.outputs.installer == 'true')
+        if: steps.reuse.outputs.hit != 'true' && runner.os == 'Linux' && (needs.scope.outputs.tv == 'true' || needs.scope.outputs.installer == 'true')
         shell: bash
         run: |
           cd "$RUNNER_TEMP"
@@ -70,15 +103,12 @@ jobs:
           echo '4e1578efc2a2cc67651413a05ccc4c5d43f6b4329c599901c556f24d93cd0508  node-v0.12.2-linux-x64.tar.gz' | sha256sum --check -
           tar -xzf node-v0.12.2-linux-x64.tar.gz
           echo "NODE012=$RUNNER_TEMP/node-v0.12.2-linux-x64/bin/node" >> "$GITHUB_ENV"
-      - run: python -m pip install -r cytv/requirements.txt
-        if: needs.scope.outputs.any == 'true'
-      - name: Test affected components
-        if: needs.scope.outputs.any == 'true'
+      - name: Test affected runtime components
+        if: needs.scope.outputs.runtime == 'true' && steps.reuse.outputs.hit != 'true'
         env:
           TV: ${{ needs.scope.outputs.tv }}
           INSTALLER: ${{ needs.scope.outputs.installer }}
           ANDROID: ${{ needs.scope.outputs.android }}
-          SETUP: ${{ needs.scope.outputs.setup }}
           PREVIEW: ${{ needs.scope.outputs.preview }}
         shell: bash
         run: |
@@ -86,11 +116,10 @@ jobs:
           [ "$TV" != true ] || components+=(tv)
           [ "$INSTALLER" != true ] || components+=(installer)
           [ "$ANDROID" != true ] || components+=(android)
-          [ "$SETUP" != true ] || components+=(setup)
           [ "$PREVIEW" != true ] || components+=(preview)
           scripts/test.sh "${components[@]}"
       - name: Check compiled Home with legacy browser limitations
-        if: runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
+        if: steps.reuse.outputs.hit != 'true' && runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
         run: |
           npx playwright install --with-deps chromium
           python scripts/tv_web_build.py --input launcher --output build/legacy-ui
@@ -98,8 +127,20 @@ jobs:
           BROWSER_CHANNEL=chromium TV_WEB_DIR=build/legacy-ui npm run test:geometry
           BROWSER_CHANNEL=chromium npm run test:themes:browser
       - name: Verify real webOS-style file ownership
-        if: runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
+        if: steps.reuse.outputs.hit != 'true' && runner.os == 'Linux' && needs.scope.outputs.tv == 'true'
         run: sudo "$(command -v node)" native/prototype/test-state-permissions-linux.cjs
+      - name: Record reusable success after every selected check passes
+        if: steps.fingerprint.outputs.key != '' && steps.reuse.outputs.hit != 'true'
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/cytv-test-success"
+          printf '%s\n' "$GITHUB_RUN_ID" > "$RUNNER_TEMP/cytv-test-success/run"
+      - uses: actions/cache/save@v4
+        continue-on-error: true
+        if: steps.fingerprint.outputs.key != '' && steps.reuse.outputs.hit != 'true'
+        with:
+          path: ${{ runner.temp }}/cytv-test-success
+          key: cytv-tests-${{ github.event.pull_request.number }}-${{ matrix.os }}-${{ steps.fingerprint.outputs.key }}
   optional-python:
     needs: scope
     if: needs.scope.outputs.installer == 'true'

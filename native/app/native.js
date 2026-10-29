@@ -5,8 +5,8 @@ var root='/media/developer/apps/usr/palm/applications/com.local.nativehome';
 var data=root+'/state';
 var launchParams=JSON.parse(process.argv[2]||'{}'),automatic=launchParams.nativeHomeAuto===true;
 function block(){fs.writeFileSync(data+'/blocked','stopped',{mode:420});}
-require('./state-permissions')(data,function(x){console.error(JSON.stringify(x));});
 if(automatic&&fs.existsSync(data+'/blocked'))process.exit(0);
+if(!require('./state-permissions')(data,function(x){console.error(JSON.stringify(x));},true))throw Error('Helper control initialization failed');
 var logPath=data+'/controller.log', pidPath=data+'/controller.pid';
 fs.writeFileSync(pidPath,String(process.pid));fs.writeFileSync(logPath,'');
 function log(x){
@@ -53,7 +53,6 @@ function screenLog(x){
 }
 function cancelResume(){resumePendingUntil=0;resumeGuardUntil=0;lgHomeSince=null;}
 log({event:'start',pid:process.pid,uid:process.getuid(),automatic:automatic,diagnosticsSchema:1});
-fs.writeFileSync(data+'/control.json','{}',{mode:432});fs.chmodSync(data+'/control.json',432);
 function launch(id,done){var request=++launchSequence;diagnostic('launch-request',{launchSequence:request,id:id});var settled=false;var deadline=setTimeout(function(){if(settled)return;settled=true;lastLaunchSettledAt=monotonic();log({event:'launch-timeout',id:id});diagnostic('launch-timeout',{launchSequence:request,id:id});if(done)done(false);},3000);service.call('luna://com.webos.applicationManager/launch',{id:id},function(m){if(settled)return;settled=true;lastLaunchSettledAt=monotonic();clearTimeout(deadline);log({event:'launch',id:id,result:m.payload});diagnostic('launch-result',{launchSequence:request,id:id,returnValue:!!(m.payload&&m.payload.returnValue===true)});if(done)done(m.payload&&m.payload.returnValue===true);});}
 var visitingLG=false,suppressReturnUntil=0;
 function visitLG(done){

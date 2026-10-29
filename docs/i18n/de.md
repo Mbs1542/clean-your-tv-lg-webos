@@ -1,6 +1,6 @@
 # Clean Your TV — Benutzeranleitung
 
-> Unveröffentlichter Kandidat 1.4.1: Root-OTA-Kompatibilität, Updateanzeige, Firmware-API-Zugriff und Windows-Paket-/Konsolenkorrekturen. TV-Abnahme sowie signiertes Update und Rollback stehen aus; noch kein veröffentlichter Download. [1.4.1](../RELEASE-1.4.1.md).
+> Unveröffentlichter Kandidat 1.4.1: Root-OTA-Kompatibilität, Updateanzeige, Firmware-API-Zugriff und Windows-Paket-/Konsolenkorrekturen. Signiertes Update und gewöhnlicher Rollback sind im begrenzten C3-Prüfumfang dokumentiert; finale Builds und Veröffentlichung stehen noch aus; noch kein veröffentlichter Download. [1.4.1](../RELEASE-1.4.1.md).
 
 [Dokumentation](../README.md) · [Problem melden](../FEEDBACK.md)
 
@@ -12,6 +12,8 @@ No-root und Root sind gleichwertige Optionen für unterschiedliche TV-Konfigurat
 
 - **No-root:** LG Developer Mode und Key Server einschalten. Die am Fernseher angezeigte Passphrase eingeben und die separate Kopplungsanfrage am Fernseher bestätigen. Developer Mode muss aktiv bleiben: Bei Ablauf können nachinstallierte Apps entfernt werden. Den offiziellen Timer auch mit aktivierter Beta-Verlängerung kontrollieren. Die Überwachung durch Helper benötigt das lokale Netzwerk.
 - **Root:** Bereits vorhandener Root-Zugang über SSH ist nötig. Der Installer richtet keinen Root-Zugang ein. Developer Mode nicht auf einem bereits gerooteten Fernseher aktivieren. Root-Zugang und Wiederherstellungsdienste verfügbar halten.
+
+Root benötigt funktionierende Home-Schnittstellen von Settings Service und System Profile (`com.webos.service.systemprofile`); vorhandener Root-Zugriff allein bestätigt keine Kompatibilität.
 
 ## Voraussetzungen
 
@@ -86,6 +88,10 @@ Home-Einstellungen → Software-Updates öffnen und angebotene Versionen vor der
 Root-HDMI-Tonwiederherstellung ist experimentell und **standardmäßig aus**; nur bei Bedarf aktivieren. Sie kann funktionierenden Ton unterbrechen und bestätigt keine eARC-Kompatibilität. [Tonwiederherstellung (Englisch)](../development/ROOT-AUDIO-RECOVERY.md). Der separate **CYTV Installer für Homebrew ist noch unveröffentlicht**; den veröffentlichten Computer-/Android-Installer verwenden.
 
 Nur unveröffentlichter Kandidat: Bei verweigertem Firmware-API-Zugriff wegen alter beschreibbarer Root-Verzeichnisse prüft `cytv enable-firmware-access --edition root --repair-package-permissions` das aktuelle Paket anhand vertrauenswürdiger privater Daten und entfernt Schreibrechte für Gruppe/andere nur aus Root-eigenen Pfaden. Unbekannte oder veränderte Dateien stoppen die Reparatur. Profil, Home-Auswahl und Firmware-Sperre bleiben erhalten; [Details (Englisch)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+Nur im unveröffentlichten Kandidaten: `cytv recover-system-rollback --edition root` hilft bei einem geprüften Root-Rollback, wenn alle Paketinstallationen beendet sind, aber die Launcher-Bereitschaft abläuft. Der echte Launcher muss seine Bereitschaft bestätigen; unbekannte Installer-Ergebnisse werden abgelehnt. Pakete, festgelegter Code/Schlüssel, Fehlernachweise und ausdrücklich ausgeschaltete Home-Steuerung bleiben erhalten. Der begrenzte Versuch wird privat protokolliert. Normale Wiederholungen verlängern den Versuch nicht. Erst nach Ablauf seiner 120 Sekunden, ohne bestätigte Bereitschaft oder unbekanntes Installer-Ergebnis, archiviert `--new-recovery-attempt` das vollständige alte Protokoll unter UUID/Hash und startet ausdrücklich einen neuen Versuch. Abgeschlossene Wiederherstellung bleibt idempotent; keine automatischen Wiederholungen. [Ablauf und Grenzen (Englisch)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+Nur im unveröffentlichten Kandidaten 1.4.1: Root-Updates am TV benötigen System Updater 1.1.1. Vor TV-OTA die Version 1.1.0 ausdrücklich mit `cytv replace-system-updater --edition root` ersetzen. Nur System Updater wird ersetzt; Root-/Root-Updater-Apps, vollständiges Profil und Home-Auswahl bleiben erhalten, der alte Zustand wird archiviert. Unbekannte oder offene Vorgänge stoppen den Austausch. Diese Bedingung sperrt keine No-root-Feeds. [Ablauf (Englisch)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Hilfe und weitere Anleitungen
 

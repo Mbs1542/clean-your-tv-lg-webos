@@ -1,6 +1,6 @@
 # Clean Your TV — guide d’utilisation
 
-> Candidat 1.4.1 non publié : compatibilité OTA Root, disponibilité des mises à jour, accès à l’API du micrologiciel et corrections des paquets/de la console Windows. Validation TV et mise à jour/retour arrière signés restent à faire ; aucun téléchargement publié. [1.4.1](../RELEASE-1.4.1.md).
+> Candidat 1.4.1 non publié : compatibilité OTA Root, disponibilité des mises à jour, accès à l’API du micrologiciel et corrections des paquets/de la console Windows. La mise à jour signée et le retour arrière normal sont consignés dans le périmètre limité au C3 ; les compilations finales et la publication restent à faire ; aucun téléchargement publié. [1.4.1](../RELEASE-1.4.1.md).
 
 [Documentation](../README.md) · [Signaler un problème](../FEEDBACK.md)
 
@@ -12,6 +12,8 @@ No-root et Root sont des options équivalentes pour différentes configurations 
 
 - **No-root :** activez LG Developer Mode et Key Server. Saisissez la phrase secrète affichée sur le téléviseur et acceptez sur celui-ci la demande d’association distincte. Developer Mode doit rester actif : son expiration peut supprimer les applications installées ainsi. Surveillez son compteur officiel même avec le renouvellement Beta activé. La surveillance du Helper nécessite le réseau local.
 - **Root :** un accès SSH root existant est nécessaire. L’installateur ne roote pas le téléviseur. N’activez pas Developer Mode sur une installation déjà rootée. Conservez l’accès root et les services de récupération.
+
+Root nécessite les interfaces Home fonctionnelles de Settings Service et System Profile (`com.webos.service.systemprofile`) ; un accès root seul ne garantit pas la compatibilité.
 
 ## Prérequis
 
@@ -86,6 +88,10 @@ Ouvrez les paramètres Home → Mises à jour et vérifiez les versions avant co
 La récupération audio HDMI Root est expérimentale et **désactivée par défaut** ; activez-la uniquement si nécessaire. Elle peut interrompre un son fonctionnel et ne valide pas eARC. [Récupération audio (anglais)](../development/ROOT-AUDIO-RECOVERY.md). Le **CYTV Installer Homebrew reste non publié** ; utilisez l’installateur publié pour ordinateur ou Android.
 
 Candidat non publié uniquement : si les anciens répertoires Root inscriptibles empêchent l’accès à l’API du micrologiciel, `cytv enable-firmware-access --edition root --repair-package-permissions` vérifie le paquet actuel avec les données privées fiables puis retire les droits d’écriture du groupe et des autres sur les seuls chemins propres à Root. Des fichiers inconnus ou modifiés arrêtent la réparation. Profil, choix Home et blocage du micrologiciel sont conservés ; [détails (anglais)](../LG-FIRMWARE-UPDATES.md#explicit-package-permission-repair-candidate).
+
+Candidat non publié uniquement : `cytv recover-system-rollback --edition root` traite un retour Root vérifié dont les installations de paquets sont terminées, mais dont le délai de disponibilité du lanceur a expiré. Le véritable lanceur doit confirmer son état ; les résultats d’installation inconnus sont refusés. Paquets, code et clés conservés, preuves d’échec et désactivation explicite de Home sont préservés. Une trace privée consigne cet essai limité. Une nouvelle exécution normale ne prolonge pas le délai. Après expiration des 120 secondes seulement, sans signal de disponibilité accepté ni résultat d’installation inconnu, `--new-recovery-attempt` archive la trace précédente complète sous son UUID/empreinte et ouvre explicitement un nouvel essai. Une récupération terminée reste idempotente ; aucun essai automatique. [Procédure et limites (anglais)](../RECOVERY.md#root-system-rollback-readiness-candidate).
+
+Candidat 1.4.1 non publié uniquement : les mises à jour Root sur la TV nécessitent System Updater 1.1.1. Avant OTA, remplacez explicitement 1.1.0 avec `cytv replace-system-updater --edition root`. Seul System Updater est remplacé ; les apps Root/Root Updater, le profil complet et le choix Home sont conservés, et l’ancien état est archivé. Les opérations inconnues ou inachevées bloquent le remplacement. Cette exigence ne bloque pas les flux No-root. [Procédure (anglais)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Aide et autres instructions
 

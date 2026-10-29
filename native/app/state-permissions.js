@@ -1,6 +1,6 @@
 'use strict';
 // Keep the shared paths: the controller and inventory service have different UIDs.
-module.exports=function(directory,log){
+module.exports=function(directory,log,initializeControl){
  var fs=require('fs'),c=fs.constants||require('constants'),directoryFd,directoryStat;
  var uid=process.getuid(),groups=process.getgroups();
  if(groups.indexOf(process.getgid())===-1)groups.push(process.getgid());
@@ -54,6 +54,26 @@ module.exports=function(directory,log){
    if(staged&&created)fs.unlinkSync(staged);
   }
  }
+ function resetControl(){
+  var staged=directory+'/.control-'+require('crypto').randomBytes(12).toString('hex'),fd,created=false;
+  try{
+   checkDirectory();
+   fd=fs.openSync(staged,c.O_WRONLY|c.O_CREAT|c.O_EXCL|c.O_NOFOLLOW,0o600);created=true;
+   var bytes=Buffer.from('{}'),offset=0;
+   while(offset<bytes.length){var n=fs.writeSync(fd,bytes,offset,bytes.length-offset);if(n<=0)throw Error('short-write');offset+=n;}
+   // The SSH installer and service need the shared jailer group even when the
+   // controller has a different primary group. Never chmod a foreign inode.
+   if(fs.fstatSync(fd).gid!==directoryStat.gid)fs.fchownSync(fd,uid,directoryStat.gid);
+   fs.fchmodSync(fd,0o660);
+   var s=fs.fstatSync(fd);
+   if(s.uid!==uid||s.gid!==directoryStat.gid||(s.mode&0o7777)!==0o660)throw Error('control-permissions');
+   fs.fsyncSync(fd);checkDirectory();
+   fs.renameSync(staged,directory+'/control.json');staged=null;
+  }finally{
+   if(fd!==undefined)fs.closeSync(fd);
+   if(staged&&created)fs.unlinkSync(staged);
+  }
+ }
  function repair(name,mode,required){
   var fd,found=false,path=directory+'/'+name;
   try{
@@ -83,9 +103,10 @@ module.exports=function(directory,log){
    }
   }
   checkDirectory();
+  if(initializeControl)resetControl();
   var keyOK=repair('ssap-key.json',0o640,true);
   repair('apps.json',0o644,false);
-  return keyOK;
+  return initializeControl?true:keyOK;
  }catch(e){report('directory',e,false);return false;}
  finally{if(directoryFd!==undefined)fs.closeSync(directoryFd);}
 };
