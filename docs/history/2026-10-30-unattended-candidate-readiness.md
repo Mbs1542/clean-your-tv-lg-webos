@@ -66,6 +66,25 @@ change routing or patch private permissions. Any completed, scoped observations
 belong to their own artifact-bound report in candidate PR141; they do not imply
 full controls/audio/startup acceptance here.
 
+## Additional installed-theme check
+
+After the separate supported update completed, the existing debugger target was
+refreshed. A bounded Itachi1.0.0 trial used the exact reviewed distribution data.
+On the actual installed Root0.6.0/shared1.6.0 renderer, CSS filter and screen blend
+were supported; all33 displayed icon images had a filter and retained identical
+sources and native dimensions. Selected-card border width was0px. Cancelling the
+trial restored Alpine and the identical saved theme choice/profile. The temporary
+Itachi cache entry was removed and the initial Settings visibility restored.
+This checks debugger-operated theme behavior on this C3, not physical-remote input,
+universal icon-artwork quality, routing, startup or full release acceptance.
+
+The separately published [signed-candidate short-ID QA](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141#issuecomment-6506578575)
+binds its actual da.gd/UI results and prior-candidate rollback to the same08b6acac
+artifacts. It explicitly preserves the untested new-candidate rollback, physical
+controls/audio/startup and automatic worker-refresh limits. Our final read-only
+System status independently reported complete installation and complete Home resume;
+Root intent remained disabled.
+
 ## Remaining main-readiness gates
 
 - Complete genuine artifact-bound Root controls, startup, update/recovery and
@@ -88,3 +107,17 @@ Documentation corrections cover release scope, the no-pin rollout, published ver
 candidate availability, all twelve locale prerequisite versions, Android current
 metadata, active theme removal and the verified author-tool pair. The release PR
 remains draft while these hardware/compatibility gates are outstanding.
+
+## Requested shutdown
+
+After all TV checks and the supported update completed, existing authenticated
+SSAP `system/turnOff` returned success. Initial TCP checks still reached SSH/SSAP;
+a later SSAP registration was refused with EWS `Try Again Later`. Independent
+system power-state readback returned **Active Standby** with success, confirming
+the requested ordinary TV shutdown despite retained networking. The panel was
+not observed physically. No wake, reboot, cold-start or AC test followed.
+
+The final theme trial left Alpine, the original profile/theme choice and initial
+Settings visibility intact; Root intent remained disabled. Shutdown is not evidence
+of standby/wake, cold boot or crash recovery acceptance. No TV requests follow
+this power-state confirmation in this task.

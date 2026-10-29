@@ -16,6 +16,6 @@ Existing research and other worktrees remain untouched.
 - [x] Verify exact trusted CI artifact SHA-256, embedded versions and payload closure.
 - [x] Exercise supported native host entrypoint runtime without TV mutation.
 - [x] Read TV identity, installed versions, update/recovery baseline without changes.
-- [ ] Record observed results, honest unsupported/supervised cases and issue statuses.
+- [x] Record observed results, honest unsupported/supervised cases and issue statuses.
 - [ ] Integrate reviewed preparation docs into release/next and update PR141.
-- [ ] Turn TV off through existing authenticated control and verify the outcome.
+- [x] Turn TV off through existing authenticated control and verify the outcome.
