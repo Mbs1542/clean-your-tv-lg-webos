@@ -23,6 +23,8 @@ Helper rollback compatibility and remaining release gates are tracked in
   hidden from Showcase; Refresh reads reviewed repository updates. Installed
   themes apply immediately; Showcase trials require Keep within 20 seconds.
   Confirmed removal of the active downloaded theme restores Classic first.
+  Late catalogue updates preserve the selected control, including Back, without
+  taking focus from the Settings footer.
 - #149: direct PC → TV theme transfer using a temporary TV receiver on TCP 8879,
   six-digit PIN, ten-minute lifetime and one bounded upload. No incoming PC port
   is required. Received data passes the normal integrity/image/cache validation.

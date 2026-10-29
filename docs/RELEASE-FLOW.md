@@ -436,3 +436,40 @@ human review, accurate AI disclosure and catalog-maintainer review remain separa
 gates. A draft implementation PR targets `release/next`; whole-branch review,
 push/PR attachment and managed-worktree preservation/cleanup follow the normal
 contribution rules. No release version is selected during feature preparation.
+
+## Root-only candidate signing for maintainer QA
+
+The existing signing workflow has a separate manual Root QA mode. It does not
+create a release, move a channel, upload release assets or approve a Helper
+transition. Normal stable signing/publication still runs only from `main` with
+its complete release/No-root compatibility gates.
+
+After a complete successful `cytv.yml` build from this repository's `release/next`,
+run the signing workflow on `release/next` with `publish=false`, the exact tag and
+its build run ID:
+
+```sh
+gh workflow run publish-release.yml --ref release/next \
+  -f tag=v1.5.0 -f publish=false -f candidate_build_run=40873451401
+```
+
+Replace the example tag/run with the candidate being tested. Admission requires
+all mandatory platform/runtime jobs, a committed matching release plan/version,
+an unpublished version above `main`, and one unexpired CLI artifact with a
+GitHub SHA-256 digest. The preparer checks that digest before extracting the
+payload and checks every embedded hash/version from a clean checkout of the exact
+build commit. It prepares only the three Root components before the signing step
+receives the existing release key. The signer independently checks the Root-only
+inventory, package sizes/hashes, versions and provenance, then verifies its result
+with the pinned public key. No No-root manifest is signed. A final API recheck
+rejects changed run attempts/artifacts before delivery.
+
+The output is an Actions artifact named `signed-root-candidate-RUN-ATTEMPT` with
+`system-update-root.json`, the three exact packages, an unsigned manifest and
+public `PROVENANCE.json`. It contains no TV profile, address, PIN or credential.
+Keep the provenance and package hashes with private device observations. Use the
+existing signed Root acceptance admission and supported updater; never replace
+its key, private receipts or LS2 rules to make a candidate pass. Root-only QA is
+not a stable release, acceptance of No-root/Helper, or proof that retained Root
+permissions can migrate. The final combined release still requires its complete
+build and affected acceptance after integration.
