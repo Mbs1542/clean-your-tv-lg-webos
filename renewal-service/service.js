@@ -68,3 +68,6 @@ var homeControl=require('./home-control')(fs,'/media/developer/apps/usr/palm/app
   homeControl(method,m.payload).then(function(r){m.respond(r);});
  });
 });
+
+// Explicit, temporary theme reception; independent of renewal enablement.
+require('./theme-receiver')(service, {appId:'com.gathin.tvhome'});

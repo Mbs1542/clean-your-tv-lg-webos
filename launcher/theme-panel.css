@@ -69,3 +69,8 @@
 #homeThemePanel.theme-inline button { width:auto; }
 #homeThemePanel.theme-inline .theme-option button:first-child { width:100%; }
 #homeThemePanel.theme-inline .theme-catalog-card { width:calc(33.333% - 16px); }
+
+#homeThemePanel .theme-receiver-connection { padding:12px 24px; border:1px solid #626a76; border-radius:12px; margin:16px 0; background:#15181d; }
+#homeThemePanel #themeReceiverPin { font-size:48px; font-weight:bold; letter-spacing:8px; margin:8px 0; }
+#homeThemePanel #themeReceiverAddress { font-size:30px; overflow-wrap:break-word; }
+#homeThemePanel #themeReceiverDeadline { font-size:20px; color:#c5ced9; }

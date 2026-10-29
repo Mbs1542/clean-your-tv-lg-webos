@@ -45,7 +45,22 @@ helper=$(python3 -c 'import json; a=json.load(open("build/native-app/appinfo.jso
 python3 scripts/fix-package-data.py "$helper"
 fi
 python3 scripts/tv_web_build.py --input launcher --output build/home-app
-"$ARES_PACKAGE" build/home-app renewal-service -o dist
+python3 - <<'PYRECEIVER'
+import runpy
+from pathlib import Path
+from scripts.theme_receiver import inject
+import shutil
+sources = runpy.run_path('scripts/build-cytv.py')['tracked_files']('renewal-service')
+files = inject({name: data for name, data in sources.items() if not name.startswith('state/')})
+output = Path('build/home-service')
+if output.exists():
+    shutil.rmtree(output)
+for name, data in files.items():
+    target = output / name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(data)
+PYRECEIVER
+"$ARES_PACKAGE" build/home-app build/home-service -o dist
 python3 - <<'PY'
 from pathlib import Path
 import hashlib

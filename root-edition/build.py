@@ -56,6 +56,9 @@ def build(output, version='0.0.1'):
         payload[service_prefix + service_file] = path.read_bytes()
     from startup_hook import packaged_content
     payload['usr/palm/applications/'+app_id+'/startup.sh']=packaged_content(app_id)
+    from scripts.theme_receiver import inject
+    private_service = inject({name[len(service_prefix):]: data for name, data in payload.items() if name.startswith(service_prefix)})
+    payload.update({service_prefix + name: data for name, data in private_service.items()})
     service_info = json.loads(payload[service_prefix + 'services.json'])
     service_package = json.loads(payload[service_prefix + 'package.json'])
     if (service_info.get('id') != SERVICE_ID
