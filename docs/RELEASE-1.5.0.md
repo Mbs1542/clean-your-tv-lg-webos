@@ -60,6 +60,10 @@ Helper rollback compatibility and remaining release gates are tracked in
   buffered events cannot revive a killed relay. At most five attempts per ten
   minutes. Actual NANO80T standby/input acceptance is pending; #96 is not claimed
   fixed by this change.
+- #158: add the reviewed external Itachi Sharingan theme to Showcase, prefer
+  available larger native app icons within the existing validation limits, and
+  support optional bounded CSS white-logo effects on compatible renderers.
+  Original image files remain unchanged; physical-TV acceptance is pending.
 - #134: reusable candidate-build evidence and scoped acceptance tooling. The
   first release still follows the trusted policy currently present on main.
 
@@ -108,7 +112,10 @@ No physical No-root/Helper or Android phone acceptance is claimed by Root testin
 ## Candidate acceptance plan
 
 1. Build all candidate platforms from one committed source and retain checksums.
-   Pin the successful trusted build before physical acceptance.
+   For this first rollout, keep the candidate unpinned: the trusted policy on
+   main requires a successful build at the exact final candidate head. Bind
+   acceptance to its run, attempt and artifact hashes. Pinned build reuse becomes
+   available only after these release-flow changes reach main.
 2. Read current TV/Root/update state and preserve an independent recovery path.
    Apply the genuine candidate through the supported update path; stop on failed
    admission or uncertain state rather than replacing files by hand.

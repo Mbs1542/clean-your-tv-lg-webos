@@ -89,14 +89,18 @@ controls, audio, standby or cold boot; check actual behavior separately. [Connec
 
 ## Replace the Root System Updater (candidate)
 
-**Unpublished 1.4.1 candidate only.** Root on-TV updates require System Updater
-1.1.1. The original 1.1.0 can reject a launcher's one-shot readiness response while
-its worker holds the installation lock; this can cause an unnecessary rollback.
-New signed Root offers require the fixed version and are rejected by the old
-supervisor. Historical signed baselines remain valid for rollback.
+**Unpublished 1.5.0 candidate only.** The current replacement bundle contains
+System Updater 1.1.2. The original 1.1.0 can reject a launcher's one-shot readiness
+response while its worker holds the installation lock; this can cause an unnecessary rollback.
+Signed Root offers retain a minimum supervisor version of 1.1.1 and are rejected
+by the original 1.1.0; the new receiver/runtime path needs separate verification. Historical signed baselines remain valid for rollback.
+
+This command supports replacement of the original 1.1.0 only; it rejects an
+installed 1.1.1. Existing 1.1.1 installations need a separately verified migration
+path before using the new receiver functionality.
 
 After any current update or rollback has completed, use the same trusted Root
-connection and a complete candidate installer:
+connection and a complete 1.5.0 candidate installer:
 
 ```sh
 cytv replace-system-updater --edition root

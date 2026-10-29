@@ -301,8 +301,9 @@ Status, doctor, restore and uninstall never download a new interpreter.
 
 ## Candidate Root System Updater replacement
 
-The unpublished 1.4.1 Root candidate requires System Updater 1.1.1 for on-TV
-updates. With the existing trusted Root connection:
+The unpublished 1.5.0 Root candidate contains System Updater 1.1.2. The explicit
+replacement command accepts only an installed original 1.1.0; it rejects 1.1.1.
+With the existing trusted Root connection:
 
 ```sh
 cytv replace-system-updater --edition root

@@ -97,7 +97,7 @@ Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다
 
 미공개 후보 버전 전용: `cytv recover-system-rollback --edition root`는 검증된 Root 롤백에서 모든 패키지 설치가 끝났지만 런처 준비 시간이 초과된 경우에만 사용합니다. 실제 런처의 준비 신호가 필요하며 설치 결과가 불명확하면 거부합니다. 패키지, 고정된 코드·키, 실패 증거와 명시적으로 끈 Home 제어 상태를 보존합니다. 제한된 시도를 비공개 기록으로 남깁니다. 일반 재시도는 기한을 연장하지 않습니다. 이전 120초 기한이 지난 뒤 승인된 준비 신호나 불명확한 설치 결과가 없을 때만 `--new-recovery-attempt`가 이전 기록 전체를 UUID/해시로 보관하고 명시적으로 새 시도를 시작합니다. 완료된 복구는 다시 시작하지 않으며 자동 반복 시도는 없습니다. [절차와 제한 사항(영어)](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-미공개 1.4.1 후보 전용: TV에서 Root 업데이트를 하려면 System Updater 1.1.1이 필요합니다. TV OTA 전에 `cytv replace-system-updater --edition root`로 1.1.0을 명시적으로 교체하세요. System Updater만 교체하며 Root/Root Updater 앱, 전체 프로필과 Home 선택은 보존하고 이전 상태는 보관합니다. 불명확하거나 미완료된 작업이 있으면 중단합니다. 이 요구 사항은 No-root 피드에는 적용되지 않습니다. [교체 절차(영어)](../RECOVERY.md#replace-the-root-system-updater-candidate).
+미공개 1.5.0 후보 전용: 교체 패키지에는 System Updater 1.1.2가 포함됩니다. TV OTA 전에 `cytv replace-system-updater --edition root`로 1.1.0을 명시적으로 교체하세요. System Updater만 교체하며 Root/Root Updater 앱, 전체 프로필과 Home 선택은 보존하고 이전 상태는 보관합니다. 불명확하거나 미완료된 작업이 있으면 중단합니다. 이 요구 사항은 No-root 피드에는 적용되지 않습니다. [교체 절차(영어)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## 도움말과 자세한 안내
 
