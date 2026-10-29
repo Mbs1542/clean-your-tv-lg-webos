@@ -33,6 +33,12 @@ Helper rollback compatibility and remaining release gates are tracked in
   and synchronized update indicators in both editions. Standard settings and
   recovery remain outside the themed surface. The separate retro/font request
   in #69 is only partially addressed and remains open.
+- #153: separate Root-only candidate signing from a complete trusted CI build;
+  signed QA artifacts only, without publishing a release or approving a No-root
+  Helper transition. Catalogue completion preserves Back and Settings focus.
+- #147: fix No-root Home request/reply transport inside the renewal service's
+  jail, retaining the legacy channel for older Home. Coordinated Home/Helper
+  packages are required; #146 remains open until verified delivery.
 - #151: optional Show Add app tile and a Settings app picker, preserving app
   editing and keyboard navigation when Home is empty.
 - #142: No-root Helper control-file ownership fix (#140); rebuild 0.6.20 from

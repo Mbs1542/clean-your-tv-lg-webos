@@ -32,6 +32,13 @@
       "summary": "Add reviewed-source cancellation of never-activated Root installs, including pre-registration finalize failures and historical runtime inventories; device-specific recovery and firmware routing compatibility remain unverified (partial #101, #133, #143)."
     },
     {
+      "pr": 147,
+      "issues": [
+        146
+      ],
+      "summary": "Fix No-root Home settings transport in the service jail"
+    },
+    {
       "pr": 149,
       "issues": [],
       "summary": "Integrate theme showcase, Appearance controls and PC-to-TV transfer"
@@ -40,6 +47,11 @@
       "pr": 151,
       "issues": [],
       "summary": "Add the optional Show Add app tile switch and Settings app picker in both editions; preserve app editing and empty Home navigation."
+    },
+    {
+      "pr": 153,
+      "issues": [],
+      "summary": "Prepare Root candidate QA and preserve Showcase focus"
     }
   ],
   "excluded": [],
