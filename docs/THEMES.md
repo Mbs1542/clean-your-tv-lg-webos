@@ -22,27 +22,31 @@ The accepted choice is restored on the next launch. Only **Try theme** inside **
 
 Open **Settings → Appearance → Theme showcase**. Choose a miniature preview to see the theme's details. Only themes not installed on this TV appear here. Classic, Alpine and installed personal themes are hidden by identity, including when the catalogue has a newer version. Channel offers **Download theme**, then **Try theme**. After removal it returns to Showcase. To remove an active theme, apply another installed theme first, then choose **Remove**. Use **Add by URL** or **Receive from computer** to update a hidden installed theme. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
 
-Opening Theme showcase or choosing Refresh checks the main project repository for reviewed catalogue updates without updating Home or reloading the page. After a normal merge, new entries become available; an unmerged candidate may still show the bundled fallback. Offline or failed requests use bundled previews and entries. Online catalogue data and previews come from one exact project commit resolved through GitHub; downloading an external theme needs Internet access. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository. Refreshing never installs a theme or changes the current selection. Physical-TV network acceptance remains pending.
+Opening Theme showcase or choosing Refresh checks the main project repository for reviewed catalogue updates without updating Home or reloading the page. After a normal merge, new entries become available; an unmerged candidate may still show the bundled fallback. Offline or failed requests use bundled previews and entries. Online catalogue data and previews come from one exact project commit resolved through GitHub; downloading an external theme needs Internet access. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository. Refreshing never installs a theme or changes the current selection. The scoped device check is recorded in [theme push acceptance](history/2026-10-29-theme-push-acceptance.md); complete release-package acceptance remains separate.
 
 ## Transfer a theme from your computer
 
-No showcase submission, public repository or source commit is required for a local development test.
+No Showcase submission, public repository or source commit is required for a local development test. The primary direction is **PC → TV**: the TV temporarily accepts the compiled theme; the computer makes an outgoing connection.
 
-1. Run your theme in the author toolkit's **preview** or **showcase**. Choose the theme and press **Send to TV**. The toolkit compiles the current source into a fixed snapshot; saving another edit does not silently change that snapshot.
-2. On TV open **Settings → Appearance → Receive from computer**.
-3. Enter the private IPv4 **Computer address** shown by the preview and its **Six-digit PIN**. Do not enter `http://`, a port or a file path. The address is remembered after a successful transfer; the PIN is never remembered.
-4. Choose **Receive theme**, then **Try theme** to apply and save the installed copy immediately, without a timer. The installed copy works offline after the computer stops sharing.
-5. After editing, press **Send to TV** again for a fresh snapshot and PIN. **Stop sharing**, closing the preview server or the ten-minute deadline closes access.
+1. On TV open **Settings → Appearance → Receive from computer**. Keep the pane open; it shows the **TV address**, six-digit PIN and expiry time.
+2. On the computer run your theme in the author toolkit's **preview** or **showcase**, select it and press **Send to TV**.
+3. Enter the address and PIN **from the TV** into the computer dialog, then choose **Send theme**. Enter just the private IPv4 address, without a URL or port.
+4. After the TV verifies the received package, choose **Apply theme**. It saves immediately, without a 20-second timer. The computer's Sent status means transport completed; finish installation/application on TV.
+5. Edit your theme on the computer as needed. For another snapshot, reopen Receive from computer on TV and send with its new PIN. Saving a file alone does not alter the TV copy.
 
-Both devices must be on the same trusted home network, with client isolation disabled and the computer firewall allowing TCP **8879**. The transfer uses local HTTP, not a cloud service; do not use an untrusted/shared network. Only compiled theme files are served, not the repository or source directory. The PIN limits casual access; it is not encryption. If several addresses are shown, use the interface connected to the TV's network. VPNs or a changed computer address may require selecting a different address. Native webOS network/origin and keyboard behavior still require physical-TV acceptance.
+Both devices must be on the same trusted home network. The receiver uses local HTTP and TCP **8879 on the TV**. No incoming computer port or Mac firewall exception is needed. Guest-network/client isolation can still prevent a connection. Only compiled theme data is accepted; the existing descriptor/hash/image/cache checks run before offering Apply. The PIN is not persisted. This is a temporary local transfer, not a cloud upload or automatic live editing.
 
-CLI alternative from the toolkit:
+The receiver closes after one upload, cancellation, leaving the pane, ten minutes, or too many invalid PIN attempts. Closing before a transfer completes cancels that session. Installed copies remain usable offline after the receiver closes or the computer turns off.
+
+CLI alternative from the toolkit (use the values currently shown on TV):
 
 ```sh
-npm run theme -- share ./my-theme --runtime .runtime/candidate
+npm run theme -- send ./my-theme --runtime .runtime/candidate --tv TV_PRIVATE_IPV4 --pin SIX_DIGIT_PIN
 ```
 
-Keep the command running and use the address and PIN it prints. Press Ctrl+C to stop it. See the toolkit walkthrough for preparing the candidate runtime.
+### Legacy: TV downloads from a computer
+
+**Use legacy computer sharing** opens the previous form on TV. On the computer run `npm run theme -- share ./my-theme --runtime .runtime/candidate`, then enter that computer's address/PIN on TV. This secondary method requires incoming TCP 8879 on the computer and can be blocked by managed Mac firewall policy. It is not started by the primary Send to TV dialog. Stop it with Ctrl+C. Prefer the PC → TV flow above on matching candidate versions.
 
 ## Add another repository by URL
 

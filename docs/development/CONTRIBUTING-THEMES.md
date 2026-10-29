@@ -74,8 +74,8 @@ commands and current theme-settings flow:
 
 | Repository | Candidate revision |
 | --- | --- |
-| `Razdva122/clean-your-tv-lg-webos` | `76a3dfd725490e87e8ead10f32cab731952519bd` |
-| `Razdva122/clean-your-tv-lg-theme` | `064d86941bcab592cf4843b2953303207bc7bcf6` |
+| `Razdva122/clean-your-tv-lg-webos` | `3044a539bd4e437a422e1f1b4f8e4fbcaa2c27ff` |
+| `Razdva122/clean-your-tv-lg-theme` | `c9e3bf4af26961473f8a4be549643dca0f7db207` |
 
 These are source candidates, not signed releases. Maintainers may provide a newer
 reviewed pair. Do not mix an older runtime with hooks introduced by newer tools,
@@ -88,11 +88,11 @@ git clone https://github.com/Razdva122/clean-your-tv-lg-webos.git
 git clone https://github.com/Razdva122/clean-your-tv-lg-theme.git
 
 cd clean-your-tv-lg-webos
-git checkout --detach 76a3dfd725490e87e8ead10f32cab731952519bd
+git checkout --detach 3044a539bd4e437a422e1f1b4f8e4fbcaa2c27ff
 npm ci --ignore-scripts
 python3 scripts/export-theme-runtime.py --out build/theme-author-runtime
 cd ../clean-your-tv-lg-theme
-git checkout --detach 064d86941bcab592cf4843b2953303207bc7bcf6
+git checkout --detach c9e3bf4af26961473f8a4be549643dca0f7db207
 npm ci --ignore-scripts
 mkdir -p .runtime
 cp -R ../clean-your-tv-lg-webos/build/theme-author-runtime .runtime/candidate
@@ -126,7 +126,7 @@ loading its compiler. Hashes detect changed files; use a trusted source to estab
 who supplied the runtime.
 
 There is no working `runtime:fetch` download to substitute at this stage. See the
-[toolkit runtime reference](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/064d86941bcab592cf4843b2953303207bc7bcf6/docs/runtime.md)
+[toolkit runtime reference](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/c9e3bf4af26961473f8a4be549643dca0f7db207/docs/runtime.md)
 for the candidate trust model.
 
 ## 3. Create your theme repository
@@ -240,7 +240,7 @@ Home shortcut artwork uses `.ctv-input-icon`, `.ctv-network-icon` and
 
 Keep the visible button label and focused contrast. Theme-uploaded SVGs, remote
 URLs and data URLs are not accepted. See the toolkit's
-[icon recipe and layout examples](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/064d86941bcab592cf4843b2953303207bc7bcf6/docs/authoring.md).
+[icon recipe and layout examples](https://github.com/Razdva122/clean-your-tv-lg-theme/blob/c9e3bf4af26961473f8a4be549643dca0f7db207/docs/authoring.md).
 Alpine's source directory/old external ID uses `glasshouse`; its display name is
 Alpine. Channel's source directory/ID uses `terminal`. Give your own theme an
 independent identity rather than reusing either historical name.
@@ -377,57 +377,42 @@ permission before publication; follow the main project's [report rules](../../AG
 
 ## 7. Try the theme on your own TV
 
-A local transfer needs neither a Showcase PR nor a public source commit.
+No Showcase PR, public repository or clean source commit is required. The main author workflow is **outgoing PC → temporary TV receiver**, so it works without opening an incoming port on your Mac.
 
-1. Start `preview` or `showcase`, select Ocean, and press **Send to TV**.
-2. The in-page guide shows the computer's private IPv4 address and six-digit PIN.
-3. On a compatible TV candidate, open **Settings → Appearance → Receive from computer**.
-4. Enter that address and PIN, choose **Receive theme**, then **Apply theme**.
-5. Inspect the actual Home, library, Inputs and standard Settings with your remote.
+1. On a matching theme-enabled TV candidate, open **Settings → Appearance → Receive from computer**. The TV shows its private IPv4 address, six-digit PIN and expiry time.
+2. Start the toolkit's `preview` or `showcase`, choose your theme and press **Send to TV**.
+3. In the computer dialog, enter the address and PIN **shown by the TV**, then click **Send theme**. The local toolkit compiles a fixed snapshot and makes an outgoing HTTP request to TV TCP **8879**; the browser does not need a cross-origin network exception.
+4. The TV checks descriptor identity, rules, image/document hashes and native image decoding before saving a downloaded copy. Choose **Apply theme** on TV to save the selection immediately, without a timer. The computer's Sent status confirms delivery, not application.
+5. Inspect actual Home, library, Inputs and standard Settings with your remote. The installed copy works after the receiver closes and after the computer shuts down.
 
-Both devices must share the home network. Keep the computer awake, allow Node's
-inbound TCP **8879**, and avoid guest-network/client-isolation barriers. Do not
-configure router port forwarding. You enter an address and PIN, not a long
-repository URL.
+Keep both devices on the same trusted home network and the receiver pane open during transfer. Guest-network/device isolation and a blocked TV port can still prevent delivery. A managed Mac's incoming block-all rule does not need changing for this direction. The transfer uses local HTTP and a short-lived PIN; do not forward the TV port to the internet.
 
-On macOS, allowing Node.js alone is insufficient if **Block all incoming
-connections** is enforced. A managed Mac may prevent changes even with local
-administrator authorization. In that case this pull-from-computer transport
-cannot receive a TV connection: use a computer where inbound TCP 8879 is
-permitted, or an administrator-approved configuration. This is a network
-prerequisite, not a reason to enter a different PIN repeatedly. Keep the
-built-in/offline theme choices available while resolving it.
+The receiver handles one upload and closes on receipt, cancellation, leaving the pane, ten-minute expiry or twenty invalid PIN attempts. It accepts a bounded compiled envelope, not source scripts or arbitrary files. PINs are not persisted or placed in transfer URLs. The toolkit may remember the TV address, but clears the PIN after successful sending or closing the dialog.
 
-The transfer sends a compiled snapshot, not a live link to your source folder.
-Editing a file does not update the TV. Use **New PIN** in the guide for a fresh
-snapshot, receive it again and apply the new installed version. A session expires
-after ten minutes or stops through **Stop sharing**/Ctrl+C. Closing the guide or
-browser tab alone does not stop a running share server. Installed copies remain
-usable offline after sharing stops.
+After editing, reopen Receive from computer on TV for a new session/PIN and send again. Saving a source file does not silently change the installed copy.
 
 Command-line alternative:
+
+```sh
+node "$THEME_TOOLKIT/bin/theme.cjs" send themes/ocean \
+  --runtime "$THEME_RUNTIME" --tv TV_PRIVATE_IPV4 --pin SIX_DIGIT_PIN
+```
+
+Replace both placeholders with the current TV values. The preview dialog is the normal entry point and avoids typing shell commands for each transfer.
+
+### Secondary legacy transfer
+
+For an older matching candidate which asks for a **computer** address, select **Use legacy computer sharing** on TV and run:
 
 ```sh
 node "$THEME_TOOLKIT/bin/theme.cjs" share themes/ocean --runtime "$THEME_RUNTIME"
 ```
 
-Some candidate CLI status text still uses the older “Settings → Themes” wording;
-the current destination is **Settings → Appearance → Receive from computer**.
+That previous direction serves a snapshot from the computer and needs inbound computer TCP 8879, which a managed Mac can block. It is retained as an explicit secondary command and does not start when opening the primary Send to TV dialog. Keep the command running and stop it with Ctrl+C. Use a new share session for a fresh snapshot.
 
-Installed/built-in choices apply without a confirmation timer. A newly downloaded
-theme tried through Showcase uses **Keep theme** within 20 seconds; Revert, Back
-or timeout restores the prior appearance. Interrupted unconfirmed trials start
-Classic on relaunch. To remove an active downloaded theme, apply another theme
-first and then select **Remove**. Built-ins offer Apply and cannot be deleted.
+Installed/built-in themes apply without a timer. A new Showcase trial still requires **Keep theme** within 20 seconds. To remove an active downloaded version, apply another theme first and then select **Remove**; built-ins cannot be deleted. Showcase hides installed IDs, so updates use Send to TV or **Add by URL**.
 
-Showcase hides every theme ID already installed, including personal LAN/URL
-installs and built-ins. A removed theme returns to the catalogue. If you are
-updating an installed theme, use LAN transfer or **Add by URL**; Showcase does
-not expose a second copy simply because a newer catalogue version exists.
-
-If Appearance has no theme controls, that Home package is too old for this flow.
-Use the supported theme-enabled candidate when available; a theme descriptor
-cannot add the feature to an older Home. See [TV theme instructions](../THEMES.md).
+If the primary receiver is unavailable, update both Home and its packaged service to the supported candidate. A new toolkit alone cannot add a service to an older installed Home. Root and No-root browser/packaging checks cover both editions; [the physical record](../history/2026-10-29-theme-push-acceptance.md) describes only the tested fixture/model and its limits. See [TV theme instructions](../THEMES.md).
 
 ## 8. Commit and build a fixed distribution
 
@@ -732,8 +717,8 @@ See the [maintainer Showcase guide](../../showcase/README.md).
 | Remote hash/source check fails | Ensure B is pushed publicly with every referenced file; preserve exact bytes and use raw.githubusercontent.com at the full commit |
 | Draft appears to approve itself | Dates/evidence are proposals; only maintainer-reviewed merge approves that digest |
 | Theme missing from TV Showcase | Check publication, availability and compatibility; installed IDs are intentionally hidden |
-| LAN transfer fails | Same private network, correct interface address/PIN, active sharing, TCP 8879 allowed, no guest isolation |
-| Saving on PC does not update TV | Generate a new share snapshot/PIN, receive it and apply it again |
+| Send to TV fails | TV receiver pane open, TV address/PIN entered on PC, same private network, TV TCP 8879 reachable, no guest isolation; update Home and its service together |
+| Saving on PC does not update TV | Reopen the TV receiver for a new PIN, send a fresh snapshot from PC and apply it again |
 | Remove is refused | Apply another installed/built-in theme before removing the active package |
 | Old TV Home has no Appearance theme cards | Install the supported theme-enabled candidate when released; a theme URL cannot upgrade the engine |
 
