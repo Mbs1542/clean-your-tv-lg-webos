@@ -11,7 +11,9 @@ The theme contains two images only: wallpaper and preview.
 ## Requirements
 
 Home must include the optional `modern-icon-css-v1` authoring/runtime support
-from this change. Its browser must support CSS `filter`, `mix-blend-mode: screen` and `isolation: isolate`. The presence of a Themes menu alone is insufficient.
+from this change. Its browser must support CSS `filter`, `mix-blend-mode: screen` and `isolation: isolate`. The presence of a Themes menu alone is insufficient. Root has an independent
+package version; theme minimum versions are checked against the shared Home
+renderer version embedded by the Root build, not the Root package number.
 Unsupported browsers/older Home reject the capability before changing appearance.
 The general CYTV Chromium 38 floor is unchanged, but this optional theme effect
 is not compatible with that oldest browser. This is a local candidate, not a

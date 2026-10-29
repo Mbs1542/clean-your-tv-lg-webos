@@ -11,7 +11,7 @@ const sourceRoot=path.resolve('themes/itachi'),source=JSON.parse(fs.readFileSync
  await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,channel:process.env.BROWSER_CHANNEL||'chrome'});
  try{for(const edition of ['launcher','root-launcher']){
   const context=await browser.newContext({viewport:{width:1920,height:1080},locale:'ru-RU',timezoneId:'Asia/Yekaterinburg'}),page=await context.newPage(),errors=[];
-  await page.clock.setFixedTime(new Date('2026-10-29T16:42:00Z'));page.on('pageerror',e=>errors.push(e.message));await context.route('https://**',r=>r.abort());await context.route('**/appinfo.json',r=>r.fulfill({json:{version}}));
+  await page.clock.setFixedTime(new Date('2026-10-29T16:42:00Z'));page.on('pageerror',e=>errors.push(e.message));await context.route('https://**',r=>r.abort());/* Read the real staged appinfo, including the independent Root package version. */
   await context.route('**/config.js',r=>r.fulfill({body:'window.CONFIG='+JSON.stringify({columns:5,dockApps:['preview.youtube','preview.netflix','preview.apple','preview.spotify','preview.browser'],hiddenApps:[],liveTvApp:'preview.live'})+';'}));
   // White-background fixtures model the live TV samples while remaining public synthetic artwork.
   const state={window:{}};vm.runInNewContext(fs.readFileSync(path.join(site,edition,'apps.js'),'utf8'),state);const apps=state.window.TV_APPS;

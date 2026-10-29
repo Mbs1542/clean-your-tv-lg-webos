@@ -58,3 +58,10 @@ Acceptance on 2026-10-29: `scripts/test.sh tv preview`, full both-edition theme 
 
 
 Installed-theme cards use `ThemeManager.preview(item)` to load the exact cached digest, verify its manifest/files and identity, and expose only its preview asset through a MIME-typed Blob URL. The UI owns an idempotent lease and revokes it on redraw, navigation, close, stale completion or image failure. These URLs are never persisted. Built-in previews use bundled files; the independent published showcase does not include personal installations. `installed-previews.cjs` verifies actual preview bytes and rejection of tampering; `installed-previews-ui.cjs` covers a custom theme absent from the catalogue offline in both editions and exercises lifecycle cleanup.
+
+Root package versions and the shared renderer version are independent. Root
+preparation embeds `CYTV_THEME_RENDERER_VERSION` from the shared launcher manifest;
+ThemeManager uses it for theme minimum-version checks while Root's own app/update
+version remains unchanged. No-root uses its normal app manifest version. The
+CSS-only Itachi browser regression reads actual staged app metadata instead of
+forcing both editions to the No-root version.
