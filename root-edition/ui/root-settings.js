@@ -95,6 +95,7 @@
   }
   function close() {
     if (busy) return;
+    if(window.HomeThemePanel)HomeThemePanel.unmount();
     panel.hidden = true;
     if (window.ThemeRuntime) window.ThemeRuntime.resume('settings');
     if (previous && previous.focus) previous.focus();
@@ -158,7 +159,7 @@
       var b = document.createElement('button'); b.textContent = t(labels[i]);
       if (i === 3) { b.className = 'home-routing-switch'; b.setAttribute('role','switch'); b.setAttribute('aria-checked','false'); }
       var target = i === 9 ? themes : i === 8 ? layout : i === 6 || i === 7 ? firmware : i === 3 || i === 1 ? homeActions : i === 4 || i === 0 || i === 5 ? links : back;
-      if (i === 9) b.id = 'homeThemes';
+      if (i === 9) { b.hidden=true; b.disabled=true; }
       if (i === 8) b.id = 'homeColumns';
       if (i === 1) {
         b.className = 'home-visit-button';
@@ -171,6 +172,7 @@
       target.appendChild(b);
       buttons[i] = b;
     });
+    themes.id='homeThemeHost';if(window.HomeThemePanel)HomeThemePanel.mount(themes);
     text(home, 'p', 'Open LG Home once, keeping your Home choice.', 'home-visit-hint').id = 'rootHomeVisitHint';
     if(window.SettingsCategories) categories = SettingsCategories.attach(panel, card, [
       {id:'home',label:'Your Home screen',elements:[home]},
@@ -181,7 +183,7 @@
     ]);
     document.body.appendChild(panel);
     document.addEventListener('keydown', function (e) {
-      if (panel.hidden) return;
+      if (panel.hidden || window.HomeThemePanel&&HomeThemePanel.handlesKey(e)) return;
       if ([9,13,27,37,38,39,40,461].indexOf(e.keyCode) === -1) return;
       e.preventDefault(); e.stopImmediatePropagation();
       if (busy) return;

@@ -49,3 +49,23 @@
 #homeThemePanel.theme-picker .theme-option button:first-child { flex:none; box-sizing:border-box; }
 #homeThemePanel.theme-picker .theme-option img { height:auto; max-height:100px; }
 #homeThemePanel.theme-picker .theme-option .theme-meta { box-sizing:border-box; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+/* Theme controls belong to the Appearance content pane. */
+#homeThemePanel.theme-inline { position:static; display:block; background:transparent; color:inherit; z-index:auto; }
+#homeThemePanel.theme-inline[hidden] { display:none; }
+#homeThemePanel.theme-inline .theme-settings-card { width:auto; max-width:none; max-height:none; padding:0; border:0; border-radius:0; background:transparent; overflow:visible; }
+#homeThemePanel.theme-inline h2 { font-size:28px; margin:0 0 12px; }
+#homeThemePanel.theme-inline p,#homeThemePanel.theme-inline label { font-size:22px; }
+#homeThemePanel.theme-inline button { min-height:52px; font-size:22px; padding:9px 14px; margin:5px; }
+#homeThemePanel.theme-inline .theme-installed-grid { display:flex; flex-wrap:wrap; }
+#homeThemePanel.theme-inline .theme-option { display:flex; flex-direction:column; width:calc(33.333% - 16px); margin:8px; padding:8px; border:1px solid #545d6a; border-radius:10px; align-items:stretch; }
+#homeThemePanel.theme-inline .theme-option button:first-child { flex:none; margin:0; text-align:left; }
+#homeThemePanel.theme-inline .theme-option img { display:block; width:100%; height:auto; margin-top:8px; }
+#homeThemePanel.theme-inline .theme-option small,#homeThemePanel.theme-inline .theme-meta { font-size:18px; margin:6px; }
+#homeThemePanel.theme-inline .theme-picker-actions { display:flex; flex-wrap:wrap; }
+#homeThemePanel.theme-inline .theme-catalog-card { font-size:20px; }
+#homeThemePanel.theme-inline .theme-catalog-card strong { font-size:24px; }
+#homeThemeHost,#homeThemePanel.theme-inline { width:100%; min-width:0; }
+
+#homeThemePanel.theme-inline button { width:auto; }
+#homeThemePanel.theme-inline .theme-option button:first-child { width:100%; }
+#homeThemePanel.theme-inline .theme-catalog-card { width:calc(33.333% - 16px); }

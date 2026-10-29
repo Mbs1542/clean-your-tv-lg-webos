@@ -58,3 +58,12 @@ Acceptance on 2026-10-29: `scripts/test.sh tv preview`, full both-edition theme 
 
 
 Installed-theme cards use `ThemeManager.preview(item)` to load the exact cached digest, verify its manifest/files and identity, and expose only its preview asset through a MIME-typed Blob URL. The UI owns an idempotent lease and revokes it on redraw, navigation, close, stale completion or image failure. These URLs are never persisted. Built-in previews use bundled files; the independent published showcase does not include personal installations. `installed-previews.cjs` verifies actual preview bytes and rejection of tampering; `installed-previews-ui.cjs` covers a custom theme absent from the catalogue offline in both editions and exercises lifecycle cleanup.
+
+
+## Embedded Appearance controls (theme-followups)
+
+The follow-up mounts HomeThemePanel inside the Appearance pane in both editions. Installed cards, catalogue/details and URL/LAN forms use the existing settings content surface; the category sidebar remains available. SettingsCategories activates/deactivates the embedded controller and yields keyboard handling only for its active subviews. Parent settings close and category changes cancel pending work and release preview leases. Ordinary installed selection keeps Settings styling suspended and saves immediately. Only an explicit showcase trial temporarily moves its trusted confirmation to the document body, reveals Home and then reattaches to Appearance on Keep/Revert/timeout. No new storage keys, network hosts or privileged services are introduced.
+
+Navigation regressions cover native input defaults, two-step Back, async refresh focus ownership, successful immediate-apply focus, category changes and pending preview cleanup. Both editions and 48 locale/viewport combinations are covered. This follow-up is separate from the release-preparation branch; browser verification remains distinct from physical-TV acceptance.
+
+Validation for the embedded follow-up: full theme unit/browser suites, both-edition settings navigation across 48 localized 720p/1080p layouts, category update badges, legacy settings unit checks and Chromium 38 compatibility passed. The author preview passed 31 tests against the initial embedded export and four focused preview tests against the final export; its guide now points directly to Appearance. A real parked-pointer focus regression was fixed by requiring coordinate-changing mouse movement before hover changes focus. Physical-TV acceptance was not performed.
