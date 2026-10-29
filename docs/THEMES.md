@@ -44,9 +44,7 @@ CLI alternative from the toolkit (use the values currently shown on TV):
 npm run theme -- send ./my-theme --runtime .runtime/candidate --tv TV_PRIVATE_IPV4 --pin SIX_DIGIT_PIN
 ```
 
-### Legacy: TV downloads from a computer
-
-**Use legacy computer sharing** opens the previous form on TV. On the computer run `npm run theme -- share ./my-theme --runtime .runtime/candidate`, then enter that computer's address/PIN on TV. This secondary method requires incoming TCP 8879 on the computer and can be blocked by managed Mac firewall policy. It is not started by the primary Send to TV dialog. Stop it with Ctrl+C. Prefer the PC → TV flow above on matching candidate versions.
+PC → TV is the only computer transfer direction. If the receiver is unavailable, update the matching Home and service set on TV and retry; the computer does not host a download server.
 
 ## Add another repository by URL
 

@@ -50,6 +50,10 @@ Helper rollback compatibility and remaining release gates are tracked in
 - #134: reusable candidate-build evidence and scoped acceptance tooling. The
   first release still follows the trusted policy currently present on main.
 
+Computer theme transfer uses PC → TV only. The old PC-hosted sharing server,
+TV download form and `share` command are removed from the matching author tools.
+Instructions in all twelve user guides follow the TV-address/PIN workflow.
+
 ## Upgrade boundaries
 
 Use a complete matching installer/update set. A standalone Home IPK does not

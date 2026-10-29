@@ -401,15 +401,7 @@ node "$THEME_TOOLKIT/bin/theme.cjs" send themes/ocean \
 
 Replace both placeholders with the current TV values. The preview dialog is the normal entry point and avoids typing shell commands for each transfer.
 
-### Secondary legacy transfer
-
-For an older matching candidate which asks for a **computer** address, select **Use legacy computer sharing** on TV and run:
-
-```sh
-node "$THEME_TOOLKIT/bin/theme.cjs" share themes/ocean --runtime "$THEME_RUNTIME"
-```
-
-That previous direction serves a snapshot from the computer and needs inbound computer TCP 8879, which a managed Mac can block. It is retained as an explicit secondary command and does not start when opening the primary Send to TV dialog. Keep the command running and stop it with Ctrl+C. Use a new share session for a fresh snapshot.
+Only PC → TV transfer is supported. Do not start a server or enter a computer address on TV; enter the TV address and PIN on the computer.
 
 Installed/built-in themes apply without a timer. A new Showcase trial still requires **Keep theme** within 20 seconds. To remove an active downloaded version, apply another theme first and then select **Remove**; built-ins cannot be deleted. Showcase hides installed IDs, so updates use Send to TV or **Add by URL**.
 
