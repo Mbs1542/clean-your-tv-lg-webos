@@ -16,7 +16,7 @@
  function deactivate(){stopReceiver();inlineActive=false;if(!panel||panel.hidden)return;view++;disposePreviews();clearInterval(tick);if(signal){signal.cancelled=true;if(signal.cancel)signal.cancel();signal=null;}busy=false;root.ThemeManager.cancel();standard();panel.hidden=true;if(root.ThemeRuntime)ThemeRuntime.resume('themes');}
 
 
- function failed(e){if(!openNow())return;view++;busy=false;standard();heading('Themes');message(e.message);button('Restore Classic',function(){root.ThemeManager.reset();render();});button('Back',close);focusFirst();}
+ function failed(e){if(!openNow())return;var ownsFocus=!inlineHost||panel.contains(document.activeElement);view++;busy=false;standard();heading('Themes');message(e.message);button('Restore Classic',function(){root.ThemeManager.reset();render();});button('Back',close);if(ownsFocus)focusFirst();}
  function trial(item){busy=true;mode='preparing';heading('Preparing theme…');var version=++view;button('Cancel',revert);root.ThemeManager.begin(item).then(function(){if(version!==view)return;busy=false;mode='trial';if(inlineHost){document.body.appendChild(panel);panel.classList.remove('theme-inline');panel.setAttribute('role','dialog');panel.setAttribute('aria-modal','true');}panel.classList.add('theme-trial');parentVisible(false);root.ThemeRuntime.resume('themes');root.ThemeRuntime.resume('settings');heading('Keep this theme?');var timer=node('p');timer.id='themeCountdown';card.appendChild(timer);
    function count(){timer.textContent=t('Reverting in {count} seconds',{count:root.ThemeManager.remaining()});}count();tick=setInterval(count,250);
    button('Keep theme',function(){root.ThemeManager.confirm().then(render,failed);},'themeKeep');button('Revert',revert,'themeRevert');focusFirst();

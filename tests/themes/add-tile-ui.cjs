@@ -16,6 +16,8 @@ const {assert, chromium, stage, open} = require('./browser.cjs');
    assert.equal(await page.locator('.add-app').count(),0);
    assert.deepEqual(await ids(),original);
    await page.screenshot({path:'build/tests/add-tile-'+edition+'.png'});
+   await page.waitForFunction(()=>!Array.from(document.querySelectorAll('#homeThemePanel p')).some(el=>el.textContent==='Loading themes…'));
+   assert.equal(await page.evaluate(()=>document.activeElement.id),'homeShowAddApp','late theme load failures must preserve focus on the visibility switch');
    // A failed persistent save must neither flip the switch nor change the grid.
    await page.evaluate(()=>{window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='tvhome.layout')throw Error('quota');return window.originalSet.call(this,k,v);};});
    await page.keyboard.press('Enter');
