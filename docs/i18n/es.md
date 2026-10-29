@@ -79,6 +79,8 @@ Candidato aún no publicado, ambas ediciones: en **Ajustes de Home → Aparienci
 
 En las vistas previas de temas del candidato no publicado con barra lateral opcional, Arriba/Abajo selecciona una opción del menú, Derecha pasa a las aplicaciones e Izquierda desde la primera columna de aplicaciones vuelve al menú.
 
+Candidato No-root no publicado: Helper puede recuperarse de un tiempo de espera temporal del watchdog al salir del modo de espera, con un máximo de cinco intentos en diez minutos. Stop y pulsar Home tres veces siguen requiriendo iniciar Helper explícitamente; los fallos repetidos lo dejan detenido. La validación en TV está pendiente. [Comportamiento y límites (inglés)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+
 ## Actualizaciones y eliminación
 
 Guarda paquetes funcionales y copias privadas de ajustes. Para sustituir paquetes No-root desde el ordenador, detén Helper primero y actualiza sin desinstalar, ya que podrías perder ajustes. Eliminar la aplicación del ordenador no elimina las aplicaciones del televisor. No sustituyas un entorno Root activo con una IPK suelta; usa el proceso explícito de recuperación o reinstalación de cytv.

@@ -54,6 +54,20 @@
       "summary": "Prepare Root candidate QA and preserve Showcase focus"
     },
     {
+      "pr": 154,
+      "issues": [
+        152
+      ],
+      "summary": "Retry installer TLS failures with the two RSA/AES-GCM suites on the encrypted endpoint; legacy-TV pairing and compatibility acceptance remain pending (#152)."
+    },
+    {
+      "pr": 156,
+      "issues": [
+        155
+      ],
+      "summary": "Recover No-root Helper watchdog timeouts with bounded retries, persistent emergency stops and required input cleanup; exact-device acceptance remains pending (#155)."
+    },
+    {
       "pr": 158,
       "issues": [],
       "summary": "Add reviewed CSS-only Itachi Sharingan theme to showcase, generic native icon quality preference and optional bounded white-logo styling; physical-TV acceptance remains untested."

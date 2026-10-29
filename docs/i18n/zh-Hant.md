@@ -79,6 +79,8 @@ No-root: 要重新啟動 Home 控制，請開啟 Home Helper，選擇啟動 Help
 
 在尚未發佈的候選版本主題預覽中，若使用可選的側邊欄配置，上／下鍵選擇選單項目，右鍵進入應用程式區域，在應用程式第一欄按左鍵返回選單。
 
+尚未發布的 No-root 候選版本：從待機喚醒後，Helper 可嘗試恢復暫時的 watchdog 逾時，十分鐘內最多五次。Stop 和連按三次 Home 後仍需手動啟動 Helper；反覆失敗會保持停止狀態。尚待電視實機驗收。[行為與限制（英語）](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155)。
+
 ## 更新與移除
 
 保留已知可用的安裝套件和私有設定備份。電腦輔助替換 No-root 安裝套件時，先停止 Helper，然後直接更新；解除安裝可能清除設定。移除桌面應用不會移除電視應用。不要用獨立 IPK 替換正在執行的 Root 環境；請使用 cytv 的明確恢復/重新安裝流程。
