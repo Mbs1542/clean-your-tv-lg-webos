@@ -218,7 +218,7 @@ class Device:
         snapshot=json.loads(safe_bytes(self.root_state/'ls2-provision-snapshot.json',limit=65536,uid=0))
         if snapshot.get('phase') not in (None,):raise ValueError('Root provisioning is being removed')
         original={key:snapshot['files'][str(path)]['original'] for key,path in provision.FILES.items()}
-        planned=provision.plan(original)
+        planned=provision.plan(original,provision.snapshot_capabilities(snapshot)) if 'capabilities' in snapshot else provision.plan(original)
         for key,path in provision.FILES.items():
             record=snapshot['files'][str(path)];current=safe_bytes(path,limit=65536,uid=0)
             if hashlib.sha256(planned[key]).hexdigest()!=record['installed_sha256']:raise ValueError('Root registration contract mismatch')

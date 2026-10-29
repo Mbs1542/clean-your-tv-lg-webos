@@ -12,9 +12,21 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 
 class PackageTests(unittest.TestCase):
+    def stage_home_service(self, root):
+        # The source build packages the paired Home service from tracked sources.
+        names = subprocess.run(['git', 'ls-files', '--', 'renewal-service'],
+                               cwd=ROOT, check=True, capture_output=True, text=True).stdout.splitlines()
+        for name in names:
+            target = root/name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(ROOT/name, target)
+        subprocess.run(['git', 'init', '-q'], cwd=root, check=True)
+        subprocess.run(['git', 'add', 'renewal-service'], cwd=root, check=True)
+
     def test_source_build_reuses_published_helper_without_compiling_it(self):
         with tempfile.TemporaryDirectory(prefix='pinned helper ') as tmp:
             root = Path(tmp)
+            self.stage_home_service(root)
             for directory in ('scripts', 'native/app', 'native/published', 'launcher'):
                 (root/directory).mkdir(parents=True)
             for name in ('build.sh', 'build-cytv.py', 'tv_web_build.py', 'compile-tv-web.cjs', 'helper_build.py', 'compile-helper.cjs'):
@@ -39,6 +51,7 @@ class PackageTests(unittest.TestCase):
     def test_build_repairs_current_metadata_package_and_preserves_stale_package(self):
         with tempfile.TemporaryDirectory(prefix='helper build ') as tmp:
             root = Path(tmp)
+            self.stage_home_service(root)
             (root/'scripts').mkdir()
             for name in ('build.sh', 'build-cytv.py', 'fix-package-data.py', 'tv_web_build.py', 'compile-tv-web.cjs', 'helper_build.py', 'compile-helper.cjs'):
                 shutil.copy(ROOT/'scripts'/name, root/'scripts'/name)

@@ -49,7 +49,7 @@ class PendingProvision:
         if any(self.recovery.system not in path.parents for path in p.FILES.values()):
             raise ValueError('unexpected_provision_registration_root')
         saved=json.loads(self.read(self.root/'ls2-provision-snapshot.json'))
-        if (not isinstance(saved,dict) or set(saved)!={'version','service','files'}
+        if (not isinstance(saved,dict) or set(saved) not in ({'version','service','files'}, {'version','service','files','capabilities'})
                 or type(saved['version']) is not int or saved['version']!=1
                 or saved['service']!=p.NAME or not isinstance(saved['files'],dict)
                 or set(saved['files'])!=set(expected)):
@@ -65,7 +65,7 @@ class PendingProvision:
                     or str(self.root) in entry['original']):
                 raise ValueError('invalid_original_provision_registration')
             original[key]=entry['original']
-        updated=p.plan(original)
+        updated=p.plan(original,p.snapshot_capabilities(saved))
         for name,key in expected.items():
             path=Path(name);entry=saved['files'][name]
             if hashlib.sha256(updated[key]).hexdigest()!=entry['installed_sha256']:

@@ -44,3 +44,6 @@ service.register('listApps',function(message){
  var request=inventoryPending;
  request.then(function(apps){if(inventoryPending===request)inventoryPending=null;message.respond({returnValue:true,apps:apps});},function(){if(inventoryPending===request)inventoryPending=null;message.respond({returnValue:false,errorText:'App inventory unavailable'});});
 });
+
+// This HTTP receiver never exposes recovery or root runtime operations.
+require('./theme-receiver')(service, {appId:'com.cleanyourtv.root.preview'});

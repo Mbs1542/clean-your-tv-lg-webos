@@ -110,7 +110,7 @@ function validateFiles(r, root) {
     verified.set(f.path, bytes);
   }
   m.assets.forEach(a => {
-    const info = imageInfo(verified.get(a.path), a.mediaType);
+    const info = imageInfo(verified.get(a.path), a.mediaType, a.id === m.defaults.wallpaperAssetId);
     check(info.width === a.width && info.height === a.height, 'Image dimensions differ from manifest');
   });
   const rules = JSON.parse(verified.get(m.rules.path).toString('utf8'));

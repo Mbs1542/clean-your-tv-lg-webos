@@ -56,6 +56,10 @@ collect the inventory, select the version and complete the release PR checks;
 see [Release integration flow](docs/RELEASE-FLOW.md). Shipping notices are posted
 automatically only after verified publication.
 
+## Contribute a theme
+
+Use the [theme contribution walkthrough](docs/development/CONTRIBUTING-THEMES.md) to create, preview, test, package and submit an independently hosted theme. The [Showcase reference](showcase/README.md) defines registry and review requirements. Theme submission PRs also target `release/next`; they do not publish a release by themselves.
+
 ## Documentation organization
 
 Keep README a short user entry point. Put installation, use, recovery and
