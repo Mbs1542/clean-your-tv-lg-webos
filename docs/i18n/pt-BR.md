@@ -73,7 +73,7 @@ No-root: Para reiniciar o controle de Home, abra Home Helper, escolha Iniciar He
 
 Após uma interrupção, execute primeiro `status` e preserve os registros. `restore` restaura LG Home sem remover aplicativos; `uninstall` restaura antes de remover. Os dados de recuperação Root são mantidos de propósito: não os apague para forçar a reinstalação. Revise relatórios antes de compartilhar; não publique chaves nem pastas de perfis.
 
-Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Aparência → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. Temas com disposição fixa ocultam a opção Colunas e usam o valor do autor. Sua escolha salva volta a valer ao mudar para um tema que ofereça esse ajuste. Na prévia candidata Glasshouse, os apps ficam em uma única faixa horizontal circular: Esquerda/Direita rola, Cima abre os atalhos e Baixo volta ao mesmo app. Na prévia Glasshouse, a roda do mouse ou o touchpad também rola a faixa; Home não se move atrás de uma caixa de diálogo aberta.
+Somente no candidato ainda não publicado, nas duas edições: abra **Configurações do Home → Aparência → Colunas** e escolha de 1 a 8 colunas, ou **Conforme o tema** para usar o valor do tema (Classic: 5). Um número explícito tem prioridade sobre o tema. Temas com disposição fixa ocultam a opção Colunas e usam o valor do autor. Sua escolha salva volta a valer ao mudar para um tema que ofereça esse ajuste. Na prévia candidata Alpine, os apps ficam em uma única faixa horizontal circular: Esquerda/Direita rola, Cima abre os atalhos e Baixo volta ao mesmo app. Na prévia Alpine, a roda do mouse ou o touchpad também rola a faixa; Home não se move atrás de uma caixa de diálogo aberta.
 
 Nas prévias de temas do candidato ainda não publicado com barra lateral opcional, Cima/Baixo seleciona um item do menu, Direita vai para os aplicativos e Esquerda na primeira coluna de aplicativos volta ao menu.
 
@@ -113,7 +113,7 @@ Após falha ou interrupção, confira o estado e salve o relatório de diagnóst
 
 No candidato com suporte: **Configurações → Aparência**. **Classic** e **Alpine** são integrados e dispensam baixar o tema; Classic continua padrão. **Channel** é externo, do showcase. Nos testes da galeria: Escolha o tema e **Manter tema** em até **20 segundos**. **Reverter**, Back ou o fim do prazo restaura o anterior. Uma prévia interrompida faz Home iniciar com Classic. Temas integrados e baixados escolhidos na lista instalada são aplicados e salvos imediatamente, sem temporizador. Isso inclui temas recebidos do computador ou instalados por URL. Apenas Testar tema dentro da galeria inicia um teste de 20 segundos.
 
-A galeria mostra apenas temas não instalados nesta TV. Classic, Alpine e os baixados ficam ocultos, mesmo com uma versão mais recente. Após remover um tema, ele reaparece. Antes de remover o tema ativo, aplique outro instalado. Atualize por URL ou transferência do computador.
+A galeria mostra apenas temas não instalados nesta TV. Classic, Alpine e os baixados ficam ocultos, mesmo com uma versão mais recente. Após remover um tema, ele reaparece. Atualize por URL ou transferência do computador.
 
 Os cartões ficam diretamente em Aparência, ao lado das categorias. A galeria, a instalação por link e a transferência do computador abrem nesse painel; só um teste da galeria mostra Home temporariamente.
 

@@ -19,6 +19,13 @@ BASE = Path('/var/luna-service2-dev')
 PRIVATE_SERVICE = STATE/'service'
 RUNNER = STATE/'run-recovery-service'
 PRIVATE_FILES = ('service.js','startup-diagnostics.js','app-inventory.js','handlers.js','services.json','package.json','activity.json','boot-recover.sh')
+RECEIVER_CAPABILITIES = ['theme-receiver-v1']
+
+def snapshot_capabilities(saved):
+    capabilities = saved.get('capabilities', [])
+    if capabilities not in ([], RECEIVER_CAPABILITIES):
+        raise ValueError('Unknown recovery capabilities')
+    return capabilities
 SYSTEM_FILES = tuple(Path(x) for x in ('/usr/bin/node','/usr/palm/services/jsservicelauncher/bootstrap-node.js','/usr/palm/services/jsservicelauncher/bootstrap.js'))
 RUNTIME = STATE / 'runtime'
 FILES = {'service': BASE/'services.d'/(NAME+'.service'),
@@ -92,7 +99,8 @@ def prepare_private_service():
     else: write(RUNNER,runner_bytes(),0o700)
 
 
-def plan(original):
+def plan(original, capabilities=None):
+    capabilities = snapshot_capabilities({'capabilities': [] if capabilities is None else capabilities})
     expected = 'Exec=/usr/bin/run-js-service -n '+str(SERVICE)
     if original['service'].splitlines().count(expected) != 1:
         raise ValueError('Unexpected installed service launcher')
@@ -102,9 +110,12 @@ def plan(original):
     role['permissions'] = [{'service':NAME,
         'inbound':['com.webos.lunasend-*','com.webos.service.activitymanager','com.cleanyourtv.root.preview','com.cleanyourtv.root.preview-*'],
         'outbound':['com.webos.service.activitymanager','com.palm.activitymanager']}]
+    control = ['status','restore','enable','confirm','listApps']
+    if capabilities:
+        control += ['themeReceiverStart','themeReceiverStatus','themeReceiverRead','themeReceiverStop']
     return {'service': original['service'].replace(expected,'Exec='+str(RUNNER)).encode(),
             'role':encoded(role), 'client':encoded({NAME:['activity.operation'],'com.cleanyourtv.root.preview':[NAME+'.control'],'com.cleanyourtv.root.preview-*':[NAME+'.control']}),
-            'api':encoded({NAME+'.control':[NAME+'/'+x for x in ('status','restore','enable','confirm','listApps')],'activities.callbacks':[NAME+'/boot'],NAME+'.admin':[NAME+'/'+x for x in ('status','restore','register','unregister')]})}
+            'api':encoded({NAME+'.control':[NAME+'/'+x for x in control],'activities.callbacks':[NAME+'/boot'],NAME+'.admin':[NAME+'/'+x for x in ('status','restore','register','unregister')]})}
 
 def manifest():
     callback = PRIVATE_SERVICE/'boot-recover.sh'
@@ -123,7 +134,9 @@ def apply():
     if json.loads(secure(PRIVATE_SERVICE/'services.json')).get('id') != NAME: raise ValueError('Wrong installed service')
     pending = manifest()
     original = {key:secure(path).decode() for key,path in FILES.items()}
-    updated = plan(original)
+    release = json.loads(secure(STATE/'release.json'))
+    capabilities = snapshot_capabilities(release)
+    updated = plan(original, capabilities)
     STATE.mkdir(mode=0o700, exist_ok=True)
     snapshot = STATE/'ls2-provision-snapshot.json'
     if snapshot.exists() or snapshot.is_symlink() or (STATE/'recovery-provision.json').exists():
@@ -132,6 +145,7 @@ def apply():
         'original_sha256':sha(original[key].encode()),'installed_sha256':sha(updated[key]),
         'mode':stat.S_IMODE(path.stat().st_mode),'uid':path.stat().st_uid,'gid':path.stat().st_gid}
         for key,path in FILES.items()}}
+    if capabilities: saved['capabilities'] = capabilities
     write(snapshot,encoded(saved))
     write(STATE/'recovery-provision.pending.json',encoded(pending))
     for key,path in FILES.items():
@@ -149,7 +163,7 @@ def repair_pending(allow_original=False):
     if saved.get('phase') is not None or saved.get('service')!=NAME or set(saved['files'])!={str(p) for p in FILES.values()}:
         raise ValueError('Unexpected pending snapshot')
     original={key:saved['files'][str(file)]['original'] for key,file in FILES.items()}
-    updated=plan(original)
+    updated=plan(original, snapshot_capabilities(saved))
     for key,file in FILES.items():
         entry=saved['files'][str(file)]
         if sha(entry['original'].encode())!=entry['original_sha256'] or sha(secure(file)) not in (entry['installed_sha256'],entry.get('previous_installed_sha256'),entry['original_sha256'] if allow_original else None):

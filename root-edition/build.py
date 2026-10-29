@@ -57,7 +57,7 @@ def build(output, version='0.0.1'):
     from startup_hook import packaged_content
     payload['usr/palm/applications/'+app_id+'/startup.sh']=packaged_content(app_id)
     from scripts.theme_receiver import inject
-    private_service = inject({name[len(service_prefix):]: data for name, data in payload.items() if name.startswith(service_prefix)})
+    private_service = inject({name[len(service_prefix):]: data for name, data in payload.items() if name.startswith(service_prefix)}, standalone=True)
     payload.update({service_prefix + name: data for name, data in private_service.items()})
     service_info = json.loads(payload[service_prefix + 'services.json'])
     service_package = json.loads(payload[service_prefix + 'package.json'])
@@ -80,6 +80,7 @@ def build(output, version='0.0.1'):
         'hardware_validated': False, 'public_release_ready': False,
         'activates_system_home': False,
         'runtime_layout': 'inline-audio-v1',
+        'capabilities': ['theme-receiver-v1'],
         'inventory': 'empty; configure locally for the later hardware test',
         'files': {name: hashlib.sha256(data).hexdigest() for name, data in sorted(payload.items())},
     }

@@ -73,7 +73,7 @@ No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Help
 
 Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore` przywraca LG Home bez usuwania aplikacji; `uninstall` przywraca je przed usunięciem. Dane odzyskiwania Root pozostają celowo: nie kasuj ich, by wymusić ponowną instalację. Sprawdź raporty przed udostępnieniem; nie publikuj kluczy ani katalogów profili.
 
-Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Wygląd → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Glasshouse aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Glasshouse pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
+Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Wygląd → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Alpine aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Alpine pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
 
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 
@@ -113,7 +113,7 @@ Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej pró
 
 W kandydacie z obsługą motywów otwórz **Ustawienia → Wygląd**. **Classic** i **Alpine** są wbudowane i nie wymagają pobierania motywu; domyślny pozostaje Classic. **Channel** jest zewnętrznym motywem ze showcase. Podczas próby w galerii: Wybierz motyw i **Zachowaj motyw** w ciągu **20 sekund**. **Przywróć**, Back lub upływ czasu przywraca poprzedni. Przerwana próba uruchomi Home z Classic. Motywy wbudowane i pobrane wybrane z listy zainstalowanych są stosowane i zapisywane od razu, bez odliczania. Dotyczy to również motywów z komputera lub URL. Tylko Wypróbuj motyw w galerii rozpoczyna próbę 20 sekund.
 
-Galeria pokazuje tylko motywy niezainstalowane na tym TV. Classic, Alpine i pobrane motywy są ukryte, także gdy istnieje nowsza wersja. Po usunięciu motyw pojawia się ponownie. Przed usunięciem aktywnego motywu zastosuj inny. Aktualizuj przez URL lub transfer z komputera.
+Galeria pokazuje tylko motywy niezainstalowane na tym TV. Classic, Alpine i pobrane motywy są ukryte, także gdy istnieje nowsza wersja. Po usunięciu motyw pojawia się ponownie. Aktualizuj przez URL lub transfer z komputera.
 
 Karty motywów są osadzone bezpośrednio w Wyglądzie obok kategorii. Galeria, instalacja z linku i przesyłanie z komputera otwierają się w tym panelu; tylko próba w galerii tymczasowo pokazuje Home.
 

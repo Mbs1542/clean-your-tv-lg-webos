@@ -12,6 +12,15 @@ class ThemeReceiverPackageTest(unittest.TestCase):
             self.assertIn(b'themeReceiverStart', result['theme-receiver/register.js'])
             self.assertNotIn('theme-receiver.js', files)
 
+    def test_standalone_root_receiver_preserves_the_private_inventory(self):
+        source = {'service.js': b"module.exports = require('./theme-receiver');"}
+        result = inject(source, standalone=True)
+        self.assertEqual(set(result), set(source))
+        self.assertIn(b'themeReceiverStart', result['service.js'])
+        self.assertNotIn(b"require('./theme-receiver')", result['service.js'])
+        with self.assertRaises(ValueError):
+            inject({'service.js': b'no receiver registration'}, standalone=True)
+
 
 if __name__ == '__main__':
     unittest.main()
