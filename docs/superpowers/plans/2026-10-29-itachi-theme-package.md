@@ -18,9 +18,16 @@ CSS can override inline brand background within this mode. No replacement assets
 - [x] Add failing typed CSS/runtime checks, implement bounded support and feature gates.
 - [x] Verify both actual renderer editions, unchanged icon src/dimensions, cached
       installation/offline reload, Settings suspension and Classic reset.
-- [ ] Build/pin/validate source with the existing toolkit and package its existing
+- [x] Build/pin/validate source with the existing toolkit and package its existing
       bounded LAN sharing utility; include clear required-Home/browser instructions.
-- [ ] Verify package hashes, run scoped/full checks and obtain independent review.
+- [x] Verify package hashes, run scoped/full checks and obtain independent review.
 
 No TV installation, Home routing change or publication is authorized by this task.
 Netflix resolution remains limited by the TV original, per the CSS-only constraint.
+
+Final refinements: CSS-only 1.6× / 2× / 1.25× decorative scaling with fixed-cell
+guards; no original source changes during theme selection. Fresh native capture
+can prefer available larger original resources, with malformed/missing/corrupt
+variants falling back and existing profile schemas unchanged. The wallpaper's
+red irises and three-tomoe Sharingan were refined with imagegen. Root's separate
+package version now maps to the shared renderer version for theme checks.

@@ -45,7 +45,10 @@ class Inventory:
         data, kind = self.fallback, 'png'
         for key in ('extraLargeIcon', 'largeIcon', 'mediumLargeIcon', 'icon', 'miniicon', 'favicon'):
             try:
-                url = urllib.parse.urlsplit(app.get(key, ''))
+                candidate = app.get(key, '')
+                if not isinstance(candidate, str):
+                    continue
+                url = urllib.parse.urlsplit(candidate)
                 if url.scheme not in ('http', 'https') or url.hostname != self.host or url.username or url.password:
                     continue
                 if url.port not in (None, 80, 443, 3000, 3001):
