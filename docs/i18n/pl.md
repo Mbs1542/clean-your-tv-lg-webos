@@ -79,6 +79,8 @@ Nieopublikowany kandydat, obie edycje: w **Ustawienia Home → Wygląd** wyłąc
 
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 
+Nieopublikowany kandydat No-root: Helper może wznowić działanie po przejściowym przekroczeniu czasu watchdog przy wybudzaniu, maksymalnie pięć razy w ciągu dziesięciu minut. Stop i trzykrotne Home nadal wymagają jawnego uruchomienia Helper; powtarzające się błędy pozostawiają go zatrzymanym. Weryfikacja na TV jest w toku. [Działanie i ograniczenia (angielski)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+
 ## Aktualizacja i usuwanie
 
 Po połączeniu cytv pokazuje wersję zainstalowaną → dołączoną i rozróżnia pierwszą instalację, ponowną instalację i cofnięcie wersji. Sprawdź podsumowanie przed potwierdzeniem; `--yes` nie omija kontroli zgodności. Zachowaj działające pakiety i prywatne kopie ustawień. Przed wymianą pakietów z komputera zatrzymaj No-root Helper; nie odinstalowuj wcześniej aplikacji. Nie zastępuj działającego Root pojedynczym IPK: użyj odpowiedniej procedury cytv. Usunięcie aplikacji komputerowej nie usuwa aplikacji z TV.
