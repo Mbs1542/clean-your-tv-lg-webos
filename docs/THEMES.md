@@ -17,9 +17,35 @@ These controls are implemented in the **theme-enabled development candidate**, p
 
 The accepted choice is restored on the next launch. If Home closes during an unconfirmed trial, the next launch starts Classic. Changing appearance does not replace your app order, hidden apps, inputs or Home-button routing. Settings, confirmations and recovery keep their standard appearance.
 
-## Add Channel or another external theme
+## Browse themes on TV
 
-1. Browse the main project's showcase (the **Theme showcase** link on Preview Pages). Open a theme detail page and use **Copy TV link**. Transfer that exact URL using the TV keyboard or your normal TV text-entry method; this project does not provide a phone pairing/transfer tool.
+Open **Settings → Themes → Theme showcase**. Choose a miniature preview to see the theme's details. Classic and Alpine offer **Try theme** immediately; Channel offers **Download theme**, then **Try theme**. Confirm **Keep theme** within 20 seconds. Downloading alone never changes Home.
+
+The catalogue and preview images ship with this candidate and can be browsed offline. Downloading an external theme needs Internet access. The catalogue is a reviewed snapshot updated with Home packages, not a live list of every GitHub repository. A downloaded exact version is reused instead of fetched again. Theme files come from the recorded, commit-pinned source repository.
+
+## Transfer a theme from your computer
+
+No showcase submission, public repository or source commit is required for a local development test.
+
+1. Run your theme in the author toolkit's **preview** or **showcase**. Choose the theme and press **Send to TV**. The toolkit compiles the current source into a fixed snapshot; saving another edit does not silently change that snapshot.
+2. On TV open **Settings → Themes → Receive from computer**.
+3. Enter the private IPv4 **Computer address** shown by the preview and its **Six-digit PIN**. Do not enter `http://`, a port or a file path. The address is remembered after a successful transfer; the PIN is never remembered.
+4. Choose **Receive theme**, then **Try theme**. Keep it within 20 seconds or revert. The installed copy works offline after the computer stops sharing.
+5. After editing, press **Send to TV** again for a fresh snapshot and PIN. **Stop sharing**, closing the preview server or the ten-minute deadline closes access.
+
+Both devices must be on the same trusted home network, with client isolation disabled and the computer firewall allowing TCP **8879**. The transfer uses local HTTP, not a cloud service; do not use an untrusted/shared network. Only compiled theme files are served, not the repository or source directory. The PIN limits casual access; it is not encryption. If several addresses are shown, use the interface connected to the TV's network. VPNs or a changed computer address may require selecting a different address. Native webOS network/origin and keyboard behavior still require physical-TV acceptance.
+
+CLI alternative from the toolkit:
+
+```sh
+npm run theme -- share ./my-theme --runtime .runtime/candidate
+```
+
+Keep the command running and use the address and PIN it prints. Press Ctrl+C to stop it. See the toolkit walkthrough for preparing the candidate runtime.
+
+## Add another repository by URL
+
+1. Browse the main project's showcase (the **Theme showcase** link on Preview Pages). Open a theme detail page and use **Copy TV link**. Transfer that exact URL using the TV keyboard or your normal TV text-entry method; the computer transfer above is the easier path for unpublished local work.
 2. On TV, open **Settings → Themes → Add by URL**. Focus **Theme URL** and use OK/native keyboard to type or paste. Move to **Load** and select it.
 3. Choose the returned theme. For a repository containing several themes, choose the specific entry; the installer does not select one silently. The download progress is shown. Cancel or Back stops the request.
 4. After validation/saving, choose the new **Downloaded** version in Themes. Review its author/license and the Home appearance. Choose **Keep theme** within 20 seconds, or revert.
@@ -32,7 +58,7 @@ The installer verifies API/Home version, rule/asset limits, file sizes and SHA-2
 
 After a successful install, files are stored in this Home application's IndexedDB cache. A normal restart does not contact the author. The TV still needs network access for apps and services that require it; the theme itself can be restored offline.
 
-To update, obtain the new version's link, install it, preview and keep it. Updates are explicit: installed themes do not follow GitHub branches automatically. Several versions may be cached independently. Switch away from an active version before selecting **Remove** beside it.
+To update, install a new reviewed catalogue version, use a new version's link, or transfer a fresh development snapshot; preview and keep it. Updates are explicit: installed themes do not follow GitHub branches automatically. Several versions may be cached independently. Switch away from an active version before selecting **Remove** beside it.
 
 The cache is bounded at eight downloaded versions and 24 MiB of payload data, subject to a lower device quota. Remove inactive versions if saving fails. **Clear downloaded themes** asks for confirmation, restores Classic and clears only this theme cache. Built-ins cannot be removed.
 

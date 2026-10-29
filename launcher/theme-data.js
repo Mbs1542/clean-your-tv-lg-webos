@@ -39,14 +39,37 @@
  }
 
  function request(url,limit,local,signal,deadline){return new Promise(function(resolve,reject){
+  if(local==='lan'&&!/^http:\/\/(?:10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+):8879\/\d{6}\/package\.json$/.test(url))return reject(Error('Invalid local theme endpoint'));
   if(!local&&!/^https:\/\/(raw\.githubusercontent\.com|api\.github\.com)\//.test(url))return reject(Error('Unsupported theme host'));
   var x=new XMLHttpRequest(),done=false;function finish(error){if(done)return;done=true;if(signal)signal.cancel=null;if(error)reject(error);else resolve(new Uint8Array(x.response));}
   x.open('GET',url,true);x.responseType='arraybuffer';x.timeout=deadline?Math.max(1,Math.min(15000,deadline-Date.now())):15000;
   if(signal){if(signal.cancelled)return reject(Error('Cancelled'));signal.cancel=function(){x.abort();};}
   x.onprogress=function(e){if(e.loaded>limit||e.lengthComputable&&e.total>limit){x.abort();finish(Error('Theme file exceeds its size limit'));}};
-  x.onload=function(){if(!((local&&x.status===0)||x.status===200)){var error=Error(x.status===404?'Theme file not found':'Could not download theme');error.status=x.status;return finish(error);}if(!x.response||x.response.byteLength>limit)return finish(Error('Theme file exceeds its size limit'));if(!local&&x.responseURL&&x.responseURL!==url)return finish(Error('Theme redirects are not accepted'));finish();};
+  x.onload=function(){if(!((local===true&&x.status===0)||x.status===200)){var error=Error(x.status===404?'Theme file not found':'Could not download theme');error.status=x.status;return finish(error);}if(!x.response||x.response.byteLength>limit)return finish(Error('Theme file exceeds its size limit'));if(local!==true&&x.responseURL&&x.responseURL!==url)return finish(Error('Theme redirects are not accepted'));finish();};
   x.onerror=function(){finish(Error('Theme network error'));};x.ontimeout=function(){finish(Error('Theme download timed out'));};x.onabort=function(){finish(Error('Cancelled'));};x.send();
  });}
+ function lanSource(address,pin){
+  if(typeof address!=='string'||typeof pin!=='string')fail('Enter the computer address and six-digit PIN');
+  address=address.trim();pin=pin.trim();var parts=address.split('.');
+  if(parts.length!==4||parts.some(function(p){return !/^(0|[1-9][0-9]{0,2})$/.test(p)||Number(p)>255;}))fail('Enter a private IPv4 address from the computer preview');
+  var a=Number(parts[0]),b=Number(parts[1]);if(!(a===10||a===192&&b===168||a===172&&b>=16&&b<=31))fail('Use a computer on your home network');
+  if(!/^\d{6}$/.test(pin))fail('Enter the six-digit PIN shown on the computer');
+  return 'http://'+address+':8879/'+pin+'/package.json';
+ }
+ function base64(value,limit){
+  if(typeof value!=='string'||value.length>4*Math.ceil(limit/3)||! /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(value))fail('Invalid local theme data');
+  var raw=atob(value);if(raw.length>limit)fail('Theme file exceeds its size limit');var bytes=new Uint8Array(raw.length);for(var i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return bytes;
+ }
+ function unpackLan(envelope,homeVersion){
+  if(!envelope||envelope.schemaVersion!==1||!envelope.files||Array.isArray(envelope.files)||typeof envelope.files!=='object')fail('Invalid local theme package');
+  var descriptor=base64(envelope.descriptor,65536),m=policy.validateManifest(JSON.parse(decode(descriptor)));
+  if(m.id.indexOf('github:')!==0)fail('Local development requires an external theme identity');
+  var files=[m.rules].concat(m.assets,m.documents),pack={descriptor:descriptor,digest:hash(descriptor),files:Object.create(null)};
+  if(Object.keys(envelope.files).length!==files.length)fail('Unexpected local theme files');
+  files.forEach(function(f){pack.files[path(f.path)]=base64(envelope.files[f.path],f.size);});
+  verify(pack,homeVersion);return pack;
+ }
+ function loadLan(address,pin,homeVersion,signal){var url=lanSource(address,pin);return request(url,10*1024*1024,'lan',signal).then(function(bytes){if(signal&&signal.cancelled)fail('Cancelled');return unpackLan(JSON.parse(decode(bytes)),homeVersion);});}
  function raw(s,p){return 'https://raw.githubusercontent.com/'+s.owner+'/'+s.repo+'/'+s.commit+'/'+path(p);}
  function resolve(url,signal){var s=source(url);var revision=s.commit?Promise.resolve():request('https://api.github.com/repos/'+s.owner+'/'+s.repo+'/commits/HEAD',65536,false,signal).then(function(a){var r=JSON.parse(decode(a));if(!/^[a-f0-9]{40}$/.test(r.sha))fail('Invalid GitHub revision');s.commit=r.sha;});
   return revision.then(function(){var p=s.path||'cytv-themes.json';return request(raw(s,p),65536,false,signal).catch(function(e){if(s.path||e.status!==404)throw e;p='cytv-theme.json';return request(raw(s,p),65536,false,signal);}).then(function(a){var m=JSON.parse(decode(a));if(/cytv-themes\.json$/.test(p)){m=policy.validateCollection(m);if(m.repository.toLowerCase()!==s.repository)fail('Collection repository mismatch');var dir=p.slice(0,p.lastIndexOf('/')+1);return m.themes.map(function(t){return {title:t.title,id:t.id,version:t.themeVersion,url:raw(s,dir+t.path),digest:t.sha256,repository:s.repository};});}
@@ -94,5 +117,5 @@
   return chain.then(function(){return {manifest:parsed.manifest,rules:parsed.rules,assetHandles:handles};},function(e){dispose(handles);throw e;});
  }
  function dispose(handles){Object.keys(handles||{}).forEach(function(k){URL.revokeObjectURL(handles[k]);});}
- return {encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
+ return {lanSource:lanSource,unpackLan:unpackLan,loadLan:loadLan,encode:encode,decode:decode,hash:hash,path:path,source:source,resolve:resolve,request:request,load:load,verify:verify,prepare:prepare,dispose:dispose,imageInfo:imageInfo,versionAtLeast:versionAtLeast};
 }));

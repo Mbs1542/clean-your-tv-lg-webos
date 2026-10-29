@@ -135,3 +135,13 @@ review metadata and links to the pinned theme detail. An empty registry still pr
 synthetic renderer capture in `assets/classic-preview.png`, with credits and
 capture provenance alongside it. A built-in preview is not a reviewed installable
 community descriptor or a hardware acceptance claim.
+
+
+### On-TV catalogue snapshot
+
+After approving or changing a registry entry, run `node scripts/build-tv-theme-catalog.cjs`
+and commit the generated launcher catalogue, previews, notices and inventory together.
+`node scripts/build-tv-theme-catalog.cjs --check` verifies freshness. Home Settings →
+Themes → Theme showcase uses this offline snapshot; external downloads retain the
+reviewed commit-pinned source. Removed/unavailable records are not installable cards.
+This does not publish a Home package or refresh installed TVs before the normal release.

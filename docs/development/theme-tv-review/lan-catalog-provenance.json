@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-29",
+  "sourceBase": "c2465f6329f535f075b0ab2ef6bc0d742a2588dd",
+  "dirtySnapshot": true,
+  "files": {
+    "launcher/theme-data.js": "1b542234a75454f7cab571eaaed0f0a1b2e164acf71899324476851cc5a379de",
+    "launcher/theme-manager.js": "0e933cce7113ab170a49b71115f3d5805956532d05deb93ecb8235b44ea3a477",
+    "launcher/theme-panel.js": "0d6ad0684bade3862402db627ab94de6a54af695f8733686eafcb6f874ecf53d",
+    "launcher/theme-panel.css": "55f79e6345ea5a0bab630ec732aa6ce52b92690af5406c37aa85e7850d7b0ae0",
+    "launcher/theme-catalog.json": "c8549d3f1471a142f7d0c14912af2f9596f4afb73563adf2a11574c6aac2a724"
+  },
+  "capture": "catalog-lan.png",
+  "environment": "Desktop Chrome, 1920x1080, synthetic TV services, English locale",
+  "hardware": {
+    "model": "unknown",
+    "firmwareWebOS": "unknown",
+    "remote": "unknown",
+    "installation": "not performed"
+  },
+  "checks": [
+    "Both-edition catalogue and LAN import UI with synthetic transports",
+    "Real pinned Channel download through in-app browser",
+    "Toolkit real HTTP and null-origin Chrome transfer through loopback; private-interface self-routing unavailable on host"
+  ],
+  "untested": [
+    "Physical TV LAN HTTP/origin/IME",
+    "TV Home routing, sound, standby, cold boot, OTA, rollback"
+  ]
+}

@@ -21,3 +21,11 @@
 #homeThemePanel.theme-trial h2 { font-size:32px; }
 #homeThemePanel.theme-trial p { font-size:24px; }
 #homeThemePanel.theme-trial button { font-size:24px; min-height:64px; padding:10px 18px; }
+
+#homeThemePanel .theme-catalog-grid { display:flex; flex-wrap:wrap; margin:0 -8px; }
+#homeThemePanel .theme-catalog-card { width:calc(33.333% - 16px); margin:8px; padding:10px; text-align:left; background:#252b34; }
+#homeThemePanel .theme-catalog-card img { display:block; width:100%; height:auto; border-radius:6px; }
+#homeThemePanel .theme-catalog-card strong { display:block; margin-top:12px; font-size:28px; }
+#homeThemePanel .theme-catalog-card small { display:block; margin:6px 0 0; color:#ccd6e5; }
+#homeThemePanel .theme-detail-preview img { display:block; width:480px; height:270px; max-width:100%; margin-bottom:12px; }
+#homeThemePanel label { display:block; margin:16px 8px; font-size:26px; }

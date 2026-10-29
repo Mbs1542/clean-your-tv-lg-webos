@@ -1,0 +1,30 @@
+'use strict';
+const assert=require('assert/strict'),fs=require('fs'),path=require('path');
+const data=require('../../launcher/theme-data.js');
+assert.equal(typeof data.lanSource,'function','LAN transport is separate from ordinary GitHub URLs');
+assert.equal(data.lanSource('192.168.1.20','123456'),'http://192.168.1.20:8879/123456/package.json');
+for(const address of ['8.8.8.8','127.0.0.1','169.254.1.2','172.15.0.1','172.32.0.1','10.0.0.256','010.0.0.1','192.168.1.20:8879','http://192.168.1.20','localhost','10.0.0.1/evil','10.0.0.1@evil.test'])assert.throws(()=>data.lanSource(address,'123456'));
+for(const address of ['10.0.0.1','172.16.0.1','172.31.255.254','192.168.0.2'])assert.match(data.lanSource(address,'123456'),/^http:/);
+for(const pin of ['12345','1234567','abcdef','123/45'])assert.throws(()=>data.lanSource('10.0.0.1',pin));
+assert.throws(()=>data.source('http://192.168.1.20:8879/123456/package.json'),'normal installer must stay GitHub-only');
+const entry=require('../../scripts/check-theme-submissions.cjs').loadRegistry().find(e=>e.record.title==='Channel');
+const descriptor=fs.readFileSync(path.resolve('showcase',entry.base,'cytv-theme.json'));
+function envelope(){const files={};for(const f of entry.files.filter(f=>f!=='cytv-theme.json'))files[f]=fs.readFileSync(path.resolve('showcase',entry.base,f)).toString('base64');return {schemaVersion:1,descriptor:descriptor.toString('base64'),files};}
+const p=data.unpackLan(envelope(),'1.5.1');assert.equal(p.digest,entry.record.descriptorSha256);assert.equal(p.url,undefined,'never store LAN address or PIN');
+assert.equal(data.verify(p,'1.5.1').manifest.title,'Channel');
+assert.throws(()=>data.unpackLan(envelope(),'1.0.0'),/Update Home/);
+let e=envelope();e.files['extra.js']='YQ==';assert.throws(()=>data.unpackLan(e,'1.5.1'));
+e=envelope();e.files[entry.manifest.rules.path]='YQ==';assert.throws(()=>data.unpackLan(e,'1.5.1'));
+e=envelope();e.descriptor='!!!!';assert.throws(()=>data.unpackLan(e,'1.5.1'));
+e=envelope();e.schemaVersion=2;assert.throws(()=>data.unpackLan(e,'1.5.1'));
+e=envelope();e.files[entry.manifest.rules.path]='A'.repeat(200000);assert.throws(()=>data.unpackLan(e,'1.5.1'));
+// Exercise status, redirect and cancellation with the real request path.
+let response,opened,aborted=false;
+global.XMLHttpRequest=class {open(method,url){opened=url;}send(){if(response==='pending')return;this.status=response.status;this.response=Buffer.from(JSON.stringify(envelope()));this.responseURL=response.url||opened;this.onload();}abort(){aborted=true;this.onabort();}};
+(async()=>{response={status:200};assert.equal((await data.loadLan('192.168.1.20','123456','1.5.1')).digest,p.digest);
+response={status:0};await assert.rejects(data.loadLan('192.168.1.20','123456','1.5.1'));
+response={status:200,url:'http://8.8.8.8/data'};await assert.rejects(data.loadLan('192.168.1.20','123456','1.5.1'),/redirect/);
+response={status:403};await assert.rejects(data.loadLan('192.168.1.20','123456','1.5.1'));
+response='pending';const signal={cancelled:false},pending=data.loadLan('192.168.1.20','123456','1.5.1',signal);signal.cancelled=true;signal.cancel();await assert.rejects(pending,/Cancelled/);assert(aborted);
+console.log('PASS LAN private address/PIN, package integrity, size limits, redirect rejection and cancellation');
+})().catch(e=>{console.error(e);process.exitCode=1;});

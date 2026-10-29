@@ -71,7 +71,7 @@ No-root: To restart Home control, open Home Helper, choose Start Helper and conf
 
 After interruption, run `status` before retrying; retain journals and recovery files. `restore` returns LG Home without removing apps. `uninstall` restores before removal. Root recovery state is deliberately retained; never delete it to force reinstallation. Review diagnostic reports before sharing; do not publish keys or profile folders.
 
-Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Theme selection and installation by URL are not available yet. Themes with a fixed layout hide the Columns option and use the author’s value. Your saved choice returns when you switch to a theme that supports this setting. In the Glasshouse candidate preview, apps form one looping horizontal ribbon: Left/Right scrolls and wraps, Up opens shortcuts, and Down returns to the same app. In the Glasshouse preview, the mouse wheel or touchpad also scrolls the ribbon; it does not move Home behind an open dialog.
+Unreleased candidate only, in both editions: open **Home settings → Columns** and choose 1–8 columns, or **By theme** to use the theme’s value (Classic defaults to 5). An explicit number takes priority over the theme. Themes with a fixed layout hide the Columns option and use the author’s value. Your saved choice returns when you switch to a theme that supports this setting. In the Glasshouse candidate preview, apps form one looping horizontal ribbon: Left/Right scrolls and wraps, Up opens shortcuts, and Down returns to the same app. In the Glasshouse preview, the mouse wheel or touchpad also scrolls the ribbon; it does not move Home behind an open dialog.
 
 In candidate theme previews with the optional sidebar layout, Up/Down selects a menu item, Right enters the apps, and Left from the first app column returns to the menu.
 
@@ -105,6 +105,10 @@ After a failed or interrupted operation, check status and save its diagnostic re
 ## Themes (development candidate)
 
 In the theme-enabled candidate, open **Settings → Themes**. **Classic** and **Alpine** are included and work without downloading a theme; Classic remains the default. **Channel** is an external showcase theme. Choose a theme, then **Keep theme** within **20 seconds**. **Revert**, Back or timeout restores the previous appearance. If Home closes during an unconfirmed preview, the next launch returns to Classic.
+
+The theme showcase is an offline snapshot with bundled previews. Select a preview for details, then **Try theme** for a built-in theme or **Download theme** for Channel (internet required). After download, try it and choose **Keep theme** within **20 seconds**. Installed themes work offline. **Add by URL** remains available for pinned links.
+
+To receive an unpublished theme, open the author preview on a computer and choose **Send to TV**, then **Receive from computer** on the TV. Both devices must use the same trusted home network: transfer uses HTTP and fixed TCP port **8879**; allow that port through the computer firewall. Enter the private IPv4 address and six-digit PIN displayed on the computer. Keep sharing open; the session expires after **10 minutes**. The address is remembered; the PIN is not. GitHub publication is not required.
 
 To add Channel, copy its pinned link from showcase, open **Add by URL**, type/paste it in **Theme URL** using the TV keyboard, select **Load**, choose the entry, then choose the downloaded version and confirm. Repository roots can offer several themes; selection is explicit. Accepted files are cached for offline relaunch. Remove inactive versions or use **Clear downloaded themes** (confirmation required). **Restore Classic** is always available. Theme files are not part of legacy profile backups; authoritative profile restore resets the choice to Classic.
 

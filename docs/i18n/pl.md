@@ -71,7 +71,7 @@ No-root: Aby wznowić sterowanie Home, otwórz Home Helper, wybierz Uruchom Help
 
 Po przerwaniu operacji najpierw uruchom `status` i zachowaj dzienniki. `restore` przywraca LG Home bez usuwania aplikacji; `uninstall` przywraca je przed usunięciem. Dane odzyskiwania Root pozostają celowo: nie kasuj ich, by wymusić ponowną instalację. Sprawdź raporty przed udostępnieniem; nie publikuj kluczy ani katalogów profili.
 
-Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Wybór motywów i instalacja przez URL nie są jeszcze dostępne. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Glasshouse aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Glasshouse pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
+Tylko w nieopublikowanej wersji kandydującej, w obu edycjach: otwórz **Ustawienia Home → Kolumny** i wybierz od 1 do 8 kolumn lub **Według motywu**, aby użyć wartości motywu (Classic: 5). Wybrana liczba ma pierwszeństwo przed motywem. Motywy ze stałym układem ukrywają opcję kolumn i używają wartości autora. Zapisany wybór wraca po przełączeniu na motyw obsługujący to ustawienie. W podglądzie kandydata Glasshouse aplikacje tworzą jeden zapętlony poziomy pasek: Lewo/Prawo przewija, Góra otwiera skróty, a Dół wraca do tej samej aplikacji. W podglądzie Glasshouse pasek można też przewijać kółkiem myszy lub touchpadem; Home nie przesuwa się za otwartym oknem dialogowym.
 
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 
@@ -106,6 +106,10 @@ Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej pró
 ## Motywy – kandydat rozwojowy
 
 W kandydacie z obsługą motywów otwórz **Ustawienia → Motywy**. **Classic** i **Alpine** są wbudowane i nie wymagają pobierania motywu; domyślny pozostaje Classic. **Channel** jest zewnętrznym motywem ze showcase. Wybierz motyw i **Zachowaj motyw** w ciągu **20 sekund**. **Przywróć**, Back lub upływ czasu przywraca poprzedni. Przerwana próba uruchomi Home z Classic.
+
+Galeria to zapis katalogu offline z dołączonymi podglądami. Otwórz podgląd i wybierz **Wypróbuj motyw** dla wbudowanego lub **Pobierz motyw** dla Channel (wymagany internet). Po pobraniu wypróbuj i wybierz **Zachowaj motyw** w ciągu **20 sekund**. Zainstalowane motywy działają offline. **Dodaj przez URL** nadal obsługuje przypięte linki.
+
+Dla nieopublikowanego motywu otwórz podgląd autora na komputerze i wybierz **Wyślij do TV**, a na TV **Odbierz z komputera**. Oba urządzenia muszą być w tej samej zaufanej sieci domowej: HTTP używa stałego portu TCP **8879**, który należy dopuścić w zaporze komputera. Wpisz prywatny adres IPv4 i sześciocyfrowy PIN z komputera. Pozostaw udostępnianie otwarte; sesja wygasa po **10 minutach**. Adres jest zapamiętywany, PIN nie. Publikacja na GitHub nie jest wymagana.
 
 Wklej stały link ze showcase w **Dodaj przez URL → URL motywu**, używając klawiatury TV, wybierz **Wczytaj**, pozycję i pobraną wersję, następnie potwierdź próbę. Kolekcje wymagają jawnego wyboru. Zapisane pliki umożliwiają ponowne uruchomienie offline. Usuń nieaktywne wersje lub wyczyść pobrane motywy po potwierdzeniu. **Przywróć Classic** przywraca wygląd domyślny. Stare kopie profilu nie zawierają plików motywów; pełne przywrócenie profilu wybiera Classic.
 
