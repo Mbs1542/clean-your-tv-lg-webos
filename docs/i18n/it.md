@@ -118,6 +118,8 @@ Dopo un errore o un’interruzione, controlla lo stato e salva il rapporto diagn
 
 Nel candidato compatibile: **Impostazioni → Aspetto**. **Classic** e **Alpine** sono integrati e non richiedono il download del tema; Classic resta predefinito. **Channel** è esterno, dallo showcase. Durante una prova nella galleria: Scegli il tema e **Mantieni tema** entro **20 secondi**. **Ripristina**, Back o la scadenza ripristinano il precedente. Una prova interrotta avvia nuovamente Home con Classic. I temi integrati e scaricati scelti nell’elenco installato vengono applicati e salvati subito, senza timer. Vale anche per quelli ricevuti dal computer o installati tramite URL. Solo Prova tema nella galleria avvia una prova di 20 secondi.
 
+I temi installati appaiono in una sola riga a scorrimento orizzontale. Il tema attivo è sempre il primo e la sua scheda è evidenziata. Usa Sinistra/Destra per scorrere la riga.
+
 La galleria mostra solo temi non installati su questo TV. Classic, Alpine e i temi scaricati sono nascosti, anche se esiste una versione più recente. Dopo la rimozione il tema riappare. Aggiorna tramite URL o trasferimento dal computer.
 
 Le schede sono integrate in Aspetto, accanto alle categorie. Galleria, installazione tramite link e trasferimento dal computer si aprono nello stesso pannello; solo una prova della galleria mostra temporaneamente Home.

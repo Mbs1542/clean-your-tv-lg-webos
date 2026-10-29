@@ -117,6 +117,8 @@ Po błędzie lub przerwaniu sprawdź stan i zapisz raport diagnostyczny tej pró
 
 W kandydacie z obsługą motywów otwórz **Ustawienia → Wygląd**. **Classic** i **Alpine** są wbudowane i nie wymagają pobierania motywu; domyślny pozostaje Classic. **Channel** jest zewnętrznym motywem ze showcase. Podczas próby w galerii: Wybierz motyw i **Zachowaj motyw** w ciągu **20 sekund**. **Przywróć**, Back lub upływ czasu przywraca poprzedni. Przerwana próba uruchomi Home z Classic. Motywy wbudowane i pobrane wybrane z listy zainstalowanych są stosowane i zapisywane od razu, bez odliczania. Dotyczy to również motywów z komputera lub URL. Tylko Wypróbuj motyw w galerii rozpoczyna próbę 20 sekund.
 
+Zainstalowane motywy są w jednym przewijanym poziomo rzędzie. Aktywny motyw jest zawsze pierwszy, a jego karta jest wyróżniona. Do przeglądania użyj strzałek w lewo/prawo.
+
 Galeria pokazuje tylko motywy niezainstalowane na tym TV. Classic, Alpine i pobrane motywy są ukryte, także gdy istnieje nowsza wersja. Po usunięciu motyw pojawia się ponownie. Aktualizuj przez URL lub transfer z komputera.
 
 Karty motywów są osadzone bezpośrednio w Wyglądzie obok kategorii. Galeria, instalacja z linku i przesyłanie z komputera otwierają się w tym panelu; tylko próba w galerii tymczasowo pokazuje Home.

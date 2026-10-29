@@ -116,6 +116,8 @@ After a failed or interrupted operation, check status and save its diagnostic re
 
 In the theme-enabled candidate, open **Settings → Appearance**. **Classic** and **Alpine** are included and work without downloading a theme; Classic remains the default. **Channel** is an external showcase theme. In showcase trials: Choose a theme, then **Keep theme** within **20 seconds**. **Revert**, Back or timeout restores the previous appearance. If Home closes during an unconfirmed preview, the next launch returns to Classic. Built-in and downloaded themes chosen in the installed list apply and save immediately, without a confirmation timer. Themes received from a computer or installed by URL also use this list. Only Try theme inside Theme showcase starts a 20-second trial.
 
+Installed themes appear in one horizontally scrollable row. The active theme is always first and has a highlighted card. Use Left/Right to browse the row.
+
 Showcase lists only themes that are not installed on this TV. Classic, Alpine and downloaded themes are hidden, including when a newer catalogue version exists. After removing a downloaded theme it appears again. Update a theme through Add by URL or Receive from computer.
 
 Theme cards are embedded directly in Appearance beside the settings categories. Showcase, link installation and computer transfer open within that pane; only a showcase trial temporarily reveals Home.

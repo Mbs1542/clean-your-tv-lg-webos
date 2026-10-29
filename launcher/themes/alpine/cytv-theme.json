@@ -8,7 +8,7 @@
     "name": "Clean Your TV contributors",
     "url": "https://github.com/razdva122"
   },
-  "themeVersion": "1.4.3",
+  "themeVersion": "1.4.4",
   "layout": {
     "preset": "scenic-grid",
     "columns": 8,
@@ -104,16 +104,16 @@
   },
   "source": {
     "repository": "https://github.com/razdva122/clean-your-tv-lg-theme",
-    "commit": "95cc184f5987207713e43e4d060323fb724a20dd"
+    "commit": "95f812e505e81b1d4b706bd203f0e96306b1b18c"
   },
   "requires": {
-    "minimumHomeVersion": "1.5.1",
+    "minimumHomeVersion": "1.6.0",
     "capabilities": []
   },
   "rules": {
-    "path": "rules/596b29d15450b9841d6a40cbf24d473e30bf9f9e3247a9b0cfe004f4bdef5d8e.json",
-    "size": 7392,
-    "sha256": "596b29d15450b9841d6a40cbf24d473e30bf9f9e3247a9b0cfe004f4bdef5d8e"
+    "path": "rules/2f5b9b8339ad3ecf6b3ba193e595907b522b73138db7f5bd90f3b88c7474d2c0.json",
+    "size": 7398,
+    "sha256": "2f5b9b8339ad3ecf6b3ba193e595907b522b73138db7f5bd90f3b88c7474d2c0"
   },
   "documents": [
     {

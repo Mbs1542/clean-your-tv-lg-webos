@@ -116,6 +116,8 @@ Nach Fehlern oder Unterbrechungen Status prüfen und den Diagnosebericht dieses 
 
 Im Kandidaten mit Design-Unterstützung: **Einstellungen → Darstellung**. **Classic** und **Alpine** sind integriert und benötigen keinen Design-Download; Classic bleibt Standard. **Channel** ist ein externes Showcase-Design. Beim Galerietest: Nach der Auswahl innerhalb von **20 Sekunden** **Design behalten** wählen. **Zurücksetzen**, Back oder Zeitablauf stellt das vorherige Design wieder her. Ein unterbrochener Versuch startet beim nächsten Home-Aufruf mit Classic. Integrierte und heruntergeladene Designs aus der installierten Liste werden sofort ohne Bestätigungstimer angewendet und gespeichert. Das gilt auch für vom Computer oder per URL installierte Designs. Nur Design testen in der Galerie startet einen 20-Sekunden-Test.
 
+Installierte Designs stehen in einer horizontal scrollbaren Reihe. Das aktive Design steht immer zuerst und seine Karte ist hervorgehoben. Mit Links/Rechts wechseln Sie zwischen den Karten.
+
 Die Galerie zeigt nur auf diesem TV nicht installierte Designs. Classic, Alpine und heruntergeladene Designs bleiben verborgen, auch bei einer neueren Katalogversion. Nach dem Entfernen erscheint das Design wieder. Updates erfolgen per URL oder Computerübertragung.
 
 Die Designkarten sind direkt in Darstellung neben den Einstellungskategorien eingebettet. Katalog, Linkinstallation und Computerübertragung öffnen sich dort; nur ein Galerietest zeigt vorübergehend Home.

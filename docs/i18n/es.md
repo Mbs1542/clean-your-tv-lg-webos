@@ -116,6 +116,8 @@ Tras un fallo o interrupción, comprueba el estado y guarda el informe de diagn�
 
 En el candidato compatible: **Ajustes → Apariencia**. **Classic** y **Alpine** están integrados y no necesitan descargar el tema; Classic sigue como predeterminado. **Channel** es externo, desde showcase. En las pruebas de la galería: Elige el tema y **Conservar tema** antes de **20 segundos**. **Revertir**, Back o el tiempo agotado recuperan el anterior. Una prueba interrumpida inicia Home con Classic. Los temas integrados y descargados elegidos en la lista instalada se aplican y guardan al instante, sin temporizador. Esto incluye los recibidos del ordenador o instalados por URL. Solo Probar tema dentro de la galería inicia una prueba de 20 segundos.
 
+Los temas instalados aparecen en una sola fila con desplazamiento horizontal. El tema activo siempre está primero y su tarjeta está resaltada. Usa Izquierda/Derecha para recorrer la fila.
+
 La galería solo muestra temas no instalados en este TV. Classic, Alpine y los descargados se ocultan, incluso si hay una versión más reciente. Al eliminar un tema vuelve a aparecer. Actualiza por URL o desde el ordenador.
 
 Las tarjetas están integradas en Apariencia, junto a las categorías. La galería, la instalación por enlace y la transferencia desde el ordenador se abren ahí; solo una prueba de la galería muestra Home temporalmente.

@@ -61,13 +61,13 @@
 #homeThemePanel.theme-inline .theme-settings-card>input { max-width:100%; }
 #homeThemePanel.theme-inline button:disabled { opacity:.55; cursor:default; }
 #homeThemePanel.theme-inline button:focus { outline:3px solid #dbe9ff; outline-offset:3px; background:#384b65; color:#fff; }
-#homeThemePanel.theme-inline .theme-installed-grid { display:flex; flex-wrap:wrap; margin:0 0 16px; }
-#homeThemePanel.theme-inline .theme-option { box-sizing:border-box; display:flex; flex-direction:column; width:calc(50% - 16px); max-width:400px; margin:8px; padding:8px; border:2px solid #39434f; border-radius:12px; background:#171e27; align-items:stretch; }
-#homeThemePanel.theme-inline .theme-option[data-selected="true"] { border-color:#afc9ed; }
+#homeThemePanel.theme-inline .theme-installed-grid { display:flex; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; padding:8px; margin:0 0 16px; }
+#homeThemePanel.theme-inline .theme-option { box-sizing:border-box; display:flex; flex-direction:column; flex:0 0 320px; width:320px; max-width:calc(100% - 16px); margin:8px; padding:8px; border:2px solid #39434f; border-radius:12px; background:#171e27; align-items:stretch; }
+#homeThemePanel.theme-inline .theme-option[data-selected="true"] { border-color:#bcd8f6; background:#263e56; box-shadow:inset 0 0 0 2px #bcd8f6; }
 #homeThemePanel.theme-inline .theme-option .theme-choice { flex:none; display:block; width:100%; min-width:0; padding:0 0 8px; background:transparent; text-align:left; border-radius:6px; }
 #homeThemePanel.theme-inline .theme-choice img { display:block; width:100%; height:auto; margin:0 0 12px; border-radius:4px; }
 #homeThemePanel.theme-inline .theme-choice strong { display:inline-block; font-size:28px; line-height:1.2; margin:0 8px; }
-#homeThemePanel.theme-inline .theme-selected { display:inline-block; color:#cbe0ff; font-size:19px; margin:0 8px; }
+#homeThemePanel.theme-inline .theme-selected { display:inline-block; color:#142439; background:#cbe0ff; border-radius:4px; padding:3px 8px; font-size:19px; font-weight:bold; margin:8px 8px 0; }
 #homeThemePanel.theme-inline .theme-option small,#homeThemePanel.theme-inline .theme-meta { font-size:19px; line-height:1.3; color:#b9c4d2; margin:4px 10px 10px; overflow-wrap:break-word; }
 #homeThemePanel.theme-inline .theme-card-actions { display:flex; margin-top:auto; }
 #homeThemePanel.theme-inline .theme-card-actions button { flex:1; min-width:0; margin:4px; }

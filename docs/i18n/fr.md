@@ -116,6 +116,8 @@ Après un échec ou une interruption, vérifiez l’état et enregistrez le rapp
 
 Dans le candidat compatible : **Paramètres → Apparence**. **Classic** et **Alpine** sont intégrés, sans téléchargement du thème ; Classic reste le choix initial. **Channel** est un thème externe du showcase. Lors d’un essai dans la galerie : Choisissez le thème puis **Conserver le thème** sous **20 secondes**. **Rétablir**, Back ou le délai expiré restaure le précédent. Une prévisualisation interrompue relance Home avec Classic. Les thèmes intégrés et téléchargés choisis dans la liste installée sont appliqués et enregistrés immédiatement, sans minuterie. Cela inclut les thèmes reçus de l’ordinateur ou installés par URL. Seul Essayer le thème dans la galerie lance un essai de 20 secondes.
 
+Les thèmes installés apparaissent sur une seule ligne à défilement horizontal. Le thème actif est toujours le premier et sa carte est mise en évidence. Utilisez Gauche/Droite pour parcourir la ligne.
+
 La galerie affiche seulement les thèmes absents de ce téléviseur. Classic, Alpine et les thèmes téléchargés sont masqués, même si une version plus récente existe. Un thème supprimé réapparaît. Mettez à jour par URL ou depuis l’ordinateur.
 
 Les cartes sont intégrées directement dans Apparence, à côté des catégories. La galerie, l’installation par lien et le transfert depuis un ordinateur s’ouvrent dans ce volet ; seul un essai de la galerie affiche temporairement Home.

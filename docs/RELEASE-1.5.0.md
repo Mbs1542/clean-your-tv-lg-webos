@@ -22,6 +22,9 @@ Helper rollback compatibility and remaining release gates are tracked in
   embedded Showcase in Appearance. Channel is external. Installed identities are
   hidden from Showcase; Refresh reads reviewed repository updates. Installed
   themes apply immediately; Showcase trials require Keep within 20 seconds.
+  Installed cards occupy one horizontal row, with the highlighted active version
+  first and full-card scrolling for remote focus. Alpine 1.4.4 uses its scenic
+  translucent styling for the expanded input selector.
   Confirmed removal of the active downloaded theme restores Classic first.
   Late catalogue updates preserve the selected control, including Back, without
   taking focus from the Settings footer.
@@ -59,6 +62,10 @@ Home shows the expanded address, uses a bounded JSON lookup and then applies the
 normal GitHub/package checks. The matching author toolkit provides TV link,
 Copy ID/Copy link and a keyless release workflow with one ID per theme/version.
 No new TV service method or listening endpoint is introduced by this feature.
+Physical C3 testing currently blocks short-ID acceptance: is.gd HTTPS handshakes
+do not complete on the TV despite matching DNS and working IPv4 TCP. The pinned
+GitHub URL and PC-to-TV transfer remain the fallback; no certificate checks were
+disabled. This limitation remains open.
 
 ## Upgrade boundaries
 

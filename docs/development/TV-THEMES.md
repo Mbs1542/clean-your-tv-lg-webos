@@ -152,3 +152,28 @@ token. `tests/themes/short-links.cjs` covers target restrictions/cancellation an
 Chrome request resolved `102300a209`, fetched Channel 1.3.3 and verified all 12
 files with descriptor digest `da7da0848ac0ecd60ebbcd964cb65a68fdf4fab54f30eebd56218c9d3141e17c`.
 This is browser evidence, not physical-TV or published-app acceptance.
+
+
+## Installed theme ribbon and Alpine inputs (next candidate)
+
+Appearance keeps installed themes in one horizontal row, including on 720p screens.
+The active identity **and digest** moves first; other installed versions keep their
+relative order. Selection has its own tinted surface, border and filled badge;
+keyboard focus remains a separate outline. Focus entering a card or one of its
+actions scrolls the whole card into view without changing the active theme.
+Showcase retains its separate catalog layout.
+
+Alpine 1.4.4 uses a translucent scenic input sheet and a light-on-dark focus surface,
+matching its shortcuts and library instead of the opaque Classic white selection.
+The built-in descriptor and rules are regenerated from toolkit source
+`95f812e505e81b1d4b706bd203f0e96306b1b18c`; hashed assets and license notices are unchanged.
+The freshly exported candidate runtime requires Home/theme engine 1.6.0.
+
+Physical short-ID testing on the C3 candidate exposed an unresolved network/TLS
+limitation: is.gd DNS agrees with the computer, IPv4 TCP connects but HTTPS does not
+complete, and IPv6 is unavailable. Both is.gd and its www host were tested without
+changing TV network settings or certificate validation. The same TV fetched the
+pinned GitHub descriptor successfully; PC-to-TV delivery of Channel 1.3.3 passed.
+This is a device/network observation, not proof of an is.gd service outage or of
+a client-side fix. Use the full pinned GitHub URL or PC-to-TV transfer while this
+path is unavailable. See the scoped [physical QA record](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141#issuecomment-6502701028).
