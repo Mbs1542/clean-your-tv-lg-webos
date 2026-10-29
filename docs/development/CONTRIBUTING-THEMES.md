@@ -390,6 +390,14 @@ inbound TCP **8879**, and avoid guest-network/client-isolation barriers. Do not
 configure router port forwarding. You enter an address and PIN, not a long
 repository URL.
 
+On macOS, allowing Node.js alone is insufficient if **Block all incoming
+connections** is enforced. A managed Mac may prevent changes even with local
+administrator authorization. In that case this pull-from-computer transport
+cannot receive a TV connection: use a computer where inbound TCP 8879 is
+permitted, or an administrator-approved configuration. This is a network
+prerequisite, not a reason to enter a different PIN repeatedly. Keep the
+built-in/offline theme choices available while resolving it.
+
 The transfer sends a compiled snapshot, not a live link to your source folder.
 Editing a file does not update the TV. Use **New PIN** in the guide for a fresh
 snapshot, receive it again and apply the new installed version. A session expires
