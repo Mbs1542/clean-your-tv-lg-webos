@@ -145,6 +145,7 @@ jobs:
     if: needs.plan.outputs.release == 'true' && inputs.validate_only != true
     permissions:
       contents: write
+      actions: read
       pull-requests: write
       issues: write
     uses: ./.github/workflows/publish-release.yml
