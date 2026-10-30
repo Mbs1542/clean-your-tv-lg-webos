@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve the real launcher with demo data. Python standard library only."""
+"""Serve the real launcher and reviewed themes with original webOS app reference data. Requires Node.js and installed build dependencies."""
 import argparse
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -13,6 +13,10 @@ from urllib.parse import unquote, urlsplit
 import webbrowser
 
 ROOT = Path(__file__).resolve().parents[1]
+
+def preview_themes():
+    return subprocess.check_output(['node', str(ROOT / 'scripts/build-preview-themes.cjs')], cwd=ROOT)
+
 LAUNCHER_FILES = {
     'index.html', 'style.css', 'theme-defaults.css', 'theme-policy.js', 'theme-runtime.js', 'home-layout.js', 'layout-panel.js', 'settings-categories.js', 'layout-panel.css', 'renewal-panel.css', 'app.js', 'app-library.js', 'config.js',
     'user-data.js', 'release-notes.js', 'system-updates.js', 'update-panel.js', 'renewal-panel.js', 'helper-control.js', 'profile-bootstrap.js',
@@ -20,46 +24,41 @@ LAUNCHER_FILES = {
 }
 THEME_FILES = ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-receiver.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())
 LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
-DEMO_APPS = [
-    ('youtube', 'YouTube', '#ffffff'),
-    ('netflix', 'Netflix', '#ffffff'),
-    ('apple', 'Apple TV', '#000000'),
-    ('disney', 'Disney+', '#071b53'),
-    ('browser', 'Web Browser', '#5c75b8'),
-    ('emby', 'Emby', '#333333'),
-    ('prime', 'Prime Video', '#00a8e1'),
-    ('spotify', 'Spotify', '#191414'),
-    ('twitch', 'Twitch', '#9146ff'),
-    ('hbomax', 'HBO Max', '#5822b4'),
-]
 ROOT_LAUNCHER_FILES = {
     'index.html', 'app.js', 'app-library.js', 'style.css', 'theme-defaults.css', 'theme-policy.js', 'theme-runtime.js', 'home-layout.js', 'layout-panel.js', 'settings-categories.js', 'layout-panel.css', 'config.js', 'apps.js',
     'fonts/outfit-300.ttf', 'fonts/outfit-400.ttf', 'fonts/outfit-500.ttf', 'fonts/outfit-700.ttf', 'fonts/NotoSans.ttf', 'fonts/NotoSans-OFL.txt', 'fonts/NotoSansDevanagari.ttf', 'fonts/NotoSansDevanagari-OFL.txt', 'fonts/NotoSansKR.ttf', 'fonts/NotoSansKR-OFL.txt', 'fonts/NotoSansSC.ttf', 'fonts/NotoSansSC-OFL.txt', 'fonts/NotoSansTC.ttf', 'fonts/NotoSansTC-OFL.txt', 'fonts/OFL.txt',
     'i18n.js', 'catalogs.js', 'i18n.css', 'root-locales.js', 'root-exit.js', 'root-firmware-control.js', 'root-firmware.js', 'root-audio.js', 'root-audio-locales.js', 'root-settings.js', 'root-settings.css',
     'root-profile-data.js', 'root-profile.js', 'release-notes.js', 'system-updates.js', 'root-updates.js',
 }
-ICON_FILES = {app_id + '.svg' for app_id, _, _ in DEMO_APPS}
+# Legacy synthetic icons remain available for isolated bridge fixtures.
+ICON_FILES = {path.name for path in (ROOT / 'preview/icons').glob('*.svg')}
+REFERENCE_FILES = {'reference-apps/' + str(path.relative_to(ROOT / 'preview/reference-apps'))
+                   for path in (ROOT / 'preview/reference-apps').rglob('*') if path.is_file()}
 
 
 ROOT_LAUNCHER_FILES.update(['appinfo.json'] + THEME_FILES)
 
 
 def inventory():
-    apps = [{'id': 'preview.' + app_id, 'title': title,
-             'icon': '../preview/icons/' + app_id + '.svg', 'iconColor': color}
-            for app_id, title, color in DEMO_APPS]
-    return {'apps': apps, 'inputs': [
-        {'label': 'HDMI 1 · Console', 'appId': 'preview.hdmi1'},
-        {'label': 'HDMI 2 · Media player', 'appId': 'preview.hdmi2'},
-    ]}
+    data = json.loads((ROOT / 'preview/reference-apps/inventory.json').read_text(encoding='utf-8'))
+    data['referenceApps'] = True
+    return data
+
+
+def preview_config(original):
+    # Use the ordinary dock defaults, without replacing any saved user layout.
+    dock = [app['id'] for app in inventory()['apps'][:5]]
+    return original + ('\nwindow.CONFIG.dockApps = ' + json.dumps(dock) + ';\n').encode()
 
 
 def revision():
     files = [ROOT / 'launcher' / name for name in sorted(LAUNCHER_FILES)]
     files += [ROOT / 'root-edition/preview.py']
     files += [ROOT / 'root-edition/ui' / name for name in ('root-locales.js', 'root-exit.js', 'root-firmware-control.js', 'root-firmware.js', 'root-audio.js', 'root-audio-locales.js', 'root-settings.js', 'root-settings.css', 'root-profile-data.js', 'root-profile.js', 'root-updates.js')]
-    files += [ROOT / 'preview/index.html', ROOT / 'preview/bridge.js', ROOT / 'preview/live-reload.js']
+    files += [ROOT / 'preview/index.html', ROOT / 'preview/bridge.js', ROOT / 'preview/live-reload.js', ROOT / 'preview/themes.js', ROOT / 'scripts/build-preview-themes.cjs']
+    files += list((ROOT / 'showcase/registry').glob('*.json'))
     files += [ROOT / 'preview/icons' / name for name in sorted(ICON_FILES)]
+    files += [ROOT / 'preview' / name for name in sorted(REFERENCE_FILES)]
     stamps = []
     for file in files:
         try:
@@ -79,6 +78,7 @@ def root_launcher():
     # Reuse the isolated Root UI staging, without any installer or runtime services.
     staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare'](json.loads((ROOT / 'launcher/appinfo.json').read_text())['version'])
     files = {name: staged[name] for name in ROOT_LAUNCHER_FILES}
+    files['config.js'] = preview_config(files['config.js'])
     files['apps.js'] = ('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode()
     files['index.html'] = files['index.html'].replace(
         b'<head>', b'<head>\n  <script src="../preview/bridge.js"></script>', 1)
@@ -99,10 +99,12 @@ def export_site(destination, showcase=False):
         target.parent.mkdir(parents=True, exist_ok=True)
         if name == 'index.html':
             target.write_text(launcher_html(), encoding='utf-8')
+        elif name == 'config.js':
+            target.write_bytes(preview_config((ROOT / 'launcher' / name).read_bytes()))
         else:
             shutil.copyfile(ROOT / 'launcher' / name, target)
     (destination / 'launcher/apps.js').write_text('window.TV_APPS = ' + json.dumps(inventory()) + ';\n', encoding='utf-8')
-    for name in ['bridge.js', 'icons/SOURCES.txt', 'icons/LICENSE-LUCIDE.txt'] + ['icons/' + name for name in sorted(ICON_FILES)]:
+    for name in ['bridge.js', 'themes.js', 'icons/SOURCES.txt', 'icons/LICENSE-LUCIDE.txt'] + ['icons/' + name for name in sorted(ICON_FILES)] + sorted(REFERENCE_FILES):
         target = destination / 'preview' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / 'preview' / name, target)
@@ -110,6 +112,7 @@ def export_site(destination, showcase=False):
         target = destination / 'root-launcher' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    (destination / 'preview/themes.json').write_bytes(preview_themes())
     (destination / 'index.html').write_text(preview_html(live=False, showcase=showcase), encoding='utf-8')
     if showcase:
         subprocess.run(['node', str(ROOT / 'scripts/build-showcase.cjs'),
@@ -123,6 +126,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
         file = None
+        if path == '/preview/themes.json':
+            self.respond(preview_themes(), 'application/json; charset=utf-8')
+            return
         if path == '/preview/version':
             self.respond(revision().encode(), 'text/plain; charset=utf-8')
             return
@@ -132,10 +138,16 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == '/':
             file = ROOT / 'preview/index.html'
-        elif path in ('/preview/bridge.js', '/preview/live-reload.js', '/preview/settings.html', '/preview/update-overflow.html'):
+        elif path in ('/preview/bridge.js', '/preview/themes.js', '/preview/live-reload.js', '/preview/settings.html', '/preview/update-overflow.html'):
+            file = ROOT / path.lstrip('/')
+        elif path.startswith('/preview/') and path[len('/preview/'):] in REFERENCE_FILES:
             file = ROOT / path.lstrip('/')
         elif path.startswith('/preview/icons/') and path[len('/preview/icons/'):] in ICON_FILES:
             file = ROOT / path.lstrip('/')
+        elif path == '/launcher/config.js':
+            self.respond(preview_config((ROOT / 'launcher/config.js').read_bytes()),
+                         'text/javascript; charset=utf-8')
+            return
         elif path == '/launcher/apps.js':
             self.respond(('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode(),
                          'text/javascript; charset=utf-8')

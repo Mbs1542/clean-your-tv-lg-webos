@@ -587,8 +587,9 @@ body.editing .item.moving .name {
 #homeSurface[data-layout="scenic-grid"] .card.missing-icon::after { font-size: 48px; }
 body.editing #homeSurface[data-layout="scenic-grid"] #viewport { top: 600px; }
 body.editing #homeSurface[data-layout="scenic-grid"] #stage { top: -600px; }
-#homeSurface[data-layout="scenic-grid"] #viewport::before { content: attr(data-position); position: absolute; top: 0; left: auto; right: 112px; color: #ece7df; font-size: 28px; z-index: 3; pointer-events: none; }
-body.editing #homeSurface[data-layout="scenic-grid"] #viewport::before { display: none; }
+.ctv-position { display: none; }
+#homeSurface[data-layout="scenic-grid"] .ctv-position { display: block; position: absolute; top: 0; left: auto; right: 112px; color: #ece7df; font-size: 28px; z-index: 3; pointer-events: none; }
+body.editing #homeSurface[data-layout="scenic-grid"] .ctv-position { display: none; }
 
 #homeSurface[data-layout="scenic-grid"] #hero { display: block; left: 112px; right: 400px; font-size: 34px; line-height: 1.2; font-weight: 400; letter-spacing: 0; white-space: normal; word-wrap: break-word; max-height: 132px; overflow: hidden; transition: none; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
 #homeSurface[data-layout="scenic-grid"] .add-app .name { white-space: normal; height: 64px; }

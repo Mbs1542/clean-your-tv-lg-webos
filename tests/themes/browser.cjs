@@ -1,4 +1,4 @@
-// Real UI and synthetic service responses only; no device/network access.
+// Real UI and original reference app bytes with simulated services; no device/network access.
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -20,8 +20,14 @@ async function open(browser, site, edition, columns = 5) {
   await page.mouse.move(0, 0);
   await page.clock.setFixedTime(new Date('2026-10-28T12:00:00Z'));
   await page.route('**/config.js', route => route.fulfill({body: 'window.CONFIG=' + JSON.stringify({
-    columns, dockApps: [], hiddenApps: [], liveTvApp: 'preview.live'
+    columns, dockApps: [], hiddenApps: ['com.webos.app.browser'], liveTvApp: 'preview.live'
   }) + ';'}));
+  // Keep one real app off Home so the library state has an available choice.
+  // Inputs are explicit browser simulations, separate from captured app metadata.
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, 'preview/reference-apps/inventory.json')));
+  inventory.referenceApps = true;
+  inventory.inputs = [{label: 'HDMI 1 · Console', appId: 'preview.hdmi1'}];
+  await page.route('**/apps.js', route => route.fulfill({body: 'window.TV_APPS=' + JSON.stringify(inventory) + ';'}));
   await page.route(/^https?:/, route => route.abort());
   await page.goto(pathToFileURL(path.join(site, edition, 'index.html')).href);
   await page.locator('#tiles .focused').waitFor();

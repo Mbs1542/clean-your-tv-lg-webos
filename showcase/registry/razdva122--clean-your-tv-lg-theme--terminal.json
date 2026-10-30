@@ -26,11 +26,15 @@
     "high-contrast"
   ],
   "addedAt": "2026-10-28",
-  "reviewedAt": "2026-10-29",
+  "reviewedAt": "2026-10-30",
   "evidence": [
     {
       "kind": "browser",
       "summary": "Candidate browser review against the shared renderer: all three shortcut focus states use dark-blue text and matching focus artwork on white; Home, Inputs and unthemed Settings screenshots regenerated. Toolkit 36 tests passed, zero skipped, including real browser LAN import. No physical-TV acceptance for this revision."
+    },
+    {
+      "kind": "browser",
+      "summary": "Toolkit tag v1.3.3 and pinned remote bytes verified. Inline main Home preview tested in Root and No-root with external network blocked: all four themes apply, selected theme survives edition switch and original app order is retained. Browser only; physical-TV acceptance untested."
     }
   ]
 }

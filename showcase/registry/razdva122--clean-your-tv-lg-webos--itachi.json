@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "github:razdva122/clean-your-tv-lg-webos:itachi",
-  "title": "Itachi · Sharingan",
+  "title": "Itachi \u00b7 Sharingan",
   "description": "Dark Itachi wallpaper and CSS-only white logo effects. Original application images remain unchanged.",
   "author": {
     "name": "CYTV personal themes",
@@ -29,6 +29,11 @@
     {
       "kind": "browser",
       "summary": "Root and No-root real renderer at 1920x1080 with synthetic public app data: full-frame preview downsampled to 960x540 and visually inspected; native icon sources unchanged, CSS-only effects, cache restore, Settings isolation and reset. Host Chrome only; no physical-TV retest. Local source/distribution hashes verified; remote publication remains pending."
+    },
+    {
+      "kind": "browser",
+      "summary": "Superseded by the published toolkit-owned Itachi 1.0.2. Historical identity retained as a tombstone; use github:razdva122/clean-your-tv-lg-theme:itachi."
     }
-  ]
+  ],
+  "availability": "removed"
 }
