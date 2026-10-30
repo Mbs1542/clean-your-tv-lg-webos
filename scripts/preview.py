@@ -41,6 +41,12 @@ def inventory():
     return data
 
 
+def preview_config(original):
+    # Use the ordinary dock defaults, without replacing any saved user layout.
+    dock = [app['id'] for app in inventory()['apps'][:5]]
+    return original + ('\nwindow.CONFIG.dockApps = ' + json.dumps(dock) + ';\n').encode()
+
+
 def revision():
     files = [ROOT / 'launcher' / name for name in sorted(LAUNCHER_FILES)]
     files += [ROOT / 'root-edition/preview.py']
@@ -67,6 +73,7 @@ def root_launcher():
     # Reuse the isolated Root UI staging, without any installer or runtime services.
     staged = runpy.run_path(str(ROOT / 'root-edition/preview.py'))['prepare'](json.loads((ROOT / 'launcher/appinfo.json').read_text())['version'])
     files = {name: staged[name] for name in ROOT_LAUNCHER_FILES}
+    files['config.js'] = preview_config(files['config.js'])
     files['apps.js'] = ('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode()
     files['index.html'] = files['index.html'].replace(
         b'<head>', b'<head>\n  <script src="../preview/bridge.js"></script>', 1)
@@ -87,6 +94,8 @@ def export_site(destination, showcase=False):
         target.parent.mkdir(parents=True, exist_ok=True)
         if name == 'index.html':
             target.write_text(launcher_html(), encoding='utf-8')
+        elif name == 'config.js':
+            target.write_bytes(preview_config((ROOT / 'launcher' / name).read_bytes()))
         else:
             shutil.copyfile(ROOT / 'launcher' / name, target)
     (destination / 'launcher/apps.js').write_text('window.TV_APPS = ' + json.dumps(inventory()) + ';\n', encoding='utf-8')
@@ -126,6 +135,10 @@ class Handler(BaseHTTPRequestHandler):
             file = ROOT / path.lstrip('/')
         elif path.startswith('/preview/icons/') and path[len('/preview/icons/'):] in ICON_FILES:
             file = ROOT / path.lstrip('/')
+        elif path == '/launcher/config.js':
+            self.respond(preview_config((ROOT / 'launcher/config.js').read_bytes()),
+                         'text/javascript; charset=utf-8')
+            return
         elif path == '/launcher/apps.js':
             self.respond(('window.TV_APPS = ' + json.dumps(inventory()) + ';\n').encode(),
                          'text/javascript; charset=utf-8')

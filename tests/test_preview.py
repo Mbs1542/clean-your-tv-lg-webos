@@ -24,9 +24,9 @@ class PreviewTest(unittest.TestCase):
         spec.loader.exec_module(preview)
         data = preview.inventory()
         metadata = json.loads((ROOT / 'preview/reference-apps/metadata.json').read_text())
-        expected_ids = ['youtube.leanback.v4', 'netflix', 'com.apple.appletv',
-                        'tv.twitch.tv.starshot.lg', 'com.emby.app', 'cdp-30',
-                        'org.jellyfin.webos', 'com.apple.applemusic',
+        expected_ids = ['netflix', 'youtube.leanback.v4', 'com.apple.appletv',
+                        'com.apple.applemusic', 'tv.twitch.tv.starshot.lg',
+                        'com.emby.app', 'cdp-30', 'org.jellyfin.webos',
                         'mgg4.5.channelplus', 'com.webos.app.browser']
         self.assertTrue(data['referenceApps'])
         self.assertEqual([app['id'] for app in data['apps']], expected_ids)
@@ -75,6 +75,10 @@ class PreviewTest(unittest.TestCase):
             for file in (ROOT / 'preview/reference-apps').rglob('*'):
                 if file.is_file():
                     self.assertEqual((output / file.relative_to(ROOT)).read_bytes(), file.read_bytes())
+            for edition in ('launcher', 'root-launcher'):
+                config = (output / edition / 'config.js').read_text()
+                self.assertIn('window.CONFIG = ', config)
+                self.assertIn('window.CONFIG.dockApps = ' + json.dumps([app['id'] for app in apps['apps'][:5]]) + ';', config)
             root_apps = json.loads((output / 'root-launcher/apps.js').read_text().removeprefix('window.TV_APPS = ').rstrip(';\n'))
             self.assertEqual(root_apps, apps)
             for edition in ('launcher', 'root-launcher'):
@@ -108,7 +112,7 @@ class PreviewTest(unittest.TestCase):
             self.assertIn('root-settings.js', root)
             self.assertNotIn('native-bootstrap.js', root)
             self.assertNotIn('profile-bootstrap.js', root)
-            self.assertEqual(json.loads(get('/root-launcher/apps.js').removeprefix('window.TV_APPS = ').rstrip(';\n'))['apps'][0]['id'], 'youtube.leanback.v4')
+            self.assertEqual(json.loads(get('/root-launcher/apps.js').removeprefix('window.TV_APPS = ').rstrip(';\n'))['apps'][0]['id'], 'netflix')
             page = get('/launcher/index.html')
             self.assertLess(page.index('/preview/bridge.js'), page.index('profile-bootstrap.js'))
             self.assertEqual(get('/launcher/style.css'), (ROOT / 'launcher/style.css').read_text())
