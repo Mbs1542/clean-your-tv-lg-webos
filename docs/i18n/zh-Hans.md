@@ -1,6 +1,6 @@
 # Clean Your TV — 用户指南
 
-> 未发布候选版 1.5.0：主题、展示页和电脑向电视传输。电视验收尚未完成。已发布稳定版为 1.4.1。 [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0：主题、展示页和电脑向电视传输。已知 Root 限制：Appearance 可能偏移 110 px；待机唤醒后 Home 可能不会自动打开。设备实机验证范围仍有限。 [1.5.0](../RELEASE-1.5.0.md).
 
 [文档导航](../README.md) · [报告问题](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ No-root: 要重新启动 Home 控制，请打开 Home Helper，选择启动 Help
 
 在尚未发布的候选版本主题预览中，若使用可选的侧边栏布局，上/下键选择菜单项，右键进入应用区域，在应用第一列按左键返回菜单。
 
-尚未发布的 No-root 候选版本：从待机唤醒后，Helper 可尝试恢复临时 watchdog 超时，十分钟内最多五次。Stop 和连按三次 Home 后仍需手动启动 Helper；反复失败会保持停止状态。尚待电视实机验收。[行为与限制（英语）](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155)。
+No-root 1.5.0：从待机唤醒后，Helper 可尝试恢复临时 watchdog 超时，十分钟内最多五次。Stop 和连按三次 Home 后仍需手动启动 Helper；反复失败会保持停止状态。尚待电视实机验收。[行为与限制（英语）](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155)。
 
 ## 更新与移除
 
@@ -97,7 +97,7 @@ Root HDMI 声音恢复是实验功能，**默认关闭**，仅在需要时自行
 
 仅限未发布候选版：`cytv recover-system-rollback --edition root` 仅用于已验证的 Root 回滚：所有软件包安装程序均已完成，但启动器就绪等待超时。必须由真实启动器发送就绪信号；安装结果不明时拒绝恢复。保留软件包、固定代码和密钥、失败证据及明确关闭的 Home 控制状态，并以私有记录保存有时限的尝试。 普通重试不会延长时限。仅在之前的 120 秒到期、没有已接受的就绪信号且不存在不明安装结果后，才可用 `--new-recovery-attempt` 按 UUID/哈希归档完整旧记录，并明确开始新尝试。已完成的恢复不会重新开始，也不会自动连续重试。 [流程与限制（英文）](../RECOVERY.md#root-system-rollback-readiness-candidate)。
 
-仅限未发布的 1.5.0 候选版：替换包包含 System Updater 1.1.2。电视 OTA 前，请明确运行 `cytv replace-system-updater --edition root` 替换 1.1.0 或 1.1.1。只替换 System Updater，保留 Root/Root Updater 应用、完整配置和 Home 选择，并归档旧状态。结果不明或尚未完成的操作会阻止替换。此要求不限制 No-root 更新源。[替换流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
+1.5.0：替换包包含 System Updater 1.1.2。电视 OTA 前，请明确运行 `cytv replace-system-updater --edition root` 替换 1.1.0 或 1.1.1。只替换 System Updater，保留 Root/Root Updater 应用、完整配置和 Home 选择，并归档旧状态。结果不明或尚未完成的操作会阻止替换。此要求不限制 No-root 更新源。[替换流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
 
 ## 帮助与详细说明
 
@@ -138,7 +138,9 @@ Root HDMI 声音恢复是实验功能，**默认关闭**，仅在需要时自行
 
 浏览器预览中的“从电脑接收”说明电视上的操作，不会在电脑上启动电视接收器。请使用预览上方的 Send to TV。删除已下载主题需要确认；删除当前主题前会先恢复 Classic。取消会保留主题。
 
-## 设置分类（未发布候选版本）
+<a id="设置分类未发布候选版本"></a>
+
+## 设置分类（1.5.0）
 
 两个版本均在左侧显示分类，右侧显示所选设置：主屏幕、外观（主题和列数）、语言、软件更新及高级。No-root 还提供 Developer Mode；Root 的 LG 固件更新位于更新分类，HDMI 声音位于高级分类。上下键在当前列内移动，右键进入设置，左键返回分类。返回键先返回分类，再关闭设置。也可用 Tab 选择返回 Home 按钮。
 

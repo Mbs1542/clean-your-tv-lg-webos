@@ -1,6 +1,6 @@
 # Choose and install themes
 
-These embedded controls are implemented in an **unpublished theme-settings follow-up**. Published packages may not include them yet. If Settings has no Themes entry, use a package from that candidate after its normal release/acceptance; copying a link into an older Home cannot add the feature. Physical-TV acceptance is still required.
+These controls are included in Home 1.6.0 / release 1.5.0. Older packages do not gain the feature by copying a theme link. Root has two known limitations: applying a theme can shift Appearance by 110 px, and automatic Home after standby can fail. See [release notes and scoped acceptance](RELEASE-1.5.0.md).
 
 Authors: follow the [complete theme contribution walkthrough](development/CONTRIBUTING-THEMES.md) to create a theme, preview it on PC, test it on TV and submit it to Showcase.
 
@@ -26,7 +26,7 @@ Opening Theme showcase or choosing Refresh checks the main project repository fo
 
 ## Transfer a theme from your computer
 
-Use matching Home and service packages from the candidate. On an existing Root installation, updating the Home UI alone does not update its preserved private service; see the [provisioning requirements](development/TV-THEMES.md#pc--tv-push-primary-author-transfer). No Showcase submission, public repository or source commit is required for a local development test. The primary direction is **PC → TV**: the TV temporarily accepts the compiled theme; the computer makes an outgoing connection.
+Use matching Home and service packages from release 1.5.0. On an existing Root installation, updating the Home UI alone does not update its preserved private service; see the [provisioning requirements](development/TV-THEMES.md#pc--tv-push-primary-author-transfer). No Showcase submission, public repository or source commit is required for a local development test. The primary direction is **PC → TV**: the TV temporarily accepts the compiled theme; the computer makes an outgoing connection.
 
 1. On TV open **Settings → Appearance → Receive from computer**. Keep the pane open; it shows the **TV address**, six-digit PIN and expiry time.
 2. On the computer run your theme in the author toolkit's **preview** or **showcase**, select it and press **Send to TV**.
@@ -88,7 +88,7 @@ Theme images/choice are not included in legacy profile backup/export. A legacy p
 
 | Problem | Action |
 | --- | --- |
-| No Themes entry | This Home package does not include the theme-enabled candidate. |
+| No Themes entry | This Home package predates the theme-enabled Home 1.6.0. |
 | Link rejected | Copy the pinned raw descriptor from showcase, or use a public repository root with the documented index. |
 | Download/network error | Check connectivity and source availability; GitHub API rate limits, CORS or old TV TLS can block access. Built-ins remain usable. |
 | Hash/image/API error | Keep the accepted theme; ask the author for a new valid distribution. Do not disable verification. |

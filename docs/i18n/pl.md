@@ -1,6 +1,6 @@
 # Clean Your TV — instrukcja użytkownika
 
-> Nieopublikowany kandydat 1.5.0: motywy, galeria i przesyłanie z komputera na TV. Testy na TV są w toku. Opublikowana wersja stabilna to 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0: motywy, galeria i przesyłanie z komputera na TV. Znane ograniczenia Root: Appearance może przesunąć się o 110 px; Home może nie otworzyć się automatycznie po czuwaniu. Zakres testów urządzeń jest ograniczony. [1.5.0](../RELEASE-1.5.0.md).
 
 [Dokumentacja](../README.md) · [Zgłoś problem](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ Nieopublikowany kandydat, obie edycje: w **Ustawienia Home → Wygląd** wyłąc
 
 W podglądach motywów nieopublikowanej wersji kandydującej z opcjonalnym panelem bocznym Góra/Dół wybiera pozycję menu, Prawo przechodzi do aplikacji, a Lewo z pierwszej kolumny aplikacji wraca do menu.
 
-Nieopublikowany kandydat No-root: Helper może wznowić działanie po przejściowym przekroczeniu czasu watchdog przy wybudzaniu, maksymalnie pięć razy w ciągu dziesięciu minut. Stop i trzykrotne Home nadal wymagają jawnego uruchomienia Helper; powtarzające się błędy pozostawiają go zatrzymanym. Weryfikacja na TV jest w toku. [Działanie i ograniczenia (angielski)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+No-root 1.5.0: Helper może wznowić działanie po przejściowym przekroczeniu czasu watchdog przy wybudzaniu, maksymalnie pięć razy w ciągu dziesięciu minut. Stop i trzykrotne Home nadal wymagają jawnego uruchomienia Helper; powtarzające się błędy pozostawiają go zatrzymanym. Weryfikacja na TV jest w toku. [Działanie i ograniczenia (angielski)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
 
 ## Aktualizacja i usuwanie
 
@@ -97,7 +97,7 @@ Tylko nieopublikowany kandydat: gdy stare zapisywalne katalogi Root blokują dos
 
 Tylko nieopublikowany kandydat: `cytv recover-system-rollback --edition root` obsługuje zweryfikowane przywracanie Root, gdy wszystkie instalatory pakietów zakończyły pracę, ale upłynął czas gotowości launchera. Wymaga prawdziwego sygnału launchera i odrzuca nieznane wyniki instalacji. Zachowuje pakiety, przypięty kod i klucze, dowody błędu oraz jawnie wyłączone sterowanie Home. Prywatny zapis dokumentuje ograniczoną próbę. Zwykłe ponowienie nie wydłuża terminu. Dopiero po 120 sekundach, bez zaakceptowanego sygnału gotowości i nieznanych wyników instalacji, `--new-recovery-attempt` archiwizuje cały poprzedni zapis pod UUID/haszem i jawnie rozpoczyna nową próbę. Ukończone odzyskiwanie pozostaje idempotentne; brak automatycznych kolejnych prób. [Procedura i ograniczenia (angielski)](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-Tylko nieopublikowany kandydat 1.5.0: pakiet wymiany zawiera System Updater 1.1.2. Przed OTA jawnie zastąp 1.1.0 lub 1.1.1 poleceniem `cytv replace-system-updater --edition root`. Wymieniany jest tylko System Updater; aplikacje Root/Root Updater, pełny profil i wybór Home pozostają, a stary stan jest archiwizowany. Nieznane lub niedokończone operacje blokują wymianę. Wymóg nie blokuje kanałów No-root. [Procedura (angielski)](../RECOVERY.md#replace-the-root-system-updater-candidate).
+1.5.0: pakiet wymiany zawiera System Updater 1.1.2. Przed OTA jawnie zastąp 1.1.0 lub 1.1.1 poleceniem `cytv replace-system-updater --edition root`. Wymieniany jest tylko System Updater; aplikacje Root/Root Updater, pełny profil i wybór Home pozostają, a stary stan jest archiwizowany. Nieznane lub niedokończone operacje blokują wymianę. Wymóg nie blokuje kanałów No-root. [Procedura (angielski)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Pomoc i dalsze instrukcje
 
@@ -139,7 +139,9 @@ W kandydacie Wygląd pokazuje duże podglądy zainstalowanych motywów i oznacza
 
 W podglądzie przeglądarki Odbierz z komputera wyjaśnia kroki na telewizorze i nie uruchamia odbiornika TV na komputerze. Użyj Send to TV nad podglądem. Usunięcie pobranego motywu wymaga potwierdzenia; przy aktywnym motywie najpierw przywracany jest Classic. Anulowanie zachowuje motyw.
 
-## Kategorie ustawień (nieopublikowany kandydat)
+<a id="kategorie-ustawień-nieopublikowany-kandydat"></a>
+
+## Kategorie ustawień (1.5.0)
 
 W obu edycjach kategorie są po lewej, a ustawienia po prawej: ekran główny, Wygląd (motywy i kolumny), Język, Aktualizacje i Zaawansowane. No-root ma też Developer Mode; Root zawiera aktualizacje firmware LG w aktualizacjach i dźwięk HDMI w Zaawansowanych. Góra/dół porusza się w kolumnie, prawo otwiera ustawienia, a lewo wraca do kategorii. Wstecz najpierw wraca do kategorii, potem zamyka ustawienia. Tab pozwala też wybrać powrót do Home.
 

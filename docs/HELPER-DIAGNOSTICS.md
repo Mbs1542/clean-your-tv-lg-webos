@@ -71,9 +71,11 @@ in this reply, then:
 No terminal commands or manual log collection are needed. The report contains
 app IDs and timing, but no pairing keys or private connection details.
 
-## Watchdog recovery (unpublished candidate, #155)
+<a id="watchdog-recovery-unpublished-candidate-155"></a>
 
-The No-root source candidate distinguishes transient watchdog timeouts from an
+## Watchdog recovery (Helper 0.6.20, #155)
+
+No-root Helper 0.6.20 distinguishes transient watchdog timeouts from an
 emergency stop. Relay timeout 20 writes `state/watchdog`; the controller writes
 the same latch before killing an unresponsive relay. Either this latch or
 `state/blocked` prevents a new automatic controller/boot launch. A dead controller

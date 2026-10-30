@@ -1,6 +1,6 @@
 # Update Clean Your TV
 
-> Unpublished 1.5.0 candidate: see the [release scope and pending acceptance](RELEASE-1.5.0.md). Published stable is 1.4.1; historical acceptance retains its original scope.
+> For 1.5.0 changes, known limitations and scoped acceptance, see the [release notes](RELEASE-1.5.0.md). Historical acceptance retains its original scope.
 
 **Existing Root installations:** published 1.4.0 is incompatible with the original
 1.3.0 System Updater destination inventory. Do not force that update or edit
@@ -141,10 +141,10 @@ the reference above. Current release publication instructions are in the
 
 ## Candidate 1.5.0 Root supervisor prerequisite
 
-The unpublished 1.5.0 candidate provides System Updater 1.1.2 for the updated
+Release 1.5.0 provides System Updater 1.1.2 for the updated
 Root receiver/runtime flow. Existing 1.1.0 and 1.1.1 installations can use the
 explicit [supervisor-only replacement](RECOVERY.md#replace-the-root-system-updater-candidate)
-with a complete matching candidate installer before on-TV updating. That command
+with a complete matching 1.5.0 installer before on-TV updating. That command
 verifies the retained owner/code, archives the old supervisor state and preserves
 Root and Home preferences. Do not modify retained state to force admission.
 Each supported transition still needs matching artifact/device acceptance.

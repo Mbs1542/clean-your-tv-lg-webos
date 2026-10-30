@@ -15,7 +15,9 @@ press OK to restore the original layout, or Back/an arrow to dismiss Undo.
 You can also restore the app later through +. Hiding every app leaves + available when shown. If + is hidden, the top controls
 and Settings remain accessible.
 
-## Hide the + tile (unreleased candidate)
+<a id="hide-the--tile-unreleased-candidate"></a>
+
+## Hide the + tile (Home 1.6.0)
 
 In both editions, open **Home settings → Appearance** and turn off
 **Show Add app tile**. The default is on. This only hides +; it keeps your

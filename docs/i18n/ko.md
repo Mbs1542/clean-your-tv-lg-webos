@@ -1,6 +1,6 @@
 # Clean Your TV — 사용자 안내
 
-> 미출시 후보 1.5.0: 테마, 갤러리 및 PC에서 TV로 전송. TV 검증은 아직 완료되지 않았습니다. 공개 안정 버전은 1.4.1입니다. [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0: 테마, 갤러리 및 PC에서 TV로 전송. 알려진 Root 제한: Appearance가 110 px 이동할 수 있으며 대기 모드 후 Home이 자동으로 열리지 않을 수 있습니다. 기기별 검증 범위는 제한적입니다. [1.5.0](../RELEASE-1.5.0.md).
 
 [문서](../README.md) · [문제 신고](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ No-root: Home 제어를 다시 시작하려면 Home Helper를 열고 Helper 시�
 
 미출시 후보 버전의 선택적 사이드바 레이아웃 테마 미리보기에서는 위/아래로 메뉴 항목을 선택하고, 오른쪽으로 앱으로 이동하며, 앱의 첫 번째 열에서 왼쪽을 누르면 메뉴로 돌아갑니다.
 
-미출시 No-root 후보: 대기 모드 해제 후 일시적인 watchdog 시간 초과가 발생하면 Helper가 10분 동안 최대 5회 복구를 시도합니다. Stop과 Home 세 번 누르기 후에는 여전히 Helper를 명시적으로 시작해야 하며, 오류가 반복되면 중지 상태를 유지합니다. TV 검증은 아직 완료되지 않았습니다. [동작과 제한 사항(영어)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+No-root 1.5.0: 대기 모드 해제 후 일시적인 watchdog 시간 초과가 발생하면 Helper가 10분 동안 최대 5회 복구를 시도합니다. Stop과 Home 세 번 누르기 후에는 여전히 Helper를 명시적으로 시작해야 하며, 오류가 반복되면 중지 상태를 유지합니다. TV 검증은 아직 완료되지 않았습니다. [동작과 제한 사항(영어)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
 
 ## 업데이트와 제거
 
@@ -97,7 +97,7 @@ Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다
 
 미공개 후보 버전 전용: `cytv recover-system-rollback --edition root`는 검증된 Root 롤백에서 모든 패키지 설치가 끝났지만 런처 준비 시간이 초과된 경우에만 사용합니다. 실제 런처의 준비 신호가 필요하며 설치 결과가 불명확하면 거부합니다. 패키지, 고정된 코드·키, 실패 증거와 명시적으로 끈 Home 제어 상태를 보존합니다. 제한된 시도를 비공개 기록으로 남깁니다. 일반 재시도는 기한을 연장하지 않습니다. 이전 120초 기한이 지난 뒤 승인된 준비 신호나 불명확한 설치 결과가 없을 때만 `--new-recovery-attempt`가 이전 기록 전체를 UUID/해시로 보관하고 명시적으로 새 시도를 시작합니다. 완료된 복구는 다시 시작하지 않으며 자동 반복 시도는 없습니다. [절차와 제한 사항(영어)](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-미공개 1.5.0 후보 전용: 교체 패키지에는 System Updater 1.1.2가 포함됩니다. TV OTA 전에 `cytv replace-system-updater --edition root`로 1.1.0 또는 1.1.1을 명시적으로 교체하세요. System Updater만 교체하며 Root/Root Updater 앱, 전체 프로필과 Home 선택은 보존하고 이전 상태는 보관합니다. 불명확하거나 미완료된 작업이 있으면 중단합니다. 이 요구 사항은 No-root 피드에는 적용되지 않습니다. [교체 절차(영어)](../RECOVERY.md#replace-the-root-system-updater-candidate).
+1.5.0: 교체 패키지에는 System Updater 1.1.2가 포함됩니다. TV OTA 전에 `cytv replace-system-updater --edition root`로 1.1.0 또는 1.1.1을 명시적으로 교체하세요. System Updater만 교체하며 Root/Root Updater 앱, 전체 프로필과 Home 선택은 보존하고 이전 상태는 보관합니다. 불명확하거나 미완료된 작업이 있으면 중단합니다. 이 요구 사항은 No-root 피드에는 적용되지 않습니다. [교체 절차(영어)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## 도움말과 자세한 안내
 
@@ -139,7 +139,9 @@ Root HDMI 소리 복구는 실험적이며 **기본적으로 꺼져 있습니다
 
 브라우저 미리보기의 컴퓨터에서 받기는 TV에서 할 작업을 설명하며 컴퓨터에서 TV 수신기를 시작하지 않습니다. 미리보기 위의 Send to TV를 사용하세요. 다운로드한 테마를 삭제하려면 확인이 필요합니다. 활성 테마를 삭제하면 먼저 Classic이 복원됩니다. 취소하면 테마가 유지됩니다.
 
-## 설정 카테고리 (미출시 후보)
+<a id="설정-카테고리-미출시-후보"></a>
+
+## 설정 카테고리 (1.5.0)
 
 두 에디션 모두 왼쪽에 카테고리, 오른쪽에 선택한 설정이 표시됩니다: 홈 화면, 화면 꾸미기(테마 및 열), 언어, 소프트웨어 업데이트, 고급. No-root에는 Developer Mode가 추가됩니다. Root의 LG 펌웨어 업데이트는 업데이트에, HDMI 사운드는 고급에 있습니다. 위/아래는 열 안에서 이동하고 오른쪽은 설정으로, 왼쪽은 카테고리로 이동합니다. 뒤로는 먼저 카테고리로 돌아간 다음 설정을 닫습니다. Tab으로 Home 복귀 버튼에도 이동할 수 있습니다.
 

@@ -33,10 +33,8 @@ LG screens or obtain root access.
 
 ## Download and install
 
-> Candidate branch: v1.5.0 is not published. The public stable release remains
-> [v1.4.1](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.4.1).
-> The metadata below describes the candidate's intended download after promotion;
-> the download buttons still follow the latest published release.
+> Known Root limits in 1.5.0: Appearance can shift 110 px when applying a theme;
+> Home may not open automatically after standby. See [release notes and tested scope](docs/RELEASE-1.5.0.md).
 
 <!-- release:downloads -->
 Current stable release: **[v1.5.0](https://github.com/Razdva122/clean-your-tv-lg-webos/releases/tag/v1.5.0)** — [release notes](docs/RELEASE-1.5.0.md).

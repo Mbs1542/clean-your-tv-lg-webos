@@ -1,6 +1,6 @@
 # Clean Your TV — 使用者指南
 
-> 未發布候選版 1.5.0：主題、展示頁與電腦向電視傳輸。電視驗收尚未完成。已發布穩定版為 1.4.1。 [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0：主題、展示頁與電腦向電視傳輸。已知 Root 限制：Appearance 可能偏移 110 px；待機喚醒後 Home 可能不會自動開啟。裝置實機驗證範圍仍有限。 [1.5.0](../RELEASE-1.5.0.md).
 
 [文件導覽](../README.md) · [回報問題](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ No-root: 要重新啟動 Home 控制，請開啟 Home Helper，選擇啟動 Help
 
 在尚未發佈的候選版本主題預覽中，若使用可選的側邊欄配置，上／下鍵選擇選單項目，右鍵進入應用程式區域，在應用程式第一欄按左鍵返回選單。
 
-尚未發布的 No-root 候選版本：從待機喚醒後，Helper 可嘗試恢復暫時的 watchdog 逾時，十分鐘內最多五次。Stop 和連按三次 Home 後仍需手動啟動 Helper；反覆失敗會保持停止狀態。尚待電視實機驗收。[行為與限制（英語）](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155)。
+No-root 1.5.0：從待機喚醒後，Helper 可嘗試恢復暫時的 watchdog 逾時，十分鐘內最多五次。Stop 和連按三次 Home 後仍需手動啟動 Helper；反覆失敗會保持停止狀態。尚待電視實機驗收。[行為與限制（英語）](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155)。
 
 ## 更新與移除
 
@@ -97,7 +97,7 @@ Root HDMI 聲音復原是實驗功能，**預設關閉**，僅在需要時自行
 
 僅限未發布候選版：`cytv recover-system-rollback --edition root` 僅用於已驗證的 Root 回復版本：所有套件安裝程式均已完成，但啟動器就緒等待逾時。必須由真正的啟動器傳送就緒訊號；安裝結果不明時拒絕恢復。保留套件、固定程式碼和金鑰、失敗證據及明確關閉的 Home 控制狀態，並以私人記錄保存有時限的嘗試。 一般重試不會延長時限。僅在先前的 120 秒到期、沒有已接受的就緒訊號且不存在不明安裝結果後，才可用 `--new-recovery-attempt` 按 UUID/雜湊封存完整舊記錄，並明確開始新嘗試。已完成的恢復不會重新開始，也不會自動連續重試。 [流程與限制（英文）](../RECOVERY.md#root-system-rollback-readiness-candidate)。
 
-僅限未發布的 1.5.0 候選版：替換套件包含 System Updater 1.1.2。電視 OTA 前，請明確執行 `cytv replace-system-updater --edition root` 替換 1.1.0 或 1.1.1。只替換 System Updater，保留 Root/Root Updater 應用程式、完整設定和 Home 選擇，並封存舊狀態。結果不明或尚未完成的操作會阻止替換。此要求不限制 No-root 更新來源。[替換流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
+1.5.0：替換套件包含 System Updater 1.1.2。電視 OTA 前，請明確執行 `cytv replace-system-updater --edition root` 替換 1.1.0 或 1.1.1。只替換 System Updater，保留 Root/Root Updater 應用程式、完整設定和 Home 選擇，並封存舊狀態。結果不明或尚未完成的操作會阻止替換。此要求不限制 No-root 更新來源。[替換流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
 
 ## 說明與詳細指引
 
@@ -138,7 +138,9 @@ Root HDMI 聲音復原是實驗功能，**預設關閉**，僅在需要時自行
 
 瀏覽器預覽中的「從電腦接收」說明電視上的操作，不會在電腦上啟動電視接收器。請使用預覽上方的 Send to TV。刪除已下載主題需要確認；刪除目前主題前會先還原 Classic。取消會保留主題。
 
-## 設定分類（未發布候選版本）
+<a id="設定分類未發布候選版本"></a>
+
+## 設定分類（1.5.0）
 
 兩個版本均在左側顯示分類，右側顯示所選設定：主畫面、外觀（主題和欄數）、語言、軟體更新及進階。No-root 另有 Developer Mode；Root 的 LG 韌體更新位於更新分類，HDMI 聲音位於進階分類。上下鍵在目前欄內移動，右鍵進入設定，左鍵返回分類。返回鍵先返回分類，再關閉設定。也可用 Tab 選擇返回 Home 按鈕。
 

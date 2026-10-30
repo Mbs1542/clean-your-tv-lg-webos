@@ -543,3 +543,34 @@ Final release preparation must obtain a successful trusted exact-head build and
 verify that its Root package remains exactly `419de466…`, with unchanged approved
 Helper and verified component/provenance/signature closure. No product source,
 extra manual test, main merge or publication is performed by this draft record.
+
+### Release package reconciliation and acceptance record — 2026-10-30
+
+The official collector confirms 17 implementation PRs. Documentation commit
+`3008af49f8d5ae3c051c661ec5c791a4233eed7b` preserves every product/build input
+from frozen `1f41a9cf`. Its trusted push build 41046622477/1 produced successful
+ARM64 and Android package jobs; the complete run was still pending at this
+record, and is not claimed successful here.
+
+ARM64 artifact 12972617785 matches GitHub SHA-256
+`7d753513e43d5d176b01c22395b4884ea871eafac7d70f990bba5e35581ec9e5`,
+valid ZIP structure/CRC and all 163 embedded self-hashes. Every payload file is
+byte-identical to the tested 1f41 package set, including Root `419de466`,
+Home `9dc14c40`, Root Updater `03178ada` and System Updater `977da7ee`.
+Helper remains raw `8ed42c5a` / canonical `20c56116`; current official v1.4.1
+rollback asset digests match the exact existing approval.
+
+Android artifact 12973485180 matches GitHub SHA-256
+`b3094b7eb4e67fad4acfd8277e9319cb68b9ef97f506517d208b92208e717cf1`.
+The APK verifies against the pinned signer, is non-debuggable 0.5.0/code 15,
+and names source 3008af49. All 163 TV payload files match; DEX, UI, resources
+and native libraries are unchanged, and Python differences are timestamps only.
+This is artifact verification, not a new phone/TV test.
+
+The schema-1 acceptance string records the actual evidence and the maintainer's
+limited decision, retaining both FAILED cases and existing untested paths. It
+does not pin a build or certify incomplete CI. The final metadata head must
+independently pass complete trusted exact-head CI; before merge/publication,
+recheck its packages against these exact bytes and record the actual final run,
+attempt and source in PR #141. Normal assembly, signing and public verification
+remain mandatory. No additional device action is required by this record.

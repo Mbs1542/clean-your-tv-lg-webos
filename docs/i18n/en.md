@@ -1,6 +1,6 @@
 # Clean Your TV — user guide
 
-> Unpublished candidate 1.5.0: themes, Showcase and PC-to-TV transfer. TV acceptance is pending. Published stable is 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0: themes, Showcase and PC-to-TV transfer. Known Root limits: Appearance can shift 110 px; automatic Home after standby can fail. Device-specific acceptance remains limited. [1.5.0](../RELEASE-1.5.0.md).
 
 [Documentation](../README.md) · [Report a problem](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ Unreleased candidate, both editions: in **Home settings → Appearance**, turn o
 
 In candidate theme previews with the optional sidebar layout, Up/Down selects a menu item, Right enters the apps, and Left from the first app column returns to the menu.
 
-Unpublished No-root candidate: Helper can recover a transient watchdog timeout after standby, with at most five attempts in ten minutes. Stop and triple Home still require an explicit Start Helper; repeated failures stay stopped. TV acceptance is pending. [Behavior and limits (English)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+No-root 1.5.0: Helper can recover a transient watchdog timeout after standby, with at most five attempts in ten minutes. Stop and triple Home still require an explicit Start Helper; repeated failures stay stopped. TV acceptance is pending. [Behavior and limits (English)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
 
 ## Updates and removal
 
@@ -97,7 +97,7 @@ Unpublished candidate only: if firmware API access is refused because an old Roo
 
 Unpublished candidate only: `cytv recover-system-rollback --edition root` handles a verified Root rollback whose package installers completed but launcher readiness timed out. It requires genuine launcher health, refuses unknown installer outcomes, and preserves packages, pinned code/keys, failure evidence and an explicit Home-off choice. A private audit records the bounded attempt. Ordinary retries never extend the same attempt. Only after its 120-second deadline expires, with no accepted health or unknown installer result, add `--new-recovery-attempt` to archive the full prior audit under its UUID/hash and explicitly open a fresh attempt. Completed recovery stays idempotent; there are no automatic repeated attempts. [Procedure and limits](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-Unpublished 1.5.0 candidate only: The replacement bundle provides System Updater 1.1.2. Before TV OTA, explicitly replace 1.1.0 or 1.1.1 with `cytv replace-system-updater --edition root`. Only System Updater is replaced; Root/Root Updater apps, the full profile and Home choice are preserved, and old state is archived. Unknown or unfinished operations stop replacement. This requirement does not gate No-root feeds. [Replacement procedure](../RECOVERY.md#replace-the-root-system-updater-candidate).
+1.5.0: The replacement bundle provides System Updater 1.1.2. Before TV OTA, explicitly replace 1.1.0 or 1.1.1 with `cytv replace-system-updater --edition root`. Only System Updater is replaced; Root/Root Updater apps, the full profile and Home choice are preserved, and old state is archived. Unknown or unfinished operations stop replacement. This requirement does not gate No-root feeds. [Replacement procedure](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Help and further reading
 
@@ -138,7 +138,9 @@ In the Appearance candidate, large preview cards show installed themes and mark 
 
 In the browser preview, Receive from computer explains the steps to perform on the TV; it does not start a TV receiver on the computer. Use Send to TV above the preview. Removing a downloaded theme asks for confirmation; removing the active theme restores Classic first. Cancel keeps the theme.
 
-## Settings categories (unpublished candidate)
+<a id="settings-categories-unpublished-candidate"></a>
+
+## Settings categories (1.5.0)
 
 In both editions, Home settings has categories on the left and the selected settings on the right: Your Home screen, Appearance (Themes and Columns), Language, Software updates and Advanced. No-root also has Developer Mode; Root includes LG firmware updates under Software updates and HDMI sound under Advanced. Use Up/Down within a column, Right to enter its settings and Left to return to categories. Back returns to categories first, then closes settings; Tab also reaches Back to Home.
 

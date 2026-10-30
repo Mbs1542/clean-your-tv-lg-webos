@@ -1,13 +1,12 @@
 # v1.5.0 — Themes, Showcase and direct computer transfer
 
-This is an unpublished release candidate. The maintainer selected the current
-product for release with the two known limitations below; final trusted checks,
-artifact reconciliation and publication remain pending.
-The previous published release is v1.4.1. Builds, exact-artifact TV acceptance,
-Helper rollback compatibility and remaining release gates are tracked in
-[release candidate #141](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141).
+The maintainer selected this release with two declared Root limitations:
+Appearance can shift 110 px during Apply, and automatic Home after standby can
+fail. Read the scope below before updating. Builds, exact-artifact acceptance
+and publication verification are recorded in
+[release PR #141](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141).
 
-| Component | Published v1.4.1 | Candidate |
+| Component | Previous v1.4.1 | Release 1.5.0 |
 | --- | --- | --- |
 | Overall release | 1.4.1 | 1.5.0 |
 | Home / renewal service | 1.5.1 | 1.6.0 |

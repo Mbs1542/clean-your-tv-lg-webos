@@ -1,6 +1,6 @@
 # Clean Your TV — guia de uso
 
-> Candidato 1.5.0 não publicado: temas, galeria e envio do PC para a TV. A validação na TV está pendente. A versão estável publicada é 1.4.1. [1.5.0](../RELEASE-1.5.0.md).
+> v1.5.0: temas, galeria e envio do PC para a TV. Limites conhecidos de Root: Appearance pode se deslocar 110 px; Home pode não abrir automaticamente após o modo de espera. A validação por dispositivo continua limitada. [1.5.0](../RELEASE-1.5.0.md).
 
 [Documentação](../README.md) · [Relatar um problema](../FEEDBACK.md)
 
@@ -79,7 +79,7 @@ Candidato ainda não publicado, ambas as edições: em **Configurações do Home
 
 Nas prévias de temas do candidato ainda não publicado com barra lateral opcional, Cima/Baixo seleciona um item do menu, Direita vai para os aplicativos e Esquerda na primeira coluna de aplicativos volta ao menu.
 
-Candidato No-root ainda não publicado: Helper pode se recuperar de um timeout temporário do watchdog ao sair do modo de espera, com no máximo cinco tentativas em dez minutos. Stop e três toques em Home ainda exigem iniciar o Helper explicitamente; falhas repetidas o mantêm parado. A validação na TV está pendente. [Comportamento e limites (inglês)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+No-root 1.5.0: Helper pode se recuperar de um timeout temporário do watchdog ao sair do modo de espera, com no máximo cinco tentativas em dez minutos. Stop e três toques em Home ainda exigem iniciar o Helper explicitamente; falhas repetidas o mantêm parado. A validação na TV está pendente. [Comportamento e limites (inglês)](../HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
 
 ## Atualização e remoção
 
@@ -97,7 +97,7 @@ Somente candidato não publicado: se o acesso à API de firmware falhar por dire
 
 Somente no candidato não publicado: `cytv recover-system-rollback --edition root` trata uma reversão Root verificada em que todos os instaladores terminaram, mas o prazo de prontidão do launcher expirou. Exige o sinal real do launcher e recusa resultados de instalação desconhecidos. Preserva pacotes, código e chaves fixados, evidências de falha e a desativação explícita do controle Home. Um registro privado documenta a tentativa limitada. Repetir normalmente não estende o prazo. Só após os 120 segundos expirarem, sem sinal de prontidão aceito nem resultado de instalação desconhecido, `--new-recovery-attempt` arquiva todo o registro anterior por UUID/hash e abre explicitamente outra tentativa. A recuperação concluída permanece idempotente; não há tentativas automáticas. [Procedimento e limites (inglês)](../RECOVERY.md#root-system-rollback-readiness-candidate).
 
-Somente candidato 1.5.0 não publicado: o pacote de substituição inclui System Updater 1.1.2. Antes do OTA, substitua explicitamente 1.1.0 ou 1.1.1 com `cytv replace-system-updater --edition root`. Apenas o System Updater muda; apps Root/Root Updater, perfil completo e escolha de Home são preservados, e o estado anterior é arquivado. Operações desconhecidas ou incompletas bloqueiam a substituição. O requisito não bloqueia feeds No-root. [Procedimento (inglês)](../RECOVERY.md#replace-the-root-system-updater-candidate).
+1.5.0: o pacote de substituição inclui System Updater 1.1.2. Antes do OTA, substitua explicitamente 1.1.0 ou 1.1.1 com `cytv replace-system-updater --edition root`. Apenas o System Updater muda; apps Root/Root Updater, perfil completo e escolha de Home são preservados, e o estado anterior é arquivado. Operações desconhecidas ou incompletas bloqueiam a substituição. O requisito não bloqueia feeds No-root. [Procedimento (inglês)](../RECOVERY.md#replace-the-root-system-updater-candidate).
 
 ## Ajuda e outras instruções
 
@@ -139,7 +139,9 @@ No candidato, Aparência mostra prévias grandes dos temas instalados e indica o
 
 Na prévia do navegador, Receber do computador explica os passos na TV; não inicia um receptor de TV no computador. Use Send to TV acima da prévia. Remover um tema baixado exige confirmação; se estiver ativo, Classic é restaurado primeiro. Cancelar mantém o tema.
 
-## Categorias de configurações (candidato não publicado)
+<a id="categorias-de-configurações-candidato-não-publicado"></a>
+
+## Categorias de configurações (1.5.0)
 
 Nas duas edições, as categorias ficam à esquerda e as configurações à direita: tela inicial, Aparência (temas e colunas), Idioma, Atualizações de software e Avançado. No-root também tem Developer Mode; Root inclui firmware LG nas atualizações e som HDMI em Avançado. Cima/baixo navega na coluna, direita entra nas configurações e esquerda volta às categorias. Voltar retorna primeiro às categorias e depois fecha as configurações. Tab também alcança o botão para voltar ao Home.
 
