@@ -68,6 +68,8 @@ const candidate=create(candidateStore,{columns:8});
 assert.equal(candidate.state().override,null,'ambiguous pre-release theme-derived profile count resets when no explicit Columns key exists');
 candidate.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
 assert.equal(candidate.state().columns,1,'existing polluted candidate profile recovers Channel default');
+candidateStore.removeItem('tvhome.theme.choice.v1');
+assert.equal(create(candidateStore,{columns:8}).state().override,null,'reset/recovery cannot resurrect the persisted polluted profile after theme choice is removed');
 candidateStore.setItem(key,JSON.stringify({version:1,columns:4}));
 assert.equal(create(candidateStore,{columns:8}).state().override,4,'saved explicit preference still wins during candidate recovery');
 console.log('PASS columns precedence, bounds, reload, legacy profiles and failed persistence');

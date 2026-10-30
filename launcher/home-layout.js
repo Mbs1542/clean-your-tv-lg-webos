@@ -40,7 +40,9 @@
       // Retain genuine legacy migration until themes have actually been used.
       if (raw === null) {
         var choice = JSON.parse(storage.getItem('tvhome.theme.choice.v1'));
-        if (choice && typeof choice.id === 'string' && /^(builtin:(classic|alpine)$|github:)/.test(choice.id)) override = null;
+        if (choice && typeof choice.id === 'string' && /^(builtin:(classic|alpine)$|github:)/.test(choice.id)) {
+          override = null; storage.setItem(KEY, JSON.stringify({version: 1, columns: null}));
+        }
       }
       if (saved && saved.version === 1 && (saved.columns === null || valid(saved.columns))) override = saved.columns;
     } catch (_) {}
