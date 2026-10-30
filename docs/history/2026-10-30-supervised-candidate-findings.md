@@ -495,3 +495,51 @@ frame successes belong only to the earlier frozen-baf9 Root IPK beginning
 pending. Preserve the owner's narrow affected-retest scope without repeating
 unchanged physical cases. The earlier first abort remains historical with its
 product cause unknown. Release stays draft/unpinned with empty final acceptance.
+
+### Explicit limited-release decision — 2026-10-30
+
+After separate options to fix both remaining failures before release or release
+the current build with declared limitations, the maintainer selected
+“Выпустить текущую с ограничениями” (“Release the current build with limitations”).
+This is a decision about the two declared failures only. It does not label them
+passed, authorize unpublished CSS commit `15b848` or a standby source change, or
+waive CI, package equality, signatures, integrity or protected publication.
+
+The selected product remains frozen source
+`1f41a9cf3d66a6858de71e91dcebcef417e81bd4`, Root 0.6.1 IPK
+`419de466e43095b426d9652c102fabd2c3ebd5a58c4dbb0f4928056b6d4b9f64`.
+Established device: maintainer-owned OLED55C3RLA, firmware 43.21.71 / SDK 11.2.0;
+Root edition, System 1.1.2, Root Updater 0.3.3 and infrastructure 0.6.1;
+macOS ARM64 installer host; exact remote model unknown.
+
+| Targeted findings | Actual result and scope |
+| --- | --- |
+| RC-UI-01/02/03/04/07 | Five UI findings accepted in their recorded scopes. Physical held-arrow/key-release and warm Home first-frame observations belong to old frozen-baf9 Root `633eabe8`, not a new physical run on `419de466`. |
+| RC-START-08 | PASS on the latest `419de466` candidate: owner reported LG Channels first, then Home Root automatically within the requested minute. Exact latency unknown. |
+| RC-UI-06 | FAIL: actual Appearance area shifts 110 px. Declared known limitation; planned follow-up #170. |
+| RC-START-05 | FAIL: LG Channels remained after standby/wake without automatic Home. Declared known limitation; planned follow-up #171. |
+
+Thus the targeted outcome is six passes and two failed known limitations,
+explicitly accepted for this release scope. The original NEEDS FIX table and
+prior observations remain unchanged rather than being rewritten as successes.
+
+Actual `419de466` retention gate checks are all true: Alpine identity and exact
+choice, Columns storage/By theme, genuine profile equality, Root package receipt,
+nontrial state and Home replacement off. #168's app-origin retention case passed
+on these bytes. New affected Itachi 1.0.2 indicator/caption and CSS on all 33 native
+icons, native-image fallback/recovery with exact source restoration, repeat
+navigation and renderer reload checks passed. Final fixture cleanup restored
+Alpine, exact choice/profile/Columns/cache/icons and closed settings. These are
+actual renderer checks, not new handheld or sound acceptance. The cold-start
+owner report is separate from those debugger observations.
+
+The prior ordinary retained rollback accepts old baf9 Root 0.6.1 to 0.6.0 only;
+it does not prove rollback of newly installed 1f41 Root `419de466`. Exact Helper
+limited-evidence approval and Android runtime-equivalence/upgrade evidence retain
+their prior scope. Other models, exact latency, sound/power-loss/failsafe and
+unperformed paths are not silently marked passed by this two-risk decision.
+
+Final release preparation must obtain a successful trusted exact-head build and
+verify that its Root package remains exactly `419de466…`, with unchanged approved
+Helper and verified component/provenance/signature closure. No product source,
+extra manual test, main merge or publication is performed by this draft record.

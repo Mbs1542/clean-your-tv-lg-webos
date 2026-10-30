@@ -87,7 +87,7 @@
       "issues": [
         162
       ],
-      "summary": "Address the eight supervised RC findings in source: correct Itachi 1.0.1 preview, bound held-navigation lag, restore saved-theme first/warm presentation, stabilize Appearance, preserve explicit/legacy columns, and narrowly admit verified native TV foreground on boot/wake; add guarded System Updater 1.1.1 to 1.1.2 replacement, exact Helper approval and parallel preliminary device builds. Root 0.6.1; targeted new-artifact physical acceptance remains pending (#162)."
+      "summary": "Address the eight supervised RC findings in source: correct Itachi 1.0.1 preview, bound held-navigation lag, restore saved-theme first/warm presentation, stabilize Appearance, preserve explicit/legacy columns, and narrowly admit verified native TV foreground on boot/wake; add guarded System Updater 1.1.1 to 1.1.2 replacement, exact Helper approval and parallel preliminary device builds. Root 0.6.1; the targeted decision records six passes and two declared failed limitations (Appearance #170 and standby #171), which are planned follow-ups, not delivered fixes (#162)."
     },
     {
       "pr": 166,
@@ -107,7 +107,7 @@
         162,
         168
       ],
-      "summary": "Preserve app-origin theme and Columns preferences across normal System profile restore while retaining legacy reset and invalid-trial recovery; correct stale Columns focus handling. Actual-TV UI06 still shows a 110 px Appearance shift and remains unresolved (#168, #162)."
+      "summary": "Preserve app-origin theme and Columns preferences across normal System profile restore while retaining legacy reset and invalid-trial recovery; correct stale Columns focus handling. Actual-TV UI06 still shows a 110 px Appearance shift, explicitly accepted as a declared limitation with planned follow-up #170; no fix is claimed for that remaining failure (#168, #162)."
     }
   ],
   "excluded": [],

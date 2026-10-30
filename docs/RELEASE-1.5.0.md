@@ -1,6 +1,8 @@
 # v1.5.0 — Themes, Showcase and direct computer transfer
 
-This is an unpublished release candidate. It is not approved for stable publication.
+This is an unpublished release candidate. The maintainer selected the current
+product for release with the two known limitations below; final trusted checks,
+artifact reconciliation and publication remain pending.
 The previous published release is v1.4.1. Builds, exact-artifact TV acceptance,
 Helper rollback compatibility and remaining release gates are tracked in
 [release candidate #141](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/141).
@@ -15,6 +17,41 @@ Helper rollback compatibility and remaining release gates are tracked in
 | Both edition Updaters | 0.3.2 | 0.3.3 |
 | Android installer / versionCode | 0.4.1 / 14 | 0.5.0 / 15 |
 | New System Updater provisions / protocol | 1.1.1 / 1 | 1.1.2 / 1 |
+
+## Maintainer decision and known limitations
+
+On 2026-10-30, after being offered either fixes before release or release of the
+current build with declared limitations, the maintainer explicitly selected
+**“Выпустить текущую с ограничениями”** (“Release the current build with limitations”).
+The approved product scope is frozen source
+`1f41a9cf3d66a6858de71e91dcebcef417e81bd4`, installed Root IPK SHA-256
+`419de466e43095b426d9652c102fabd2c3ebd5a58c4dbb0f4928056b6d4b9f64`.
+It excludes unpublished CSS work and an unimplemented standby correction.
+
+- **Appearance shift — [#170](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/170):** applying a theme can shift the Appearance area by 110 px.
+  RC-UI-06 remains failed; it is an accepted known limitation and planned follow-up.
+- **Standby automatic Home — [#171](https://github.com/Razdva122/clean-your-tv-lg-webos/issues/171):** after standby/wake, LG Channels can remain visible instead of
+  automatically opening Home Root. RC-START-05 remains failed; it is an accepted
+  known limitation and planned follow-up, not a delivered standby fix.
+
+The targeted eight-finding result is **six passed, two failed and explicitly
+accepted as known limitations**. The owner reported the latest cold start first
+showed LG Channels and then opened Home Root automatically within the requested
+one-minute observation window; exact latency is unknown. This cold-start pass
+does not turn the separate standby failure into a pass.
+
+On the maintainer's OLED55C3RLA, firmware 43.21.71 / SDK 11.2.0, the new installed
+Root package passed actual theme/Columns/profile retention, affected Itachi 1.0.2
+indicator/caption and 33-icon CSS checks, native-image error recovery, repeat
+navigation and renderer reload checks. Physical held-arrow/key-release and warm
+Home first-frame passes belong to the earlier frozen-baf9 Root package beginning
+`633eabe8`; they are not new handheld acceptance of `419de466`.
+
+The limited decision covers these two known failures only. Complete trusted
+exact-head CI, matching final Root package bytes, signatures/integrity, existing
+exact Helper approval and final publication verification remain mandatory. No
+all-pass result, universal compatibility or extra permission to bypass a gate is
+claimed. See the [dated decision and hardware scope](history/2026-10-30-supervised-candidate-findings.md).
 
 ## Included changes
 
@@ -63,7 +100,8 @@ Helper rollback compatibility and remaining release gates are tracked in
 - #158: add the reviewed external Itachi Sharingan theme to Showcase, prefer
   available larger native app icons within the existing validation limits, and
   support optional bounded CSS white-logo effects on compatible renderers.
-  Original image files remain unchanged; physical-TV acceptance is pending.
+  Original image files remain unchanged. Scoped Itachi 1.0.2/native-icon checks
+  on the maintainer C3 are recorded above; other devices remain untested.
 - #167: update shared on-TV rendering in both editions with a theme-styleable
   scenic ribbon position indicator, one focused app caption when the hero title
   is visible, and recovery from missing native icon images. The reviewed Toolkit
@@ -92,7 +130,8 @@ No new TV service method or listening endpoint is introduced by this feature.
 The earlier is.gd experiment failed at TLS on the C3 original network path and is
 replaced before publication. The da.gd development resolver loaded the pinned
 Channel descriptor and verified all 12 files on that same TV without a network
-workaround. Signed-candidate UI acceptance remains separate; the full GitHub URL
+workaround. The earlier signed-candidate da.gd UI checks passed on this fixture, as recorded
+in the dated findings; the full GitHub URL
 and PC-to-TV transfer remain available. No certificate checks are disabled.
 
 ## Upgrade boundaries
@@ -160,8 +199,9 @@ Root testing does not establish those results.
    results. Home routing, sound, standby, cold boot, full OTA/rollback and other
    devices remain separate gates unless directly exercised on these artifacts.
 
-No physical result on the new combined-fix artifacts has been recorded yet.
-The [original supervised candidate findings](history/2026-10-30-supervised-candidate-findings.md)
-retain the observed failures and partial functional passes. Prior C3 theme
-fixtures and v1.4.1 acceptance retain their original scope and do not certify
-this candidate's packages or new Root receiver upgrade path.
+Scoped combined-candidate results and the explicit limited-release decision
+are recorded in the [dated findings](history/2026-10-30-supervised-candidate-findings.md).
+The original failures remain historical observations. RC-UI-06 and RC-START-05
+remain failed known limitations; final trusted artifacts must preserve the tested
+Root bytes before that evidence is used for release. Older device results retain
+their original artifact scope and do not establish universal compatibility.
