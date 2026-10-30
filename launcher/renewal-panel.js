@@ -152,7 +152,7 @@
  function close(){if(window.HomeThemePanel)HomeThemePanel.unmount();panel.classList.add('hidden');if(window.ThemeRuntime)ThemeRuntime.resume('settings');if(previous&&previous.focus)previous.focus();}
  document.getElementById('renewalClose').onclick=close;
  document.getElementById('homeLanguage').onclick=function(){if(window.HomeI18n)HomeI18n.openLanguagePicker();};
- document.addEventListener('home-layout-change',function(){if(openNow()&&buttons[index].hidden)focus(index+1);});
+ document.addEventListener('home-layout-change',function(event){if(openNow()&&buttons[index].hidden&&event.homeColumnsFocus===buttons[index])focus(index+1);});
  if(window.HomeThemePanel)HomeThemePanel.mount(document.getElementById('homeThemeHost'));
  document.getElementById('homeShowAddApp').onclick=function(){if(window.HomeAppControls)HomeAppControls.toggle();};
  document.getElementById('homeAddApp').onclick=function(){if(window.HomeAppControls){close();HomeAppControls.add();}};
