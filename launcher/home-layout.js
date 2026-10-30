@@ -42,6 +42,9 @@
         var choice = JSON.parse(storage.getItem('tvhome.theme.choice.v1'));
         if (choice && typeof choice.id === 'string' && /^(builtin:(classic|alpine)$|github:)/.test(choice.id)) {
           override = null; storage.setItem(KEY, JSON.stringify({version: 1, columns: null}));
+        } else if (override !== null) {
+          // Normalize genuine legacy preference before a later theme choice obscures its origin.
+          storage.setItem(KEY, JSON.stringify({version: 1, columns: override}));
         }
       }
       if (saved && saved.version === 1 && (saved.columns === null || valid(saved.columns))) override = saved.columns;
