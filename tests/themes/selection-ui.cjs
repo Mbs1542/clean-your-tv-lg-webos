@@ -57,19 +57,23 @@ const {loadRegistry}=require('../../scripts/check-theme-submissions.cjs');
   await beginBuiltinTrial();await page.reload();await page.locator('#tiles .focused').waitFor();await page.evaluate(()=>ThemeManager.start());assert.equal(await page.evaluate(()=>ThemeManager.current().id),'builtin:classic','interrupted trial recovers Classic');assert.equal(await page.evaluate(()=>localStorage.getItem(ThemeManager.trialKey)),null);
   await settings();assert.equal(await page.locator('.theme-option').count(),3,'interrupted trial retains downloaded package');await row('Channel').click();await page.waitForFunction(()=>ThemeManager.current().title==='Channel'&&!ThemeManager.current().trial);await page.locator('#themeMore').waitFor();
   await page.clock.install();await beginBuiltinTrial();await page.clock.fastForward(21000);await page.waitForFunction(id=>ThemeManager.current().id===id,entry.record.id);await page.locator('#themeMore').waitFor();assert.equal(await page.evaluate(()=>ThemeManager.current().id),entry.record.id,'timeout restores accepted theme');
-  // Upgrade a polluted candidate profile: no explicit preference key, saved Alpine,
-  // but legacy CONFIG contains its effective eight. Exercise the real renderer/trial.
+  // Legacy CONFIG is preserved even with a saved theme. Correct a known test
+  // value only through the supported Columns -> By theme control, then trial.
   await page.route('**/config.js',r=>r.fulfill({body:'window.CONFIG={columns:8,dockApps:[],hiddenApps:[]};'}));
   await page.evaluate(()=>{localStorage.removeItem('tvhome.columns.v1');localStorage.removeItem((window.RootProfileData||window.HomeData).key);localStorage.setItem(ThemeManager.choiceKey,JSON.stringify({id:'builtin:alpine',title:'Alpine'}));});
   await page.reload();await page.locator('#tiles .focused').waitFor();await page.evaluate(()=>ThemeManager.start());
-  assert.equal(await page.evaluate(()=>HomeLayoutState.state().override),null,'polluted candidate CONFIG is not an explicit choice');
+  assert.equal(await page.evaluate(()=>HomeLayoutState.state().override),8,'saved Alpine cannot erase a genuine legacy preference');
   assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),8,'Alpine still uses its fixed author layout');
+  await settings();await row('Classic').click();await page.waitForFunction(()=>ThemeManager.current().id==='builtin:classic'&&!ThemeManager.current().trial);
+  await page.locator('#homeColumns').click();await page.locator('[data-columns="auto"]').click();await page.keyboard.press('Escape');
+  assert.equal(await page.evaluate(()=>HomeLayoutState.state().override),null,'supported By theme control explicitly clears the test preference');
+  await row('Alpine').click();await page.waitForFunction(()=>ThemeManager.current().id==='builtin:alpine'&&!ThemeManager.current().trial);await close();
   await page.evaluate(async()=>{const channel=(await ThemeManager.list()).find(i=>i.title==='Channel');await ThemeManager.begin(channel);});
-  assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),1,'real Channel trial uses one column after candidate migration');
+  assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),1,'real Channel trial uses one column after explicit By theme selection');
   assert.equal(await page.locator('#tiles .item').evaluateAll(items=>new Set(items.map(i=>i.style.left)).size),1,'rendered Channel geometry has one distinct X');
   await page.evaluate(()=>ThemeManager.cancel());assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),8,'trial cancellation restores fixed Alpine');
   await page.evaluate(async()=>{ThemeRuntime.reset();HomeLayoutState.setColumns(4);const channel=(await ThemeManager.list()).find(i=>i.title==='Channel');await ThemeManager.selectInstalled(channel);});
-  assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),4,'explicit user choice is retained after migration');await settings();
+  assert.equal(await page.evaluate(()=>HomeLayoutState.state().columns),4,'explicit user choice is retained after By theme test');await settings();
   await page.locator('#themeMore').click();await page.locator('#themeReset').click();await page.locator('.theme-option').filter({hasText:'Channel'}).getByRole('button',{name:'Remove',exact:true}).click();await page.locator('#themeRemoveConfirm').click();await page.waitForFunction(()=>document.querySelectorAll('.theme-option').length===2);assert.equal(await page.evaluate(()=>ThemeManager.current().id),'builtin:classic');assert.deepEqual(errors,[]);console.log('PASS builtins, install, offline reload, column preference, cancel, timeout, crash recovery and removal: '+edition);await context.close();
  }}finally{await browser.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

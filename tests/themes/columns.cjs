@@ -73,15 +73,23 @@ assert.equal(migratedReload.state().override,8,'genuine legacy eight survives fi
 migratedReload.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
 assert.equal(migratedReload.state().columns,8,'Channel honors normalized genuine legacy preference');
 assert.equal(JSON.parse(migratedStore.getItem(key)).columns,8,'legacy normalization uses the existing explicit preference key');
-const candidateStore=storage();candidateStore.setItem('tvhome.theme.choice.v1',JSON.stringify({id:'builtin:alpine',title:'Alpine'}));
-const candidate=create(candidateStore,{columns:8});
-assert.equal(candidate.state().override,null,'ambiguous pre-release theme-derived profile count resets when no explicit Columns key exists');
-candidate.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
-assert.equal(candidate.state().columns,1,'existing polluted candidate profile recovers Channel default');
-candidateStore.removeItem('tvhome.theme.choice.v1');
-assert.equal(create(candidateStore,{columns:8}).state().override,null,'reset/recovery cannot resurrect the persisted polluted profile after theme choice is removed');
-candidateStore.setItem(key,JSON.stringify({version:1,columns:8}));
-assert.equal(create(candidateStore,{columns:5}).state().override,8,'modern explicit eight survives candidate recovery');
-candidateStore.setItem(key,JSON.stringify({version:1,columns:4}));
-assert.equal(create(candidateStore,{columns:8}).state().override,4,'saved explicit preference still wins during candidate recovery');
+for(const [columns,theme] of [[4,'builtin:classic'],[4,'builtin:alpine'],[8,'builtin:alpine'],[3,'github:example/themes:demo']]){
+ const legacyStore=storage(),legacyProfile={config:{columns}};
+ legacyStore.setItem('tvhome.theme.choice.v1',JSON.stringify({id:theme,title:'Saved theme'}));
+ const beforeTheme=create(legacyStore,legacyProfile.config);
+ assert.equal(beforeTheme.state().override,columns,'saved '+theme+' does not prove legacy '+columns+' is polluted');
+ beforeTheme.setThemeLayout({preset:'scenic-grid',columns:8,allowColumnOverride:false,spacingScale:1,textScale:1,focusScale:1.1});
+ const reload=create(legacyStore,JSON.parse(JSON.stringify(legacyProfile)).config);
+ assert.equal(reload.state().override,columns,'profile reload retains legacy preference with '+theme);
+ reload.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
+ assert.equal(reload.state().columns,columns,'Channel honors legacy preference after profile reload');
+ assert.equal(JSON.parse(legacyStore.getItem(key)).columns,columns,'trusted legacy preference is normalized without theme inference');
+}
+const explicitStore=storage();explicitStore.setItem('tvhome.theme.choice.v1',JSON.stringify({id:'builtin:alpine',title:'Alpine'}));
+explicitStore.setItem(key,JSON.stringify({version:1,columns:8}));
+assert.equal(create(explicitStore,{columns:5}).state().override,8,'modern explicit eight is retained');
+explicitStore.setItem(key,JSON.stringify({version:1,columns:null}));
+assert.equal(create(explicitStore,{columns:8}).state().override,null,'explicit By theme takes precedence over any legacy value');
+explicitStore.removeItem('tvhome.theme.choice.v1');
+assert.equal(create(explicitStore,{columns:8}).state().override,null,'theme reset cannot override explicit By theme');
 console.log('PASS columns precedence, bounds, reload, legacy profiles and failed persistence');

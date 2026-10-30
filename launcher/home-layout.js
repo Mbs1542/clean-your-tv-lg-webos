@@ -36,17 +36,9 @@
     var preset = 'dock-grid', themeColumns = 5, allowColumnOverride = true, override = valid(config.columns) && config.columns !== 5 ? config.columns : null;
     try {
       var raw = storage.getItem(KEY), saved = JSON.parse(raw);
-      // Pre-release profiles captured effective theme columns without a preference key.
-      // Retain genuine legacy migration until themes have actually been used.
-      if (raw === null) {
-        var choice = JSON.parse(storage.getItem('tvhome.theme.choice.v1'));
-        if (choice && typeof choice.id === 'string' && /^(builtin:(classic|alpine)$|github:)/.test(choice.id)) {
-          override = null; storage.setItem(KEY, JSON.stringify({version: 1, columns: null}));
-        } else if (override !== null) {
-          // Normalize genuine legacy preference before a later theme choice obscures its origin.
-          storage.setItem(KEY, JSON.stringify({version: 1, columns: override}));
-        }
-      }
+      // Persist genuine legacy preference before a later theme choice/profile capture.
+      // A saved theme cannot identify whether an old CONFIG value was user-chosen.
+      if (raw === null && override !== null) storage.setItem(KEY, JSON.stringify({version: 1, columns: override}));
       if (saved && saved.version === 1 && (saved.columns === null || valid(saved.columns))) override = saved.columns;
     } catch (_) {}
     function state() { return {columns: !allowColumnOverride || override === null ? themeColumns : override, override: override, themeColumns: themeColumns, preset: preset, allowColumnOverride: allowColumnOverride}; }
