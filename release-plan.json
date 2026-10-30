@@ -94,7 +94,20 @@
       "issues": [
         165
       ],
-      "summary": "Authenticate and durably archive completed prior System replacement history before a new guarded 1.1.1 to 1.1.2 operation; scoped maintainer C3 migration passed with the same frozen TV payload. Root remains 0.6.0; subsequent Root 0.6.1 preparation aborted before component install submission and diagnostic recovery is pending (#165)."
+      "summary": "Authenticate and durably archive completed prior System replacement history before new guarded 1.1.1 to 1.1.2 admission; the scoped maintainer C3 supervisor migration passed using the same frozen payload (#165)."
+    },
+    {
+      "pr": 167,
+      "issues": [],
+      "summary": "Update shared TV theme rendering with a styleable scenic position indicator, single focused caption and icon-error recovery; publish the reviewed toolkit Itachi 1.0.2 catalog entry and improve reference-app/HDMI/showcase browser previews. This changes both TV editions, not only preview tooling."
+    },
+    {
+      "pr": 169,
+      "issues": [
+        162,
+        168
+      ],
+      "summary": "Preserve app-origin theme and Columns preferences across normal System profile restore while retaining legacy reset and invalid-trial recovery; correct stale Columns focus handling. Actual-TV UI06 still shows a 110 px Appearance shift and remains unresolved (#168, #162)."
     }
   ],
   "excluded": [],

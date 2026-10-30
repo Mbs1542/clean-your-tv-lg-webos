@@ -64,11 +64,19 @@ Helper rollback compatibility and remaining release gates are tracked in
   available larger native app icons within the existing validation limits, and
   support optional bounded CSS white-logo effects on compatible renderers.
   Original image files remain unchanged; physical-TV acceptance is pending.
-- #168: preserve existing app-origin theme and Columns preferences when a
+- #167: update shared on-TV rendering in both editions with a theme-styleable
+  scenic ribbon position indicator, one focused app caption when the hero title
+  is visible, and recovery from missing native icon images. The reviewed Toolkit
+  Itachi 1.0.2 replaces the candidate catalogue entry. Reference-app ordering,
+  simulated HDMI inputs and the main browser preview's theme selector/showcase
+  are also updated; this PR includes TV behavior, not only preview changes.
+- #169 (#168): preserve existing app-origin theme and Columns preferences when a
   normal System update restores its profile snapshot. Legacy backup restore
   still resets Classic; invalid or interrupted appearance still falls back safely.
-- #162: keep the actual settings focus when a selected theme hides Columns,
-  instead of moving focus from an Apply control because of a stale selection.
+- #169 (#162): avoid redirecting settings focus from an Apply control because
+  a stale Columns selection disappeared. The current combined candidate still
+  exhibits a 110 px Appearance shift in the actual-TV UI06 check; that original
+  finding remains unresolved.
 - #134: reusable candidate-build evidence and scoped acceptance tooling. The
   first release still follows the trusted policy currently present on main.
 

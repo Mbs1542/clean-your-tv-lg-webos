@@ -435,3 +435,63 @@ retests after prerequisites are resolved, not a full unaffected physical matrix.
 The overall candidate remains 1.5.0 / target Root 0.6.1, unpinned with empty
 final acceptance, not ready for main or publication. Android runtime-equivalence
 and the exact conditional Helper approval retain their previously recorded scope.
+
+### Combined 1f41 source, rollback and new installation checkpoint
+
+PRs [#167](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/167) and
+[#169](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/169) merged as
+`bf956b6eb76866a28a3e275e89faa38c413fa580` and
+`4281c284d94385178829fdd9bb1c61dee07f5f9a` after green CI, independent review
+and combined affected checks. The frozen QA source is
+`1f41a9cf3d66a6858de71e91dcebcef417e81bd4`; its named QA branch is held immutable.
+Build 41036602865 completed successfully. Preliminary signing 41037318681
+succeeded with publication skipped. No manual new build or main integration is
+performed by this metadata update.
+
+#167 changes shared TV rendering in both editions: the optional scenic position
+styling part, duplicate-caption behavior and native icon error recovery, plus
+reviewed Toolkit Itachi 1.0.2 catalogue and preview/reference-app/HDMI flows.
+#169 preserves app-origin theme/Columns state across System profile restore and
+actual Settings focus when Columns disappears, while retaining legacy restore
+and interrupted/invalid-theme recovery. Combined affected host checks passed for
+offline previews, Root/No-root profiles, Columns, icon recovery, ribbon and
+Appearance in English/Russian at 1080p/720p. Current THEMES/TV-THEMES instructions
+already distinguish legacy reset from normal System preservation; the twelve
+localized user guides have no conflicting restore claim and need no new control
+instructions for this scope.
+
+On the same maintainer-owned OLED55C3RLA (firmware 43.21.71, SDK 11.2.0; Root
+edition; macOS ARM64 installer host; exact remote model unknown), the ordinary
+retained rollback of the earlier Root 0.6.1 candidate to 0.6.0 completed with
+all three successful component terminals, Home completion and terminal lease.
+This is acceptance of that earlier candidate's retained rollback, not rollback
+of the newly installed 1f41 candidate.
+
+The normal new signed 1f41 installation then completed: actual readback shows
+Root 0.6.1, Updater 0.3.3, infrastructure 0.6.1 and System 1.1.2. All three
+install intents/submissions bind the signed hashes; both IPKs have SDK installed
+success and infrastructure has a successful hash-bound terminal. The current
+Root record matches the signed component set, transaction/Home-resume phases
+are complete, and the lease is terminal at complete. Home-resume outcome is
+cancelled; phase completion alone does not claim enabled Home interception.
+
+New Root IPK SHA-256:
+`419de466e43095b426d9652c102fabd2c3ebd5a58c4dbb0f4928056b6d4b9f64`.
+Updater remains `03178adacfd00391cf54d9dd87587cee04b717598507e85c55948d982382ca72`;
+infrastructure remains `f6af35d2c44032d7861184fcf86bda7299065691051d48ea2fc78f03c9034f26`.
+Production RSA signature, local file hashes, public provenance and actual
+submitted hashes were independently checked. Helper raw/canonical hashes still
+match the exact conditional approval; Android executable bodies remain unchanged
+from the previously checked runtime (PYC timestamps/provenance differ).
+
+Before transition, Alpine and disabled Home replacement were retained. The sole
+dedicated UI runner began the new affected checks after its initial actual
+Alpine-retention read; final retention acceptance remains pending its report.
+The new actual-TV UI06 check on Root `419de466` failed with a 110 px Appearance
+shift. That original finding remains unresolved; other affected UI results are
+partial/in progress and are not declared passed. The owner's physical held-arrow/key-release and warm Home first-
+frame successes belong only to the earlier frozen-baf9 Root IPK beginning
+`633eabe8`, not to the new `419de466` bytes. Both power-presentation cases remain
+pending. Preserve the owner's narrow affected-retest scope without repeating
+unchanged physical cases. The earlier first abort remains historical with its
+product cause unknown. Release stays draft/unpinned with empty final acceptance.
