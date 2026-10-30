@@ -35,11 +35,18 @@
   function create(storage, config, profileData) {
     var preset = 'dock-grid', themeColumns = 5, allowColumnOverride = true, override = valid(config.columns) && config.columns !== 5 ? config.columns : null;
     try {
-      var saved = JSON.parse(storage.getItem(KEY));
+      var raw = storage.getItem(KEY), saved = JSON.parse(raw);
+      // Pre-release profiles captured effective theme columns without a preference key.
+      // Retain genuine legacy migration until themes have actually been used.
+      if (raw === null) {
+        var choice = JSON.parse(storage.getItem('tvhome.theme.choice.v1'));
+        if (choice && typeof choice.id === 'string' && /^(builtin:(classic|alpine)$|github:)/.test(choice.id)) override = null;
+      }
       if (saved && saved.version === 1 && (saved.columns === null || valid(saved.columns))) override = saved.columns;
     } catch (_) {}
     function state() { return {columns: !allowColumnOverride || override === null ? themeColumns : override, override: override, themeColumns: themeColumns, preset: preset, allowColumnOverride: allowColumnOverride}; }
-    function changed() { config.columns = state().columns; if (model.onchange) model.onchange(state()); }
+    // CONFIG is captured into profiles. Store preference, never theme-derived geometry.
+    function changed() { config.columns = override === null ? 5 : override; if (model.onchange) model.onchange(state()); }
     function setColumns(value) {
       if (!allowColumnOverride) throw Error('columns-locked');
       if (value !== null && !valid(value)) throw Error('columns-invalid');
@@ -48,7 +55,7 @@
         var raw = storage.getItem(profileData.key);
         if (raw !== null) {
           profile = profileData.validate(JSON.parse(raw));
-          profile.config.columns = value === null ? themeColumns : value;
+          profile.config.columns = value === null ? 5 : value;
           profile = profileData.validate(profile);
         }
       }

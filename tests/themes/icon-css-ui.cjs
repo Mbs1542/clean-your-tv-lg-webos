@@ -33,7 +33,12 @@ const sourceRoot=path.resolve('themes/itachi'),source=JSON.parse(fs.readFileSync
   assert((await netflix.boundingBox()).width>=200,'original Netflix is visibly enlarged through CSS');
   fs.writeFileSync(path.resolve('build/itachi-css-styles-'+edition+'.json'),JSON.stringify(await page.locator('#tiles img').evaluateAll(images=>images.map(i=>({id:i.closest('.item').dataset.appId,classes:i.className,filter:getComputedStyle(i).filter,blend:getComputedStyle(i).mixBlendMode,rect:i.getBoundingClientRect().toJSON()}))),null,2));
   await page.evaluate(()=>document.fonts.ready);await page.screenshot({path:path.resolve('build/itachi-css-'+edition+'.png'),animations:'disabled'});
-  if(edition==='launcher'){await page.setViewportSize({width:960,height:540});await page.screenshot({path:path.resolve('build/itachi-css-preview.jpg'),type:'jpeg',quality:85,animations:'disabled'});await page.setViewportSize({width:1920,height:1080});}
+  if(edition==='launcher'){
+   const before=await page.screenshot({animations:'disabled'}),preview=await require('../../scripts/build-itachi-theme.cjs').capturePreview(page);
+   assert.deepEqual(page.viewportSize(),{width:1920,height:1080},'thumbnail capture must not change the renderer viewport');
+   const difference=await page.evaluate(async({before,preview})=>{async function pixels(src){const image=new Image();image.src='data:image/'+(src===before?'png':'jpeg')+';base64,'+src;await image.decode();const c=document.createElement('canvas');c.width=960;c.height=540;c.getContext('2d').drawImage(image,0,0,960,540);return {data:c.getContext('2d').getImageData(0,0,960,540).data,width:image.naturalWidth,height:image.naturalHeight};}const a=await pixels(before),b=await pixels(preview);let difference=0;for(let i=0;i<a.data.length;i+=4)difference+=Math.abs(a.data[i]-b.data[i])+Math.abs(a.data[i+1]-b.data[i+1])+Math.abs(a.data[i+2]-b.data[i+2]);return {difference:difference/(960*540*3),width:b.width,height:b.height};},{before:before.toString('base64'),preview:preview.toString('base64')});
+   assert.equal(difference.width,960);assert.equal(difference.height,540);assert(difference.difference<8,'thumbnail represents the whole full-size frame, including bottom ribbon');fs.writeFileSync(path.resolve('build/itachi-css-preview.jpg'),preview);
+  }
   await page.locator('#btnSettings').click();assert.equal(await netflix.evaluate(i=>getComputedStyle(i).filter),'none');await page.keyboard.press('Escape');
   await page.reload();await page.locator('#tiles .focused').waitFor();await page.evaluate(()=>ThemeManager.start());assert.equal(await page.evaluate(()=>ThemeManager.current().id),installed.id);
   assert.equal(await page.evaluate(()=>JSON.stringify(TV_APPS)),installed.inventory);

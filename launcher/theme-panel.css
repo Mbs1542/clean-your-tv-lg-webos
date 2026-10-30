@@ -94,3 +94,6 @@
 #homeThemePanel #themeReceiverDeadline { font-size:20px; color:#c5ced9; }
 
 #settings-pane-appearance .theme-context-hidden { display:none; }
+
+/* Reserve the badge's space so selecting another card cannot resize the lane. */
+#homeThemePanel .theme-option[data-selected="false"] .theme-selected { visibility:hidden; }
