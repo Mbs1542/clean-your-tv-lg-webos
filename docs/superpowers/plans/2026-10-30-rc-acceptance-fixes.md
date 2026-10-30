@@ -47,9 +47,11 @@ evidence are preserved. No other task's worktree is touched.
 
 ## Integration and delivery
 
-- [ ] Preserve the observation record and establish regression baselines.
+- [x] Preserve the observation record and establish regression baselines.
 - [ ] Complete the three independent implementation groups.
-- [ ] Complete and review the supported retained-supervisor migration gate.
+- [x] Implement/review the supported retained-supervisor admission change:
+  42 replacement tests pass, including finished-profile archival and inherited
+  fault paths for 1.1.1; physical migration still awaits the new artifacts.
 - [ ] Review each diff independently; fix substantive findings before integration.
 - [ ] Merge the scoped commits locally and run the complete `scripts/test.sh`,
   affected both-edition browser/motion/first-frame tests, theme validation,
