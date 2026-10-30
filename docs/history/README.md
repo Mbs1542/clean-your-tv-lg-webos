@@ -15,6 +15,8 @@ one model or artifact does not certify later releases or a different TV.
 
 ## Release notes
 
+- [1.5.1](../RELEASE-1.5.1.md)
+- [1.5.0](../RELEASE-1.5.0.md)
 - [1.4.0](../RELEASE-1.4.0.md)
 - [1.3.0](../RELEASE-1.3.0.md)
 - [1.2.0](../RELEASE-1.2.0.md)
@@ -37,6 +39,7 @@ one model or artifact does not certify later releases or a different TV.
 
 ## Acceptance and validation
 
+- [1.5.1 maintenance validation](2026-10-30-release-1.5.1-validation.md): full CI and identical TV artifacts; no new hardware session.
 - [1.4.0-ACCEPTANCE](../RELEASE-1.4.0-ACCEPTANCE.md)
 - [1.3.0-ACCEPTANCE](../RELEASE-1.3.0-ACCEPTANCE.md)
 - [1.2.0-ACCEPTANCE](../RELEASE-1.2.0-ACCEPTANCE.md)

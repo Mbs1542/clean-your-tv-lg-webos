@@ -46,7 +46,8 @@ legacy/geometry/settings/theme browser tests, workflow lint, direct package
 validation and independent review. The staged UI browser test verifies actual
 compiled rendering, theme assets, storage isolation and blocked native calls.
 The final candidate's complete platform/test results and artifact comparison are
-recorded in [release PR #173](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/173).
+recorded in the [validation record](history/2026-10-30-release-1.5.1-validation.md)
+and [release PR #173](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/173).
 
 No TV was connected, installed or modified for this maintenance work. No new
 Home routing, controls, sound, standby, cold-boot, OTA or rollback pass is claimed.
