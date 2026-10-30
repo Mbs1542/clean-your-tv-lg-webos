@@ -48,17 +48,17 @@ evidence are preserved. No other task's worktree is touched.
 ## Integration and delivery
 
 - [x] Preserve the observation record and establish regression baselines.
-- [ ] Complete the three independent implementation groups.
+- [x] Complete the three independent implementation groups.
 - [x] Implement/review the supported retained-supervisor admission change:
   42 replacement tests pass, including finished-profile archival and inherited
   fault paths for 1.1.1; physical migration still awaits the new artifacts.
-- [ ] Review each diff independently; fix substantive findings before integration.
-- [ ] Merge the scoped commits locally and run the complete `scripts/test.sh`,
+- [x] Review each diff independently; fix substantive findings before integration.
+- [x] Merge the scoped commits locally and run the complete `scripts/test.sh`,
   affected both-edition browser/motion/first-frame tests, theme validation,
   geometry/legacy checks, release metadata and documentation checks.
-- [ ] Update affected technical/user instructions and twelve locales when their
+- [x] Update affected technical/user instructions and twelve locales when their
   visible behavior changes. Preserve historical results and honest limitations.
-- [ ] Create one implementation PR to `release/next`, attach it, inspect CI and
+- [x] Create one implementation PR to `release/next`, attach it, inspect CI and
   merge by merge commit after review and required checks. Refresh inventory and
   the draft release PR's current human validation block.
 - [ ] Obtain a new complete trusted candidate build; verify downloaded artifacts,
@@ -119,3 +119,29 @@ then obtain new trusted artifacts and supervised affected device acceptance.
 Root startup/wake, first themed frame, held navigation and migration/rollback
 must not be declared physically fixed from these source results. The original
 supervised candidate findings and the exact Helper approval retain their scope.
+
+## Integrated PR checkpoint
+
+Implementation PR [#163](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/163)
+merged into `release/next` as `809a1a7b` after review and green required CI.
+The release inventory includes #163 and issue #162. Source integration, host
+verification and the affected twelve-locale documentation pass are complete.
+The scope remains release 1.5.0 / Root 0.6.1, unpinned, with acceptance empty.
+The maintainer requested only the eight original defect retests on the new
+artifacts; do not repeat the full unaffected physical matrix.
+
+Final source host checks reported by the integration parent include 886 Root
+Python tests, 128 System tests, 150 setup checks, 15 preliminary-admission checks
+and affected browser suites. Preliminary run `41015491880` uses frozen source
+`baf9b07d5d938ba0403627926d48aad2afa9ccac`; it is not final release acceptance. Android native/lifecycle tests on
+`14374b32` and direct upgrades on `baf9b07d5d938ba0403627926d48aad2afa9ccac` passed; the executable code bodies match,
+with only PYC timestamps/provenance differing. No additional Android runtime gate
+is introduced by that packaging-only difference. Exact Helper risk approval is
+closed conditionally on reproducing its approved bytes and rollback baselines.
+TV packages are still the old candidate at this checkpoint; supported System
+migration is in progress, and no installed/fixed physical result is claimed.
+
+The latest supported System transition started but returned not confirmed and
+its driver stopped. Diagnosis/recovery is active without blind replay. Root
+0.6.1 is not installed. Preliminary Root signing run `41018163490` succeeded
+and its hashes were verified; signing is not an installation/acceptance result.

@@ -373,3 +373,31 @@ as preliminary, and permits remaining validation to be pending. It executes only
 trusted tools on candidate package data. Default final-success/publication gates
 are unchanged. Host admission/signing regressions pass; actual preliminary signed
 artifact creation and TV results are not yet established.
+
+### Integrated source and preliminary artifact checkpoint
+
+PR [#163](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/163) merged into
+`release/next` as `809a1a7b` with green required CI. Root is 0.6.1 in release
+1.5.0. The original eight physical findings retain their observed failures;
+their corrections are integrated in source, pending targeted new-artifact QA.
+The owner requested retesting only those eight findings, rather than repeating
+unchanged physical cases.
+
+Integration-parent host verification includes 886 Root Python tests, 128 System
+tests, 150 setup checks, 15 preliminary-admission checks and affected browser
+suites. Preliminary build `41015491880` is bound to frozen source `baf9b07d5d938ba0403627926d48aad2afa9ccac`; it
+cannot authorize final release publication. Android native/lifecycle checks on
+`14374b32` and direct upgrades on `baf9b07d5d938ba0403627926d48aad2afa9ccac` passed. The executable code bodies are
+identical; PYC timestamps and provenance differ. That packaging-only difference
+adds no further Android runtime gate. The exact Helper approval remains usable
+only if final artifacts reproduce the approved archive and rollback baselines.
+
+At this checkpoint the TV still has the old candidate packages; supported System
+migration is in progress without a recorded outcome. No new installation,
+physical fix, standby/wake, cold-start, audio or rollback result is claimed.
+The candidate remains unpinned with empty final acceptance pending actual gates.
+
+The latest supported System transition started but returned not confirmed and
+its driver stopped. Diagnosis/recovery is active without blind replay. Root
+0.6.1 is not installed. Preliminary Root signing run `41018163490` succeeded
+and its hashes were verified; signing is not an installation/acceptance result.

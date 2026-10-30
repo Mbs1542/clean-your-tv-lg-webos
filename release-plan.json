@@ -81,6 +81,13 @@
       "pr": 159,
       "issues": [],
       "summary": "Correct candidate documentation and record unattended host/artifact verification while preserving supervised Root, exact Helper rollback and Android upgrade gates."
+    },
+    {
+      "pr": 163,
+      "issues": [
+        162
+      ],
+      "summary": "Address the eight supervised RC findings in source: correct Itachi 1.0.1 preview, bound held-navigation lag, restore saved-theme first/warm presentation, stabilize Appearance, preserve explicit/legacy columns, and narrowly admit verified native TV foreground on boot/wake; add guarded System Updater 1.1.1 to 1.1.2 replacement, exact Helper approval and parallel preliminary device builds. Root 0.6.1; targeted new-artifact physical acceptance remains pending (#162)."
     }
   ],
   "excluded": [],
