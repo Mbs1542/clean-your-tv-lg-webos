@@ -34,6 +34,9 @@
   left: 0;
   z-index: 0;
 }
+.ctv-starting {
+  visibility: hidden;
+}
 .ctv-theme-suspended .ctv-ambient {
   visibility: hidden;
 }
@@ -593,3 +596,13 @@ body.editing #homeSurface[data-layout="scenic-grid"] #viewport::before { display
 
 /* Reorder controls remain in the trusted footer; the ribbon needs no arrow cluster. */
 #homeSurface[data-layout="scenic-grid"] .item.moving::after { content: none; }
+
+/* Remote focus follows every key immediately; pointer movement keeps its transitions.
+   In particular, repeated arrows must not continually retarget an unfinished scroll. */
+#homeSurface.ctv-remote-navigation #stage,
+#homeSurface.ctv-remote-navigation #glass,
+#homeSurface.ctv-remote-navigation .item,
+#homeSurface.ctv-remote-navigation .card,
+#homeSurface.ctv-remote-navigation .name {
+  transition: none !important;
+}
