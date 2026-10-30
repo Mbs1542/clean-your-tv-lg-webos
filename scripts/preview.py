@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Serve the real launcher with original webOS app reference data. Python standard library only."""
+"""Serve the real launcher and reviewed themes with original webOS app reference data. Requires Node.js and installed build dependencies."""
 import argparse
 import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -13,6 +13,10 @@ from urllib.parse import unquote, urlsplit
 import webbrowser
 
 ROOT = Path(__file__).resolve().parents[1]
+
+def preview_themes():
+    return subprocess.check_output(['node', str(ROOT / 'scripts/build-preview-themes.cjs')], cwd=ROOT)
+
 LAUNCHER_FILES = {
     'index.html', 'style.css', 'theme-defaults.css', 'theme-policy.js', 'theme-runtime.js', 'home-layout.js', 'layout-panel.js', 'settings-categories.js', 'layout-panel.css', 'renewal-panel.css', 'app.js', 'app-library.js', 'config.js',
     'user-data.js', 'release-notes.js', 'system-updates.js', 'update-panel.js', 'renewal-panel.js', 'helper-control.js', 'profile-bootstrap.js',
@@ -51,7 +55,8 @@ def revision():
     files = [ROOT / 'launcher' / name for name in sorted(LAUNCHER_FILES)]
     files += [ROOT / 'root-edition/preview.py']
     files += [ROOT / 'root-edition/ui' / name for name in ('root-locales.js', 'root-exit.js', 'root-firmware-control.js', 'root-firmware.js', 'root-audio.js', 'root-audio-locales.js', 'root-settings.js', 'root-settings.css', 'root-profile-data.js', 'root-profile.js', 'root-updates.js')]
-    files += [ROOT / 'preview/index.html', ROOT / 'preview/bridge.js', ROOT / 'preview/live-reload.js']
+    files += [ROOT / 'preview/index.html', ROOT / 'preview/bridge.js', ROOT / 'preview/live-reload.js', ROOT / 'preview/themes.js', ROOT / 'scripts/build-preview-themes.cjs']
+    files += list((ROOT / 'showcase/registry').glob('*.json'))
     files += [ROOT / 'preview/icons' / name for name in sorted(ICON_FILES)]
     files += [ROOT / 'preview' / name for name in sorted(REFERENCE_FILES)]
     stamps = []
@@ -99,7 +104,7 @@ def export_site(destination, showcase=False):
         else:
             shutil.copyfile(ROOT / 'launcher' / name, target)
     (destination / 'launcher/apps.js').write_text('window.TV_APPS = ' + json.dumps(inventory()) + ';\n', encoding='utf-8')
-    for name in ['bridge.js', 'icons/SOURCES.txt', 'icons/LICENSE-LUCIDE.txt'] + ['icons/' + name for name in sorted(ICON_FILES)] + sorted(REFERENCE_FILES):
+    for name in ['bridge.js', 'themes.js', 'icons/SOURCES.txt', 'icons/LICENSE-LUCIDE.txt'] + ['icons/' + name for name in sorted(ICON_FILES)] + sorted(REFERENCE_FILES):
         target = destination / 'preview' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / 'preview' / name, target)
@@ -107,6 +112,7 @@ def export_site(destination, showcase=False):
         target = destination / 'root-launcher' / name
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_bytes(data)
+    (destination / 'preview/themes.json').write_bytes(preview_themes())
     (destination / 'index.html').write_text(preview_html(live=False, showcase=showcase), encoding='utf-8')
     if showcase:
         subprocess.run(['node', str(ROOT / 'scripts/build-showcase.cjs'),
@@ -120,6 +126,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         path = unquote(urlsplit(self.path).path)
         file = None
+        if path == '/preview/themes.json':
+            self.respond(preview_themes(), 'application/json; charset=utf-8')
+            return
         if path == '/preview/version':
             self.respond(revision().encode(), 'text/plain; charset=utf-8')
             return
@@ -129,7 +138,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         if path == '/':
             file = ROOT / 'preview/index.html'
-        elif path in ('/preview/bridge.js', '/preview/live-reload.js', '/preview/settings.html', '/preview/update-overflow.html'):
+        elif path in ('/preview/bridge.js', '/preview/themes.js', '/preview/live-reload.js', '/preview/settings.html', '/preview/update-overflow.html'):
             file = ROOT / path.lstrip('/')
         elif path.startswith('/preview/') and path[len('/preview/'):] in REFERENCE_FILES:
             file = ROOT / path.lstrip('/')
