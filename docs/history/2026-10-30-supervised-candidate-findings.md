@@ -278,3 +278,13 @@ or merge it on the strength of this partial acceptance record.
 
 Append actual results and additional defects during this observation pass.
 Unknown or untested scenarios remain unknown or untested.
+
+## Additional diagnostic cold cycle during implementation
+
+While a host-side read-only recorder was prepared, the owner performed another
+requested enabled cold-start sequence (remote off, AC disconnection, on and one
+minute without Home/Back/app launch) and reported LG Channels again. No new
+candidate had been installed; this is additional evidence on the same original
+installed artifacts, not acceptance of the implementation branch. Exact off
+durations were requested but not separately restated. RC-START-08 remains open
+pending analysis/fix and verification of new artifacts.

@@ -33,7 +33,10 @@ const {assert, chromium, stage, open} = require('./browser.cjs');
    const pair=await ids();assert.equal(pair.length,2);
    for(const preset of ['dock-grid','icon-grid','side-grid','channel-list','scenic-grid']){
     await page.evaluate(preset=>HomeLayoutState.setThemeLayout({preset,columns:5,allowColumnOverride:true,spacingScale:1,textScale:1,focusScale:1.1}),preset);
-    await page.locator('#tiles [data-app-id]').first().dispatchEvent('mouseover');
+    // This is an intentional pointer action, not layout-generated mouseover.
+    await page.mouse.move(0,0);
+    await page.locator('#tiles [data-app-id]').first().hover();
+    assert(await page.locator('#tiles [data-app-id]').first().evaluate(el=>el.classList.contains('focused')),preset+': pointer selects the first move source');
     const before=await ids();
     await page.keyboard.down('Enter');await page.waitForTimeout(700);await page.keyboard.up('Enter');
     await page.keyboard.press('ArrowRight');await page.keyboard.press('Enter');
