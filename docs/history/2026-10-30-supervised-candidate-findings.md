@@ -350,3 +350,12 @@ of this exact TV surface during the startup/wake window has the same policy
 boundary as Live TV. The integration parent independently reran all 86 boot/wake
 presentation tests successfully. Physical RC-START-05/08 acceptance remains pending
 new artifacts; original failures above are not superseded by these host tests.
+
+
+The changed Root runtime is now versioned 0.6.1; the overall candidate stays
+1.5.0. This distinguishes corrected component bytes from the installed prerelease
+0.6.0 and allows an ordinary forward update after supported supervisor migration
+captures the genuine current bytes as its local baseline. Neither equal-release
+nor equal-component admission was relaxed, and no device state/version was edited.
+README, service package metadata and release notes agree. Metadata checks passed;
+new artifact generation and the physical transition remain pending.
