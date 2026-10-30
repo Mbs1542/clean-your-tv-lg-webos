@@ -20,4 +20,4 @@ limitations retain their [1.5.0 evidence](RELEASE-1.5.0.md). No TV was connected
 or modified and no new physical compatibility result is claimed.
 
 The [release PR](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/178)
-records exact candidate checks, package verification and normal publication.
+records normal publication; the [validation record](history/2026-10-30-release-1.5.2-validation.md) contains exact candidate and direct-delivery artifact evidence.
