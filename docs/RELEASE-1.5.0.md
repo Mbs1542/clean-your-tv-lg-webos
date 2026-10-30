@@ -11,7 +11,7 @@ Helper rollback compatibility and remaining release gates are tracked in
 | Home / renewal service | 1.5.1 | 1.6.0 |
 | Home Helper | 0.6.19 | 0.6.20, rebuilt from source |
 | cytv installer | 0.5.1 | 0.6.0 |
-| Root edition | 0.5.1 | 0.6.0 |
+| Root edition | 0.5.1 | 0.6.1 |
 | Both edition Updaters | 0.3.2 | 0.3.3 |
 | Android installer / versionCode | 0.4.1 / 14 | 0.5.0 / 15 |
 | New System Updater provisions / protocol | 1.1.1 / 1 | 1.1.2 / 1 |
@@ -84,6 +84,11 @@ and PC-to-TV transfer remain available. No certificate checks are disabled.
 
 ## Upgrade boundaries
 
+Root 0.6.1 versions the startup/wake corrections made after the earlier 0.6.0
+candidate. The supported supervisor replacement captures the installed packages
+as a local baseline before admitting the newer Root component; earlier 0.6.0
+device observations retain their original artifact scope.
+
 Use a complete matching installer/update set. A standalone Home IPK does not
 replace retained Root workers or their LS2 permission contract. New Root
 provisions record receiver capabilities; historical snapshots replay their
@@ -105,9 +110,13 @@ of a rebuilt candidate. Actual upgrade receiving, provisioning and rollback stil
 need matching artifact verification before release. Do not edit private pins or
 permission files to force acceptance.
 
-Helper 0.6.20 requires a new exact-archive rollback approval against the published
-Home/Helper baseline. The earlier 0.6.19 approval does not authorize this transition.
-No physical No-root/Helper or Android phone acceptance is claimed by Root testing.
+The maintainer approved the limited-evidence Helper 0.6.20 transition against
+published Home 1.5.1 / Helper 0.6.19 for the
+[exact recorded package and canonical archive hashes](history/2026-10-30-helper-0.6.20-approval.md).
+The final combined build must reproduce those approved Helper bytes and rollback
+baselines; changed bytes require new evidence and authorization. This is a scoped
+risk approval, not a physical No-root/Helper or Android phone acceptance result.
+Root testing does not establish those results.
 
 ## Candidate acceptance plan
 
@@ -138,6 +147,8 @@ No physical No-root/Helper or Android phone acceptance is claimed by Root testin
    results. Home routing, sound, standby, cold boot, full OTA/rollback and other
    devices remain separate gates unless directly exercised on these artifacts.
 
-No current-candidate physical result has been recorded yet. Prior C3 theme
+No physical result on the new combined-fix artifacts has been recorded yet.
+The [original supervised candidate findings](history/2026-10-30-supervised-candidate-findings.md)
+retain the observed failures and partial functional passes. Prior C3 theme
 fixtures and v1.4.1 acceptance retain their original scope and do not certify
 this candidate's packages or new Root receiver upgrade path.

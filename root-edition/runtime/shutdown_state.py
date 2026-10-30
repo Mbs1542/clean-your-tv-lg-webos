@@ -90,6 +90,8 @@ class PowerState:
         self.boot = boot
         self.primed = False
         self.on = False
+        self.asleep = False
+        self.revision = 0
         self.clear()
 
     def clear(self):
@@ -100,6 +102,8 @@ class PowerState:
 
     def close(self):
         self.on = False
+        self.asleep = False
+        self.revision += 1
         self.clear()
 
     def event(self, value):
@@ -110,17 +114,34 @@ class PowerState:
             self.close()
             raise ValueError('Invalid power subscription')
         state=value['state']
-        if state in ('Active','Screen Saver'):
+        request = None
+        if state == 'Active':
+            self.clear()
+            if value.get('onOff') == 'off':
+                self.close()
+            elif value.get('processing') is True:
+                # Keep a proven OFF pending, but revoke an in-flight request.
+                self.revision += 1
+            else:
+                if self.asleep:
+                    self.asleep = False
+                    self.revision += 1
+                    request = self.revision
+                self.on = True
+        elif state == 'Screen Saver':
             self.close(); self.on=True
         elif state in ('Active Standby','Power Off'):
+            self.revision += 1
             if self.primed and self.on:
                 record(self.transaction,source='firmware-power',boot=self.boot)
+                self.asleep = True
         else:
             self.close()
         self.primed=True
+        return request
 
 
-def observe_power(transaction, boot, stop):
+def observe_power(transaction, boot, stop, wake=None):
     # One owned interactive child, no polling process/reconnect loop. Its stdin
     # pipe closes if the guardian dies. Unknown/lost streams revoke their proof.
     power=None;child=None
@@ -147,8 +168,16 @@ def observe_power(transaction, boot, stop):
                 except ValueError:
                     # A partial frame may complete later, but cannot leave a
                     # previous OFF frame authoritative while parsing is uncertain.
-                    power.clear();break
-                data=data[end:];power.event(value)
+                    power.clear()
+                    # Framing alone is not an unknown power state: retain a
+                    # proven OFF until a complete valid ON, but cancel any
+                    # earlier worker while the next frame is incomplete.
+                    power.revision += 1
+                    break
+                data=data[end:]
+                revision=power.event(value)
+                if revision is not None and wake is not None:
+                    wake(lambda revision=revision: stop.is_set() or power.revision != revision)
     except (OSError,ValueError): pass
     finally:
         try:
@@ -164,10 +193,22 @@ class Monitor(threading.Event):
     def __init__(self):
         super().__init__()
         self.threads=[]
+        self.presentation=None
+
+    def request_wake(self, transaction, boot, cancelled):
+        # Optional RPCs must never block the power reader or guardian lease.
+        # At most one owned worker, no retries and no queue of stale wake edges.
+        if self.is_set() or self.presentation is not None and self.presentation.is_alive(): return
+        def present():
+            from intent_runtime import present_wake
+            present_wake(transaction,boot,lambda:self.is_set() or cancelled())
+        self.presentation=threading.Thread(target=present,daemon=True)
+        self.presentation.start()
 
     def close(self):
         self.set()
         for thread in self.threads: thread.join(timeout=2)
+        if self.presentation is not None: self.presentation.join(timeout=2)
 
 
 def monitor(transaction):
@@ -205,7 +246,8 @@ def monitor(transaction):
             except (OSError,ValueError):pass
             stop.wait(.25)
     # A stalled systemctl call must not delay the firmware request observer.
-    for observe in (power_request,manager,lambda:observe_power(transaction,boot,stop)):
+    for observe in (power_request,manager,lambda:observe_power(transaction,boot,stop,
+            wake=lambda cancelled:stop.request_wake(transaction,boot,cancelled))):
         thread=threading.Thread(target=observe,daemon=True)
         stop.threads.append(thread);thread.start()
     return stop

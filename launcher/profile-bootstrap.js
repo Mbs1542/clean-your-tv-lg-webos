@@ -7,6 +7,7 @@
   try{b=new PalmServiceBridge();b.onservicecallback=function(raw){try{var r=JSON.parse(raw);finish(r.returnValue===true?(r.result===undefined?r.state:r.result):null,r.returnValue===true);}catch(_){finish(null);}};b.call((service||'luna://com.cleanyourtv.updater.service/')+method,JSON.stringify(payload||{}));}catch(_){finish(null);}
  }
  function boot(){if(booted)return;booted=true;var s=document.createElement('script');s.src='app.js';s.onload=function(){
+  function rendered(){
   // A rendered grid (including an intentionally empty Home) is a startup signal.
   if(!systemRestore&&!document.querySelector('#tiles .item[data-app-id]')){
    if(!window.AppLibrary||window.RootLauncherRendered!==true)return;
@@ -27,6 +28,9 @@
     }else rpc('healthy',{version:info.version},function(){});
    }
   }catch(_){} };manifest.onerror=manifest.ontimeout=function(){};manifest.send();
+  }
+  if(window.HomeUIReady)window.HomeUIReady.then(rendered,function(error){if(window.SystemUpdates)systemError(error);});
+  else rendered();
  };document.body.appendChild(s);}
  function use(s,restore,identity){s=HomeData.validate(s);HomeData.save(localStorage,s);if(restore){localStorage.removeItem('tvhome.columns.v1');localStorage.removeItem('tvhome.theme.choice.v1');localStorage.removeItem('tvhome.theme.trial.v1');var previousLanguage=window.HomeI18n&&HomeI18n.preference();['tvhome.order','tvhome.layout','tvhome.language'].forEach(function(key){if(s.settings[key]===undefined)localStorage.removeItem(key);});HomeData.apply(localStorage,s);if(identity)localStorage.setItem(restoreMarker,identity);if(window.HomeI18n&&(HomeI18n.refresh(),HomeI18n.preference())!==previousLanguage)window.location.reload();}window.TV_APPS=s.inventory;window.CONFIG=s.config;if(s.renewal)rpc('restoreHistory',{state:s.renewal},function(){},'luna://com.gathin.tvhome.renewal/');}
  function icon(url,cb){if(/^data:image\/(png|jpeg|webp);base64,/.test(url)){cb(null,url);return;}

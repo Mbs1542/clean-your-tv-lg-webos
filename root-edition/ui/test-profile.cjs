@@ -38,6 +38,22 @@ function harness({restore=null,saved=null,tiles=['app.one'],version='0.0.1',pack
  assert.strictEqual(h.scripts.length,1);assert.deepStrictEqual(h.window.TV_APPS,profile.inventory);assert.strictEqual(h.memory.get('tvhome.order'),profile.settings['tvhome.order']);
  h.window.RootLauncherRendered=true;h.scripts[0].onload();await tick();assert.deepStrictEqual(h.calls.map(x=>x[0]),['restoreProfile','ready','confirm']);assert.strictEqual(h.calls[1][1].transaction,'tx');assert.strictEqual(h.calls[1][1].version,'0.0.1');
  const captured=await h.window.RootProfile.capture();assert.deepStrictEqual(JSON.parse(JSON.stringify(captured)),profile);assert.strictEqual(h.calls.length,3);
+ // Effective Alpine geometry must never be captured as an explicit legacy choice.
+ const captureHost=harness({packaged:profile.inventory});await tick();
+ captureHost.window.CONFIG=JSON.parse(JSON.stringify(profile.config));
+ const captureStorage={getItem:k=>captureHost.memory.has(k)?captureHost.memory.get(k):null,setItem:(k,v)=>captureHost.memory.set(k,v),removeItem:k=>captureHost.memory.delete(k)};
+ const layout=require('../../launcher/home-layout.js').create(captureStorage,captureHost.window.CONFIG,data);
+ layout.setThemeLayout({preset:'scenic-grid',columns:8,allowColumnOverride:false,spacingScale:1,textScale:1,focusScale:1.1});
+ const automaticCapture=await captureHost.window.RootProfile.capture();
+ assert.strictEqual(automaticCapture.config.columns,5,'profile capture stores By theme, not Alpine effective eight');
+ const captureReload=harness({saved:automaticCapture});await tick();
+ const restoredLayout=require('../../launcher/home-layout.js').create({getItem:k=>captureReload.memory.has(k)?captureReload.memory.get(k):null},captureReload.window.CONFIG,data);
+ restoredLayout.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
+ assert.strictEqual(restoredLayout.state().columns,1,'profile reload permits Channel default');
+ layout.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});layout.setColumns(4);
+ assert.strictEqual((await captureHost.window.RootProfile.capture()).config.columns,4,'explicit column choice remains in Root backup');
+ layout.setColumns(null);
+ assert.strictEqual((await captureHost.window.RootProfile.capture()).config.columns,5,'By theme reset removes stale effective value from Root backup');
  const layoutMemory=new Map([['tvhome.layout',JSON.stringify({version:1,ids:['app.one'],hidden:['app.one'],catalog:profile.inventory.apps})]]);
  h=harness({restore:{profile,transaction:'layout',version:'0.0.1',phase:'verifying'},memory:layoutMemory,tiles:[]});await tick();h.window.RootLauncherRendered=true;h.scripts[0].onload();await tick();assert(h.calls.some(x=>x[0]==='ready'),'saved layout visibility must match the launcher model');
  h=harness({restore:{profile,transaction:'tx',version:'0.0.1',phase:'verifying'},tiles:['wrong']});await tick();h.window.RootLauncherRendered=true;h.scripts[0].onload();await tick();assert(!h.calls.some(x=>x[0]==='ready'));assert(h.errors.length);

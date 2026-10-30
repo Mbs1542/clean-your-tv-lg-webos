@@ -122,7 +122,7 @@ For contributors: [build and technical references](docs/development/README.md),
 | cytv installer | 0.6.0 |
 | Home | 1.6.0 |
 | Home Helper | 0.6.20 |
-| Root edition | 0.6.0 |
+| Root edition | 0.6.1 |
 | Both edition Updaters | 0.3.3 |
 | Android installer / versionCode | 0.5.0 / 15 |
 <!-- /release:components -->

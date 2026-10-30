@@ -3,13 +3,15 @@
 const fs=require('fs'),path=require('path'),crypto=require('crypto');
 const policy=require('../system-updater/policy');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
-function notesFor(m){return 'Unpublished Root QA only; source '+m.source+'; build '+m.run_id+':'+m.attempt+'; artifact '+m.artifact.sha256+'. No stable publication or No-root approval.';}
+function notesFor(m){return (m.preliminary===true?'PRELIMINARY Root QA; package job '+(m.package_job||{}).id+'; full validation not required or established; not final release acceptance. ':'')+'Unpublished Root QA only; source '+m.source+'; build '+m.run_id+':'+m.attempt+'; artifact '+m.artifact.sha256+'. No stable publication or No-root approval.';}
 function read(file,limit){const s=fs.lstatSync(file);if(!s.isFile()||s.nlink!==1||s.size>limit)throw Error('Unsafe signing input');return fs.readFileSync(file);}
 function signRootCandidate(folder,privateKey,publicKey){
  const output=path.join(folder,'system-update-root.json');
  if(fs.existsSync(output))throw Error('Signed candidate already exists');
  const meta=JSON.parse(read(path.join(folder,'PROVENANCE.json'),65536));
  const manifest=JSON.parse(read(path.join(folder,'manifest.json'),65536));
+ if(Object.prototype.hasOwnProperty.call(meta,'preliminary')&&(meta.preliminary!==true||typeof meta.branch!=='string'||!meta.branch||meta.branch.startsWith('refs/')))throw Error('Invalid preliminary provenance');
+ if(meta.preliminary===true){const j=meta.package_job;if(!j||!Number.isSafeInteger(j.id)||j.id<=0||j.name!=='build (macos-15, cytv-macos-arm64, dist/cytv)'||j.status!=='completed'||j.conclusion!=='success'||j.run_id!==meta.run_id||j.head_sha!==meta.source||j.run_attempt!==meta.attempt)throw Error('Invalid preliminary package job');}
  if(meta.schema!==1||!/^v\d{1,4}\.\d{1,4}\.\d{1,4}$/.test(meta.release)||!meta.versions||'v'+meta.versions.release!==meta.release||!Number.isSafeInteger(meta.run_id)||meta.run_id<=0||!Number.isSafeInteger(meta.attempt)||meta.attempt<=0||!/^[a-f0-9]{40}$/.test(meta.source)||!meta.artifact||!/^[a-f0-9]{64}$/.test(meta.artifact.sha256))throw Error('Invalid candidate provenance');
  if(manifest.edition!=='root')throw Error('Only Root QA signing is permitted');
  policy.validate(manifest);

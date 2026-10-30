@@ -1,4 +1,4 @@
-# Itachi · Sharingan — CSS-only local candidate 1.0.0
+# Itachi · Sharingan — CSS-only local candidate 1.0.1
 
 Dark Itachi wallpaper, crimson eyes and a bottom scenic app ribbon. Every app
 image remains the original source supplied by Home. There are no replacement
@@ -82,3 +82,10 @@ See LICENSE.txt/CREDITS.txt for wallpaper provenance.
 В следующем кандидате: Настройки → Оформление → Темы → Showcase → Itachi.
 ZIP можно передать через актуальный авторский toolkit с кодом приёмника ТВ.
 На физическом телевизоре эта тема ещё не проверена.
+
+## Preview correction in 1.0.1
+
+The preview captures the complete 1920×1080 Home frame before downsampling to
+960×540. Clock, shortcuts and the bottom native-icon ribbon remain in the image.
+Theme CSS, wallpaper and native application image sources are unchanged.
+The historical immutable 1.0.0 distribution is retained.

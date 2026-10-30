@@ -145,7 +145,7 @@ def replace(bundle,setup,cleanup,manager,store,ownership,remove,terminal_removal
     else:
         # Inspect every proof before reserving a new operation or disabling code.
         old=old_proof(manager,system)
-        if manager.io.owner_identity(APP)['version']!='1.1.0':raise ValueError('Only the original System Updater 1.1.0 can use this replacement')
+        if manager.io.owner_identity(APP)['version'] not in ('1.1.0','1.1.1'):raise ValueError('Only System Updater 1.1.0 or 1.1.1 can use this replacement')
         cleanup.operate('status',state=system)
         resume=lease['id'] if lease and not lease['terminal'] and lease['owner']=='system-replace' and lease['journal']=='system-replacement.json' and lease['stage']=='reserved' else None
     def eligible():

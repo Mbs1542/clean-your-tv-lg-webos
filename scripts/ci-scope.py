@@ -67,12 +67,21 @@ def is_candidate(plan, version, previous):
                 and isinstance(acceptance, str) and acceptance.strip())
 
 
-def build_installers(event, kind, ref, plan, version, previous, notes):
-    if kind not in ('push', 'workflow_dispatch') or ref != 'refs/heads/release/next' or not notes:
-        return False
+def draft_branch_build(event, kind, ref):
     requested = event.get('inputs', {}).get('test_build')
-    draft = kind == 'workflow_dispatch' and (requested is True or requested == 'true')
-    return bool(prepared_version(plan, version, previous) and (kind == 'push' or draft))
+    repository = event.get('repository', {}).get('full_name')
+    expected = os.environ.get('GITHUB_REPOSITORY')
+    return bool(kind == 'workflow_dispatch' and (requested is True or requested == 'true')
+                and isinstance(ref, str) and ref.startswith('refs/heads/')
+                and ref not in ('refs/heads/', 'refs/heads/main')
+                and expected and isinstance(repository, str) and repository.lower() == expected.lower())
+
+
+def build_installers(event, kind, ref, plan, version, previous, notes):
+    release_branch = ref == 'refs/heads/release/next'
+    if not notes or not (kind == 'push' and release_branch or draft_branch_build(event, kind, ref)):
+        return False
+    return prepared_version(plan, version, previous)
 
 
 def git(*args):
@@ -91,14 +100,15 @@ def main():
         diff = None
     selected = components(git('diff', '--name-only', '--no-renames', '-z', *diff).decode().split('\0')[:-1]) if diff and os.environ.get('CI_FULL_SUITE') != 'true' else set(COMPONENTS)
     candidate = installers = False
-    if (kind in ('push', 'workflow_dispatch')
-            and os.environ.get('GITHUB_REF') == 'refs/heads/release/next'):
+    ref = os.environ.get('GITHUB_REF')
+    release_branch = ref == 'refs/heads/release/next'
+    if kind in ('push', 'workflow_dispatch') and (release_branch or draft_branch_build(event, kind, ref)):
         plan = json.loads(Path('release-plan.json').read_text())
         version = json.loads(Path('release-versions.json').read_text())['release']
         previous = json.loads(git('show', 'origin/main:release-versions.json'))['release']
         notes = Path('docs/RELEASE-' + version + '.md').is_file()
-        candidate = is_candidate(plan, version, previous) and notes
-        installers = build_installers(event, kind, os.environ.get('GITHUB_REF'), plan, version, previous, notes)
+        candidate = release_branch and is_candidate(plan, version, previous) and notes
+        installers = build_installers(event, kind, ref, plan, version, previous, notes)
     # A selected build survives only documentation/evidence edits. Never skip on trust alone.
     if installers and INPUTS['build_pin'](plan) and not (kind == 'workflow_dispatch' and event.get('inputs', {}).get('test_build') in (True, 'true')):
         try:

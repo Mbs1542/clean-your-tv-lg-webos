@@ -41,6 +41,7 @@
     var script = document.createElement('script'); script.src = 'app.js';
     script.onerror = function () { recovery(Error('Launcher could not start')); };
     script.onload = function () {
+      function rendered() {
       if (!restored || ['verifying', 'verifying-rollback'].indexOf(restored.phase) < 0) return;
       try {
         if (window.RootLauncherRendered !== true) throw Error('Launcher did not finish rendering');
@@ -56,6 +57,9 @@
           if (restored.phase === 'verifying') return window.RootUpdates.rpc('confirm', health);
         }).catch(recovery);
       } catch (error) { recovery(error); }
+      }
+      if (window.HomeUIReady) window.HomeUIReady.then(rendered, recovery);
+      else rendered();
     };
     document.body.appendChild(script);
   }

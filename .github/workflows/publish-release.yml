@@ -22,6 +22,18 @@ on:
         description: 'Root QA only: successful release/next cytv build run; requires publish=false'
         type: string
         default: ''
+      preliminary_root_qa:
+        description: 'Preliminary Root device QA before full validation; never final acceptance; publish must be false'
+        type: boolean
+        default: false
+      candidate_source_sha:
+        description: 'Preliminary only: exact 40-character candidate build source SHA'
+        type: string
+        default: ''
+      candidate_branch:
+        description: 'Preliminary only: explicitly selected source branch name (no refs or tags)'
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
@@ -29,7 +41,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main' && !inputs.candidate_build_run
+    if: github.ref == 'refs/heads/main' && !inputs.candidate_build_run && !inputs.preliminary_root_qa && !inputs.candidate_source_sha && !inputs.candidate_branch
     environment: release-signing
     permissions:
       contents: write
@@ -104,6 +116,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           path: qa-tools
+          ref: ${{ github.sha }}
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
@@ -124,7 +137,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           BUILD_RUN: ${{ inputs.candidate_build_run }}
           RELEASE_TAG: ${{ inputs.tag }}
-        run: python scripts/root-candidate-feeds.py inspect --run-id "$BUILD_RUN" --tag "$RELEASE_TAG" --metadata "$RUNNER_TEMP/root-candidate.json"
+          PRELIMINARY: ${{ inputs.preliminary_root_qa }}
+          SOURCE_SHA: ${{ inputs.candidate_source_sha }}
+          SOURCE_BRANCH: ${{ inputs.candidate_branch }}
+        run: |
+          args=()
+          if [ "$PRELIMINARY" = true ]; then
+            args+=(--preliminary --source-sha "$SOURCE_SHA" --branch "$SOURCE_BRANCH")
+          else
+            [ -z "$SOURCE_SHA" ] && [ -z "$SOURCE_BRANCH" ] || { echo 'Source options require explicit preliminary QA'; exit 1; }
+          fi
+          python scripts/root-candidate-feeds.py inspect --run-id "$BUILD_RUN" --tag "$RELEASE_TAG" --metadata "$RUNNER_TEMP/root-candidate.json" "${args[@]}"
       - uses: actions/checkout@v4
         with:
           ref: ${{ steps.candidate.outputs.source }}

@@ -199,6 +199,48 @@ class FlowTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.run_replacement()
         self.assertEqual(self.removals,0)
 
+class Retained111FlowTests(FlowTests):
+    """Run interruption/integrity coverage against the retained public owner."""
+    def setUp(self):
+        super().setUp()
+        (self.appdir/'version').write_text('1.1.1')
+
+    def check_terminal_profile_archive(self,phase):
+        saved=Store(self.system,uid=os.getuid());profile='profile-'+'c'*32
+        saved.write(profile,{'layout':{'apps':['synthetic']}})
+        saved.write('transaction',{'edition':'root','phase':phase,'homeResumePhase':phase,'profile':profile})
+        original_profile=(self.system/(profile+'.json')).read_bytes()
+        original_transaction=(self.system/'transaction.json').read_bytes()
+        result=self.run_replacement();archive=Path(result['archive'])
+        self.assertEqual((archive/(profile+'.json')).read_bytes(),original_profile)
+        self.assertEqual((archive/'transaction.json').read_bytes(),original_transaction)
+        self.assertEqual(self.profile.read_bytes(),b'personal layout')
+        self.assertEqual((self.appdir/'version').read_text(),'1.1.2')
+
+    def test_completed_transaction_profile_is_archived_unchanged(self):
+        self.check_terminal_profile_archive('complete')
+
+    def test_rolled_back_transaction_profile_is_archived_unchanged(self):
+        self.check_terminal_profile_archive('rolled-back')
+
+    def test_unfinished_home_resume_refuses_before_reservation(self):
+        Store(self.system,uid=os.getuid()).write('transaction',{'edition':'root','phase':'complete','homeResumePhase':'pending'})
+        with self.assertRaisesRegex(ValueError,'existing System recovery'):
+            self.run_replacement()
+        self.assertEqual(self.calls,[]);self.assertEqual(self.removals,0)
+        self.assertIsNone(self.store.read('system-replacement'))
+        self.assertIsNone(self.ownership.status())
+
+    def test_unrecognized_owners_refuse_before_reservation(self):
+        for version in ('1.0.0','1.1.2','1.1.10','2.0.0','unknown'):
+            with self.subTest(version=version):
+                (self.appdir/'version').write_text(version)
+                with self.assertRaisesRegex(ValueError,'System Updater'):
+                    self.run_replacement()
+                self.assertEqual(self.calls,[]);self.assertEqual(self.removals,0)
+                self.assertIsNone(self.store.read('system-replacement'))
+                self.assertIsNone(self.ownership.status())
+
 class BoundaryTests(unittest.TestCase):
     def test_real_device_installed_rejects_own_system_app(self):
         name='replacement_original_protocol'

@@ -45,7 +45,8 @@ async function states(page, visit) {
   assert.equal(await page.locator('#tiles .moving').count(), 1);
   await visit('reorder');
   await page.keyboard.press('Escape');
-  await page.locator('.add-app').dispatchEvent('mouseover');
+  await page.locator('.add-app').hover();
+  assert.equal(await page.locator('.add-app.focused').count(), 1, 'real pointer focuses Add app');
   await visit('add-app');
   await page.locator('.add-app').click();
   await page.locator('#appPicker .app-choice').waitFor();
