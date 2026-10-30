@@ -1,4 +1,5 @@
-Vector artwork used by the browser preview.
+Legacy synthetic vector fixtures, retained for isolated tests.
+The default browser preview uses original PNG resources in ../reference-apps/.
 Brand names and logos belong to their respective owners.
 
 youtube: https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/youtube.svg

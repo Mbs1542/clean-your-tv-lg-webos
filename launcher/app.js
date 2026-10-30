@@ -633,6 +633,9 @@
       };
     image.className = 'ctv-icon';
     image.onload = function () {
+      image.style.display = '';
+      card.classList.remove('missing-icon');
+      card.removeAttribute('data-initial');
       !function (e, t) {
         var n = null,
           a = null;
@@ -691,6 +694,8 @@
       }(tile, image);
     };
     image.onerror = function () {
+      card.style.background = "";
+      tile.brandBackground = "";
       image.style.display = "none";
       card.classList.add("missing-icon");
       card.setAttribute("data-initial", app.title.charAt(0));
@@ -827,7 +832,11 @@
       setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
-      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', '← ' + (index + 1) + ' / ' + tiles.length + ' →');
+      if (layoutPreset === 'scenic-grid') {
+        var position = '← ' + (index + 1) + ' / ' + tiles.length + ' →';
+        getElement('viewport').setAttribute('data-position', position);
+        getElement('ribbonPosition').textContent = position;
+      }
       var ceiling = layoutGeometry.scrollTop;
       var floor = moveState ? 850 : layoutGeometry.scrollBottom;
       if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);

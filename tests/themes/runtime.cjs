@@ -88,6 +88,10 @@ assert.throws(()=>context.ThemeRuntime.apply({manifest:{...modernManifest,requir
 context.ThemeRuntime.apply({manifest:modernManifest,rules:iconCssRules,assetHandles:{}});
 assert.match(nodes['ctv-theme-style'].textContent,/scale\(1.1\)!important/);
 assert.match(nodes['ctv-theme-style'].textContent,/background-color:rgba\(0,0,0,0\)!important/);
+assert.doesNotMatch(nodes['ctv-theme-style'].textContent,/ctv-label\.is-focused\{color:#fff!important/,'visible hero avoids duplicate selected captions');
+const hiddenHeroRules=structuredClone(iconCssRules);hiddenHeroRules.rules.push({selector:[{part:'hero',states:[]}],declarations:[{property:'color',value:{type:'color',rgba:[0,0,0,0]}}]});
+context.ThemeRuntime.apply({manifest:modernManifest,rules:hiddenHeroRules,assetHandles:{}});
+assert.match(nodes['ctv-theme-style'].textContent,/ctv-label\.is-focused\{color:#fff!important/,'hidden hero keeps a readable selected-caption fallback');
 assert.doesNotMatch(nodes['ctv-theme-style'].textContent,/border-width:3px!important/);
 context.ThemeRuntime.reset();
 console.log('PASS CSS-only icon feature gate, trusted scale focus and background cascade');

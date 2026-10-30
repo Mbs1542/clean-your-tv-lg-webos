@@ -68,7 +68,15 @@
         rule.declarations.some(function (d) { return d.property === 'border-width' && d.value.value === 0; }) &&
         rule.declarations.some(function (d) { return d.property === 'border-style' && d.value.value === 'none'; });
     });
-    if (scaleFocus) appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border:0!important;transform:scale(1.1)!important;}#homeSurface.ctv-home .ctv-label.is-focused{color:#fff!important;opacity:1!important;text-shadow:0 1px 6px #000!important;}');
+    var hiddenHero = rules.rules.some(function (rule) {
+      return rule.selector.length === 1 && rule.selector[0].part === 'hero' && rule.selector[0].states.length === 0 &&
+        rule.declarations.some(function (d) { return d.property === 'color' && d.value.rgba[3] === 0; });
+    });
+    if (scaleFocus) {
+      appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border:0!important;transform:scale(1.1)!important;}');
+      // A visible hero already names the selected app; keep the fallback only when hidden.
+      if (hiddenHero) appendCss('\n#homeSurface.ctv-home .ctv-label.is-focused{color:#fff!important;opacity:1!important;text-shadow:0 1px 6px #000!important;}');
+    }
     else appendCss('\n#homeSurface.ctv-home .ctv-card.is-focused{border-color:' + accent + '!important;border-style:solid!important;border-width:' + (manifest.layout.preset === 'scenic-grid' ? '3' : '2') + 'px!important;}');
     if (modernIcons) rules.rules.forEach(function (rule) {
       var part = rule.selector[rule.selector.length - 1].part;
