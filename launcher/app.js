@@ -832,7 +832,11 @@
       setPartState(tiles[index].el, 'focused', true);
       var top = tileTop(index),
         row = rowFor(index);
-      if (layoutPreset === 'scenic-grid') getElement('viewport').setAttribute('data-position', '← ' + (index + 1) + ' / ' + tiles.length + ' →');
+      if (layoutPreset === 'scenic-grid') {
+        var position = '← ' + (index + 1) + ' / ' + tiles.length + ' →';
+        getElement('viewport').setAttribute('data-position', position);
+        getElement('ribbonPosition').textContent = position;
+      }
       var ceiling = layoutGeometry.scrollTop;
       var floor = moveState ? 850 : layoutGeometry.scrollBottom;
       if (layoutPreset === 'scenic-grid') scrollOffset = top - (moveState ? 640 : TILE_BASE);

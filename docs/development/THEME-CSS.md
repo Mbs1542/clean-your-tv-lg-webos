@@ -354,3 +354,6 @@ The desktop reader retains its same-host/protocol/size checks; Root retains its
 existing filesystem boundary and per-image/total byte limits. Missing, rejected
 or too-large variants fall back. This is normal inventory acquisition, not
 a theme replacement map; the CSS renderer does not rewrite the selected source.
+
+The `.ctv-position` part styles the decorative scenic-ribbon position indicator.
+A transparent `color` hides its count and arrows without changing navigation.
