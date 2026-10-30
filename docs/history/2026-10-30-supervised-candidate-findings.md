@@ -288,3 +288,65 @@ candidate had been installed; this is additional evidence on the same original
 installed artifacts, not acceptance of the implementation branch. Exact off
 durations were requested but not separately restated. RC-START-08 remains open
 pending analysis/fix and verification of new artifacts.
+
+## Implementation verification checkpoint — 2026-10-30
+
+After the observation pass, the maintainer authorized source fixes and new builds.
+The combined implementation checkpoint is `e2e97446` on
+`codex/rc150-acceptance-fixes`, compared with `origin/release/next`. The historical
+eight NEEDS FIX rows above remain unchanged: they describe observed failures on
+the original installed artifacts, and host regressions cannot turn them into
+physical passes.
+
+The combined source addresses saved-theme first-frame readiness and warm
+presentation, held-navigation lag, stable Appearance selection, separation of
+theme-derived layout from genuine explicit/legacy column preference, the Itachi
+1.0.1 preview, and guarded System Updater 1.1.1-to-1.1.2 replacement. The pending
+startup follow-up narrows native partner-TV foreground admission using verified
+metadata for the known C3 surface, on boot and genuine wake. It preserves unknown
+apps, explicit/emergency off, health/session/recovery checks and native Home
+preference; no new user control, observer, endpoint or permission is introduced.
+Its integration and affected checks remain separate from this source checkpoint.
+
+Integration-parent host results: full `scripts/test.sh` passed 1,649 Python tests
+with two skips plus JavaScript/native checks. Combined both-launcher startup and
+motion browser checks completed in session `85009` with exit 0. After correcting
+stale-pointer browser fixtures, the 12 remaining browser files passed. The fixes
+and tests have not been installed on the TV by this checkpoint. No new signed
+artifact, physical remote, sound, standby, cold-start or rollback result is claimed.
+
+The documentation pass reviewed README and the documentation index, installation,
+update/removal, recovery, CLI, compatibility, controls, app management and themes;
+Android prerequisites/readiness; Root runtime/testing references; CONTRIBUTING
+and the candidate release notes; and all twelve localized guides. The existing
+navigation/theme/column/emergency steps remain accurate. Only the localized
+existing replacement command needed a targeted addition for installed 1.1.1
+alongside 1.1.0. An explicit or genuine legacy column choice still takes priority;
+By theme selects the author's layout where supported.
+
+Release notes now link the
+[exact Helper 0.6.20 limited-evidence approval](2026-10-30-helper-0.6.20-approval.md).
+That scoped approval requires the final build to reproduce the recorded Helper
+package/archive and rollback baselines; it does not provide physical No-root
+acceptance. Fresh README metadata tests passed (3), and all 426 relative Markdown
+targets in the 29 reviewed guides resolve. These checks validate documentation
+consistency, not final artifacts or hardware compatibility.
+
+The implementation PR must identify the changed startup policy, preserved column
+preferences, Itachi version/provenance and supported supervisor transition; list
+actual host checks and this documentation pass; and retain all new-artifact and
+supervised device gates. Original physical failures remain open until matching
+new artifacts are installed and the affected scenarios are actually observed.
+
+
+### Final source integration checkpoint
+
+The reviewed native-TV classification commit `759d754d` is now integrated.
+It uses the exact observed partner-TV identity and store metadata for both
+boot and genuine wake, rereads foreground after lookup, and retains existing
+health, intent, native-preference, freshness and failsafe gates. No early
+observer, startup hook or general CP-app allowlist was added. Manual selection
+of this exact TV surface during the startup/wake window has the same policy
+boundary as Live TV. The integration parent independently reran all 86 boot/wake
+presentation tests successfully. Physical RC-START-05/08 acceptance remains pending
+new artifacts; original failures above are not superseded by these host tests.

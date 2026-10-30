@@ -97,7 +97,7 @@ Root HDMI 聲音復原是實驗功能，**預設關閉**，僅在需要時自行
 
 僅限未發布候選版：`cytv recover-system-rollback --edition root` 僅用於已驗證的 Root 回復版本：所有套件安裝程式均已完成，但啟動器就緒等待逾時。必須由真正的啟動器傳送就緒訊號；安裝結果不明時拒絕恢復。保留套件、固定程式碼和金鑰、失敗證據及明確關閉的 Home 控制狀態，並以私人記錄保存有時限的嘗試。 一般重試不會延長時限。僅在先前的 120 秒到期、沒有已接受的就緒訊號且不存在不明安裝結果後，才可用 `--new-recovery-attempt` 按 UUID/雜湊封存完整舊記錄，並明確開始新嘗試。已完成的恢復不會重新開始，也不會自動連續重試。 [流程與限制（英文）](../RECOVERY.md#root-system-rollback-readiness-candidate)。
 
-僅限未發布的 1.5.0 候選版：替換套件包含 System Updater 1.1.2。電視 OTA 前，請明確執行 `cytv replace-system-updater --edition root` 替換 1.1.0。只替換 System Updater，保留 Root/Root Updater 應用程式、完整設定和 Home 選擇，並封存舊狀態。結果不明或尚未完成的操作會阻止替換。此要求不限制 No-root 更新來源。[替換流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
+僅限未發布的 1.5.0 候選版：替換套件包含 System Updater 1.1.2。電視 OTA 前，請明確執行 `cytv replace-system-updater --edition root` 替換 1.1.0 或 1.1.1。只替換 System Updater，保留 Root/Root Updater 應用程式、完整設定和 Home 選擇，並封存舊狀態。結果不明或尚未完成的操作會阻止替換。此要求不限制 No-root 更新來源。[替換流程（英文）](../RECOVERY.md#replace-the-root-system-updater-candidate)。
 
 ## 說明與詳細指引
 

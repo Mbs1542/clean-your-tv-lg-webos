@@ -75,3 +75,47 @@ evidence are preserved. No other task's worktree is touched.
 No external icon set, replacement icon mapping, new unbounded watcher or relaxed
 integrity rule belongs to this fix scope. Prefer existing APIs and the smallest
 change that closes the demonstrated failure.
+
+## Combined implementation and documentation checkpoint — 2026-10-30
+
+Reviewed combined source at `e2e97446` on `codex/rc150-acceptance-fixes` against
+`origin/release/next`, plus the pending startup worktree's narrow native Channels
+metadata policy. The combined source includes theme-ready first presentation,
+bounded held-navigation lag, stable Appearance lanes, preservation of genuine
+legacy column choices, Itachi 1.0.1 and supported guarded System Updater
+1.1.1-to-1.1.2 replacement. The startup follow-up adds no user control, observer,
+endpoint or permission; its final integrated revision still needs validation.
+
+The integration parent reported complete `scripts/test.sh` success: 1,649 Python
+tests with two skips, plus JavaScript/native checks. Combined both-edition
+`startup-motion-ui.cjs` session `85009` exited 0. Browser fixtures were corrected
+for stale pointer state and the 12 remaining browser files passed. These are
+host implementation results, not new build, installed-TV or physical acceptance.
+
+Documentation reviewed: README, CONTRIBUTING, documentation index, INSTALL,
+UPDATES, RECOVERY, CLI, COMPATIBILITY, MAINTENANCE, CONTROLS, APP-MANAGEMENT,
+THEMES, RELEASE-1.5.0, Android README/STABLE-READINESS, Root runtime README/TESTING,
+and all twelve user guides (`de`, `en`, `es`, `fr`, `hi`, `it`, `ko`, `pl`,
+`pt-BR`, `ru`, `zh-Hans`, `zh-Hant`). Existing theme application, arrows/hold,
+Appearance, By theme versus explicit Columns, emergency exit and off-state
+instructions remain valid. Preserving a real legacy eight-column preference is
+intentional; do not promise Channel automatically resets it to one.
+
+Updated all twelve localized supervisor-replacement instructions to include
+installed 1.1.0 or 1.1.1 using the existing command and recovery guide. Updated
+the release notes to link the exact limited-evidence Helper approval; final
+combined artifacts must reproduce those bytes and authenticated rollback
+baselines. No new setup step or control is introduced by the presentation fixes.
+
+Fresh documentation checks: README release metadata tests passed (3); relative
+Markdown targets in the 29 reviewed guides resolve (425 before the new approval
+link, 426 afterward); localized replacement guidance was checked in all 12
+languages. Historical findings and NEEDS FIX rows remain intact.
+
+Remaining delivery work: integrate/review the final startup metadata gate, rerun
+its affected tests, create the implementation PR with the documentation review
+and truthful host-only validation, refresh inventory/release notes for that PR,
+then obtain new trusted artifacts and supervised affected device acceptance.
+Root startup/wake, first themed frame, held navigation and migration/rollback
+must not be declared physically fixed from these source results. The original
+supervised candidate findings and the exact Helper approval retain their scope.
