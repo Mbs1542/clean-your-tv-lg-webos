@@ -27,13 +27,13 @@
     {
       "id": "github:razdva122/clean-your-tv-lg-webos:itachi",
       "title": "Itachi · Sharingan",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "author": "CYTV personal themes",
       "license": "LicenseRef-Personal-Fan-Theme",
       "description": "Dark Itachi wallpaper and CSS-only white logo effects. Original application images remain unchanged.",
-      "preview": "theme-catalog/razdva122--clean-your-tv-lg-webos--itachi/d4433b759c3ef07823bdddd7e6c82a380330507ce077d2aca76ed4a279f855b9/preview.jpg",
-      "url": "https://raw.githubusercontent.com/razdva122/clean-your-tv-lg-webos/d3e50fe71403679442c75269e779a1c485fc8878/distributions/itachi/1.0.0/cytv-theme.json",
-      "digest": "d4433b759c3ef07823bdddd7e6c82a380330507ce077d2aca76ed4a279f855b9"
+      "preview": "theme-catalog/razdva122--clean-your-tv-lg-webos--itachi/5c31518bba7ff6793647df5589d348ef4d63123c92ab2393df50156de3ccc2b5/preview.jpg",
+      "url": "https://raw.githubusercontent.com/razdva122/clean-your-tv-lg-webos/918956e7c3bbf06b9ff8bf8306f5bbef20d45c51/distributions/itachi/1.0.1/cytv-theme.json",
+      "digest": "5c31518bba7ff6793647df5589d348ef4d63123c92ab2393df50156de3ccc2b5"
     }
   ]
 }
