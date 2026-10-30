@@ -142,6 +142,17 @@ Android and all four desktop platforms. The release PR stays draft until actual
 acceptance is recorded. `workflow_dispatch` with `test_build=true` explicitly
 requests another build; it neither publishes nor grants acceptance.
 
+For preliminary device feedback before integration, the same explicit dispatch
+can build a named branch in this repository other than `main`. Select that branch
+and enable `test_build`; pushes to feature branches, tags, PR refs and dispatches
+without this option do not produce installers. The branch still needs prepared
+version metadata and matching release notes. All platform payload, compatibility,
+packaging and signature checks remain enabled, alongside parallel full validation.
+These are draft test artifacts tied to the dispatched source commit, never a
+release candidate or release acceptance. Signing/publication and trusted release
+policy still require their existing `release/next`/`main` provenance; branch test
+builds cannot satisfy those gates or replace the final candidate build.
+
 Once the complete candidate run succeeds, pin it before testing:
 
 ```sh

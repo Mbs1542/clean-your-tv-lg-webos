@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       test_build:
-        description: 'Build draft installers for device feedback; does not finalize or publish a release'
+        description: 'Build draft installers from the selected repository branch for device feedback; no release acceptance or publication'
         type: boolean
         required: false
         default: false
