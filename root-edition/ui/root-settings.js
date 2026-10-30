@@ -198,7 +198,7 @@
       move(e.keyCode === 37 || e.keyCode === 38 || (e.keyCode === 9 && e.shiftKey) ? -1 : 1);
     }, true);
   }
-  document.addEventListener('home-layout-change', function () { if (panel && !panel.hidden && buttons[selected].hidden) move(1); });
+  document.addEventListener('home-layout-change', function (event) { if (panel && !panel.hidden && buttons[selected].hidden && event.homeColumnsFocus === buttons[selected]) move(1); });
   window.RenewalPanel = {
     isOpen: function () { return !!panel && !panel.hidden; },
     open: function () {

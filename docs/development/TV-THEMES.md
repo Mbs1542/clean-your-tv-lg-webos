@@ -23,7 +23,7 @@ Installed versions do not follow a branch or contact the author on startup. To u
 
 ## Profiles and updates
 
-Theme state is separate from legacy `HomeData`/Root profile and updater contracts. Ordinary app-origin storage survives a normal relaunch; browser tests cover that path. Existing profile backup/export does not include the binary theme library. An authoritative profile restore clears the accepted pointer/trial and starts Classic, while leaving downloaded versions available for reselection. Package/application removal may clear its app-origin data. No independent profile/OTA schema is silently extended.
+Theme state is separate from legacy `HomeData`/Root profile and updater contracts. Ordinary app-origin storage survives a normal relaunch; browser tests cover that path. Existing profile backup/export does not include the binary theme library. Legacy profile restore clears the accepted pointer/trial and starts Classic, while leaving downloaded versions available for reselection. System profile restore preserves existing app-origin choice, Columns and interruption markers because the snapshot does not encode them. The theme manager remains responsible for validating choice/cache and consuming interrupted markers safely; preserving a marker never resumes an unconfirmed trial. Explicit By theme and numeric Columns preferences retain their meaning. When the Columns key is absent, existing legacy config semantics remain unchanged: a theme pointer alone cannot prove that a nondefault count was accidental. Package/application removal may clear its app-origin data. No independent profile/OTA schema is silently extended.
 
 ## Verification and remaining hardware gate
 

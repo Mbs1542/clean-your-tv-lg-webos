@@ -4,9 +4,11 @@
   var panel, buttons = [], selected = 0, previous;
   function t(text, params) { return window.HomeI18n ? HomeI18n.t(text, params) : text; }
   function isAvailable() { return !!window.HomeLayoutState && window.HomeLayoutState.state().allowColumnOverride !== false; }
-  function refreshAvailability() {
+  function refreshAvailability(event) {
     var available = isAvailable(), entry = document.getElementById('homeColumns');
     if (isOpen() && !available) close();
+    // Hiding the entry can clear activeElement before later layout listeners.
+    if (event && entry && document.activeElement === entry) event.homeColumnsFocus = entry;
     if (entry) { entry.hidden = !available; entry.parentNode.classList.toggle('hidden', !available); }
     return available;
   }

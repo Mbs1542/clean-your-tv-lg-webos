@@ -64,6 +64,11 @@ Helper rollback compatibility and remaining release gates are tracked in
   available larger native app icons within the existing validation limits, and
   support optional bounded CSS white-logo effects on compatible renderers.
   Original image files remain unchanged; physical-TV acceptance is pending.
+- #168: preserve existing app-origin theme and Columns preferences when a
+  normal System update restores its profile snapshot. Legacy backup restore
+  still resets Classic; invalid or interrupted appearance still falls back safely.
+- #162: keep the actual settings focus when a selected theme hides Columns,
+  instead of moving focus from an Apply control because of a stale selection.
 - #134: reusable candidate-build evidence and scoped acceptance tooling. The
   first release still follows the trusted policy currently present on main.
 
