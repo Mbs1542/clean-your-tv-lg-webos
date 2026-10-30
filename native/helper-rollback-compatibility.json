@@ -1,9 +1,9 @@
 {
-  "from_helper": "0.6.18",
-  "to_helper": "0.6.19",
-  "rollback_home": "1.3.8",
-  "rollback_sha256": "5c9d646060b64434a0657a190ae395d4b00bf466449309bd578e10ca430d0cc1",
-  "prior_helper_sha256": "57c7d0fb0712079a36ef0b6897e1a4e0495af2ed8ffa29f62b975432cce9e90e",
-  "candidate_archive_sha256": "641f06d8aa9d850e887b04ac841181e0e073d46626abbc4e254771511c092cb1",
-  "acceptance": "2026-10-25: maintainer explicitly authorized stable 1.1.0 publication with limited hardware evidence. Exact Helper 0.6.19 archive is pinned after automated compatibility/controller/service regressions, including CI Node 0.12.2 and local Node 8.12.0; prior Home 1.3.8 and Helper 0.6.18 are verified against v1.0.3 SHA256SUMS. No physical Helper 0.6.19 or Home rollback test is claimed. C3 Root testing does not validate No-root Helper. Maintainer accepts outstanding Helper/input/standby/cold-boot/rollback risk for this specific transition; see docs/RELEASE-1.1.0-ACCEPTANCE.md."
+  "from_helper": "0.6.19",
+  "to_helper": "0.6.20",
+  "rollback_home": "1.5.1",
+  "rollback_sha256": "009e737942f3442ee8a6d114dcbc7daf3e455e82ea401bb1277bbe4724cce1f4",
+  "prior_helper_sha256": "52510c9115a518a05849f6618516b41886aea54b7f74ea4763ffeeaf63c03e7b",
+  "candidate_archive_sha256": "20c5611695478d9d0ef3010a003c6053864a23ce88b4259eaf5dc0ab7febe463",
+  "acceptance": "2026-10-30: after reviewing the exact hashes and limited evidence, the maintainer explicitly accepted the outstanding physical No-root/input/standby/cold-boot/rollback risks for this Helper 0.6.19 to 0.6.20 transition only. Candidate IPK SHA256 8ed42c5ae12ce3312ae90be3152cfe7972dec433c03254443ffea251291438fe and canonical archive hash above were independently verified; a current official-function source rebuild matches trusted CI40944127403/1. Published v1.4.1 Home 1.5.1 and Helper 0.6.19 rollback packages match official asset digests, SHA256SUMS and system-manifests. Compiled compatibility/WSS, controller/watchdog/resume/Home-channel regressions passed. No physical No-root Helper, standby/wake, cold boot, input, sound, OTA or actual Home/Helper rollback result is claimed; C3 Root testing does not accept No-root Helper. Final combined CI must match these exact package/archive/baseline hashes before use; changed bytes require fresh evidence and approval. This grants neither universal compatibility nor main merge/publication approval. See docs/history/2026-10-30-helper-0.6.20-approval.md."
 }
