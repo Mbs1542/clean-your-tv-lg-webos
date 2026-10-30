@@ -68,6 +68,26 @@ termination cleanup); no operation lock is held over launch, so an explicit off
 can complete during an in-flight request. There is no retry after an unknown
 launch outcome or duplicate boot callback. Foreground read and launch are separate
 platform calls, so a user app switch after that last read can race the one request.
+The existing power subscription also recognizes a genuine same-stream ON → OFF →
+Active wake, independently of boot callbacks. Initial/reconnected OFF or Active,
+unknown/malformed states and duplicate Active snapshots do not request Home.
+A single optional worker keeps RPCs off the power reader and guardian heartbeat
+path; OFF, processing/uncertain power data, stream loss and teardown revoke its
+in-flight eligibility. It never queues stale wakes or retries a launch. This path
+requires the same startup session, current active/enabled intent, effective Home
+routing, fresh input health and independent guardian; stopping/unconfirmed intent
+is left to recovery and is never promoted by wake. Native last-input preference
+and unknown/user foreground are preserved. It does not add a new service,
+permission, endpoint, durable state or boot hook.
+
+Presentation diagnostics classify foreground only as Root, stock Home, Live TV,
+or other/missing, and record whether a nonempty firmware first-app ID matched.
+They do not persist private app IDs or inventories. RC-START-08's recorded
+`preserved-foreground` decision and empty later `firstAppId` do not establish a
+Channels app identity/provenance: the allowlist remains unchanged pending that
+evidence. The new same-session wake path is host-tested, not physical acceptance
+of RC-START-05 or a resolution claim for RC-START-08.
+
 Manual enable and short Home retain their existing behavior. See
 [cold-start investigation and acceptance](../../docs/development/ROOT-COLD-BOOT.md).
 
