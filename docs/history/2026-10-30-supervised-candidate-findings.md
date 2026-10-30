@@ -359,3 +359,17 @@ captures the genuine current bytes as its local baseline. Neither equal-release
 nor equal-component admission was relaxed, and no device state/version was edited.
 README, service package metadata and release notes agree. Metadata checks passed;
 new artifact generation and the physical transition remain pending.
+
+
+### Parallel preliminary builds
+
+The maintainer explicitly requested early device testing alongside host tests.
+An explicit same-repository named-branch draft build is now available and was
+dispatched as run `41014826275` at `14374b32`; its validation and platform jobs
+run independently. It cannot count as final release acceptance. The reviewed
+preliminary Root signing mode keeps protected release/next tools, exact source,
+branch, attempt, successful package job and artifact proofs, marks signed notes
+as preliminary, and permits remaining validation to be pending. It executes only
+trusted tools on candidate package data. Default final-success/publication gates
+are unchanged. Host admission/signing regressions pass; actual preliminary signed
+artifact creation and TV results are not yet established.

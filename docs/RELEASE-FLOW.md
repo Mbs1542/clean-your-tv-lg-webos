@@ -149,9 +149,29 @@ without this option do not produce installers. The branch still needs prepared
 version metadata and matching release notes. All platform payload, compatibility,
 packaging and signature checks remain enabled, alongside parallel full validation.
 These are draft test artifacts tied to the dispatched source commit, never a
-release candidate or release acceptance. Signing/publication and trusted release
+release candidate or release acceptance. Stable signing/publication and trusted release
 policy still require their existing `release/next`/`main` provenance; branch test
 builds cannot satisfy those gates or replace the final candidate build.
+
+Existing Root installations require signed coherent System packages rather than
+reinstallation. For early device feedback, a maintainer may explicitly dispatch
+**Sign and publish release** from protected `release/next` with `publish=false`,
+`preliminary_root_qa=true`, the draft `candidate_build_run`, exact
+`candidate_source_sha` and `candidate_branch`. The macOS ARM64 package job and
+its digest-bound artifact must already have completed successfully; no known
+failed/cancelled job is admitted. Other validation may still be running. Keep
+that candidate branch at the selected SHA until signing/recheck finishes; a
+missing/moved branch or same-name tag is rejected.
+
+The preliminary path uses protected signing tools to inspect package data, never
+executes candidate-source code, and preserves the existing signing environment
+and release key. Provenance and signed notes explicitly identify preliminary QA.
+This produces Root-only unpublished test artifacts; it is not final acceptance,
+No-root approval or stable publication. Record actual package hashes, results and
+outstanding tests. A later failed check invalidates readiness; diagnose and build
+again. Final release gates still require the complete successful trusted build
+and affected acceptance. Use ordinary supported rollback/update when changing
+candidate artifacts; never force equal-version updates or edit device receipts.
 
 Once the complete candidate run succeeds, pin it before testing:
 

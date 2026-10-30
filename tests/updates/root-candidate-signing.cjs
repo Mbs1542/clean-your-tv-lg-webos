@@ -12,4 +12,10 @@ run(f=>{f.manifest.edition='no-root';f.write();assert.throws(()=>signRootCandida
 run(f=>{f.meta.files['helper.ipk']='c'.repeat(64);f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/inventory/);});
 run(f=>{f.meta.source='c'.repeat(40);f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/provenance/);});
 run(f=>{assert.throws(()=>signRootCandidate(f.dir,key.privateKey,wrong.publicKey));assert.equal(fs.existsSync(path.join(f.dir,'system-update-root.json')),false);});
+const packageJob=()=>({id:56,name:'build (macos-15, cytv-macos-arm64, dist/cytv)',status:'completed',conclusion:'success',run_id:12,head_sha:'a'.repeat(40),run_attempt:1});
+run(f=>{f.meta.preliminary=true;f.meta.branch='codex/device-qa';f.meta.package_job=packageJob();f.manifest.notes=notesFor(f.meta);f.write();const verified=policy.verify(signRootCandidate(f.dir,key.privateKey,key.publicKey),key.publicKey);assert.match(verified.notes,/PRELIMINARY/);assert.match(verified.notes,/not final release acceptance/);assert.match(verified.notes,/package job 56/);});
+run(f=>{f.meta.preliminary=true;f.meta.branch='codex/device-qa';f.meta.package_job=packageJob();f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/provenance/);});
+run(f=>{f.meta.preliminary=true;f.meta.branch='codex/device-qa';f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/preliminary/);});
+for(const value of [false,'true',1])run(f=>{f.meta.preliminary=value;f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/preliminary/i);});
+for(const [field,value] of [['id',0],['status','queued'],['run_id',13],['head_sha','c'.repeat(40)],['run_attempt',2],['name','other'],['conclusion','failure']])run(f=>{f.meta.preliminary=true;f.meta.branch='codex/device-qa';f.meta.package_job={...packageJob(),[field]:value};f.manifest.notes=notesFor(f.meta);f.write();assert.throws(()=>signRootCandidate(f.dir,key.privateKey,key.publicKey),/preliminary/i);});
 console.log('PASS Root-only QA signing, exact package hashes, provenance, wrong key and no No-root output');
