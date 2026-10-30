@@ -401,3 +401,37 @@ The latest supported System transition started but returned not confirmed and
 its driver stopped. Diagnosis/recovery is active without blind replay. Root
 0.6.1 is not installed. Preliminary Root signing run `41018163490` succeeded
 and its hashes were verified; signing is not an installation/acceptance result.
+
+### Completed-history migration and blocked Root installation checkpoint
+
+PR [#166](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/166), related to
+issue #165, merged as `36e7c0940b24500b87aabc91b5e9ec91258e1bd5`. Reviewed
+coordinator source `79407f2639e84d159be5cbaed2d31ef6e6398051` authenticates and
+archives completed earlier replacement history before new admission; unfinished
+operations still require their matching source/bundle and recovery proofs.
+
+On the established maintainer-owned OLED55C3RLA, firmware 43.21.71 / SDK 11.2.0,
+Root edition, macOS installer host, exact remote model unknown, the supported
+System Updater 1.1.1-to-1.1.2 migration then succeeded with the same frozen TV
+payload. Readback reported System 1.1.2 and unchanged Root 0.6.0, with the actual
+captured baseline recorded as 0.0.0. That baseline label records real captured
+bytes; no equal-version guard or device package version was edited to gain
+admission. This accepts the scoped supervisor transition only. Preliminary
+Root QA signing `41018163490` passed signature/hash verification; it does not
+certify a successful Root 0.6.1 installation.
+
+The subsequent Root 0.6.1 update worker reached PREPARING and then ABORTED before
+any of its three component-install intents or submissions. Root remains 0.6.0.
+Latest readback retained LG Home routing and true integrity, with
+`HomeResumeNotFinalized` and lease false. The abort's product cause is unknown;
+diagnostic recovery remains pending. This is neither a new package-install pass
+nor a physical retest of any of the eight original defects.
+
+A later SSH connection timed out. No package operation, additional test or
+recovery action was called after that failed connection. Continuation needs the
+owner's TV availability and connectivity; do not retry blindly or infer that
+Root 0.6.1 is installed. The owner requested only the eight original defect
+retests after prerequisites are resolved, not a full unaffected physical matrix.
+The overall candidate remains 1.5.0 / target Root 0.6.1, unpinned with empty
+final acceptance, not ready for main or publication. Android runtime-equivalence
+and the exact conditional Helper approval retain their previously recorded scope.

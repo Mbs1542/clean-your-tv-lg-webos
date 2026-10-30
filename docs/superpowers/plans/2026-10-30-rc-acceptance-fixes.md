@@ -145,3 +145,26 @@ The latest supported System transition started but returned not confirmed and
 its driver stopped. Diagnosis/recovery is active without blind replay. Root
 0.6.1 is not installed. Preliminary Root signing run `41018163490` succeeded
 and its hashes were verified; signing is not an installation/acceptance result.
+
+## PR #166 and scoped device checkpoint
+
+PR #166 / issue #165 is integrated as
+`36e7c0940b24500b87aabc91b5e9ec91258e1bd5`; inventory now contains fifteen PRs.
+The reviewed completed-history retirement coordinator `79407f26` successfully
+migrated the established C3 System Updater 1.1.1 to 1.1.2 using the same frozen
+TV payload. Actual captured baseline is 0.0.0 and Root remains 0.6.0. This closes
+that scoped prerequisite migration observation, not whole-product acceptance.
+
+The following Root 0.6.1 worker aborted from PREPARING before any of the three
+component-install intents/submissions. LG Home routing and integrity true were
+retained; `HomeResumeNotFinalized` and lease false were observed. Cause remains
+unknown and diagnostic recovery is pending. Later SSH timed out; no package,
+new test or recovery call followed that failed connection. Resume only after TV
+availability/connectivity is restored through the owner's existing clarification.
+
+Remaining work is supported recovery/Root installation and the requested eight
+defect retests only, with independent recovery preserved. No additional full
+physical matrix or Android runtime gate is introduced. Preliminary signing
+41018163490 passed signature/hash verification; final successful artifacts,
+exact-head policy and truthful acceptance remain separate. Release stays 1.5.0,
+target Root 0.6.1, final acceptance empty and unpinned.
