@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="i18n.css">
   <link rel="stylesheet" href="layout-panel.css">
   <link rel="stylesheet" href="theme-panel.css">
+  <link rel="stylesheet" href="media-feed.css">
 </head>
 <body>
   <div id="homeSurface" class="ctv-home ctv-starting">
@@ -21,7 +22,7 @@
 
   <header class="ctv-header">
     <div id="leftBlock">
-      <div id="greeting" class="ctv-greeting"></div>
+      <div id="greetingRow"><div id="greeting" class="ctv-greeting"></div><span id="weather" class="ctv-greeting"></span></div>
       <div id="timeRow">
         <span id="clock" class="ctv-clock"></span><span id="ampm" class="ctv-period"></span><span class="divider ctv-divider"></span><span id="date" class="ctv-date"></span>
       </div>
@@ -46,6 +47,7 @@
   <div id="viewport">
     <span id="ribbonPosition" class="ctv-position" aria-hidden="true"></span>
     <div id="stage">
+      <div id="mediaFeed"></div>
       <div id="dockBand" class="ctv-dock"></div>
       <div id="tiles"></div>
       <div id="glass" class="ctv-focus"></div>
@@ -61,8 +63,10 @@
   <script src="theme-policy.js"></script>
   <script src="theme-runtime.js"></script>
   <script src="config.js"></script>
+  <script src="personal.js"></script>
   <script src="i18n.js"></script>
   <script src="catalogs.js"></script>
+  <script src="he-catalog.js"></script>
   <script src="apps.js"></script>
   <script src="app-library.js"></script>
   <script src="home-layout.js"></script>
@@ -80,6 +84,7 @@
   <script src="settings-categories.js"></script>
   <script src="renewal-panel.js"></script>
   <script src="helper-control.js"></script>
+  <script src="media-feed.js"></script>
   <script src="profile-bootstrap.js"></script>
 </body>
 </html>

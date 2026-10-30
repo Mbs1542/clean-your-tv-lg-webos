@@ -2,7 +2,7 @@
 (function(root){
  'use strict';
  var key='tvhome.language',catalogs={},active='en',dialog=null,previous=null,systemLanguage=null,pending=false,callbacks=[];
- var languages=[{code:'en',name:'English'},{code:'de',name:'Deutsch'},{code:'es',name:'Español'},{code:'pt-BR',name:'Português (Brasil)'},{code:'fr',name:'Français'},{code:'it',name:'Italiano'},{code:'ko',name:'한국어'},{code:'hi',name:'हिन्दी'},{code:'pl',name:'Polski'},{code:'ru',name:'Русский'},{code:'zh-Hans',name:'简体中文'},{code:'zh-Hant',name:'繁體中文'}];
+ var languages=[{code:'en',name:'English'},{code:'he',name:'עברית'},{code:'de',name:'Deutsch'},{code:'es',name:'Español'},{code:'pt-BR',name:'Português (Brasil)'},{code:'fr',name:'Français'},{code:'it',name:'Italiano'},{code:'ko',name:'한국어'},{code:'hi',name:'हिन्दी'},{code:'pl',name:'Polski'},{code:'ru',name:'Русский'},{code:'zh-Hans',name:'简体中文'},{code:'zh-Hant',name:'繁體中文'}];
  function normalize(value){
   var parts=String(value||'').split('.')[0].split('@')[0].replace(/_/g,'-').toLowerCase().split('-'),base=parts[0];
   if(base==='zh'){
@@ -11,16 +11,17 @@
    return parts.indexOf('tw')>=0||parts.indexOf('hk')>=0||parts.indexOf('mo')>=0?'zh-Hant':'zh-Hans';
   }
   if(base==='pt')return 'pt-BR';
+  if(base==='iw')return 'he';
   for(var i=0;i<languages.length;i++)if(languages[i].code===base)return base;
   return null;
  }
- function preference(){try{var p=root.localStorage.getItem(key);return p==='auto'||languages.some(function(l){return l.code===p;})?p:'auto';}catch(_){return 'auto';}}
+ function preference(){var fallback=root.TV_PERSONAL&&root.TV_PERSONAL.language||'auto';try{var p=root.localStorage.getItem(key);return p==='auto'||languages.some(function(l){return l.code===p;})?p:fallback;}catch(_){return fallback;}}
  function resolve(){var p=preference();if(p!=='auto')return p;
   if(systemLanguage)return normalize(systemLanguage)||'en';
   var nav=root.navigator||{},choices=nav.languages&&nav.languages.length?nav.languages:[nav.language||nav.userLanguage];
   for(var i=0;i<choices.length;i++){var code=normalize(choices[i]);if(code)return code;}return 'en';
  }
- function refresh(){active=resolve();if(root.document){root.document.documentElement.lang=active;root.document.documentElement.dir='ltr';}return active;}
+ function refresh(){active=resolve();if(root.document){root.document.documentElement.lang=active;root.document.documentElement.dir=active==='he'?'rtl':'ltr';}return active;}
  function add(values){Object.keys(values).forEach(function(code){if(!catalogs[code])catalogs[code]={};Object.keys(values[code]).forEach(function(k){catalogs[code][k]=values[code][k];});});}
  function t(source,params){var map=catalogs[active]||{},text=Object.prototype.hasOwnProperty.call(map,source)?map[source]:source;
   return String(text).replace(/\{([a-zA-Z0-9_]+)\}/g,function(token,name){return params&&Object.prototype.hasOwnProperty.call(params,name)?String(params[name]):token;});

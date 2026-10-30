@@ -721,8 +721,25 @@
   function rowFor(index) {
     return layoutPreset === 'scenic-grid' ? 0 : Math.floor(index / columnCount);
   }
+  // Only the default dock layout mirrors in Hebrew; themes own the other presets' geometry.
+  function mirrored() {
+    return layoutPreset === 'dock-grid' && document.documentElement.dir === 'rtl';
+  }
   function tileLeft(index) {
-    return GRID_LEFT + (layoutPreset === 'scenic-grid' ? ribbonSlot(index) : index % columnCount) * columnWidth + (columnWidth - CARD_WIDTH) / 2;
+    var left = GRID_LEFT + (layoutPreset === 'scenic-grid' ? ribbonSlot(index) : index % columnCount) * columnWidth + (columnWidth - CARD_WIDTH) / 2;
+    return mirrored() ? 1920 - left - CARD_WIDTH : left;
+  }
+  function enterFeed(row, column) {
+    if (focusZone === 'top') setPartState(topButtons[focusedTopButton], 'focused', false);
+    if (focusZone === 'grid' && tiles[focusedTile]) setPartState(tiles[focusedTile].el, 'focused', false);
+    focusZone = 'media';
+    focusGlassVisible = false;
+    focusGlass.style.opacity = '0';
+    if (scrollOffset) { scrollOffset = 0; stage.style.transform = 'translateY(0px)'; document.body.classList.remove('scrolled'); }
+    MediaFeed.enter(row, column);
+  }
+  function hasFeed() {
+    return window.MediaFeed && MediaFeed.hasItems();
   }
   function tileTop(index) {
     var row = rowFor(index);
@@ -749,7 +766,7 @@
     var dockBand = getElement("dockBand"),
       dockCount = Math.min(columnCount, tiles.length);
     dockBand.style.display = dockCount && layoutGeometry.dock ? "block" : "none";
-    dockBand.style.left = tileLeft(0) - DOCK_PADDING + "px";
+    dockBand.style.left = Math.min(tileLeft(0), tileLeft(dockCount - 1)) - DOCK_PADDING + "px";
     dockBand.style.top = DOCK_TOP + "px";
     dockBand.style.width = (dockCount - 1) * columnWidth + CARD_WIDTH + DOCK_PADDING * 2 + "px";
     dockBand.style.height = DOCK_HEIGHT + "px";
@@ -1026,6 +1043,7 @@
     dismissUndo();
     moveState && finishMoving(false);
     updateClock();
+    if (window.MediaFeed) { MediaFeed.leave(); MediaFeed.refresh(); }
     "inputs" === focusZone && inputsPanel.classList.add("hidden");
     topButtons.forEach(function (e) {
       setPartState(e, 'focused', false);
@@ -1050,6 +1068,7 @@
     // Leave early Back/Home and key-up delivery to their native/recovery owners.
     if (window.RootLauncherRendered !== true) return;
     var key = event.keyCode;
+    if (mirrored()) key = key === 37 ? 39 : key === 39 ? 37 : key;
     if (key !== KEY_OK && okHoldTimer) {
       cancelHold();
     }
@@ -1076,6 +1095,18 @@
             return;
           }
           finishMoving(false);
+        }
+      } else if ("media" === focusZone) {
+        var feedResult = MediaFeed.key(key);
+        if ('up' === feedResult) {
+          MediaFeed.leave();
+          focusTopButton(focusedTopButton);
+        } else if ('down' === feedResult) {
+          MediaFeed.leave();
+          focusZone = "none";
+          focusTile(focusedTile);
+        } else if (!feedResult) {
+          return;
         }
       } else if ("inputs" === focusZone) {
         if (38 === key) {
@@ -1106,7 +1137,8 @@
         } else if (39 === key) {
           focusTopButton(focusedTopButton + 1);
         } else if (40 === key) {
-          focusTile(0 === rowFor(focusedTile) ? focusedTile : 0);
+          if (hasFeed()) enterFeed(0, 0);
+          else focusTile(0 === rowFor(focusedTile) ? focusedTile : 0);
         } else if (key === KEY_OK) {
           activateTopButton(focusedTopButton);
         } else if (key !== KEY_BACK) {
@@ -1122,6 +1154,8 @@
         } else if (39 === key) {
           if (layoutPreset === 'scenic-grid') stepRibbon(1);
           else column < columnCount - 1 && focusedTile < lastIndex && focusTile(focusedTile + 1);
+        } else if (38 === key && 0 === rowFor(focusedTile) && hasFeed()) {
+          enterFeed();
         } else if (38 === key) {
           0 === rowFor(focusedTile) ? focusTopButton((tileCenter = tileLeft(focusedTile) + CARD_WIDTH / 2, nearestButton = 0, nearestDistance = 1 / 0, topButtons.forEach(function (e, t) {
             var n = e.getBoundingClientRect(),
@@ -1177,6 +1211,11 @@
   layoutTiles();
   updateClock();
   setInterval(updateClock, 1e4);
+  if (window.MediaFeed) MediaFeed.attach({
+    launch: launchApp,
+    pointerFocus: function (row, column) { if (!moveState && !pickerOpen && !undoState && "inputs" !== focusZone) enterFeed(row, column); },
+    changed: function () { if ("media" === focusZone && !hasFeed()) { focusZone = "none"; focusTile(focusedTile); } }
+  });
   callLuna("luna://com.palm.connectionmanager/getStatus", {
     subscribe: true
   }, function (e) {
