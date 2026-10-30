@@ -1,7 +1,15 @@
 {
   "schema": 1,
-  "version": null,
-  "changes": [],
+  "version": "1.5.2",
+  "changes": [
+    {
+      "pr": 179,
+      "issues": [
+        172
+      ],
+      "summary": "Authenticate the final release assembler API recheck and cover effective workflow credentials/permissions; completes the automatic publication correction tracked in #172."
+    }
+  ],
   "excluded": [],
   "acceptance": ""
 }
