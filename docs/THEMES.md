@@ -82,7 +82,7 @@ The cache is bounded at eight downloaded versions and 24 MiB of payload data, su
 
 Open **Settings → Appearance → Restore Classic** to discard theme appearance immediately. An interrupted trial/startup or invalid accepted theme also returns to Classic on the next launch. The downloaded library is retained unless you clear it. Use the existing emergency Home exit/recovery instructions if Home itself cannot be opened; theme recovery does not change that emergency mechanism.
 
-Theme images/choice are not included in legacy profile backup/export. An authoritative profile restore resets the accepted theme to Classic; downloaded packages remain available for reselection if app storage is intact. Removing the application or resetting app data may erase its cache. Device storage behavior across updates, standby and cold boot still requires hardware acceptance.
+Theme images/choice are not included in legacy profile backup/export. A legacy profile restore resets the accepted theme to Classic; downloaded packages remain available for reselection if app storage is intact. A System update profile restore preserves the existing app-origin theme choice and Columns preference instead of treating their absence from the snapshot as a reset. Normal startup still validates that choice and its cached files; an interrupted trial, invalid choice or missing package falls back to Classic. Removing the application or resetting app data may erase its cache. Device storage behavior across updates, standby and cold boot still requires hardware acceptance.
 
 ## If something goes wrong
 
