@@ -146,3 +146,73 @@ class SubscriptionTests(PowerTests):
     self.assertFalse(s.stopping('tx'));stop.set();return b''
   with patch.object(s.subprocess,'Popen',return_value=child),patch.object(s.select,'select',return_value=([child.stdout],[],[])),patch.object(s.os,'read',side_effect=read):
    s.observe_power('tx','boot-a',stop)
+
+
+class WakeTransitionTests(PowerTests):
+ def test_only_genuine_same_stream_on_off_on_requests_one_wake(self):
+  power=s.PowerState('tx','boot-a')
+  self.assertIsNone(power.event(dict(returnValue=True,subscribed=True,state='Active')))
+  self.assertIsNone(power.event(dict(returnValue=True,state='Active Standby')))
+  token=power.event(dict(returnValue=True,state='Active'))
+  self.assertIsNotNone(token)
+  self.assertEqual(power.revision,token)
+  self.assertIsNone(power.event(dict(returnValue=True,state='Active')))
+  self.assertEqual(power.revision,token)
+  self.assertFalse(s.stopping('tx'))
+ def test_initial_off_unknown_reconnect_and_screen_saver_never_request_wake(self):
+  for states in (('Active Standby','Active'),('Active','unknown','Power Off','Active'),('Screen Saver','Active')):
+   power=s.PowerState('tx','boot-a')
+   for index,state in enumerate(states):
+    self.assertIsNone(power.event(dict(returnValue=True,state=state,**({'subscribed':True} if index==0 else {}))))
+ def test_processing_on_and_new_off_cancel_inflight_wake(self):
+  power=s.PowerState('tx','boot-a')
+  self.event(power,'Active',True);self.event(power,'Power Off')
+  self.assertIsNone(power.event(dict(returnValue=True,state='Active',processing=True)))
+  token=power.event(dict(returnValue=True,state='Active',processing=False,onOff='on'))
+  self.assertIsNotNone(token)
+  self.event(power,'Power Off');self.assertNotEqual(power.revision,token)
+  new=power.event(dict(returnValue=True,state='Active'))
+  self.assertIsNotNone(new);self.assertNotEqual(new,token)
+  power.close();self.assertNotEqual(power.revision,new)
+ def test_onoff_off_is_never_a_wake(self):
+  power=s.PowerState('tx','boot-a');self.event(power,'Active',True);self.event(power,'Power Off')
+  self.assertIsNone(power.event(dict(returnValue=True,state='Active',onOff='off')))
+
+class WakeWorkerTests(unittest.TestCase):
+ setUp=PowerTests.setUp
+ def test_optional_worker_cannot_block_power_observer_or_duplicate_inflight(self):
+  import threading
+  from unittest.mock import Mock
+  entered=threading.Event();release=threading.Event()
+  def present(*args,**kwargs):
+   entered.set();release.wait(2);return 'unavailable'
+  monitor=s.Monitor()
+  with patch('intent_runtime.present_wake',side_effect=present) as launch:
+   try:
+    monitor.request_wake('tx','boot-a',lambda:False)
+    self.assertTrue(entered.wait(1))
+    monitor.request_wake('tx','boot-a',lambda:False)
+    self.assertEqual(launch.call_count,1)
+   finally:release.set();monitor.close()
+   self.assertFalse(monitor.presentation.is_alive())
+ def test_stream_wires_wake_and_eof_revokes_queued_request(self):
+  import threading,json
+  from unittest.mock import Mock
+  callbacks=[];stop=threading.Event();child=Mock();child.stdout.fileno.return_value=7;child.poll.return_value=None
+  data=''.join(json.dumps(dict(returnValue=True,state=state,**({'subscribed':True} if i==0 else {}))) for i,state in enumerate(('Active','Active Standby','Active'))).encode()
+  with patch.object(s.subprocess,'Popen',return_value=child),patch.object(s.select,'select',return_value=([child.stdout],[],[])),patch.object(s.os,'read',side_effect=[data,b'']):
+   s.observe_power('tx','boot-a',stop,wake=lambda cancelled:callbacks.append(cancelled))
+  self.assertEqual(len(callbacks),1);self.assertTrue(callbacks[0]())
+
+ def test_fragmented_valid_active_frame_keeps_pending_wake_until_complete(self):
+  import threading
+  from unittest.mock import Mock
+  child=Mock();child.stdout.fileno.return_value=7;child.poll.return_value=None
+  callbacks=[];chunks=iter([b'{"returnValue":true,"subscribed":true,"state":"Active"}{"returnValue":true,"state":"Active Standby"}{"returnValue":true,"state":"Act',b'ive"}',b''])
+  def read(*args):
+   chunk=next(chunks)
+   if chunk == b'ive"}':self.assertEqual(callbacks,[])
+   return chunk
+  with patch.object(s.subprocess,'Popen',return_value=child),patch.object(s.select,'select',return_value=([child.stdout],[],[])),patch.object(s.os,'read',side_effect=read):
+   s.observe_power('tx','boot-a',threading.Event(),wake=lambda cancelled:callbacks.append(cancelled))
+  self.assertEqual(len(callbacks),1);self.assertTrue(callbacks[0]())
