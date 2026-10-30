@@ -9,6 +9,8 @@ before using a low-level recovery or installation procedure.
 
 ## Build and run from source
 
+- [Fast TV development](TV-DEVELOPMENT.md): compiled UI feedback, direct signed
+  TV artifacts and explicit device preflight without waiting for desktop builds.
 - [Build requirements and packages](../BUILD.md), [TV web compatibility](../TV-WEB-BUILD.md), and [desktop build/previews](DESKTOP-BUILD.md).
 - [CLI reference](../CLI.md), [manual installation](../MANUAL_INSTALL.md), [Android development](../../android/DEVELOPMENT.md).
 - [Root bundle](../../root-edition/package/README.md), [Root development](../../root-edition/DEVELOPMENT.md), [Root runtime contract](../../root-edition/runtime/README.md).

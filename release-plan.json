@@ -1,115 +1,19 @@
 {
   "schema": 1,
-  "version": "1.5.0",
+  "version": "1.5.1",
   "changes": [
     {
-      "pr": 134,
+      "pr": 174,
       "issues": [],
-      "summary": "Reuse verified candidate builds and unchanged PR runtime checks, scope physical acceptance and refresh release gates automatically."
-    },
-    {
-      "pr": 139,
-      "issues": [
-        69
-      ],
-      "summary": "Integrate on-TV themes, offline personal previews and user Columns with categorized settings and synchronized update indicators in both editions; partial #69, retro/font contribution and physical-TV acceptance remain pending"
-    },
-    {
-      "pr": 142,
-      "issues": [
-        133,
-        140
-      ],
-      "summary": "Fix No-root Helper control ownership while preserving pairing; reject unsupported Root Home interfaces before installation (partial #133; retained recovery remains unresolved)."
-    },
-    {
-      "pr": 145,
-      "issues": [
-        101,
-        133,
-        143
-      ],
-      "summary": "Add reviewed-source cancellation of never-activated Root installs, including pre-registration finalize failures and historical runtime inventories; device-specific recovery and firmware routing compatibility remain unverified (partial #101, #133, #143)."
-    },
-    {
-      "pr": 147,
-      "issues": [
-        146
-      ],
-      "summary": "Fix No-root Home settings transport in the service jail"
-    },
-    {
-      "pr": 149,
-      "issues": [],
-      "summary": "Integrate theme showcase, Appearance controls and PC-to-TV transfer"
-    },
-    {
-      "pr": 151,
-      "issues": [],
-      "summary": "Add the optional Show Add app tile switch and Settings app picker in both editions; preserve app editing and empty Home navigation."
-    },
-    {
-      "pr": 153,
-      "issues": [],
-      "summary": "Prepare Root candidate QA and preserve Showcase focus"
-    },
-    {
-      "pr": 154,
-      "issues": [
-        152
-      ],
-      "summary": "Retry installer TLS failures with the two RSA/AES-GCM suites on the encrypted endpoint; legacy-TV pairing and compatibility acceptance remain pending (#152)."
-    },
-    {
-      "pr": 156,
-      "issues": [
-        155
-      ],
-      "summary": "Recover No-root Helper watchdog timeouts with bounded retries, persistent emergency stops and required input cleanup; exact-device acceptance remains pending (#155)."
-    },
-    {
-      "pr": 157,
-      "issues": [],
-      "summary": "Replace unpublished theme ID provider with da.gd"
-    },
-    {
-      "pr": 158,
-      "issues": [],
-      "summary": "Add reviewed CSS-only Itachi Sharingan theme to showcase, generic native icon quality preference and optional bounded white-logo styling; physical-TV acceptance remains untested."
-    },
-    {
-      "pr": 159,
-      "issues": [],
-      "summary": "Correct candidate documentation and record unattended host/artifact verification while preserving supervised Root, exact Helper rollback and Android upgrade gates."
-    },
-    {
-      "pr": 163,
-      "issues": [
-        162
-      ],
-      "summary": "Address the eight supervised RC findings in source: correct Itachi 1.0.1 preview, bound held-navigation lag, restore saved-theme first/warm presentation, stabilize Appearance, preserve explicit/legacy columns, and narrowly admit verified native TV foreground on boot/wake; add guarded System Updater 1.1.1 to 1.1.2 replacement, exact Helper approval and parallel preliminary device builds. Root 0.6.1; the targeted decision records six passes and two declared failed limitations (Appearance #170 and standby #171), which are planned follow-ups, not delivered fixes (#162)."
-    },
-    {
-      "pr": 166,
-      "issues": [
-        165
-      ],
-      "summary": "Authenticate and durably archive completed prior System replacement history before new guarded 1.1.1 to 1.1.2 admission; the scoped maintainer C3 supervisor migration passed using the same frozen payload (#165)."
-    },
-    {
-      "pr": 167,
-      "issues": [],
-      "summary": "Update shared TV theme rendering with a styleable scenic position indicator, single focused caption and icon-error recovery; publish the reviewed toolkit Itachi 1.0.2 catalog entry and improve reference-app/HDMI/showcase browser previews. This changes both TV editions, not only preview tooling."
-    },
-    {
-      "pr": 169,
-      "issues": [
-        162,
-        168
-      ],
-      "summary": "Preserve app-origin theme and Columns preferences across normal System profile restore while retaining legacy reset and invalid-trial recovery; correct stale Columns focus handling. Actual-TV UI06 still shows a 110 px Appearance shift, explicitly accepted as a declared limitation with planned follow-up #170; no fix is claimed for that remaining failure (#168, #162)."
+      "summary": "Speed up CI and add direct TV development delivery"
     }
   ],
   "excluded": [],
-  "acceptance": "2026-10-30: maintainer explicitly selected release of the current frozen 1f41a9cf3d66a6858de71e91dcebcef417e81bd4 product with declared limitations. Device OLED55C3RLA, firmware43.21.71/webOS SDK11.2.0, Root edition, macOS ARM64 installer, remote model unknown. Tested installed set Root0.6.1 SHA256419de466e43095b426d9652c102fabd2c3ebd5a58c4dbb0f4928056b6d4b9f64, Updater0.3.3 SHA25603178adacfd00391cf54d9dd87587cee04b717598507e85c55948d982382ca72, infrastructure0.6.1 SHA256f6af35d2c44032d7861184fcf86bda7299065691051d48ea2fc78f03c9034f26, System1.1.2. Targeted eight-finding decision: UI01/02/03/04/07 and cold-start08 passed in their documented scopes; UI06 Appearance110px shift FAILED (#170) and standby05 automatic Home FAILED (#171), explicitly accepted as the two known limitations/planned follow-ups. Cold start first showed LG Channels then Home automatically within the requested minute; exact latency unknown. New419 app-origin Alpine/Columns/profile retention, affected Itachi1.0.2 indicator/caption/CSS33 icons, native-image fallback/recovery, repeat-navigation and reload passed. Physical held-arrow/key-release and warmHome observations belong ONLY to oldbaf9 Root633eabe8, not a new handheld run on419. Ordinary retained rollback accepts the priorbaf9 Root061\u2192060 only, not rollback of new1f41. The original pre-install abort remains historical/causeunknown. No general compatibility, new physical No-root/Android or unperformed failure/power cases are inferred. Exact existing Helper0.6.20 raw/canonical approval and baseline requirements remain unchanged. See docs/history/2026-10-30-supervised-candidate-findings.md for evidence and limits. Final complete trusted exact-head CI, Root419 byte equality, approved Helper bytes, signed package/provenance/feed verification remain required before main/publication. This is a limited maintainer decision with two FAILED cases, not an all-pass assertion or bypass. Package reconciliation 2026-10-30: trusted release/next push build 41046622477/1, source 3008af49f8d5ae3c051c661ec5c791a4233eed7b, successful ARM64 job artifact12972617785 SHA2567d753513e43d5d176b01c22395b4884ea871eafac7d70f990bba5e35581ec9e5: all163 payload files byte-identical to tested1f41, including Home1.6.0 SHA2569dc14c402c096491659f63c154953498c75638baa0ee71cc4293d82109bc476b, Root419, RootUpdater03178 and SystemUpdater1.1.2 SHA256977da7ee7feee95871dd15e0ab15aad21eb1b8c3966c8b358d1ae15f6cbd0bfd. Helper raw8ed42c5/canonical20c56116 remain exact; official v1.4.1 rollback Home009e7379 and Helper52510c91 asset digests match approval. Android artifact12973485180 SHA256b3094b7eb4e67fad4acfd8277e9319cb68b9ef97f506517d208b92208e717cf1 has valid pinned APK signing identity, all163 TV payload files equal, unchanged DEX/UI/resources/native and timestamp-only Python differences. These successful package jobs establish byte equivalence, not success of the whole run. Final unpinned exact-head complete trusted CI and normal assembly/signing/public-feed verification remain mandatory before merge/publication; their actual final run/attempt/source/results must be recorded in PR141. No physical retest is inferred from rebuilding metadata."
+  "acceptance": "Developer/CI maintenance only. Full candidate 41060638294 attempt 1 passed. Exact digest-bound CI payload proves all six TV components byte-identical to signed published 1.5.0; existing signed Home 1.5.1 rollback IPK verified. See docs/history/2026-10-30-release-1.5.1-validation.md for SHA-256 values and host evidence. No TV connected or modified, no new model/firmware/remote session and no new Home/control/audio/standby/cold-boot/OTA/rollback acceptance. Published 1.5.0 evidence retains its original scope and known Appearance/standby failures. Real hosted UI and new command device use remain untested.",
+  "build": {
+    "run_id": 41060638294,
+    "attempt": 1,
+    "source": "0dc7a5f85cef7164ea3d1ece80f9aaf31bb86d68"
+  },
+  "acceptance_build": "41060638294:1"
 }
