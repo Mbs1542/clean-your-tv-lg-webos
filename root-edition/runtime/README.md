@@ -61,7 +61,8 @@ are rejected, not silently reset.
 
 After a healthy guarded restart, the dispatcher makes one optional foreground
 request only for normal active hardware startup, LG `homeAutoLaunch=on`, and a
-final foreground read showing stock Home or Live TV. An already visible user app
+final foreground read showing stock Home, Live TV, or the narrowly verified
+native Channels surface described below. An already visible user app
 or Clean is left alone. Missing/slow optional APIs do not disable healthy Root.
 These calls use a 0.5-second reply deadline (up to another 0.5 second for child
 termination cleanup); no operation lock is held over launch, so an explicit off
@@ -80,13 +81,36 @@ is left to recovery and is never promoted by wake. Native last-input preference
 and unknown/user foreground are preserved. It does not add a new service,
 permission, endpoint, durable state or boot hook.
 
-Presentation diagnostics classify foreground only as Root, stock Home, Live TV,
-or other/missing, and record whether a nonempty firmware first-app ID matched.
-They do not persist private app IDs or inventories. RC-START-08's recorded
-`preserved-foreground` decision and empty later `firstAppId` do not establish a
-Channels app identity/provenance: the allowlist remains unchanged pending that
-evidence. The new same-session wake path is host-tested, not physical acceptance
-of RC-START-05 or a resolution claim for RC-START-08.
+The C3 firmware boot trace and the supervised no-input cold cycle identified
+`mgg4.5.channelplus` as the firmware Cover App's boot-launched partner TV surface. Its
+reported `systemApp` is false; it is not treated as a system app or as authority
+to classify other CP apps. The optional metadata read admits only that exact ID,
+`type=web`, `vendor=LifeStream ltd.`, boolean `CPApp=true` and
+`internalInstallationOnly=true`, with both `folderPath` and `activeFolderPath`
+exactly `/media/cryptofs/apps/usr/palm/applications/mgg4.5.channelplus`.
+A developer/alternate path, missing or changed identity fields, any other ID,
+and unknown apps remain preserved. Metadata failures never revoke healthy Home
+routing. After metadata verification the foreground is read again, preserving an
+app selected during that RPC; all input/intent/session/failsafe and native Home
+preference checks still apply. This classification is shared by the boot and
+proven genuine-wake paths and introduces no watcher or boot-hook change.
+
+As with the existing stock Live TV policy, manually selecting this native TV
+surface in the boot or genuine-wake window cannot be distinguished from firmware selection
+by the final snapshot; the native Home-on preference permits one boot/wake request
+in that case. Third-party/unknown foreground remains protected. Foreground read
+and launch remain separate platform calls, so the existing final-read/launch
+race is unchanged. This is the same policy boundary as Live TV, not a claim of
+complete user-input or launch provenance on arbitrary apps.
+
+Presentation diagnostics classify foreground as Root, stock Home, Live TV,
+verified native channel, or other/missing, and record whether a nonempty firmware
+first-app ID matched. They do not persist private app IDs or inventories. The
+recorded `preserved-foreground` outcomes and empty `firstAppId` are historical
+old-candidate observations. Host regressions reproduce that native-TV rejection
+and verify the corrected metadata gate; installation/physical acceptance of the
+new code is still required separately for RC-START-05 and RC-START-08. Active
+intent and installation alone do not establish automatic foreground acceptance.
 
 Manual enable and short Home retain their existing behavior. See
 [cold-start investigation and acceptance](../../docs/development/ROOT-COLD-BOOT.md).

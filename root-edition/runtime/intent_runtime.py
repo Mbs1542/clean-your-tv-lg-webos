@@ -197,6 +197,18 @@ def present_wake(transaction, boot, cancelled):
         return 'unavailable'  # Optional presentation never revokes healthy routing.
 
 
+def _native_channel(sam, app):
+    """One observed partner TV surface; never classify arbitrary CP apps."""
+    if app != 'mgg4.5.channelplus': return False
+    info = sam.call('luna://com.webos.applicationManager/getAppInfo',{'id':app},timeout=.5).get('appInfo')
+    if not isinstance(info,dict): return False
+    store = '/media/cryptofs/apps/usr/palm/applications/'+app
+    expected = dict(id=app,type='web',vendor='LifeStream ltd.',
+                    folderPath=store,activeFolderPath=store)
+    return (all(info.get(key) == value for key,value in expected.items())
+            and info.get('CPApp') is True and info.get('internalInstallationOnly') is True)
+
+
 def _present_home(c, result, cancelled=lambda:False, wake=False):
     """Shared final checks; foreground/launch are separate platform RPCs."""
     try:
@@ -217,13 +229,22 @@ def _present_home(c, result, cancelled=lambda:False, wake=False):
         require_fresh(tx)
         foreground = sam.call('luna://com.webos.applicationManager/getForegroundAppInfo',{},timeout=.5)
         app = foreground.get('appId')
-        # Do not persist private foreground IDs or invent a Channels identity.
+        # Diagnostics carry fixed classes, never private foreground IDs.
         kinds = {'com.webos.app.home':'stock-home','com.webos.app.livetv':'live-tv',d.CANDIDATE:'root'}
         first = boot.get('firstAppId')
         result['presentation_context'] = dict(foreground_kind=kinds.get(app,'other-or-missing'),
                                              first_app_matches=(first == app) if first else None)
         if app not in ('com.webos.app.livetv','com.webos.app.home'):
-            return 'preserved-foreground'
+            if not _native_channel(sam,app): return 'preserved-foreground'
+            result['presentation_context']['foreground_kind'] = 'native-channel'
+            # Metadata is optional and can be slow. Keep an app selected while
+            # it was checked, including a manual Home or a third-party app.
+            latest = sam.call('luna://com.webos.applicationManager/getForegroundAppInfo',{},timeout=.5)
+            if latest.get('appId') != app:
+                result['presentation_context'] = dict(
+                    foreground_kind=kinds.get(latest.get('appId'),'other-or-missing'),
+                    first_app_matches=(first == latest.get('appId')) if first else None)
+                return 'preserved-foreground'
         # Recheck after optional RPCs, which can outlive the two-second lease.
         require_fresh(tx)
         if wake:
