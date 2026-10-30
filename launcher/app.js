@@ -633,6 +633,9 @@
       };
     image.className = 'ctv-icon';
     image.onload = function () {
+      image.style.display = '';
+      card.classList.remove('missing-icon');
+      card.removeAttribute('data-initial');
       !function (e, t) {
         var n = null,
           a = null;
@@ -691,6 +694,8 @@
       }(tile, image);
     };
     image.onerror = function () {
+      card.style.background = "";
+      tile.brandBackground = "";
       image.style.display = "none";
       card.classList.add("missing-icon");
       card.setAttribute("data-initial", app.title.charAt(0));

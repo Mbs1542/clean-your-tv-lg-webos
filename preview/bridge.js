@@ -50,7 +50,7 @@
         if(homeMethod==='openLGHome')message('LG Home · settings kept');
         if(['homeStatus','setHomeControl','openLGHome'].indexOf(homeMethod)>=0)result={returnValue:true,enabled:homeEnabled};
       } else if (uri === 'luna://com.local.nativehome.service/listApps' || uri === 'luna://com.cleanyourtv.root.preview.service/listApps') {
-        result = {returnValue:true, apps:(window.TV_APPS.apps || []).concat([{id:'preview.gallery', title:'Photo & Video', icon:'../preview/icons/browser.svg'}])};
+        result = {returnValue:true, apps:(window.TV_APPS.apps || []).concat(window.TV_APPS.referenceApps ? [] : [{id:'preview.gallery', title:'Photo & Video', icon:'../preview/icons/browser.svg'}])};
       } else if (uri === 'luna://com.palm.connectionmanager/getStatus') {
         result = {returnValue: true, isInternetConnectionAvailable: true, wifi: {state: 'connected', ssid: 'Demo Wi-Fi'}};
       } else if (uri === 'luna://com.webos.service.bus/signal/registerServerStatus') {
