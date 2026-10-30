@@ -124,6 +124,28 @@ def stop_old_service(code,cleanup,registration_sha,proc=Path('/proc')):
         if time.monotonic()>=end:raise ValueError('Original System service did not stop')
         time.sleep(.1)
 
+def completed_evidence(job,setup,manager,store,system,terminal_removal):
+    root=Path(store.root)/('system-replacement-'+job['id']);directory(root)
+    bundle=root/'bundle';manifest=setup.verify_bundle(bundle)
+    if digest(read(bundle/'bundle.json'))!=job['bundle_sha256']:raise ValueError('Historical replacement bundle changed')
+    if digest(read(root/'baseline/baseline.json'))!=job['baseline_sha256']:raise ValueError('Historical replacement baseline changed')
+    # Historical Root bytes can have legitimately advanced since completion.
+    # Authenticate that backup without comparing it to today's installed Root.
+    setup.verify_baseline(root/'baseline',bundle)
+    archive_proof(Path(job['archive']),job)
+    removal=job.get('removal',{})
+    if removal.get('state')!='terminal' or not terminal_removal(removal.get('evidence'),APP):raise ValueError('Historical replacement removal proof required')
+    raw=setup.safe(bundle/'system-updater.ipk')
+    info=json.loads(setup.package_files(raw)['usr/palm/applications/'+APP+'/appinfo.json'])
+    binding=json.loads(read(system/'bootstrap-bundle.json'))
+    if (info.get('id')!=APP or info.get('version')!='1.1.1'
+            or manager.io.owner_identity(APP)['version']!='1.1.1'
+            or binding['bundle']!=manifest or binding['package']!={'sha256':digest(raw),'size':len(raw)}
+            or original_code(system)!={n:h for n,h in manifest['files'].items() if n not in ('system-updater.ipk','setup-system-updater.py')}):raise ValueError('Historical replacement does not authenticate the live 1.1.1 owner')
+    target=root/'completed-replacement.json'
+    return target
+
+
 def replace(bundle,setup,cleanup,manager,store,ownership,remove,terminal_removal,pending_journals,system=SYSTEM,source_sha=''):
     bundle=Path(bundle);system=Path(system);manifest=setup.verify_bundle(bundle)
     if type(manifest.get('health_lock_wait_seconds')) is not int or manifest['health_lock_wait_seconds']!=10:raise ValueError('Fixed System ownership-wait bundle required')
@@ -131,18 +153,26 @@ def replace(bundle,setup,cleanup,manager,store,ownership,remove,terminal_removal
     files=setup.package_files(setup.safe(bundle/'system-updater.ipk'))
     version=json.loads(files['usr/palm/applications/'+APP+'/appinfo.json'])
     if version.get('id')!=APP or version.get('version')!='1.1.2':raise ValueError('This replacement requires the fixed System Updater 1.1.2 bundle')
-    job=store.read('system-replacement');lease=ownership.status()
+    job=store.read('system-replacement');lease=ownership.status();retired=None
+    historical=job is not None and job.get('stage')=='complete' and job.get('bundle_sha256')!=bundle_sha
     if job is not None:
-        if (job.get('schema')!=1 or job.get('bundle_sha256')!=bundle_sha or job.get('source_sha256')!=source_sha or not re.fullmatch('[a-f0-9]{32}',job.get('id',''))):raise ValueError('Resume replacement with the same verified installer bundle')
+        if (job.get('schema')!=1 or not historical and (job.get('bundle_sha256')!=bundle_sha or job.get('source_sha256')!=source_sha) or not re.fullmatch('[a-f0-9]{32}',job.get('id',''))):raise ValueError('Resume replacement with the same verified installer bundle')
         if job.get('stage') not in STAGES or not isinstance(job.get('archive'),str) or not re.fullmatch(re.escape(str(system))+r'\.archive-[a-f0-9]{32}',job['archive']):raise ValueError('Unknown replacement journal stage or archive')
         if not isinstance(job.get('old'),dict) or set(job['old'])!={'code','transaction','profile','registration','home'} or set(job['old']['home'])!=set(map(str,HOME_FILES)):raise ValueError('Unknown original replacement proofs')
         if any(h is not None and not re.fullmatch('[a-f0-9]{64}',h) for h in job['old']['home'].values()) or not re.fullmatch('[a-f0-9]{64}',job['old']['transaction']) or not re.fullmatch('[a-f0-9]{64}',job['old']['registration']):raise ValueError('Unknown original replacement hashes')
         profile=job['old']['profile']
         if profile is not None and (set(profile)!={'name','sha256'} or not re.fullmatch('profile-[a-f0-9]{32}',profile['name']) or not re.fullmatch('[a-f0-9]{64}',profile['sha256'])):raise ValueError('Unknown saved profile proof')
         if job['stage']!='capture' and not re.fullmatch('[a-f0-9]{64}',job.get('baseline_sha256','')):raise ValueError('Missing captured baseline proof')
-        if not lease or lease['id']!=job['id'] or lease['owner']!='system-replace' or lease['journal']!='system-replacement.json':raise ValueError('Replacement ownership changed')
-        resume=job['id']
-    else:
+        if historical:
+            if not re.fullmatch('[a-f0-9]{64}',job.get('bundle_sha256','')) or not re.fullmatch('[a-f0-9]{64}',job.get('source_sha256','')):raise ValueError('Unknown historical replacement pins')
+            reserved=lease and not lease['terminal'] and lease['owner']=='system-replace' and lease['journal']=='system-replacement.json' and lease['stage']=='reserved' and lease['id']!=job['id']
+            if not lease or not (lease['terminal'] and lease['stage']=='complete' or reserved):raise ValueError('Historical replacement requires terminal ownership')
+            completed_evidence(job,setup,manager,store,system,terminal_removal)
+            retired=job;job=None
+        else:
+            if not lease or lease['id']!=job['id'] or lease['owner']!='system-replace' or lease['journal']!='system-replacement.json':raise ValueError('Replacement ownership changed')
+            resume=job['id']
+    if job is None:
         # Inspect every proof before reserving a new operation or disabling code.
         old=old_proof(manager,system)
         if manager.io.owner_identity(APP)['version'] not in ('1.1.0','1.1.1'):raise ValueError('Only System Updater 1.1.0 or 1.1.1 can use this replacement')
@@ -150,13 +180,51 @@ def replace(bundle,setup,cleanup,manager,store,ownership,remove,terminal_removal
         resume=lease['id'] if lease and not lease['terminal'] and lease['owner']=='system-replace' and lease['journal']=='system-replacement.json' and lease['stage']=='reserved' else None
     def eligible():
         pending_journals('system-bootstrap' if job is not None and job['stage']=='provision' else 'system-replace')
+        if retired is not None:
+            # Ownership invokes this under its product lock BEFORE reservation.
+            # Bind a new admission even if power fails before a lease is written.
+            if ownership.status()!=lease:raise ValueError('Replacement ownership changed before retirement admission')
+            if store.read('system-replacement')!=retired or old_proof(manager,system)!=old:raise ValueError('Historical replacement or live state changed before retirement')
+            target=completed_evidence(retired,setup,manager,store,system,terminal_removal)
+            raw=read(Path(store.root)/'system-replacement.json')
+            plan={'schema':1,'bundle_sha256':bundle_sha,'source_sha256':source_sha,'journal_sha256':digest(raw),'old':old}
+            history=type(store)(target.parent,uid=manager.io.uid);previous=history.read('next-replacement')
+            if previous is not None and previous!=plan:raise ValueError('Continue historical retirement with the same installer source and bundle')
+            if os.path.lexists(target) and (previous is None or read(target)!=raw):raise ValueError('Historical replacement retirement collision')
+            if previous is None:history.write('next-replacement',plan)
     with ownership.operation('system-replace','system-replacement.json',resume=resume,check=eligible) as record:
         if job is None:
-            root=Path(store.root)/('system-replacement-'+record['id']);
+            root=Path(store.root)/('system-replacement-'+record['id'])
             if root.exists():
-                if any(root.iterdir()):raise ValueError('Replacement journal missing for existing evidence')
+                directory(root)
+                if set(p.name for p in root.iterdir())-({'pending-replacement.json'} if retired is not None else set()):raise ValueError('Replacement journal missing for existing evidence')
             else:root.mkdir(mode=0o700)
-            job={'schema':1,'id':record['id'],'bundle_sha256':bundle_sha,'source_sha256':source_sha,'stage':'capture','archive':str(system)+'.archive-'+uuid.uuid4().hex,'old':old}
+            pending=type(store)(root,uid=manager.io.uid)
+            job=pending.read('pending-replacement') if retired is not None else None
+            if job is not None:
+                if (set(job)!={'schema','id','bundle_sha256','source_sha256','stage','archive','old'}
+                        or job['schema']!=1 or job['id']!=record['id'] or job['bundle_sha256']!=bundle_sha or job['source_sha256']!=source_sha
+                        or job['stage']!='capture' or job['old']!=old or not re.fullmatch(re.escape(str(system))+r'\.archive-[a-f0-9]{32}',job['archive'])):raise ValueError('Pending historical replacement proof changed')
+            else:
+                job={'schema':1,'id':record['id'],'bundle_sha256':bundle_sha,'source_sha256':source_sha,'stage':'capture','archive':str(system)+'.archive-'+uuid.uuid4().hex,'old':old}
+                if retired is not None:pending.write('pending-replacement',job)
+            if retired is not None:
+                # Preserve exact old bytes durably before atomically replacing
+                # the active journal; it never disappears between operations.
+                target=completed_evidence(retired,setup,manager,store,system,terminal_removal)
+                raw=read(Path(store.root)/'system-replacement.json')
+                if os.path.lexists(target):
+                    if read(target)!=raw:raise ValueError('Historical replacement retirement collision')
+                else:
+                    fd,name=tempfile.mkstemp(prefix='.completed-',dir=target.parent)
+                    try:
+                        with os.fdopen(fd,'wb') as stream:stream.write(raw);stream.flush();os.fsync(stream.fileno())
+                        os.rename(name,target)
+                    finally:
+                        if os.path.lexists(name):os.unlink(name)
+                fd=os.open(target.parent,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW)
+                try:os.fsync(fd)
+                finally:os.close(fd)
             store.write('system-replacement',job)
         root=Path(store.root)/('system-replacement-'+job['id']);directory(root);baseline=root/'baseline';saved_bundle=root/'bundle'
         def save(stage):job['stage']=stage;store.write('system-replacement',job);ownership.stage(record,stage,terminal=False)

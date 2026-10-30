@@ -117,6 +117,13 @@ transaction or backup also blocks replacement, even if marked complete; preserve
 it for review rather than deleting it to force replacement. It does not patch
 retained pinned code in place or replay an uncertain remove/install request.
 
+A completed earlier replacement to 1.1.1 can start a new 1.1.2 operation only
+after the installer authenticates its saved bundle, baseline, original archive,
+terminal removal and current owner, and confirms that later recovery has finished.
+The original completed journal is durably archived with its existing evidence;
+no private pins or unfinished journals are cleared. Interrupted replacements
+still require the same installer bundle and coordinator source.
+
 An interrupted replacement retains its operation and archive. Continue only with
 the same command and installer bundle, or save diagnostics and stop if its outcome
 is uncertain. Do not remove journals or archives to force setup. A failed readiness
