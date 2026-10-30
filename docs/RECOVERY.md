@@ -95,9 +95,10 @@ response while its worker holds the installation lock; this can cause an unneces
 Signed Root offers retain a minimum supervisor version of 1.1.1 and are rejected
 by the original 1.1.0; the new receiver/runtime path needs separate verification. Historical signed baselines remain valid for rollback.
 
-This command supports replacement of the original 1.1.0 only; it rejects an
-installed 1.1.1. Existing 1.1.1 installations need a separately verified migration
-path before using the new receiver functionality.
+This command supports replacing 1.1.0 or 1.1.1 after authenticating the retained
+code, owner package, registration and finished recovery state. Other installed
+versions are rejected. Physical acceptance of a particular transition remains
+separate from the command's source and fixture checks.
 
 After any current update or rollback has completed, use the same trusted Root
 connection and a complete 1.5.0 candidate installer:

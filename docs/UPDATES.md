@@ -142,11 +142,12 @@ the reference above. Current release publication instructions are in the
 ## Candidate 1.5.0 Root supervisor prerequisite
 
 The unpublished 1.5.0 candidate provides System Updater 1.1.2 for the updated
-Root receiver/runtime flow. Existing original 1.1.0 installations can use the
+Root receiver/runtime flow. Existing 1.1.0 and 1.1.1 installations can use the
 explicit [supervisor-only replacement](RECOVERY.md#replace-the-root-system-updater-candidate)
 with a complete matching candidate installer before on-TV updating. That command
-rejects installed 1.1.1; do not use it or modify retained state to force a migration.
-The supported transition and matching artifact acceptance must be verified first.
+verifies the retained owner/code, archives the old supervisor state and preserves
+Root and Home preferences. Do not modify retained state to force admission.
+Each supported transition still needs matching artifact/device acceptance.
 Published 1.4.1 used System Updater 1.1.1; its historical acceptance does not certify
 this candidate. The fixed readiness service retains its bounded ownership-lock
 wait without extending the launcher's health deadline.
