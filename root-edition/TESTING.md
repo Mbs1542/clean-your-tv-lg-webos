@@ -7,6 +7,17 @@ and [published acceptance](../docs/RELEASE-1.4.0-ACCEPTANCE.md). This is a devel
 test plan; bounded trials below are not a normal installer Keep/confirmation step.
 Dated checkpoints retain their original builds and do not override current results.
 
+## When to repeat this matrix
+
+Select affected scenarios using the [scoped release acceptance rules](../docs/RELEASE-FLOW.md#scoped-physical-acceptance-and-retry-recovery).
+Bind every result to build run/attempt, artifact SHA-256 and TV/firmware/state.
+Evidence-only edits preserve the same selected bytes and do not require another
+physical run. Carry a prior scenario only when all its artifacts and preconditions
+match; source similarity alone is insufficient. Behavioral JS and unknown/shared
+changes conservatively select the full matrix. Unresolved failures and untested
+paths retain their original status. The stage requirements below still apply to
+any scenario selected for retest.
+
 ## Local checks (no TV required)
 
 ```sh
@@ -76,7 +87,8 @@ private tests do not count as acceptance of this build. Run these steps together
 Local tests cover independent installer completion, unknown outcomes, exact
 payload hashes, recovery provisioning and the helper stop latch. They cannot
 prove delivery of a boot activity on this firmware. Explicit permanent activation is now implemented and tested on one C3; repeat
-the lifecycle and emergency matrix on the final release artifact.
+the affected lifecycle and emergency scenarios on the selected final artifacts;
+carry earlier evidence only under the identical-hash/precondition rule above.
 
 ## Triple-Home emergency regression matrix
 
@@ -211,8 +223,8 @@ Host regressions cover fresh ON→OFF subscription transitions, initial/stale OF
 unknown/unsubscribed/malformed/lost streams, cache expiry, actual child cleanup,
 old-session writers and observer exits before boot dispatch. Escape, explicit
 off, package loss, failsafe, same-session input faults, unconfirmed trials and
-restore-before-gate remain mandatory. Rebuild coherent exact-source artifacts
-and repeat the full supervised matrix after any correction; do not re-enable
+restore-before-gate remain mandatory. Rebuild coherent artifacts after product changes
+and repeat the affected supervised matrix (unknown/shared impact requires the full matrix); do not re-enable
 fault-disabled Root automatically or edit installed runtime/receipts.
 
 

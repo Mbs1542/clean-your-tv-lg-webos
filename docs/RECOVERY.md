@@ -15,6 +15,17 @@ If controls fail again, leave LG Home active and save diagnostics. Do not repeat
 clear stop flags after a fault. A Quick Access assignment to Home offers another
 way to open it, but does not restart Helper.
 
+<a id="no-root-watchdog-recovery-unpublished-candidate"></a>
+
+## No-root watchdog recovery (Helper 0.6.20)
+
+Helper 0.6.20 can recover a transient relay/controller watchdog timeout,
+including the standby timing reported in #155, with at most five attempts in ten
+minutes. Stop and triple Home remain persistent stops and require explicit
+**Start Helper**. Repeated faults or failed input cleanup also leave Helper
+stopped. Physical No-root acceptance remains unverified for the exact Helper transition; see
+[recovery behavior and limits](HELPER-DIAGNOSTICS.md#watchdog-recovery-unpublished-candidate-155).
+
 ## Interrupted setup or removal
 
 <a id="interrupted-setup-or-removal-in-110"></a>
@@ -42,7 +53,7 @@ are retained. For Root routing recovery, use the
 
 <a id="root-system-rollback-readiness-candidate"></a>
 
-**Unpublished candidate only.** Use this explicit maintenance command only when a
+**Available in cytv 0.6.0.** Use this explicit maintenance command only when a
 Root System rollback completed every package installer, but the restored launcher
 missed its readiness deadline. First check status using the same trusted TV
 connection and retain the failed attempt's diagnostic report.
@@ -80,14 +91,19 @@ controls, audio, standby or cold boot; check actual behavior separately. [Connec
 
 ## Replace the Root System Updater (candidate)
 
-**Unpublished 1.4.1 candidate only.** Root on-TV updates require System Updater
-1.1.1. The original 1.1.0 can reject a launcher's one-shot readiness response while
-its worker holds the installation lock; this can cause an unnecessary rollback.
-New signed Root offers require the fixed version and are rejected by the old
-supervisor. Historical signed baselines remain valid for rollback.
+**Release 1.5.0.** The replacement bundle contains
+System Updater 1.1.2. The original 1.1.0 can reject a launcher's one-shot readiness
+response while its worker holds the installation lock; this can cause an unnecessary rollback.
+Signed Root offers retain a minimum supervisor version of 1.1.1 and are rejected
+by the original 1.1.0; the new receiver/runtime path needs separate verification. Historical signed baselines remain valid for rollback.
+
+This command supports replacing 1.1.0 or 1.1.1 after authenticating the retained
+code, owner package, registration and finished recovery state. Other installed
+versions are rejected. Physical acceptance of a particular transition remains
+separate from the command's source and fixture checks.
 
 After any current update or rollback has completed, use the same trusted Root
-connection and a complete candidate installer:
+connection and a complete 1.5.0 installer:
 
 ```sh
 cytv replace-system-updater --edition root
@@ -102,6 +118,13 @@ pending work and unknown installer outcomes. Any existing legacy Root Updater
 transaction or backup also blocks replacement, even if marked complete; preserve
 it for review rather than deleting it to force replacement. It does not patch
 retained pinned code in place or replay an uncertain remove/install request.
+
+A completed earlier replacement to 1.1.1 can start a new 1.1.2 operation only
+after the installer authenticates its saved bundle, baseline, original archive,
+terminal removal and current owner, and confirms that later recovery has finished.
+The original completed journal is durably archived with its existing evidence;
+no private pins or unfinished journals are cleared. Interrupted replacements
+still require the same installer bundle and coordinator source.
 
 An interrupted replacement retains its operation and archive. Continue only with
 the same command and installer bundle, or save diagnostics and stop if its outcome

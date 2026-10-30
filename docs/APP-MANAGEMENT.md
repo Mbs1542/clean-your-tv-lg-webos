@@ -4,19 +4,31 @@ Hold OK on an app for 0.6 seconds to pick it up. Use the arrows to move it,
 press OK to place it, or Back to cancel. With a pointer, hold the tile,
 release, point at its new position and click to place it.
 
-The **+ / Add app** tile always stays last. It lists installed apps which
+The **+ / Add app** tile stays last when shown. It lists installed apps which
 are not on Home, including apps previously hidden here. Selecting one adds
-it at the end, before +. This does not install software.
+it at the end, before + when shown. This does not install software.
 
 To hide an app, pick it up and move down beyond the last row of apps to
 **Hide from Home**, then press OK. The pointer can select this button directly.
 The app remains installed on the TV. **Undo** receives focus immediately;
 press OK to restore the original layout, or Back/an arrow to dismiss Undo.
-You can also restore the app later through +. Hiding every app leaves + available.
+You can also restore the app later through +. Hiding every app leaves + available when shown. If + is hidden, the top controls
+and Settings remain accessible.
+
+<a id="hide-the--tile-unreleased-candidate"></a>
+
+## Hide the + tile (Home 1.6.0)
+
+In both editions, open **Home settings → Appearance** and turn off
+**Show Add app tile**. The default is on. This only hides +; it keeps your
+app selection, ordering and editing controls. Use **Add app** in the same
+settings section to add apps or restore hidden ones without showing + again.
+The choice survives restart and is included in the layout saved for system
+update/rollback recovery. A failed save leaves the previous choice active.
 
 ## Inventory and persistence
 
-The launcher asks its edition's service for a fresh inventory whenever + opens.
+The launcher asks its edition's service for a fresh inventory whenever the app picker opens.
 No-root uses the helper's existing SSAP pairing key and the TV's local network
 addresses. Root uses a fixed, read-only Application Manager query. Both requests
 are bounded. A missing pairing key, denied request or timeout falls back to the
@@ -27,7 +39,8 @@ The new UI requires the corresponding updated service package for fresh discover
 With an older service it can still manage the saved inventory. A live television
 check is required before claiming compatibility with a specific firmware.
 
-`tvhome.layout` stores order, hidden IDs and the known app catalog in localStorage.
+`tvhome.layout` stores order, hidden IDs, the optional boolean `showAddApp` (default true)
+and the known app catalog in localStorage.
 Existing `tvhome.order` and configured hidden apps migrate on first use. Discovery
 never automatically adds tiles. The no-root profile backup includes the new key,
 so the updater can restore it along with the existing settings. Root retains the
@@ -41,6 +54,7 @@ Run the browser scenarios separately:
 
 ```sh
 PLAYWRIGHT_MODULE=/absolute/path/to/playwright node tests/apps/ui.cjs
+node tests/themes/add-tile-ui.cjs
 ```
 
 The browser test uses simulated TV replies and an isolated Chrome profile; it

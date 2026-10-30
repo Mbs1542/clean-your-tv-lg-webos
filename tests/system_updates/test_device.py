@@ -152,6 +152,35 @@ class ProcessSafetyTests(DeviceBase):
             def read_bytes(self):raise PermissionError('proc is unreadable')
         with patch.object(self.mod.Path,'iterdir',return_value=iter([Entry()])):
             with self.assertRaises(PermissionError):self.device._helper_processes()
+    def test_rewritten_root_service_title_is_stopped_only_with_matching_identity(self):
+        from unittest.mock import patch
+        entry=self.root/'123';entry.mkdir();target=self.device.root_state/'service';target.mkdir(parents=True)
+        (entry/'cmdline').write_bytes(b'com.cleanyourtv.root.preview.service\0')
+        (entry/'cwd').symlink_to(target);(entry/'exe').symlink_to('/usr/bin/node')
+        self.device._process_start=lambda pid:'original-start'
+        signals=[];self.device._signal_checked=lambda *args:signals.append(args)
+        for mismatch in ('none','cwd','exe','title','owner'):
+            with self.subTest(mismatch=mismatch):
+                signals.clear()
+                (entry/'cwd').unlink();(entry/'cwd').symlink_to(self.root if mismatch=='cwd' else target)
+                (entry/'exe').unlink();(entry/'exe').symlink_to('/bin/sh' if mismatch=='exe' else '/usr/bin/node')
+                (entry/'cmdline').write_bytes(b'foreign\0' if mismatch=='title' else b'com.cleanyourtv.root.preview.service\0')
+                self.device.uid=os.getuid()+1 if mismatch=='owner' else os.getuid()
+                with patch.object(self.mod.Path,'iterdir',return_value=iter([entry])):
+                    self.device._stop_service_processes(str(target))
+                self.assertEqual(signals,[(123,'original-start',self.mod.signal.SIGSTOP),(123,'original-start',self.mod.signal.SIGKILL)] if mismatch=='none' else [])
+
+    def test_process_reuse_during_service_identity_inspection_is_never_signalled(self):
+        from unittest.mock import patch
+        entry=self.root/'123';entry.mkdir();target=self.device.root_state/'service';target.mkdir(parents=True)
+        (entry/'cmdline').write_bytes(b'com.cleanyourtv.root.preview.service\0')
+        (entry/'cwd').symlink_to(target);(entry/'exe').symlink_to('/usr/bin/node')
+        starts=iter(['original-start','reused-start']);self.device._process_start=lambda pid:next(starts)
+        signals=[];self.device._signal_checked=lambda *args:signals.append(args)
+        with patch.object(self.mod.Path,'iterdir',return_value=iter([entry])),self.assertRaisesRegex(ValueError,'process changed'):
+            self.device._stop_service_processes(str(target))
+        self.assertEqual(signals,[])
+
     def test_reused_process_id_is_never_signalled(self):
         from unittest.mock import patch
         self.device._process_start=lambda pid:'newer-start'

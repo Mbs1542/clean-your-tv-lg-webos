@@ -1,21 +1,42 @@
 const assert=require('node:assert/strict'),fs=require('fs'),vm=require('vm');
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
-function harness(root,system=false){
- const ids={},buttons=[],pending=[],calls=[],homePending=[],rpcCalls=[],systemPending=[],systemCalls=[];let focused;
+function harness(root,system=false,blurHidden=true){
+ const ids={},buttons=[],pending=[],calls=[],homePending=[],rpcCalls=[],systemPending=[],systemCalls=[],listeners={};let focused,allowColumns=true;
  class E{
-  constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.className='';this.hidden=false;if(tag==='button')buttons.push(this);this.classList={toggle:(n,on)=>{const has=this.className.split(' ').includes(n);if(on===undefined)on=!has;if(on&&!has)this.className+=' '+n;else if(!on)this.className=this.className.split(' ').filter(x=>x!==n).join(' ');},contains:n=>this.className.split(' ').includes(n),add:n=>{this.className+=' '+n;},remove:n=>{this.className=this.className.split(' ').filter(x=>x!==n).join(' ');}};}
-  set innerHTML(html){for(const match of html.matchAll(/<(button|p|div|pre|span)\b[^>]*id="([^"]+)"[^>]*>/g)){const e=new E(match[1]);ids[match[2]]=e;this.children.push(e);}}
-  appendChild(e){this.children.push(e);}setAttribute(k,v){this.attrs[k]=v;}addEventListener(){}focus(){focused=this;document.activeElement=this;if(this.onfocus)this.onfocus();}querySelectorAll(){return buttons;}
+  constructor(tag){this.tag=tag;this.attrs={};this.children=[];this.className='';this.hidden=false;this.disabled=false;if(tag==='button')buttons.push(this);this.classList={toggle:(n,on)=>{const has=this.className.split(' ').includes(n);if(on===undefined)on=!has;if(on&&!has)this.className+=' '+n;else if(!on)this.className=this.className.split(' ').filter(x=>x!==n).join(' ');},contains:n=>this.className.split(' ').includes(n),add:n=>{this.className+=' '+n;},remove:n=>{this.className=this.className.split(' ').filter(x=>x!==n).join(' ');}};}
+  set innerHTML(html){for(const match of html.matchAll(/<(button|p|div|pre|span)\b[^>]*id="([^"]+)"[^>]*>/g)){const e=new E(match[1]);ids[match[2]]=e;e.parentNode=match[2]==='homeColumns'?new E('div'):this;this.children.push(e);}}
+  set id(value){this._id=value;ids[value]=this;}get id(){return this._id;}
+  set hidden(value){this._hidden=value;if(value&&blurHidden&&document.activeElement===this){document.activeElement=document.body;focused=document.body;}}get hidden(){return this._hidden;}
+  appendChild(e){e.parentNode=this;this.children.push(e);}setAttribute(k,v){this.attrs[k]=v;}addEventListener(){}focus(){focused=this;document.activeElement=this;if(this.onfocus)this.onfocus();}querySelectorAll(){return buttons;}
  }
- const document={body:new E('body'),activeElement:{focus(){}},createElement:t=>new E(t),getElementById:id=>ids[id],addEventListener(){}};
+ const document={body:new E('body'),activeElement:{focus(){}},createElement:t=>new E(t),getElementById:id=>ids[id],addEventListener:(name,fn)=>{(listeners[name]||(listeners[name]=[])).push(fn);}};
  const updates={open(){},rpc(method,payload,callback){calls.push(method);assert.equal(method,'check');return root?new Promise((resolve,reject)=>pending.push({resolve,reject})):pending.push(callback);}};
- const window=root?{RootUpdates:updates}:{HomeUpdates:updates};
+ const window=root?{RootUpdates:updates}:{HomeUpdates:updates};window.HomeLayoutState={state:()=>({allowColumnOverride:allowColumns})};
  const context={window,document,Promise,setTimeout:()=>1,clearTimeout(){},createRootExit:()=>async()=>{},PalmServiceBridge:class{cancel(){}call(uri,raw){rpcCalls.push(uri);if(system&&uri.startsWith('luna://com.cleanyourtv.system.updater.service/')){systemCalls.push({method:uri.split('/').pop(),payload:JSON.parse(raw)});systemPending.push(reply=>this.onservicecallback(JSON.stringify(reply)));return;}if(!root&&uri.endsWith('/homeStatus')){homePending.push(value=>this.onservicecallback(JSON.stringify(value)));return;}this.onservicecallback(JSON.stringify({returnValue:true,result:{returnValue:true,result:{intent:{phase:'disabled'}}},state:{enabled:false}}));}}};
+ vm.runInNewContext(fs.readFileSync('launcher/layout-panel.js','utf8'),context);context.HomeLayoutPanel=window.HomeLayoutPanel;
  if(system)vm.runInNewContext(fs.readFileSync('launcher/system-updates.js','utf8'),context);
  vm.runInNewContext(fs.readFileSync(root?'root-edition/ui/root-settings.js':'launcher/renewal-panel.js','utf8'),context);
- return {panel:window.RenewalPanel,calls,systemCalls,replySystem:value=>systemPending.shift()({returnValue:true,result:value}),failSystem:text=>systemPending.shift()({returnValue:false,errorText:text}),rpcCalls,routing:()=>ids.homeRoutingToggle,routingStatus:()=>ids.homeRoutingStatus,replyHome:value=>homePending.shift()(value),button:()=>root?buttons.find(b=>b.textContent==='Software updates'):ids.renewalUpdates,close:()=>root?buttons.find(b=>b.textContent==='Back to Home').onclick():ids.renewalClose.onclick(),reply:value=>{const done=pending.shift();if(root)done.resolve(value);else done(value);},fail:()=>{const done=pending.shift();if(root)done.reject(Error('offline'));else done(null);},focus:()=>focused};
+ return {panel:window.RenewalPanel,columns:()=>root?buttons.find(b=>b.textContent==='Columns'):ids.homeColumns,focusOther:tag=>{const e=new E(tag);e.focus();return e;},blurToBody:()=>{document.activeElement=document.body;focused=document.body;},layoutChanged:()=>{allowColumns=false;const event={type:'home-layout-change'};(listeners['home-layout-change']||[]).forEach(fn=>fn(event));},calls,systemCalls,replySystem:value=>systemPending.shift()({returnValue:true,result:value}),failSystem:text=>systemPending.shift()({returnValue:false,errorText:text}),rpcCalls,routing:()=>ids.homeRoutingToggle,routingStatus:()=>ids.homeRoutingStatus,replyHome:value=>homePending.shift()(value),button:()=>root?buttons.find(b=>b.textContent==='Software updates'):ids.renewalUpdates,close:()=>root?buttons.find(b=>b.textContent==='Back to Home').onclick():ids.renewalClose.onclick(),reply:value=>{const done=pending.shift();if(root)done.resolve(value);else done(value);},fail:()=>{const done=pending.shift();if(root)done.reject(Error('offline'));else done(null);},focus:()=>focused};
 }
 (async()=>{
+ // Columns can be the old navigation index while a theme's inline Apply owns
+ // actual focus. Fixed-column layouts hide Columns during Apply.
+ for(const root of [false,true]){
+  for(const target of ['button','input']){
+   const h=harness(root);h.panel.open();await tick();
+   h.columns().focus();const actual=h.focusOther(target);
+   h.layoutChanged();assert.equal(h.focus(),actual,'layout change preserves actual inline '+target+' focus in '+(root?'Root':'No-root'));
+  }
+  {
+   const h=harness(root);h.panel.open();await tick();h.columns().focus();h.blurToBody();const actual=h.focus();
+   h.layoutChanged();assert.equal(h.focus(),actual,'body focus without current Columns ownership is not a reason to redirect');
+  }
+  for(const blurred of [false,true]){
+   const h=harness(root,false,blurred);h.panel.open();await tick();h.columns().focus();h.layoutChanged();
+   assert.notEqual(h.focus(),h.columns(),'hidden focused Columns has a visible fallback');
+   assert.equal(h.focus().hidden,false);assert.equal(h.focus().disabled,false);
+  }
+ }
  const home=harness(false);
  home.panel.open();
  assert.equal(home.routing().hidden,true,'a pending status must not appear off');

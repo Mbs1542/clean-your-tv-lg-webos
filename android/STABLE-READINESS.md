@@ -1,11 +1,14 @@
 # Android stable readiness
 
-Status: **Android 0.4.0 / versionCode 13 is selected for the unpublished 1.4.0
-candidate without a preview suffix.** On 2026-10-27 the maintainer explicitly
-accepted emulator verification as sufficient for this release because no
-physical phone is available. Ship within the documented architecture/runtime
-limits and collect community feedback; do not describe missing physical results
-as passed. Public downloads remain the published 0.3.0-preview until publication.
+Status: **Android 0.5.0 / versionCode 15 is selected for the unpublished 1.5.0
+candidate.** Public stable remains Android 0.4.1 / versionCode 14 in release 1.4.1.
+Final candidate package/signature and upgrade verification remain required below.
+
+For the 1.4.0 release, on 2026-10-27 the maintainer explicitly accepted emulator
+verification as sufficient because no physical phone was available. That dated
+decision and its results retain their original scope; they do not certify new
+candidate bytes. Ship within the documented architecture/runtime limits and
+collect community feedback; do not describe missing physical results as passed.
 
 Developer Mode auto-renewal is outside this work. No automatic discovery,
 uninstall UI, extra phone architectures or Google Play publication is required

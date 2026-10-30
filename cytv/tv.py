@@ -20,10 +20,15 @@ def connection_closed(error):
                              close_code=frame.code if frame else None)
 
 
-def tv_context():
+def tv_context(compatible=False):
     # Same LG self-signed local control endpoint used by the existing lgtv.py.
     context = ssl.create_default_context()
     context.check_hostname, context.verify_mode = False, ssl.CERT_NONE
+    if compatible:
+        # Older TVs offer static RSA with AES-GCM instead of ECDHE/DHE.
+        # Keep the default suites first, TLS 1.2 minimum and security level.
+        suites = ':'.join(cipher['name'] for cipher in context.get_ciphers())
+        context.set_ciphers(suites + ':AES128-GCM-SHA256:AES256-GCM-SHA384')
     return context
 
 
@@ -43,9 +48,12 @@ class Inventory:
 
     def icon(self, app):
         data, kind = self.fallback, 'png'
-        for key in ('largeIcon', 'icon'):
+        for key in ('extraLargeIcon', 'largeIcon', 'mediumLargeIcon', 'icon', 'miniicon', 'favicon'):
             try:
-                url = urllib.parse.urlsplit(app.get(key, ''))
+                candidate = app.get(key, '')
+                if not isinstance(candidate, str):
+                    continue
+                url = urllib.parse.urlsplit(candidate)
                 if url.scheme not in ('http', 'https') or url.hostname != self.host or url.username or url.password:
                     continue
                 if url.port not in (None, 80, 443, 3000, 3001):
@@ -57,6 +65,7 @@ class Inventory:
                     kind = 'webp'
                 elif not data.startswith(b'\x89PNG\r\n\x1a\n'):
                     data = self.fallback
+                    continue
                 break
             except (OSError, ValueError):
                 continue
@@ -101,8 +110,13 @@ class SSAP:
                    'manifest': {'manifestVersion': 1, 'appVersion': '1.1', 'permissions': PERMISSIONS}}
         if saved.get('key'):
             payload['client-key'] = saved['key']
-        self.ws = connect(f'wss://{self.host}:3001', ssl=tv_context(), open_timeout=10,
-                          max_size=8 * 1024 * 1024, proxy=None)
+        try:
+            self.ws = connect(f'wss://{self.host}:3001', ssl=tv_context(), open_timeout=10,
+                              max_size=8 * 1024 * 1024, proxy=None)
+        except ssl.SSLError:
+            # Retry only the TLS connection, before sending any pairing data.
+            self.ws = connect(f'wss://{self.host}:3001', ssl=tv_context(compatible=True),
+                              open_timeout=10, max_size=8 * 1024 * 1024, proxy=None)
         try:
             self.progress('Checking TV remote-control access…' if saved.get('key') else 'Accept the remote-control pairing request on the TV if shown…')
             self.ws.send(json.dumps({'id': 'register_0', 'type': 'register', 'payload': payload}))

@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       test_build:
-        description: 'Build draft installers for device feedback; does not finalize or publish a release'
+        description: 'Build draft installers from the selected repository branch for device feedback; no release acceptance or publication'
         type: boolean
         required: false
         default: false
@@ -16,6 +16,7 @@ on:
     branches: [release/next]
 permissions:
   contents: read
+  actions: read
 concurrency:
   group: cytv-candidate-${{ github.ref }}
   cancel-in-progress: true
@@ -42,6 +43,12 @@ jobs:
           with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
               output.write('homebrew_required='+str(selected).lower()+'\n')
           PY
+  validation:
+    needs: scope
+    if: needs.scope.outputs.installers == 'true'
+    uses: ./.github/workflows/tests.yml
+    with:
+      source_sha: ${{ github.sha }}
   android:
     needs: scope
     if: needs.scope.outputs.installers == 'true'
@@ -99,6 +106,7 @@ jobs:
         run: rm -f "$RUNNER_TEMP/android-preview.keystore"
       - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: cytv-android-arm64
           path: dist/android/cytv-android-arm64*
           if-no-files-found: error
@@ -123,6 +131,9 @@ jobs:
             binary: dist/cytv
     runs-on: ${{ matrix.os }}
     steps:
+      - name: Enable long repository paths on Windows
+        if: runner.os == 'Windows'
+        run: git config --global core.longpaths true
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -167,11 +178,13 @@ jobs:
           }
       - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: ${{ matrix.asset }}
           path: ${{ matrix.binary }}
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: ${{ matrix.asset }}-desktop
           path: |
             dist/cytv-macos-*.zip
@@ -224,6 +237,7 @@ jobs:
           PYTHON
       - uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: homebrew-candidate
           path: dist/homebrew-candidate/
           if-no-files-found: error

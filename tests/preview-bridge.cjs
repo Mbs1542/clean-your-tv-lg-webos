@@ -58,6 +58,14 @@ function call(method, payload = {}, service = 'com.cleanyourtv.root.preview.serv
     assert.equal(reply.apps[0].id, 'preview.youtube');
     assert.equal(reply.apps[1].id, 'preview.gallery');
   }
+  context.window.TV_APPS = JSON.parse(fs.readFileSync('preview/reference-apps/inventory.json', 'utf8'));
+  context.window.TV_APPS.referenceApps = true;
+  for (const service of ['com.local.nativehome.service', 'com.cleanyourtv.root.preview.service']) {
+    reply = await call('listApps', {}, service);
+    assert.equal(reply.returnValue, true);
+    assert.equal(reply.apps.length, 10, 'reference inventory must not gain synthetic apps');
+    assert.deepEqual(reply.apps, context.window.TV_APPS.apps);
+  }
   function updater(method) { return call(method, {}, 'com.cleanyourtv.root.updater.service'); }
   context.window.ROOT_VERSION = '0.1.1';
   reply = await updater('restoreProfile');

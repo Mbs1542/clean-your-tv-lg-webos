@@ -70,3 +70,44 @@ in this reply, then:
 
 No terminal commands or manual log collection are needed. The report contains
 app IDs and timing, but no pairing keys or private connection details.
+
+<a id="watchdog-recovery-unpublished-candidate-155"></a>
+
+## Watchdog recovery (Helper 0.6.20, #155)
+
+No-root Helper 0.6.20 distinguishes transient watchdog timeouts from an
+emergency stop. Relay timeout 20 writes `state/watchdog`; the controller writes
+the same latch before killing an unresponsive relay. Either this latch or
+`state/blocked` prevents a new automatic controller/boot launch. A dead controller
+therefore cannot cause an unattended restart loop. Explicit **Start Helper**
+clears both latches, as the deliberate recovery action.
+
+A surviving controller can recover timeout 20 or its own confirmed watchdog
+SIGKILL. Recovery waits for the old process and its stdio to close, runs the
+exclusive relay cleanup with a 2.5-second deadline, then waits 1.5 seconds before
+starting a new relay. At most five attempts are allowed in a rolling ten-minute
+window, measured with the controller's monotonic clock. The watchdog latch stays
+until the replacement reports READY. Cleanup failure/timeout, exhausted attempts,
+Stop, triple Home and other relay failures persistently stop recovery. No
+automatic path deletes `blocked`. Stop is checked during cleanup, before retry,
+and before accepting READY. Routing preferences are re-applied to the new relay;
+late events from the previous relay cannot launch Home or affect its replacement.
+
+Private controller events `worker-watchdog`, `worker-restart` (with attempt),
+`worker-restart-limit`, `worker-start`, `cleanup` and relay READY/EXIT distinguish
+these stages. They are not new exported diagnostic-schema fields. Review/redact
+logs before sharing them. The only new persistent state is the watchdog latch;
+there are no new permissions or network endpoints. Component versions are selected
+at release freeze; a reporter's locally labelled Helper 0.6.20 is not a published
+or accepted build of this change. Rebuild both the native relay and Helper JS;
+ship matching app/service bytes and rebuild embedded installer payloads.
+
+Host regressions run the actual source and compiled controller with a virtual
+clock and synthetic TV/Luna boundaries. The C regression executes the actual
+relay against synthetic evdev and checks that watchdog, Stop and triple Home
+release held keys before ungrabbing. These checks do not establish physical-TV
+compatibility. Candidate acceptance is still required on the reported NANO80T:
+separate standby/wake from cold boot, check Home and arrows/OK/Back/volume/pointer,
+confirm triple Home and manual resume, and record exact build hashes/versions.
+No new TV install or standby, cold boot, audio, OTA or rollback result is claimed.
+The different arrow-key symptom in #96 remains unresolved.

@@ -7,8 +7,13 @@
   try{b=new PalmServiceBridge();b.onservicecallback=function(raw){try{var r=JSON.parse(raw);finish(r.returnValue===true?(r.result===undefined?r.state:r.result):null,r.returnValue===true);}catch(_){finish(null);}};b.call((service||'luna://com.cleanyourtv.updater.service/')+method,JSON.stringify(payload||{}));}catch(_){finish(null);}
  }
  function boot(){if(booted)return;booted=true;var s=document.createElement('script');s.src='app.js';s.onload=function(){
-  // A populated rendered grid is a startup signal, not proof of every TV feature.
-  if(!systemRestore&&!document.querySelector('#tiles .item[data-app-id]'))return;
+  function rendered(){
+  // A rendered grid (including an intentionally empty Home) is a startup signal.
+  if(!systemRestore&&!document.querySelector('#tiles .item[data-app-id]')){
+   if(!window.AppLibrary||window.RootLauncherRendered!==true)return;
+   var library=window.AppLibrary.create(localStorage,window.TV_APPS.apps,window.CONFIG);
+   if(library.showAddApp()||library.visible().length)return;
+  }
   var manifest=new XMLHttpRequest();manifest.open('GET','appinfo.json',true);manifest.timeout=5000;
   manifest.onload=function(){try{
    if(manifest.status!==0&&manifest.status!==200)return;
@@ -23,8 +28,11 @@
     }else rpc('healthy',{version:info.version},function(){});
    }
   }catch(_){} };manifest.onerror=manifest.ontimeout=function(){};manifest.send();
+  }
+  if(window.HomeUIReady)window.HomeUIReady.then(rendered,function(error){if(window.SystemUpdates)systemError(error);});
+  else rendered();
  };document.body.appendChild(s);}
- function use(s,restore,identity){s=HomeData.validate(s);HomeData.save(localStorage,s);if(restore){var previousLanguage=window.HomeI18n&&HomeI18n.preference();['tvhome.order','tvhome.layout','tvhome.language'].forEach(function(key){if(s.settings[key]===undefined)localStorage.removeItem(key);});HomeData.apply(localStorage,s);if(identity)localStorage.setItem(restoreMarker,identity);if(window.HomeI18n&&(HomeI18n.refresh(),HomeI18n.preference())!==previousLanguage)window.location.reload();}window.TV_APPS=s.inventory;window.CONFIG=s.config;if(s.renewal)rpc('restoreHistory',{state:s.renewal},function(){},'luna://com.gathin.tvhome.renewal/');}
+ function use(s,restore,identity,system){s=HomeData.validate(s);HomeData.save(localStorage,s);if(restore){if(!system){localStorage.removeItem('tvhome.columns.v1');localStorage.removeItem('tvhome.theme.choice.v1');localStorage.removeItem('tvhome.theme.trial.v1');}var previousLanguage=window.HomeI18n&&HomeI18n.preference();['tvhome.order','tvhome.layout','tvhome.language'].forEach(function(key){if(s.settings[key]===undefined)localStorage.removeItem(key);});HomeData.apply(localStorage,s);if(identity)localStorage.setItem(restoreMarker,identity);if(window.HomeI18n&&(HomeI18n.refresh(),HomeI18n.preference())!==previousLanguage)window.location.reload();}window.TV_APPS=s.inventory;window.CONFIG=s.config;if(s.renewal)rpc('restoreHistory',{state:s.renewal},function(){},'luna://com.gathin.tvhome.renewal/');}
  function icon(url,cb){if(/^data:image\/(png|jpeg|webp);base64,/.test(url)){cb(null,url);return;}
   // Only packaged relative icon paths; never turn arbitrary remote content into a profile.
   if(typeof url!=='string'||url.indexOf('..')>=0||/^([a-z]+:|\/)/i.test(url)){cb(Error('icon-path'));return;}
@@ -78,7 +86,7 @@
     var identity='system:'+restored.transaction+':'+restored.version+':'+(['verifying-rollback','rolled-back'].indexOf(restored.phase)>=0?'rollback':'install');
     var saved=null;try{saved=HomeData.load(localStorage);}catch(_){}
     var already=saved&&localStorage.getItem(restoreMarker)===identity;
-    use(already?saved:restored.profile,!already,identity);systemRestore=restored;window.RootLauncherRendered=false;boot();
+    use(already?saved:restored.profile,!already,identity,true);systemRestore=restored;window.RootLauncherRendered=false;boot();
    }catch(error){systemError(error);}};
    manifest.onerror=manifest.ontimeout=function(){systemError(Error('Installed Home version unavailable'));};manifest.send();
   }).catch(function(error){if(error.unavailable===true)legacy();else systemError(error);});

@@ -61,6 +61,17 @@ class SetupTests(unittest.TestCase):
 
 
 class DeployTests(unittest.TestCase):
+    def setUp(self):
+        provision=load('provision')
+        modules=patch.dict(sys.modules,{'provision':provision})
+        modules.start();self.addCleanup(modules.stop)
+        def bus(method):
+            if method=='home-read':return {'returnValue':True,'settings':{'defaultApps':{'home':'com.webos.app.home'}}}
+            if method=='home-profiles':return {'returnValue':True,'profiles':{'defaultApps':{'categories':{'home':'com.webos.app.home'}},'idleApp':{'appId':'com.webos.app.home','support':True}}}
+            self.fail('Unexpected bus mutation: '+method)
+        context=patch.object(provision,'rpc',side_effect=bus)
+        context.start();self.addCleanup(context.stop)
+
     def test_device_node_probe_rejects_legacy_runtime(self):
         import subprocess
         deploy = load('deploy')

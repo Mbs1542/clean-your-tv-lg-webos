@@ -24,7 +24,7 @@ def tracked_files(prefix):
     required = {'native/app': ['native/app/helper-entry.js', 'native/app/state-permissions.js', 'native/app/home-control.js', 'native/app/websocket.js'],
                 'renewal-service': ['renewal-service/home-control.js', 'renewal-service/diagnostics.js', 'renewal-service/ca-bundle.crt', 'renewal-service/ca-LICENSE.txt'],
                 'updater-service': ['updater-service/ca-bundle.crt', 'updater-service/ca-LICENSE.txt'],
-                'launcher': ['launcher/system-updates.js', 'launcher/helper-control.js', 'launcher/release-notes.js', 'launcher/app-library.js', 'launcher/i18n.js', 'launcher/catalogs.js', 'launcher/i18n.css',
+                'launcher': ['launcher/system-updates.js', 'launcher/helper-control.js', 'launcher/release-notes.js', 'launcher/app-library.js', 'launcher/i18n.js', 'launcher/catalogs.js', 'launcher/i18n.css', 'launcher/theme-defaults.css', 'launcher/theme-policy.js', 'launcher/theme-runtime.js', 'launcher/home-layout.js', 'launcher/layout-panel.js', 'launcher/settings-categories.js', 'launcher/layout-panel.css',
                              'launcher/fonts/outfit-300.ttf', 'launcher/fonts/outfit-400.ttf',
                              'launcher/fonts/outfit-500.ttf', 'launcher/fonts/outfit-700.ttf',
                              'launcher/fonts/NotoSans.ttf', 'launcher/fonts/NotoSans-OFL.txt',
@@ -33,6 +33,8 @@ def tracked_files(prefix):
                              'launcher/fonts/NotoSansSC.ttf', 'launcher/fonts/NotoSansSC-OFL.txt',
                              'launcher/fonts/NotoSansTC.ttf', 'launcher/fonts/NotoSansTC-OFL.txt'],
                 'native/service': ['native/service/app-inventory.js']}
+    if prefix == 'launcher':
+        required[prefix] += ['launcher/' + name for name in ['theme-data.js', 'theme-store.js', 'theme-manager.js', 'theme-receiver.js', 'theme-panel.js', 'theme-panel.css', 'theme-locales.js', 'builtin-theme-files.json'] + json.loads((ROOT / 'launcher/builtin-theme-files.json').read_text())]
     if prefix == 'native/app':
         required[prefix] += [p.relative_to(ROOT).as_posix() for p in (ROOT/'native/app/vendor/ws-legacy').rglob('*') if p.is_file()]
     for name in sorted(set(result.stdout.splitlines()) | set(required.get(prefix, []))):
@@ -52,10 +54,15 @@ def pack_app(appfiles, servicefiles, architecture='all', helper=False):
         appfiles = compile_web(appfiles)
     app, version = info['id'], info['version']
     service = json.loads(servicefiles['services.json'])['id']
+    if service == 'com.gathin.tvhome.renewal':
+        from scripts.theme_receiver import inject
+        servicefiles = inject(servicefiles)
     files = {'usr/palm/applications/' + app + '/' + n: b for n, b in appfiles.items()}
     files.update({'usr/palm/services/' + service + '/' + n: b for n, b in servicefiles.items()})
     files['usr/palm/packages/' + app + '/packageinfo.json'] = json.dumps({
         'id': app, 'version': version, 'app': app, 'services': [service]}).encode()
+    if service == 'com.gathin.tvhome.renewal':
+        files['usr/palm/services/' + service + '/state/home-control/.keep'] = b''
     executables = set()
     if helper:
         # The service sandbox cannot import modules from the app directory.

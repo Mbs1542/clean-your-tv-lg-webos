@@ -135,7 +135,10 @@ class LocalDevice:
         import deploy
         from updater.bootstrap import verify_bundle
         deploy.require_device();deploy.require_node()
-        if product:require_product_abi()
+        if product:
+            require_product_abi()
+            from provision import require_home_interfaces
+            require_home_interfaces()
         self.payload=Path(payload)
         deploy.verify_bundle(self.payload/'root')
         verify_bundle(self.payload/'root-updater')
@@ -179,12 +182,13 @@ class LocalDevice:
         if result['state']=='installed' and versions is not None:result['versions']=versions
         return result
 
-    def verify_resume(self, payload, submission):
+    def verify_snapshot(self, payload, submission, *, inventories=None):
+        """Authenticate retained bytes without admitting installation effects."""
         from install_driver import _verified_payload,root_review_binding
         options=submission.get('options')
         if not isinstance(options,dict) or set(options)!={'migrate','prepare_supervisor'} or any(type(v) is not bool for v in options.values()):raise ValueError('unknown_snapshot_options')
         payload=Path(payload)
-        inventories=_verified_payload(payload,options['prepare_supervisor'])
+        if inventories is None:inventories=_verified_payload(payload,options['prepare_supervisor'])
         if submission.get('action') not in ('install','remove'):raise ValueError('unknown_snapshot_action')
         if root_review_binding(payload,inventories)!=submission.get('root_binding'):raise ValueError('reviewed_root_code_changed')
         if sha(safe_bytes(payload/'root-updater/bundle.json',uid=os.geteuid()))!=submission.get('worker_sha256'):raise ValueError('worker_snapshot_changed')
@@ -193,7 +197,11 @@ class LocalDevice:
         if not isinstance(static,dict) or set(static)!=expected:raise ValueError('static_snapshot_required')
         for name,digest in static.items():
             if sha(safe_bytes(payload/'root'/name,uid=os.geteuid()))!=digest:raise ValueError('static_snapshot_changed')
-        self.preflight(payload,options,product=submission['action']=='install')
+        return options
+
+    def verify_resume(self, payload, submission):
+        options=self.verify_snapshot(payload,submission)
+        self.preflight(Path(payload),options,product=submission['action']=='install')
         return options
 
     def continuation_ready(self, record, submission, store):

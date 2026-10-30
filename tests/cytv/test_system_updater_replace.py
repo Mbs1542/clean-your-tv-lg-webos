@@ -69,7 +69,7 @@ class FlowTests(unittest.TestCase):
     def make_bundle(self,path):
         import hashlib
         data={name:b'' for name in ['installation.py','package_identity.py','system_updater/core.py','system_updater/device.py','system_updater/support/store.py']}
-        data['setup-system-updater.py']=b'# trusted setup';data['system-updater.ipk']=json.dumps({'usr/palm/applications/'+self.ns['APP']+'/appinfo.json':json.dumps({'id':self.ns['APP'],'version':'1.1.1'})}).encode()
+        data['setup-system-updater.py']=b'# trusted setup';data['system-updater.ipk']=json.dumps({'usr/palm/applications/'+self.ns['APP']+'/appinfo.json':json.dumps({'id':self.ns['APP'],'version':'1.1.2'})}).encode()
         for name,raw in data.items():
             p=path/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(raw);p.chmod(0o600)
         meta={'schema':1,'supervisor':1,'health_lock_wait_seconds':10,'files':{n:hashlib.sha256(b).hexdigest() for n,b in data.items()}};(path/'bundle.json').write_text(json.dumps(meta));(path/'bundle.json').chmod(0o600);return meta
@@ -120,12 +120,12 @@ class FlowTests(unittest.TestCase):
         return {'completed':True,'event':{'details':{'packageId':app}}}
     def provision(self,bundle,baseline):
         self.calls.append('provision');self.make_system(self.system,bundle)
-        self.appdir.mkdir(parents=True,exist_ok=True);(self.appdir/'version').write_text('1.1.1')
+        self.appdir.mkdir(parents=True,exist_ok=True);(self.appdir/'version').write_text('1.1.2')
         if self.fault=='provision':raise KeyboardInterrupt('new bootstrap in progress')
         return {'installed':True}
     def resume(self,bundle):self.calls.append('resume');self.verify_bundle(bundle);return {'installed':True}
-    def run_replacement(self,bundle=None):
-        return self.ns['replace'](bundle or self.bundle,self.setup,self.cleanup,self.manager,self.store,self.ownership,self.remove,lambda t,a:t.get('completed') is True and t['event']['details']['packageId']==a,lambda owner:None,system=self.system,source_sha='a'*64)
+    def run_replacement(self,bundle=None,source_sha='a'*64):
+        return self.ns['replace'](bundle or self.bundle,self.setup,self.cleanup,self.manager,self.store,self.ownership,self.remove,lambda t,a:t.get('completed') is True and t['event']['details']['packageId']==a,lambda owner:None,system=self.system,source_sha=source_sha)
     def test_success_captures_first_and_removes_only_supervisor(self):
         result=self.run_replacement();self.assertTrue(result['installed']);self.assertTrue(result['profile_storage_untouched']);self.assertEqual(self.removals,1)
         self.assertLess(self.calls.index('capture'),self.calls.index('disable'));self.assertLess(self.calls.index('sdk-remove'),self.calls.index('archive'))
@@ -199,6 +199,144 @@ class FlowTests(unittest.TestCase):
         with self.assertRaises(ValueError):self.run_replacement()
         self.assertEqual(self.removals,0)
 
+class Retained111FlowTests(FlowTests):
+    """Run interruption/integrity coverage against the retained public owner."""
+    def setUp(self):
+        super().setUp()
+        (self.appdir/'version').write_text('1.1.1')
+
+    def check_terminal_profile_archive(self,phase):
+        saved=Store(self.system,uid=os.getuid());profile='profile-'+'c'*32
+        saved.write(profile,{'layout':{'apps':['synthetic']}})
+        saved.write('transaction',{'edition':'root','phase':phase,'homeResumePhase':phase,'profile':profile})
+        original_profile=(self.system/(profile+'.json')).read_bytes()
+        original_transaction=(self.system/'transaction.json').read_bytes()
+        result=self.run_replacement();archive=Path(result['archive'])
+        self.assertEqual((archive/(profile+'.json')).read_bytes(),original_profile)
+        self.assertEqual((archive/'transaction.json').read_bytes(),original_transaction)
+        self.assertEqual(self.profile.read_bytes(),b'personal layout')
+        self.assertEqual((self.appdir/'version').read_text(),'1.1.2')
+
+    def test_completed_transaction_profile_is_archived_unchanged(self):
+        self.check_terminal_profile_archive('complete')
+
+    def test_rolled_back_transaction_profile_is_archived_unchanged(self):
+        self.check_terminal_profile_archive('rolled-back')
+
+    def test_unfinished_home_resume_refuses_before_reservation(self):
+        Store(self.system,uid=os.getuid()).write('transaction',{'edition':'root','phase':'complete','homeResumePhase':'pending'})
+        with self.assertRaisesRegex(ValueError,'existing System recovery'):
+            self.run_replacement()
+        self.assertEqual(self.calls,[]);self.assertEqual(self.removals,0)
+        self.assertIsNone(self.store.read('system-replacement'))
+        self.assertIsNone(self.ownership.status())
+
+    def test_unrecognized_owners_refuse_before_reservation(self):
+        for version in ('1.0.0','1.1.2','1.1.10','2.0.0','unknown'):
+            with self.subTest(version=version):
+                (self.appdir/'version').write_text(version)
+                with self.assertRaisesRegex(ValueError,'System Updater'):
+                    self.run_replacement()
+                self.assertEqual(self.calls,[]);self.assertEqual(self.removals,0)
+                self.assertIsNone(self.store.read('system-replacement'))
+                self.assertIsNone(self.ownership.status())
+
+class HistoricalReplacementTests(FlowTests):
+    def historical(self):
+        import shutil
+        self.run_replacement()
+        job=self.store.read('system-replacement');root=Path(self.store.root)/('system-replacement-'+job['id'])
+        historical_bundle=root/'bundle'
+        raw=json.loads((historical_bundle/'system-updater.ipk').read_bytes())
+        key='usr/palm/applications/'+self.ns['APP']+'/appinfo.json'
+        raw[key]=json.dumps({'id':self.ns['APP'],'version':'1.1.1'})
+        (historical_bundle/'system-updater.ipk').write_text(json.dumps(raw))
+        meta=json.loads((historical_bundle/'bundle.json').read_bytes())
+        meta['files']['system-updater.ipk']=self.ns['digest']((historical_bundle/'system-updater.ipk').read_bytes())
+        (historical_bundle/'bundle.json').write_text(json.dumps(meta))
+        job['bundle_sha256']=self.ns['digest']((historical_bundle/'bundle.json').read_bytes())
+        job['source_sha256']='d'*64;self.store.write('system-replacement',job)
+        shutil.rmtree(self.system);self.make_system(self.system,historical_bundle)
+        (self.appdir/'version').write_text('1.1.1')
+        self.store.write('operation',{'schema':1,'id':'e'*32,'owner':'system-update','journal':'transaction.json','stage':'complete','terminal':True})
+        self.calls=[];self.removals=0
+        return job,root
+    def test_completed_historical_owner_can_start_new_verified_replacement(self):
+        old,root=self.historical();raw=(Path(self.store.root)/'system-replacement.json').read_bytes()
+        self.assertTrue(self.run_replacement()['installed'])
+        self.assertEqual((root/'completed-replacement.json').read_bytes(),raw)
+        self.assertNotEqual(self.store.read('system-replacement')['id'],old['id'])
+        self.assertTrue(Path(old['archive']).is_dir());self.assertEqual(self.removals,1)
+    def test_historical_proof_damage_never_retires_or_disables(self):
+        for damage in ('archive','bundle','baseline','owner','foreign-active','foreign-aborted','collision','unfinished','source-only'):
+            with self.subTest(damage=damage):
+                self.doCleanups();self.setUp();old,root=self.historical()
+                if damage=='archive':(Path(old['archive'])/'registration.json').write_text('{}')
+                elif damage=='bundle':(root/'bundle/bundle.json').write_text('{}')
+                elif damage=='baseline':(root/'baseline/baseline.json').write_text('{}')
+                elif damage=='owner':(self.appdir/'version').write_text('1.1.2')
+                elif damage=='foreign-active':
+                    op=self.store.read('operation');op['terminal']=False;self.store.write('operation',op)
+                elif damage=='foreign-aborted':
+                    op=self.store.read('operation');op['stage']='aborted';self.store.write('operation',op)
+                elif damage=='collision':(root/'completed-replacement.json').write_text('{}')
+                elif damage=='unfinished':old['stage']='verify';self.store.write('system-replacement',old)
+                else:old['bundle_sha256']=self.ns['digest']((self.bundle/'bundle.json').read_bytes());self.store.write('system-replacement',old)
+                before=(Path(self.store.root)/'system-replacement.json').read_bytes()
+                with self.assertRaises((ValueError,RuntimeError,KeyError)):self.run_replacement()
+                self.assertEqual((Path(self.store.root)/'system-replacement.json').read_bytes(),before)
+                self.assertEqual((root/'completed-replacement.json').exists(),damage=='collision');self.assertNotIn('disable',self.calls)
+    def test_interruption_before_and_after_atomic_retirement_is_resumable(self):
+        from unittest.mock import patch
+        for when in ('before','after'):
+            with self.subTest(when=when):
+                self.doCleanups();self.setUp();old,root=self.historical()
+                rename=self.ns['os'].rename
+                def interrupted(source,target):
+                    if Path(target).name=='completed-replacement.json':
+                        if when=='after':rename(source,target)
+                        raise KeyboardInterrupt('retirement response lost')
+                    return rename(source,target)
+                with patch.object(self.ns['os'],'rename',side_effect=interrupted):
+                    with self.assertRaises(KeyboardInterrupt):self.run_replacement()
+                self.assertEqual(self.removals,0)
+                self.assertTrue(self.run_replacement()['installed']);self.assertEqual(self.removals,1)
+                self.assertTrue((root/'completed-replacement.json').is_file())
+
+    def test_retirement_startup_rejects_changed_coordinator_source(self):
+        from unittest.mock import patch
+        old,root=self.historical();rename=self.ns['os'].rename
+        def interrupted(source,target):
+            rename(source,target)
+            if Path(target).name=='completed-replacement.json':raise KeyboardInterrupt('archive committed before new active journal')
+        with patch.object(self.ns['os'],'rename',side_effect=interrupted):
+            with self.assertRaises(KeyboardInterrupt):self.run_replacement()
+        with self.assertRaises(ValueError):self.run_replacement(source_sha='f'*64)
+        self.assertEqual(self.removals,0)
+        self.assertTrue(self.run_replacement()['installed'])
+
+    def test_plan_pending_and_active_write_interruptions_pin_source_and_resume(self):
+        from unittest.mock import patch
+        for point in ('plan-after','pending-after','active-before','active-after'):
+            with self.subTest(point=point):
+                self.doCleanups();self.setUp();old,root=self.historical()
+                lease=self.store.read('operation');write=Store.write
+                def interrupted(store,name,value):
+                    hit=(point=='plan-after' and name=='next-replacement' or point=='pending-after' and name=='pending-replacement'
+                         or point.startswith('active-') and name=='system-replacement' and value.get('stage')=='capture')
+                    if hit and point=='active-before':raise KeyboardInterrupt('before active journal')
+                    result=write(store,name,value)
+                    if hit:raise KeyboardInterrupt('durable write before response')
+                    return result
+                with patch.object(Store,'write',new=interrupted):
+                    with self.assertRaises(KeyboardInterrupt):self.run_replacement()
+                self.assertTrue((Path(self.store.root)/'system-replacement.json').is_file())
+                self.assertEqual(self.removals,0)
+                if point=='plan-after':self.assertEqual(self.store.read('operation'),lease)
+                with self.assertRaises(ValueError):self.run_replacement(source_sha='f'*64)
+                self.assertEqual(self.removals,0)
+                self.assertTrue(self.run_replacement()['installed']);self.assertEqual(self.removals,1)
+
 class BoundaryTests(unittest.TestCase):
     def test_real_device_installed_rejects_own_system_app(self):
         name='replacement_original_protocol'
@@ -252,7 +390,7 @@ class BoundaryTests(unittest.TestCase):
                 remote.run.side_effect=RuntimeError('preflight rejected before changes')
                 with self.assertRaises(UserError):installer.replace_system_updater()
                 self.assertIsNone(store.pending(profile));python.assert_called_once_with(operations.ROOT_STATE)
-                remote.run.side_effect=None;remote.run.return_value=json.dumps({'installed':True,'version':'1.1.1','root_unchanged':True,'home_unchanged':True,'profile_storage_untouched':True})
+                remote.run.side_effect=None;remote.run.return_value=json.dumps({'installed':True,'version':'1.1.2','root_unchanged':True,'home_unchanged':True,'profile_storage_untouched':True})
                 self.assertTrue(installer.replace_system_updater()['installed']);self.assertIsNone(store.pending(profile))
             remote.upload.assert_not_called()
 

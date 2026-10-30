@@ -1,6 +1,6 @@
 # Update Clean Your TV
 
-> Unpublished 1.4.1 candidate: see the [release scope and pending acceptance](RELEASE-1.4.1.md). Published downloads and historical acceptance below remain scoped to 1.4.0.
+> For 1.5.0 changes, known limitations and scoped acceptance, see the [release notes](RELEASE-1.5.0.md). Historical acceptance retains its original scope.
 
 **Existing Root installations:** published 1.4.0 is incompatible with the original
 1.3.0 System Updater destination inventory. Do not force that update or edit
@@ -102,12 +102,16 @@ Updater preparation is explicit; product updates retain their signed complete-se
 and recovery requirements. Deleting Installer alone leaves the product installed.
 [Candidate setup and recovery](INSTALL.md#candidate-on-tv-root-installation).
 
-### Unreleased availability correction (#108 / #109)
+<a id="unreleased-availability-correction-108--109"></a>
 
-The next candidate checks the installed edition's supervisor and suppresses
+### Published availability correction (#108 / #109)
+
+Published 1.4.1 checks the installed edition's supervisor and suppresses
 same-component-version offers. Network, permission and state failures preserve
-the last confirmed badge; they do not select another feed. Public delivery and
-physical-TV confirmation remain pending. See the [1.4.1 candidate scope and gates](RELEASE-1.4.1.md) and [current acceptance checklist](https://github.com/Razdva122/clean-your-tv-lg-webos/pull/114).
+the last confirmed badge; they do not select another feed. Physical current,
+newer, checking, failed and supervisor-absent cases remain unverified. See the
+[delivered 1.4.1 scope](RELEASE-1.4.1.md) and its
+[recorded acceptance and limits](RELEASE-1.4.1-ACCEPTANCE.md).
 
 ## Legacy Home-only updates (through v1.0.3)
 
@@ -133,11 +137,17 @@ the reference above. Current release publication instructions are in the
 <!-- Anchors retained for links to earlier guide headings. -->
 <a id="updates-and-recovery--110"></a>
 
-## Candidate 1.4.1 Root supervisor prerequisite
+<a id="candidate-141-root-supervisor-prerequisite"></a>
 
-Unpublished Root 1.4.1 updates require System Updater 1.1.1. Existing 1.1.0
-installations must use the explicit [supervisor-only replacement](RECOVERY.md#replace-the-root-system-updater-candidate)
-with a complete candidate installer before on-TV updating. New signed Root offers
-reject the old supervisor; a failed check is not permission to bypass its checks.
-The fixed service waits briefly for the same update's ownership lock when
-accepting actual launcher readiness, without extending its health deadline.
+## Candidate 1.5.0 Root supervisor prerequisite
+
+Release 1.5.0 provides System Updater 1.1.2 for the updated
+Root receiver/runtime flow. Existing 1.1.0 and 1.1.1 installations can use the
+explicit [supervisor-only replacement](RECOVERY.md#replace-the-root-system-updater-candidate)
+with a complete matching 1.5.0 installer before on-TV updating. That command
+verifies the retained owner/code, archives the old supervisor state and preserves
+Root and Home preferences. Do not modify retained state to force admission.
+Each supported transition still needs matching artifact/device acceptance.
+Published 1.4.1 used System Updater 1.1.1; its historical acceptance does not certify
+this candidate. The fixed readiness service retains its bounded ownership-lock
+wait without extending the launcher's health deadline.

@@ -538,7 +538,7 @@ class Device:
             spec=importlib.util.spec_from_file_location('system_root_provision',self.root_updater/'code/provision.py');provision=importlib.util.module_from_spec(spec);spec.loader.exec_module(provision)
             snapshot=json.loads(safe_bytes(self.root_state/'ls2-provision-snapshot.json',limit=65536,uid=self.uid))
             if snapshot.get('phase') is not None:raise ValueError('Root removal in progress')
-            original={key:snapshot['files'][str(path)]['original'] for key,path in provision.FILES.items()};planned=provision.plan(original)
+            original={key:snapshot['files'][str(path)]['original'] for key,path in provision.FILES.items()};planned=provision.plan(original,provision.snapshot_capabilities(snapshot)) if 'capabilities' in snapshot else provision.plan(original)
             for key,path in provision.FILES.items():
                 record=snapshot['files'][str(path)];current=safe_bytes(path,limit=65536,uid=self.uid)
                 if digest(planned[key])!=record['installed_sha256'] or digest(current) not in (record['original_sha256'],record['installed_sha256']):raise ValueError('Root service registration conflict')
@@ -590,8 +590,16 @@ class Device:
         for entry in Path('/proc').iterdir():
             if not entry.name.isdigit():continue
             try:
-                args=(entry/'cmdline').read_bytes().split(b'\0')
-                if any(a.decode('utf8') in (target,target+'/service.js') for a in args if a):processes.append((int(entry.name),self._process_start(int(entry.name))))
+                pid=int(entry.name);start=self._process_start(pid)
+                args=[a for a in (entry/'cmdline').read_bytes().split(b'\0') if a]
+                matches=any(a.decode('utf8') in (target,target+'/service.js') for a in args)
+                # webos-service rewrites argv to its bus ID. Require all fixed
+                # process bindings before treating that title as our Root worker.
+                if not matches and target==str(self.root_state/'service') and args==[b'com.cleanyourtv.root.preview.service']:
+                    matches=(entry.stat().st_uid==self.uid and os.readlink(entry/'cwd')==target and os.readlink(entry/'exe')=='/usr/bin/node')
+                if matches:
+                    if self._process_start(pid)!=start:raise ValueError('Service process changed during inspection')
+                    processes.append((pid,start))
             except FileNotFoundError:continue
         for pid,start in processes:self._signal_checked(pid,start,signal.SIGSTOP)
         for pid,start in processes:self._signal_checked(pid,start,signal.SIGKILL)

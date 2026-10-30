@@ -76,6 +76,6 @@ if(e[i].type==1&&e[i].code==412){if(e[i].value==1)puts("BACK_DOWN");if(e[i].valu
 int a=filter_event(&f,e+i,ms());if(a==RELEASE){reason=27;stop=1;break;}if(a==OPEN_HOME){puts("HOME");continue;}if(a==DROP)continue;if(write(out,e+i,sizeof e[i])!=sizeof e[i]){reason=28;stop=1;break;}}}
  }
  /* Stop emitting before ungrabbing the physical remote. */
- if(reason!=25){int flag=open("/media/developer/apps/usr/palm/applications/com.local.nativehome/state/blocked",O_WRONLY|O_CREAT|O_TRUNC,0644);if(flag>=0){write(flag,"stopped",7);close(flag);}}
+ if(reason!=25){const char *latch=reason==20?"/media/developer/apps/usr/palm/applications/com.local.nativehome/state/watchdog":"/media/developer/apps/usr/palm/applications/com.local.nativehome/state/blocked";int flag=open(latch,O_WRONLY|O_CREAT|O_TRUNC,0644);if(flag>=0){write(flag,"stopped",7);close(flag);}}
  release_keys(out);ioctl(in,GRAB,0);close(in);close(out);printf("EXIT %d\n",reason);return reason;
 }

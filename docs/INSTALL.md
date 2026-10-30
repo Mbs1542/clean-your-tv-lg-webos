@@ -15,6 +15,8 @@ See [compatibility](COMPATIBILITY.md) for tested TVs and remaining limits.
 Root setup does not obtain root or flash firmware. Do not enable Developer Mode
 over an existing rooted setup, or run Root routing and No-root Helper together.
 [Compare everyday controls and limits](EDITIONS.md).
+Root also requires working Settings Service and System Profile Home interfaces
+(`com.webos.service.systemprofile`); root access alone does not establish compatibility.
 
 ## 2. Prepare your TV and computer
 

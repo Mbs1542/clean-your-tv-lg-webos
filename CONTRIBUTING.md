@@ -28,7 +28,7 @@ as the maintained checkout.
 
 Write technical and developer documentation in English. Maintain the twelve localized
 user guides under `docs/i18n/` when changing user-facing setup or controls.
-For every release candidate, complete the [documentation pass](docs/RELEASE-FLOW.md#update-documentation-for-every-candidate),
+For every release candidate, complete the affected parts of the [documentation pass](docs/RELEASE-FLOW.md#update-documentation-for-every-candidate),
 record reviewed guides and verification in the release PR, and keep candidate
 instructions separate from published downloads and historical hardware evidence.
 
@@ -56,6 +56,10 @@ collect the inventory, select the version and complete the release PR checks;
 see [Release integration flow](docs/RELEASE-FLOW.md). Shipping notices are posted
 automatically only after verified publication.
 
+## Contribute a theme
+
+Use the [theme contribution walkthrough](docs/development/CONTRIBUTING-THEMES.md) to create, preview, test, package and submit an independently hosted theme. The [Showcase reference](showcase/README.md) defines registry and review requirements. Theme submission PRs also target `release/next`; they do not publish a release by themselves.
+
 ## Documentation organization
 
 Keep README a short user entry point. Put installation, use, recovery and
@@ -71,3 +75,15 @@ and obtain explicit user consent before publication. Authorized maintainer QA on
 maintainer/project-owned test devices may publish redacted technical acceptance
 records without per-report confirmation. Privacy and scope limits apply to both;
 see [AGENTS.md](AGENTS.md#installation-results-and-user-consent).
+
+## Reuse release evidence
+
+Build a versioned candidate before physical acceptance, then use
+`python3 scripts/release-flow.py pin-build --run-id RUN_ID` to select its successful
+run/attempt. Commit observations with the matching `acceptance_build` token and
+artifact hashes. Evidence/documentation edits preserve equivalent pinned builds;
+product/build input changes require a new build and affected acceptance. Use
+`acceptance-report` to review scenario scope and `sync-record` to regenerate the
+candidate PR's machine-owned block. See the scoped acceptance and rollout rules
+in [Release integration flow](docs/RELEASE-FLOW.md). Do not rerun unchanged manual
+cases when their artifact hashes and device/state preconditions still match.

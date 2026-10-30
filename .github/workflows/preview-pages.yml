@@ -43,8 +43,9 @@ jobs:
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - name: Test
         run: scripts/test.sh preview
-      - name: Build static preview
-        run: python3 scripts/preview.py --build build/preview
+      - name: Build preview and theme showcase in one Pages artifact
+        run: |
+          python3 scripts/preview.py --build build/preview --showcase
       - uses: actions/upload-pages-artifact@v4
         with:
           path: build/preview

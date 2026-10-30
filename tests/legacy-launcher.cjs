@@ -138,10 +138,12 @@ const profiles = ['modern', 'no-inset', 'no-inset-or-es2015'];
         assert.deepEqual(await page.locator('#renewalPanel').evaluate(el => {
           const r = el.getBoundingClientRect(); return [r.x, r.y, r.width, r.height];
         }), [0, 0, 1920, 1080]);
+        await page.locator('[data-category=language]').click();
         await page.locator('#homeLanguage').click();
         assert.deepEqual(await page.locator('#languagePicker').evaluate(el => {
           const r = el.getBoundingClientRect(); return [r.x, r.y, r.width, r.height];
         }), [0, 0, 1920, 1080]);
+        await page.keyboard.press('Escape');
         await page.keyboard.press('Escape');
         await page.keyboard.press('Escape');
         await page.locator('#tiles .add-app').dispatchEvent('click');

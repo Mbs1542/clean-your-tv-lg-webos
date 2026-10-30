@@ -15,6 +15,7 @@ function controller({automatic=true,blocked=false}={}){
   cb({payload:{returnValue:true,state:{enabled:true,schema:3}}});
  };}
  const context={Buffer,Date:{now:()=>now},require(n){
+  if(n==='./state-permissions')return(d,log,initialize)=>{if(initialize)files.set(dir+'control.json','{}');return true;};
   if(n==='fs')return fakefs;
   if(n==='child_process')return{spawn(){worker=new E();worker.stdout=new E();worker.stderr=new E();worker.stdin=new E();worker.stdin.write=c=>{if(c==='P')worker.stdout.emit('data',Buffer.from('P\n'));};worker.stdin.end=()=>{};worker.kill=()=>{throw Error('unexpected watchdog')};return worker;}};
   if(n==='/usr/lib/node_modules/webos-service')return Service;

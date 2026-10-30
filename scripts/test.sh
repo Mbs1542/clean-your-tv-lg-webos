@@ -11,6 +11,7 @@ has() { [[ "$selected" == *" $1 "* ]]; }
 if has tv; then
 npm run test:compat
 npm run lint:compat
+npm run test:themes
 node tests/helper-compat.cjs
 for test in tests/apps/*.cjs; do
   if [[ "$test" != *"/ui.cjs" ]]; then node "$test"; fi
@@ -30,9 +31,10 @@ node tests/helper-service-status.cjs
 node tests/helper-published-ui.cjs
 node tests/home-control.cjs
 node tests/home-control-bridge.cjs
+node tests/home-control-jail.cjs
 node tests/resume.cjs
 node tests/controller-resume.cjs
-node --test tests/controller-resume-home.cjs
+node --test tests/controller-resume-home.cjs tests/controller-watchdog.cjs
 node tests/controller-home.cjs
 for test in native/prototype/test-*.cjs; do node "$test"; done
 mkdir -p build/tests
@@ -42,6 +44,9 @@ build/tests/test-startup
 cc -std=c99 -Wall -Wextra -Werror native/prototype/test_relay_startup.c native/prototype/filter.c -o build/tests/test-relay-startup
 build/tests/test-relay-startup > build/tests/relay-startup.log
 tail -1 build/tests/relay-startup.log
+cc -std=c99 -Wall -Wextra -Werror native/prototype/test_relay_watchdog.c native/prototype/filter.c -o build/tests/test-relay-watchdog
+build/tests/test-relay-watchdog > build/tests/relay-watchdog.log
+tail -1 build/tests/relay-watchdog.log
 build/tests/test-filter
 for file in launcher/*.js native/app/*.js native/service/*.js renewal-service/*.js; do node --check "$file"; done
 
@@ -88,6 +93,8 @@ if has android; then
   python3 -m unittest discover -s android/tests
 fi
 if has preview; then
+  for test in tests/showcase/{registry,submission-security,site,remote}.cjs; do node "$test"; done
   node tests/preview-bridge.cjs
+  node tests/preview-themes-ui.cjs
   python3 -m unittest discover -s tests -p test_preview.py
 fi

@@ -40,6 +40,7 @@
   }
   function close() {
     clearTimeout(timer); panel.hidden = true;
+    if (window.ThemeRuntime) window.ThemeRuntime.resume('legacy-root-updates');
     if (onClose) { var callback = onClose; onClose = null; callback(); }
     else if (previous && previous.focus) previous.focus();
   }
@@ -211,6 +212,7 @@
     }, true);
   }
   function legacyOpen(options) {
+    if (window.ThemeRuntime) window.ThemeRuntime.suspend('legacy-root-updates');
     options = options || {}; if (!panel) build();
     if (panel.hidden) previous = document.activeElement;
     onClose = options.onClose || null;

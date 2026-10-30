@@ -15,6 +15,14 @@ function harness(edition, {unavailable=false, corrupt=false, versionMismatch=fal
   vm.runInNewContext(fs.readFileSync(edition==='root'?'root-edition/ui/root-profile.js':'launcher/profile-bootstrap.js','utf8'),ctx);
   return {window,ctx,calls,scripts,memory,errors};
 }
+async function startAppearance(h) {
+  const context={Promise,setTimeout,clearTimeout,Date,CustomEvent:function(){},requestAnimationFrame:fn=>fn(),document:{dispatchEvent(){}},localStorage:h.ctx.localStorage,
+    ThemeRuntime:{reset(){},apply(){}},ThemeStore:{get:async()=>null},ThemeData:{
+      request:async url=>url==='appinfo.json'?{version:'1.6.1'}:{schemaVersion:1,themes:[{id:'builtin:alpine'}]},decode:JSON.stringify,
+      load:async()=>({id:'builtin:alpine'}),prepare:async pack=>({manifest:{id:pack.id},assetHandles:{}}),dispose(){}}};
+  vm.runInNewContext(fs.readFileSync('launcher/theme-manager.js','utf8'),context);
+  await context.ThemeManager.start();return context.ThemeManager.current();
+}
 (async()=>{
   for(const edition of ['no-root','root']) {
     let h=harness(edition);await tick();
@@ -37,6 +45,11 @@ function harness(edition, {unavailable=false, corrupt=false, versionMismatch=fal
     h.memory.set('tvhome.language','de');
     h=harness(edition,{storage:h.memory});await tick();
     assert.equal(h.memory.get('tvhome.language'),'de',edition+' must restore a transaction only once and preserve later user settings');
+    h=harness(edition,{storage:new Map([['tvhome.columns.v1','{"version":1,"columns":8}']])});await tick();
+    assert.equal(h.memory.get('tvhome.columns.v1'),'{"version":1,"columns":8}',edition+' System snapshot does not encode or replace the live Columns preference');
+    h.memory.set('tvhome.columns.v1','{"version":1,"columns":2}');
+    h=harness(edition,{storage:h.memory});await tick();
+    assert.equal(h.memory.get('tvhome.columns.v1'),'{"version":1,"columns":2}',edition+' repeated startup preserves a post-restore column choice');
     h=harness(edition,{noBackup:true});await tick();
     assert.equal(h.scripts.length,1,edition+' null independent snapshot must retain legacy startup');
     assert.equal(h.window.TV_APPS.apps[0].id,'packaged','null snapshot must not apply unrelated inventory');
@@ -53,6 +66,30 @@ function harness(edition, {unavailable=false, corrupt=false, versionMismatch=fal
     assert.equal(h.scripts.length,0,'a corrupt independent transaction must not fall through to legacy backup');
     h=harness(edition,{unavailable:true});await tick();
     assert.equal(h.scripts.length,1,'installations without supervisor retain legacy boot');
+    const accepted=JSON.stringify({id:'builtin:alpine',title:'Alpine',digest:null});
+    const effectiveEight={...profile,config:{...profile.config,columns:8}};
+    for(const phase of ['verifying','verifying-rollback'])for(const columns of [null,4,8]) {
+      const preference=JSON.stringify({version:1,columns});
+      h=harness(edition,{phase,snapshotProfile:effectiveEight,storage:new Map([['tvhome.theme.choice.v1',accepted],['tvhome.columns.v1',preference]])});await tick();
+      assert.equal(h.memory.get('tvhome.theme.choice.v1'),accepted,edition+' System restore preserves accepted Alpine');
+      assert.equal(h.memory.get('tvhome.columns.v1'),preference,edition+' System restore preserves exact Columns mode');
+      const layout=require('../../launcher/home-layout').create(h.ctx.localStorage,h.window.CONFIG);
+      layout.setThemeLayout({preset:'channel-list',columns:1,spacingScale:1,textScale:1,focusScale:1.1});
+      assert.equal(layout.state().columns,columns===null?1:columns,edition+' By theme and explicit columns remain distinct after profile restore');
+      assert.equal((await startAppearance(h)).id,'builtin:alpine',edition+' next actual theme-manager startup restores accepted appearance');
+    }
+    for(const columns of [4,8]) {
+      h=harness(edition,{snapshotProfile:{...profile,config:{...profile.config,columns}},storage:new Map([['tvhome.theme.choice.v1',JSON.stringify({id:'builtin:classic',title:'Classic'})]])});await tick();
+      const layout=require('../../launcher/home-layout').create(h.ctx.localStorage,h.window.CONFIG);
+      assert.equal(layout.state().override,columns,edition+' missing modern key cannot erase genuine legacy Classic columns');
+    }
+    for(const [choice,trial] of [[accepted,'{"kind":"trial","id":"builtin:alpine"}'],['{broken',null],[JSON.stringify({id:'github:owner/repo:missing',title:'Missing',digest:'b'.repeat(64)}),null]]) {
+      const memory=new Map([['tvhome.theme.choice.v1',choice]]);if(trial)memory.set('tvhome.theme.trial.v1',trial);
+      h=harness(edition,{storage:memory});await tick();
+      if(trial)assert.equal(h.memory.get('tvhome.theme.trial.v1'),trial,'bootstrap must not hide an interrupted-trial marker');
+      assert.equal((await startAppearance(h)).id,'builtin:classic',edition+' interrupted/invalid/missing-cache appearance still fails safe');
+      assert.equal(h.memory.has('tvhome.theme.trial.v1'),false,'theme manager consumes recovery marker');
+    }
   }
   const layout=JSON.stringify({version:1,ids:['app.one'],hidden:[],catalog:profile.inventory.apps});
   let root=harness('root',{storage:new Map([['tvhome.layout',layout]])});await tick();

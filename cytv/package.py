@@ -62,6 +62,12 @@ def tgz(files, executable=(), helper_state=False, directories=True):
             if helper_state and name in ('usr/palm/applications/com.local.nativehome/state', 'usr/palm/services/com.local.nativehome.service/state'):
                 entry.uid, entry.gid, entry.mode = 5999, 5000, 0o770
                 entry.uname, entry.gname = 'prisoner', 'jailer'
+            if name in ('usr/palm/services/com.gathin.tvhome.renewal/state',
+                        'usr/palm/services/com.gathin.tvhome.renewal/state/home-control'):
+                # Native controller and jailed JS service have distinct UIDs.
+                # setgid keeps both sides' files in the shared jailer group.
+                entry.uid, entry.gid, entry.mode = 5999, 5000, 0o2770
+                entry.uname, entry.gname = 'prisoner', 'jailer'
             archive.addfile(entry)
         for name, data in sorted(files.items()):
             entry = tarfile.TarInfo(name)

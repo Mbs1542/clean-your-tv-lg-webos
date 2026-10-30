@@ -41,6 +41,7 @@
     var script = document.createElement('script'); script.src = 'app.js';
     script.onerror = function () { recovery(Error('Launcher could not start')); };
     script.onload = function () {
+      function rendered() {
       if (!restored || ['verifying', 'verifying-rollback'].indexOf(restored.phase) < 0) return;
       try {
         if (window.RootLauncherRendered !== true) throw Error('Launcher did not finish rendering');
@@ -56,6 +57,9 @@
           if (restored.phase === 'verifying') return window.RootUpdates.rpc('confirm', health);
         }).catch(recovery);
       } catch (error) { recovery(error); }
+      }
+      if (window.HomeUIReady) window.HomeUIReady.then(rendered, recovery);
+      else rendered();
     };
     document.body.appendChild(script);
   }
@@ -81,6 +85,9 @@
       else {
         var previousLanguage = window.HomeI18n ? window.HomeI18n.preference() : null;
         save(profile);
+        // System snapshots omit appearance; keep app-origin preferences for normal
+        // startup validation. Legacy backup restores retain their Classic reset.
+        if (!systemRestore) { localStorage.removeItem('tvhome.columns.v1');localStorage.removeItem('tvhome.theme.choice.v1');localStorage.removeItem('tvhome.theme.trial.v1'); }
         if (profile.settings['tvhome.order'] === undefined) localStorage.removeItem('tvhome.order');
         else localStorage.setItem('tvhome.order', profile.settings['tvhome.order']);
         if (systemRestore) {
