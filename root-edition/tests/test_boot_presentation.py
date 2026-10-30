@@ -229,3 +229,103 @@ class ForegroundDecisionTests(PresentationTests):
   self.assertEqual(runtime.present_boot(self.c,self.result),'preserved-foreground')
   self.assertEqual(self.result['presentation_context'],{'foreground_kind':'other-or-missing','first_app_matches':True})
   self.assertEqual(self.launches,[])
+
+
+class NativeChannelTests(PresentationTests):
+ """The recorded C3 store-managed partner TV surface, never a CP wildcard."""
+ def setUp(self):
+  super().setUp()
+  self.foreground='mgg4.5.channelplus'
+  self.metadata=dict(id=self.foreground,type='web',vendor='LifeStream ltd.',
+   folderPath='/media/cryptofs/apps/usr/palm/applications/'+self.foreground,
+   activeFolderPath='/media/cryptofs/apps/usr/palm/applications/'+self.foreground,
+   CPApp=True,internalInstallationOnly=True,systemApp=False,trustLevel='default',removable=True)
+  self.info_calls=0
+ def present(self):
+  return runtime.present_boot(self.c,self.result)
+ def rpc_call(self,uri,payload,timeout=.5):
+  if uri.endswith('/getAppInfo'):
+   self.assertEqual(payload,{'id':'mgg4.5.channelplus'});self.assertLessEqual(timeout,.5)
+   self.info_calls+=1;return {'returnValue':True,'appInfo':self.metadata}
+  return PresentationTests.rpc_call(self,uri,payload,timeout)
+ def test_confirmed_native_tv_surface_is_presented(self):
+  self.assertEqual(self.present(),'launch-requested')
+  self.assertEqual(self.launches,[CANDIDATE]);self.assertEqual(self.info_calls,1)
+ def test_missing_mismatched_or_developer_metadata_is_preserved(self):
+  original=dict(self.metadata)
+  for key,value in (('id','different'),('type','native'),('vendor','different'),
+   ('folderPath','/media/developer/apps/usr/palm/applications/mgg4.5.channelplus'),
+   ('activeFolderPath','/media/developer/apps/usr/palm/applications/mgg4.5.channelplus'),
+   ('folderPath',original['folderPath']+'/../other'),('CPApp',False),('CPApp',1),
+   ('internalInstallationOnly',False),('internalInstallationOnly',1)):
+   with self.subTest(key=key,value=value):
+    self.metadata=dict(original);self.metadata[key]=value
+    self.assertEqual(self.present(),'preserved-foreground');self.assertEqual(self.launches,[])
+  for key in ('id','type','vendor','folderPath','activeFolderPath','CPApp','internalInstallationOnly'):
+   with self.subTest(missing=key):
+    self.metadata=dict(original);del self.metadata[key]
+    self.assertEqual(self.present(),'preserved-foreground');self.assertEqual(self.launches,[])
+ def test_other_ids_are_never_queried_or_classified_by_cp_flags(self):
+  for app in ('mgg4.5.channelplus.other','mgg3.0.channelplus','third.party.app',None):
+   self.foreground=app
+   self.assertEqual(self.present(),'preserved-foreground')
+  self.assertEqual(self.info_calls,0);self.assertEqual(self.launches,[])
+ def test_user_app_opened_during_metadata_check_is_preserved(self):
+  original=self.rpc_call
+  def opened(uri,payload,timeout=.5):
+   result=original(uri,payload,timeout)
+   if uri.endswith('/getAppInfo'):self.foreground='third.party.app'
+   return result
+  self.call.side_effect=opened
+  self.assertEqual(self.present(),'preserved-foreground')
+  self.assertEqual(self.launches,[])
+ def test_current_root_opened_during_metadata_check_is_preserved(self):
+  original=self.rpc_call
+  def opened(uri,payload,timeout=.5):
+   result=original(uri,payload,timeout)
+   if uri.endswith('/getAppInfo'):self.foreground=CANDIDATE
+   return result
+  self.call.side_effect=opened
+  self.assertEqual(self.present(),'preserved-foreground')
+  self.assertEqual(self.launches,[])
+ def test_metadata_timeout_does_not_disable_healthy_home(self):
+  original=self.rpc_call
+  def unavailable(uri,payload,timeout=.5):
+   if uri.endswith('/getAppInfo'):raise TimeoutError('optional metadata')
+   return original(uri,payload,timeout)
+  self.call.side_effect=unavailable
+  self.assertEqual(self.present(),'unavailable')
+  self.assertEqual(self.store.read(),self.intent);self.assertEqual(self.launches,[])
+ def test_explicit_off_during_metadata_wins(self):
+  original=self.rpc_call
+  def off(uri,payload,timeout=.5):
+   result=original(uri,payload,timeout)
+   if uri.endswith('/getAppInfo'):self.c.exit(self.intent)
+   return result
+  self.call.side_effect=off
+  self.assertEqual(self.present(),'unavailable')
+  self.assertFalse(self.store.read()['enabled']);self.assertEqual(self.launches,[])
+ def test_stale_health_during_metadata_does_not_launch_or_disable(self):
+  original=self.rpc_call
+  def expired(uri,payload,timeout=.5):
+   result=original(uri,payload,timeout)
+   if uri.endswith('/getAppInfo'):health.path('route-a').unlink()
+   return result
+  self.call.side_effect=expired
+  self.assertEqual(self.present(),'unavailable')
+  self.assertEqual(self.store.read(),self.intent);self.assertEqual(self.launches,[])
+ def test_native_last_input_setting_avoids_even_metadata_query(self):
+  self.auto='off'
+  self.assertEqual(self.present(),'preserved-startup-setting')
+  self.assertEqual(self.info_calls,0);self.assertEqual(self.launches,[])
+ def test_guarded_wake_uses_same_narrow_native_tv_classification(self):
+  with patch.object(runtime,'coordinator',return_value=self.c),patch.object(health,'require_guardian'),patch.object(runtime.d,'active_guardian',return_value=True):
+   self.assertEqual(runtime.present_wake('route-a','boot-a',lambda:False),'launch-requested')
+  self.assertEqual(self.launches,[CANDIDATE]);self.assertEqual(self.info_calls,1)
+
+
+class NativeWakeChannelTests(NativeChannelTests):
+ """Run all metadata rejection, app-switch and final-guard cases on wake too."""
+ def present(self):
+  with patch.object(runtime,'coordinator',return_value=self.c),patch.object(health,'require_guardian'),patch.object(runtime.d,'active_guardian',return_value=True):
+   return runtime.present_wake('route-a','boot-a',lambda:False)
