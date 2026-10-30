@@ -56,7 +56,7 @@ async function appearance(page, selector) {
           Object.defineProperty(document, 'hidden', {configurable: true, value: true});
           document.dispatchEvent(new Event('visibilitychange'));
         });
-        assert.equal((await appearance(page, '#clock')).color, classic.color, 'hidden Home suspends theme effects');
+        assert.equal((await appearance(page, '#clock')).color, 'rgb(255, 0, 128)', 'hidden Home retains validated appearance before compositor exposure');
         await page.evaluate(() => {
           Object.defineProperty(document, 'hidden', {configurable: true, value: false});
           document.dispatchEvent(new Event('visibilitychange'));

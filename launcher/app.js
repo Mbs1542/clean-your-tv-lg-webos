@@ -9,6 +9,7 @@
   function ht(markup) {
     return window.HomeI18n ? HomeI18n.html(markup) : markup;
   }
+  window.RootLauncherRendered = false;
   // Shared layout, focus and remote-control state.
   var layoutState = window.HomeLayout ? HomeLayout.create(localStorage, CONFIG, window.RootProfileData || window.HomeData) : null;
   window.HomeLayoutState = layoutState;
@@ -176,15 +177,20 @@
     suppressClick = false;
   // A scrolling list can cross a stationary cursor and generate mouseover.
   // Remote input owns focus until the pointer actually moves or is clicked.
-  document.addEventListener('mousemove', function () { pointerNavigation = true; }, true);
+  function pointerInput() {
+    pointerNavigation = true;
+    getElement('homeSurface').classList.remove('ctv-remote-navigation');
+  }
+  document.addEventListener('mousemove', pointerInput, true);
   document.addEventListener('keydown', function (event) {
-    if ((layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') && [13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
+    if ([13, 27, 37, 38, 39, 40, 461].indexOf(event.keyCode) >= 0) pointerNavigation = false;
+    if ([37, 38, 39, 40].indexOf(event.keyCode) >= 0) getElement('homeSurface').classList.add('ctv-remote-navigation');
   }, true);
-  document.addEventListener('mousedown', function () { pointerNavigation = true; }, true);
+  document.addEventListener('mousedown', pointerInput, true);
   function bindPointerFocus(element, action) {
-    function hover() { if ((layoutPreset !== 'channel-list' && layoutPreset !== 'scenic-grid') || pointerNavigation) action(); }
+    function hover() { if (pointerNavigation) action(); }
     element.addEventListener('mouseover', hover);
-    element.addEventListener('mousemove', function () { if (layoutPreset === 'channel-list' || layoutPreset === 'scenic-grid') hover(); });
+    element.addEventListener('mousemove', hover);
   }
   function screenIds() {
     return tiles.filter(function (item) {
@@ -751,14 +757,6 @@
     updateClock();
     var event = document.createEvent('Event'); event.initEvent('home-layout-change', false, false); document.dispatchEvent(event);
   };
-  function animateTiles() {
-    tiles.forEach(function (e, t) {
-      e.el.classList.remove("shown");
-      setTimeout(function () {
-        e.el.classList.add("shown");
-      }, 60 + 40 * Math.min(t, 16));
-    });
-  }
   function tileBackground(hex) {
     var rgb = parseHexColor(hex);
     if (!rgb) {
@@ -1027,6 +1025,7 @@
     focusTile(focusedTile);
   }
   document.addEventListener("keyup", function (event) {
+    if (window.RootLauncherRendered !== true) return;
     if (window.RenewalPanel && window.RenewalPanel.isOpen()) {
       okPressed = false;
       return;
@@ -1039,6 +1038,8 @@
     }
   });
   document.addEventListener("keydown", function (event) {
+    // Leave early Back/Home and key-up delivery to their native/recovery owners.
+    if (window.RootLauncherRendered !== true) return;
     var key = event.keyCode;
     if (key !== KEY_OK && okHoldTimer) {
       cancelHold();
@@ -1151,13 +1152,15 @@
     event.preventDefault();
     if (ribbonWheelTime && event.timeStamp - ribbonWheelTime < 140) return;
     ribbonWheelTime = event.timeStamp; pointerNavigation = false;
+    getElement('homeSurface').classList.add('ctv-remote-navigation');
     stepRibbon(delta > 0 ? 1 : -1);
   }, false);
   document.addEventListener("webOSRelaunch", restoreFocus);
   document.addEventListener("visibilitychange", function () {
     if (window.ThemeRuntime) {
-      if (document.hidden) ThemeRuntime.suspend('visibility');
-      else ThemeRuntime.resume('visibility');
+      // Retain validated styles/assets while hidden: the compositor may expose Home
+      // before delivering the next visible/relaunch event. Dialog owners stay separate.
+      if (!document.hidden) ThemeRuntime.resume('visibility');
     }
     document.hidden || restoreFocus();
   });
@@ -1174,9 +1177,14 @@
       getElement("wifiLabel").textContent = t;
     }
   });
-  animateTiles();
   focusZone = "none";
   focusTile(0);
-  window.RootLauncherRendered = true;
-  if (window.ThemeManager) ThemeManager.start();
+  function presentHome() {
+    // Do not reveal a staggered Classic grid beneath a saved theme's preparation.
+    tiles.forEach(function (tile) { tile.el.classList.add('shown'); });
+    getElement('homeSurface').classList.remove('ctv-starting');
+  }
+  window.HomeUIReady = (window.ThemeManager ? ThemeManager.start(presentHome) : Promise.resolve().then(presentHome)).then(function () {
+    window.RootLauncherRendered = true;
+  });
 }();

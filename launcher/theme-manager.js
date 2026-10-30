@@ -7,15 +7,29 @@
  function persist(choice){localStorage.setItem(choiceKey,JSON.stringify(choice));if(localStorage.getItem(choiceKey)!==JSON.stringify(choice))throw Error('Could not save theme selection');}
  function recover(error){generation++;if(trial)clearTimeout(trial.timer);trial=null;rollback=null;classic();try{localStorage.removeItem(choiceKey);localStorage.removeItem(trialKey);}catch(_){}notice=error||'Theme recovery: Classic restored';emit();}
  function selection(){var raw=localStorage.getItem(choiceKey);if(raw===null)return {id:'builtin:classic',title:'Classic'};var s=JSON.parse(raw);if(!s||typeof s.id!=='string'||typeof s.title!=='string'||s.title.length>100||s.id!=='builtin:classic'&&s.id!=='builtin:alpine'&&!/^github:/.test(s.id)||s.id.indexOf('github:')===0&&!/^[a-f0-9]{64}$/.test(s.digest))throw Error('Invalid saved theme selection');return s;}
- function start(){if(ready)return ready;if(root.CYTV_THEME_AUTHOR_PREVIEW){ready=Promise.resolve();return ready;}ready=Promise.resolve().then(function(){
-   var token=generation,saved;try{if(localStorage.getItem(trialKey)!==null){recover('An interrupted theme preview was reset to Classic');return;}saved=selection();}catch(e){recover(e.message);return;}
-   if(saved.id==='builtin:classic')return;
-   try{var marker=JSON.stringify({kind:'boot',id:saved.id});localStorage.setItem(trialKey,marker);if(localStorage.getItem(trialKey)!==marker)throw Error('Could not save theme recovery marker');}catch(e){recover(e.message);return;}
-   return environment().then(function(){return payload(saved);}).then(function(pack){return apply(pack,saved,true,token);}).catch(function(e){recover(e.message);});
-  });return ready;}
+ // The caller exposes Home only after validated appearance (or bounded Classic recovery).
+ function start(present){if(ready)return ready;if(root.CYTV_THEME_AUTHOR_PREVIEW){ready=Promise.resolve().then(function(){if(present)present();});return ready;}
+  ready=new Promise(function(resolve,reject){
+   var token=generation,marker=null,finished=false,timer=setTimeout(function(){finish(Error('Theme startup timed out. Classic restored'));},8000);
+   function finish(error){
+    if(finished)return;finished=true;clearTimeout(timer);
+    try{if(error&&token===generation)recover(error.message);if(present)present();}catch(e){reject(e);return;}
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+     if(marker)try{if(localStorage.getItem(trialKey)===marker)localStorage.removeItem(trialKey);}catch(_){}
+     emit();resolve();
+    });});
+   }
+   Promise.resolve().then(function(){
+    var saved;if(localStorage.getItem(trialKey)!==null){recover('An interrupted theme preview was reset to Classic');return;}
+    saved=selection();if(saved.id==='builtin:classic')return;
+    marker=JSON.stringify({kind:'boot',id:saved.id});localStorage.setItem(trialKey,marker);if(localStorage.getItem(trialKey)!==marker)throw Error('Could not save theme recovery marker');
+    return environment().then(function(){return payload(saved);}).then(function(pack){return apply(pack,saved,token);});
+   }).then(function(){finish();},finish);
+  });return ready;
+ }
  function environment(){if(homeVersion&&builtin)return Promise.resolve();return data.request('appinfo.json',65536,true).then(function(a){var info=JSON.parse(data.decode(a)),engine=info.themeEngineVersion===undefined?info.version:info.themeEngineVersion;if(typeof engine!=='string'||engine.length>32||!/^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$/.test(engine))throw Error('Home version unavailable');homeVersion=engine;return data.request('builtin-themes.json',65536,true);}).then(function(a){builtin=JSON.parse(data.decode(a));if(builtin.schemaVersion!==1||builtin.themes.length!==1||builtin.themes[0].id!=='builtin:alpine')throw Error('Built-in theme catalog is invalid');});}
  function payload(s){if(s.id==='builtin:alpine'){var entry=builtin.themes[0];return data.load(entry,homeVersion,null,null,true);}return root.ThemeStore.get(s.digest).then(function(pack){if(!pack)throw Error('Saved theme files are missing');var parsed=data.verify(pack,homeVersion);if(parsed.manifest.id!==s.id)throw Error('Saved theme identity mismatch');return pack;});}
- function apply(pack,s,boot,token){return data.prepare(pack,homeVersion,function(){return token!==undefined&&token!==generation;}).then(function(input){try{if(token!==undefined&&token!==generation)throw Error('Cancelled');root.ThemeRuntime.apply(input);active={id:s.id,title:input.manifest.title,digest:pack.digest};if(boot){return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(function(){try{localStorage.removeItem(trialKey);}catch(_){}emit();resolve();});});});}emit();}catch(e){data.dispose(input.assetHandles);throw e;}});}
+ function apply(pack,s,token){return data.prepare(pack,homeVersion,function(){return token!==undefined&&token!==generation;}).then(function(input){try{if(token!==undefined&&token!==generation)throw Error('Cancelled');root.ThemeRuntime.apply(input);active={id:s.id,title:input.manifest.title,digest:pack.digest};emit();}catch(e){data.dispose(input.assetHandles);throw e;}});}
  function list(){return start().then(environment).then(function(){return root.ThemeStore.list().catch(function(e){notice=e.message;return [];});}).then(function(packages){var items=[{id:'builtin:classic',title:'Classic',builtin:true},{id:'builtin:alpine',title:'Alpine',builtin:true}];packages.forEach(function(pack){try{var parsed=data.verify(pack,homeVersion);if(parsed.manifest.id.indexOf('github:')!==0)throw Error('Invalid external identity');items.push({id:parsed.manifest.id,title:parsed.manifest.title,digest:pack.digest,version:parsed.manifest.themeVersion,license:parsed.manifest.license.identifier,author:parsed.manifest.author.name});}catch(_){notice='An invalid cached theme was ignored';}});return items;});}
  function preview(item){
   if(!item||typeof item.id!=='string'||item.id.indexOf('github:')!==0||! /^[a-f0-9]{64}$/.test(item.digest))return Promise.reject(Error('Invalid installed preview'));
@@ -30,7 +44,7 @@
  }
 
  function begin(s,immediate){if(trial)return Promise.reject(Error('Finish the current theme preview first'));var token=++generation;return start().then(environment).then(function(){if(token!==generation)throw Error('Cancelled');var previous=selection();localStorage.setItem(trialKey,JSON.stringify({kind:'trial',id:s.id,previous:previous}));trial={previous:previous,choice:s,expires:Date.now()+20000,timer:null};
-   return (s.id==='builtin:classic'?Promise.resolve().then(classic):payload(s).then(function(pack){return apply(pack,s,false,token);})).then(function(){if(token!==generation)throw Error('Cancelled');trial.expires=Date.now()+20000;if(!immediate)trial.timer=setTimeout(cancel,20000);emit();},function(e){if(token!==generation)throw e;return cancel().then(function(){throw e;});});
+   return (s.id==='builtin:classic'?Promise.resolve().then(classic):payload(s).then(function(pack){return apply(pack,s,token);})).then(function(){if(token!==generation)throw Error('Cancelled');trial.expires=Date.now()+20000;if(!immediate)trial.timer=setTimeout(cancel,20000);emit();},function(e){if(token!==generation)throw e;return cancel().then(function(){throw e;});});
   });}
  function selectInstalled(s){if(trial)return Promise.reject(Error('Finish the current theme preview first'));var token=++generation;return list().then(function(items){
   if(token!==generation)throw Error('Cancelled');
@@ -40,7 +54,7 @@
  });}
 
  function cancel(){var token=++generation;if(!trial&&!rollback)return Promise.resolve();var state={previous:trial?trial.previous:rollback.previous};if(trial)clearTimeout(trial.timer);trial=null;rollback=state;
-  var restore=state.previous.id==='builtin:classic'?Promise.resolve().then(function(){if(token===generation)classic();}):payload(state.previous).then(function(pack){return apply(pack,state.previous,false,token);});
+  var restore=state.previous.id==='builtin:classic'?Promise.resolve().then(function(){if(token===generation)classic();}):payload(state.previous).then(function(pack){return apply(pack,state.previous,token);});
   return restore.catch(function(e){if(token===generation)recover(e.message);}).then(function(){if(rollback===state)rollback=null;if(token!==generation)return;try{localStorage.removeItem(trialKey);}catch(e){recover(e.message);}emit();});
  }
 
