@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- This fork: optional personal layer, off without `launcher/personal.js`. Stremio and
+  Jellyfin rows, Hebrew right-to-left Home, weather, optional power-on photo, photo screensaver and
+  automatic power-off. Helper returns to Home after a maker's boot ad and from apps
+  installed after setup. See [Personal Home build](docs/PERSONAL-HOME.md).
 - Prepare Root OTA compatibility with the original 1.3.0 System Updater (#115):
   preserve managed paths and LS2 grants, validate candidate infrastructure before
   offering installation, and authenticate current runtime separately from its
