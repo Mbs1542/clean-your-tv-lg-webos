@@ -1,13 +1,15 @@
-/* Home rows from the owner's Jellyfin, plus the weather. Read-only, and nothing here is
- * required: without personal.js, or with Jellyfin asleep, Home simply has no rows. */
+/* Home rows from the owner's Jellyfin and Stremio's public catalog, plus the weather. Read-only,
+ * and nothing here is required: with no data, Home simply has no rows. */
 (function (root) {
   'use strict';
   var personal = root.TV_PERSONAL || {}, jellyfin = personal.jellyfin, weather = personal.weather;
-  var FEED_KEY = 'tvhome.mediafeed.v1', WEATHER_KEY = 'tvhome.weather.v1';
-  var FEED_GAP = 5 * 60 * 1000, WEATHER_GAP = 30 * 60 * 1000, RETRY = 20 * 1000;
-  var CARD_STEP = 278, VISIBLE = 6, JELLYFIN_APP = 'org.jellyfin.webos';
-  var rows = [], cards = [], row = 0, column = 0, feedAt = 0, weatherAt = 0, retryTimer = null, hooks = null;
-  var section = null;
+  var FEED_KEY = 'tvhome.mediafeed.v2', WEATHER_KEY = 'tvhome.weather.v1';
+  var FEED_GAP = 5 * 60 * 1000, STREMIO_GAP = 6 * 60 * 60 * 1000, WEATHER_GAP = 30 * 60 * 1000, RETRY = 20 * 1000;
+  var CARD_STEP = 278, VISIBLE = 6, ROW_STEP = 240, ROWS_SHOWN = 2;
+  var JELLYFIN_APP = 'org.jellyfin.webos', STREMIO_APP = 'io.strem.tv';
+  var STREMIO_CATALOG = 'https://cinemeta-catalogs.strem.io/top/catalog/';
+  var rows = [], cards = [], row = 0, column = 0, feedAt = 0, stremioAt = 0, weatherAt = 0, retryTimer = null, hooks = null;
+  var section = null, stack = null, sources = {watching: [], stremio: [], added: []};
 
   function tr(text) { return root.HomeI18n ? root.HomeI18n.t(text) : text; }
   function rtl() { return root.document.documentElement.dir === 'rtl'; }
@@ -35,34 +37,64 @@
     else if (item.ParentThumbItemId) { id = item.ParentThumbItemId; type = 'Thumb'; }
     else if (item.BackdropImageTags && item.BackdropImageTags.length) type = 'Backdrop';
     else if (item.ParentBackdropItemId) { id = item.ParentBackdropItemId; type = 'Backdrop'; }
+    else if (!item.ImageTags || !item.ImageTags.Primary) return '';
     return jellyfin.url + '/Items/' + encodeURIComponent(id) + '/Images/' + type + '?fillWidth=400&quality=80';
+  }
+  function episodeLabel(item) {
+    var parts = [];
+    if (item.ParentIndexNumber != null) parts.push(tr('Season') + ' ' + item.ParentIndexNumber);
+    if (item.IndexNumber != null) parts.push(tr('Episode') + ' ' + item.IndexNumber);
+    return parts.join(' · ');
   }
   function toCard(item) {
     var episode = item.Type === 'Episode', data = item.UserData || {};
     return {
       id: item.Id,
       title: episode ? item.SeriesName || item.Name : item.Name,
-      subtitle: episode ? tr('Season') + ' ' + item.ParentIndexNumber + ' · ' + tr('Episode') + ' ' + item.IndexNumber : item.ProductionYear ? String(item.ProductionYear) : '',
+      subtitle: episode ? episodeLabel(item) : item.ProductionYear ? String(item.ProductionYear) : '',
       progress: data.PlayedPercentage > 0 && data.PlayedPercentage < 100 ? Math.round(data.PlayedPercentage) : 0,
       image: imageUrl(item)
     };
   }
-  function buildRows(resume, nextUp, latest) {
+  function toStremioCard(meta) {
+    return {
+      id: meta.id,
+      title: meta.name,
+      subtitle: meta.releaseInfo ? String(meta.releaseInfo) : '',
+      progress: 0,
+      image: meta.background || meta.poster
+    };
+  }
+  function watchingCards(resume, nextUp) {
     var seen = {}, watching = [];
     resume.concat(nextUp).forEach(function (item) {
       var key = item.SeriesId || item.Id;
       if (!seen[key]) { seen[key] = true; watching.push(toCard(item)); }
     });
+    // Untagged imports have no artwork at all: keep them, after the ones that look right.
+    return watching.filter(function (card) { return card.image; }).concat(watching.filter(function (card) { return !card.image; })).slice(0, 16);
+  }
+  function buildRows() {
     var result = [];
-    if (watching.length) result.push({title: tr('Continue watching'), cards: watching.slice(0, 16)});
-    var added = latest.map(toCard);
-    if (added.length) result.push({title: tr('Recently added'), cards: added.slice(0, 16)});
+    if (sources.watching.length) result.push({title: tr('Continue watching'), app: JELLYFIN_APP, appName: 'Jellyfin', cards: sources.watching});
+    if (sources.stremio.length) result.push({title: tr('Popular on Stremio'), app: STREMIO_APP, appName: 'Stremio', cards: sources.stremio});
+    if (sources.added.length) result.push({title: tr('Recently added'), app: JELLYFIN_APP, appName: 'Jellyfin', cards: sources.added});
     return result;
+  }
+  function publish() {
+    rows = buildRows();
+    save(FEED_KEY, sources);
+    render();
+    paint();
+    if (hooks) hooks.changed();
   }
 
   function render() {
     if (!section) return;
     section.innerHTML = '';
+    stack = root.document.createElement('div');
+    stack.className = 'mf-stack';
+    section.appendChild(stack);
     cards = rows.map(function (entry, rowIndex) {
       var element = root.document.createElement('div'), heading = root.document.createElement('div'), track = root.document.createElement('div');
       element.className = 'mf-row';
@@ -71,7 +103,7 @@
       track.className = 'mf-track';
       element.appendChild(heading);
       element.appendChild(track);
-      section.appendChild(element);
+      stack.appendChild(element);
       return {track: track, nodes: entry.cards.map(function (card, cardIndex) { return renderCard(card, track, rowIndex, cardIndex); })};
     });
     var surface = root.document.getElementById('homeSurface');
@@ -84,8 +116,9 @@
     node.className = 'mf-card';
     frame.className = 'mf-frame';
     image.alt = '';
-    image.onerror = function () { image.style.visibility = 'hidden'; };
-    image.src = card.image;
+    image.onerror = function () { image.style.visibility = 'hidden'; frame.setAttribute('data-title', card.title); };
+    if (card.image) image.src = card.image;
+    else { image.style.visibility = 'hidden'; frame.setAttribute('data-title', card.title); }
     frame.appendChild(image);
     if (card.progress) {
       var bar = root.document.createElement('div'), fill = root.document.createElement('div');
@@ -105,19 +138,24 @@
     node.addEventListener('mousemove', function () {
       if (hooks && (row !== rowIndex || column !== cardIndex || !section.classList.contains('mf-active'))) hooks.pointerFocus(rowIndex, cardIndex);
     });
-    node.addEventListener('click', function () { activate(rowIndex, cardIndex); });
+    node.addEventListener('click', function () { activate(rowIndex); });
     return node;
   }
   function paint() {
+    if (!section || !stack) return;
     var active = section.classList.contains('mf-active');
+    stack.style.transform = 'translateY(' + -Math.max(0, row - ROWS_SHOWN + 1) * ROW_STEP + 'px)';
     cards.forEach(function (entry, rowIndex) {
       var start = rowIndex === row ? Math.max(0, column - VISIBLE + 1) : 0;
       entry.track.style.transform = 'translateX(' + (rtl() ? start * CARD_STEP : -start * CARD_STEP) + 'px)';
       entry.nodes.forEach(function (node, cardIndex) { node.classList.toggle('mf-focused', active && rowIndex === row && cardIndex === column); });
     });
   }
-  // webOS has no way to open a given title in the Jellyfin app, so OK opens the app itself.
-  function activate() { if (hooks) hooks.launch(JELLYFIN_APP, 'Jellyfin'); }
+  // Neither TV app can be opened at a given title, so OK opens the app itself.
+  function activate(rowIndex) {
+    var entry = rows[rowIndex === undefined ? row : rowIndex];
+    if (hooks && entry) hooks.launch(entry.app, entry.appName);
+  }
 
   function refreshFeed() {
     if (!jellyfin || !jellyfin.url || !jellyfin.token || !jellyfin.userId) return;
@@ -138,16 +176,36 @@
           retryTimer = setTimeout(refreshFeed, RETRY);
           return;
         }
-        rows = buildRows(parts.resume.Items || [], parts.nextUp.Items || [], parts.latest);
-        save(FEED_KEY, rows);
-        render();
-        paint();
-        if (hooks) hooks.changed();
+        sources.watching = watchingCards(parts.resume.Items || [], parts.nextUp.Items || []);
+        sources.added = parts.latest.map(toCard).slice(0, 16);
+        publish();
       };
     }
     getJson(jellyfin.url + '/UserItems/Resume?' + user + '&mediaTypes=Video' + common, headers, collect('resume'));
     getJson(jellyfin.url + '/Shows/NextUp?' + user + '&enableResumable=false' + common, headers, collect('nextUp'));
     getJson(jellyfin.url + '/Items/Latest?' + user + '&groupItems=true' + common, headers, collect('latest'));
+  }
+
+  function refreshStremio() {
+    if (Date.now() - stremioAt < STREMIO_GAP) return;
+    stremioAt = Date.now();
+    var parts = {}, pending = 2;
+    function collect(name) {
+      return function (value) {
+        parts[name] = value && value.metas || [];
+        if (--pending) return;
+        var mixed = [], length = Math.max(parts.movie.length, parts.series.length);
+        for (var i = 0; i < length && mixed.length < 16; i++) {
+          if (parts.movie[i]) mixed.push(toStremioCard(parts.movie[i]));
+          if (parts.series[i]) mixed.push(toStremioCard(parts.series[i]));
+        }
+        if (!mixed.length) { stremioAt = 0; return; }
+        sources.stremio = mixed;
+        publish();
+      };
+    }
+    getJson(STREMIO_CATALOG + 'movie/top.json', null, collect('movie'));
+    getJson(STREMIO_CATALOG + 'series/top.json', null, collect('series'));
   }
 
   var CODES = [[0, 'Clear'], [3, 'Partly cloudy'], [48, 'Fog'], [67, 'Rain'], [77, 'Snow'], [82, 'Rain'], [86, 'Snow'], [99, 'Storm']];
@@ -158,7 +216,8 @@
   function showWeather(data) {
     var element = root.document.getElementById('weather');
     if (!element || !data) return;
-    element.textContent = Math.round(data.now) + '° ' + describe(data.code) + '  ·  ' + Math.round(data.high) + '°/' + Math.round(data.low) + '°';
+    // The marks keep each degree sign beside its number in a right-to-left line.
+    element.textContent = Math.round(data.now) + '°\u200E ' + describe(data.code) + '  ·  ' + Math.round(data.high) + '°\u200E/' + Math.round(data.low) + '°\u200E';
   }
   function refreshWeather() {
     if (!weather || Date.now() - weatherAt < WEATHER_GAP) return;
@@ -177,12 +236,13 @@
       hooks = appHooks;
       section = root.document.getElementById('mediaFeed');
       var cached = load(FEED_KEY);
-      if (Array.isArray(cached)) rows = cached;
+      if (cached && Array.isArray(cached.watching) && Array.isArray(cached.stremio) && Array.isArray(cached.added)) sources = cached;
+      rows = buildRows();
       render();
       showWeather(load(WEATHER_KEY));
       root.MediaFeed.refresh();
     },
-    refresh: function () { refreshFeed(); refreshWeather(); },
+    refresh: function () { refreshFeed(); refreshStremio(); refreshWeather(); },
     hasItems: function () { return rows.length > 0; },
     enter: function (rowIndex, cardIndex) {
       row = Math.min(rowIndex === undefined ? rows.length - 1 : rowIndex, rows.length - 1);

@@ -28,6 +28,7 @@ HomeI18n.add({
     "Offline": "לא מחובר",
     "Open LG Home": "פתיחת מסך הבית של LG",
     "Partly cloudy": "מעונן חלקית",
+    "Popular on Stremio": "פופולרי ב-Stremio",
     "Rain": "גשם",
     "Recently added": "נוסף לאחרונה",
     "Season": "עונה",
