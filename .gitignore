@@ -5,6 +5,10 @@
 *.key
 *.log
 launcher/apps.js
+launcher/personal.js
+launcher/personal-intro.jpg
+launcher/personal-splash.png
+launcher/personal-saver/
 launcher/icons/
 build/
 dist/

@@ -15,6 +15,7 @@ Start with a task. You do not need the developer reports to install or use Clean
 | Arrange or hide apps | [App management](APP-MANAGEMENT.md) |
 | Update, disable or uninstall | [Maintenance](MAINTENANCE.md) |
 | Recover from a failed setup or lost Home control | [Recovery](RECOVERY.md) |
+| Build this fork's personal Home | [Personal Home build](PERSONAL-HOME.md) |
 | Report an installation result | [Problems and successful installations](FEEDBACK.md) |
 
 ## Choose your language

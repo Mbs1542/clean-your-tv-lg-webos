@@ -4,7 +4,7 @@
   else root.AppLibrary = factory();
 }(this, function() {
   'use strict';
-  var KEY = 'tvhome.layout';
+  var KEY = 'tvhome.layout', DOCK_KEY = 'tvhome.dock.applied';
   var internal = ['com.gathin.tvhome','com.local.nativehome','com.cleanyourtv.root.preview','com.cleanyourtv.updater'];
   function unique(ids) { return ids.filter(function(id,i) { return typeof id === 'string' && ids.indexOf(id) === i && internal.indexOf(id) < 0; }); }
   function clean(apps) {
@@ -25,6 +25,15 @@
     if (saved) {
       showAddApp = saved.showAddApp !== false;
       catalog = clean(catalog.concat(saved.catalog)); hidden = unique(saved.hidden); ids = unique(saved.ids);
+      // A changed dockApps in the build wins once over the saved order; later moves by hand stay.
+      var dock = (config.dockApps || []).join(',');
+      if (dock && storage.getItem(DOCK_KEY) !== dock) {
+        ids = unique(config.dockApps.concat(ids));
+        try {
+          storage.setItem(KEY, JSON.stringify({version:1, ids:ids, hidden:hidden, catalog:catalog, showAddApp:showAddApp}));
+          storage.setItem(DOCK_KEY, dock);
+        } catch (_) {}
+      }
     } else {
       var legacy;
       try { legacy = JSON.parse(storage.getItem('tvhome.order')); } catch (_) {}

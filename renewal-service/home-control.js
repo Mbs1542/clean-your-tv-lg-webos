@@ -7,7 +7,7 @@ module.exports=function(fs,dir,options){
  var busy=false,now=options.now||Date.now,later=options.later||setTimeout;
  var nonce=options.nonce||function(){return require('crypto').randomBytes(16).toString('hex');};
  return function(method,payload){
-  if(['homeStatus','setHomeControl','openLGHome'].indexOf(method)<0||
+  if(['homeStatus','setHomeControl','openLGHome','powerOff'].indexOf(method)<0||
      (method==='setHomeControl'&&(!payload||typeof payload.enabled!=='boolean')))
    return Promise.resolve({returnValue:false,errorText:'Invalid Home request'});
   if(busy)return Promise.resolve({returnValue:false,errorText:'Home control busy',diagnostic:diagnostics.describe('home','wait',{code:'BUSY'})});

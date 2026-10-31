@@ -34,7 +34,9 @@ test('LG Home arriving while resume launch is in flight is retried without anoth
  c.advance(4800);assert.equal(c.homeCalls().length,2,'wait five seconds after reply');
  c.advance(400);assert.equal(c.homeCalls().length,3);
  c.calls[2].reply();c.advance(5200);assert.equal(c.homeCalls().length,4);
- c.calls[3].reply();c.advance(40000);assert.equal(c.homeCalls().length,4,'at most two retries');
+ c.calls[3].reply();c.advance(5200);assert.equal(c.homeCalls().length,5);
+ c.calls[4].reply();c.advance(5200);assert.equal(c.homeCalls().length,6);
+ c.calls[5].reply();c.advance(40000);assert.equal(c.homeCalls().length,6,'at most four retries');
 });
 test('LG Home must remain foreground for 1.5 seconds, including duplicate reports',()=>{
  const c=controller();c.resume();c.calls[1].reply();c.advance(5200);c.fg(LG);c.advance(800);c.fg(LG);c.advance(400);
@@ -47,8 +49,13 @@ test('successful return to Home suppresses retries but late LG takeover is recov
  const c=controller();c.resume();c.calls[1].reply();c.fg(HOME);c.advance(6000);assert.equal(c.homeCalls().length,2);
  c.fg(LG);c.advance(1600);assert.equal(c.homeCalls().length,3);
 });
+test('the maker boot ad neither cancels the return to Home nor gets launched over',()=>{
+ const AD='com.webos.app.bootingad',c=controller();c.power({state:'Suspend'});c.power({state:'Active'});c.fg(AD);
+ const before=c.homeCalls().length;c.advance(1200);assert.equal(c.homeCalls().length,before);
+ c.fg(LG);c.advance(400);assert.equal(c.homeCalls().length,before+1);
+});
 test('a real app cancels recovery even if LG Home appears later',()=>{
- const c=controller();c.resume();c.fg('netflix');c.calls[1].reply();c.fg(LG);c.advance(20000);assert.equal(c.homeCalls().length,2);
+ const c=controller();c.resume();c.fg('com.webos.app.hdmi1');c.calls[1].reply();c.fg(LG);c.advance(20000);assert.equal(c.homeCalls().length,2);
 });
 test('a real app before the first resume tick cancels the pending launch',()=>{
  const c=controller();c.power({state:'Suspend'});c.fg(COVER);c.power({state:'Active'});c.fg('netflix');c.advance(400);assert.equal(c.homeCalls().length,1);
@@ -84,7 +91,8 @@ test('restored Home skips the initial launch but still recovers a late LG takeov
 });
 test('failed launch replies retain bounded recovery',()=>{
  const c=controller();c.resume();c.calls[1].reply(false);c.fg(LG);c.advance(5200);assert.equal(c.homeCalls().length,3);
- c.calls[2].reply(false);c.advance(5200);assert.equal(c.homeCalls().length,4);c.calls[3].reply(false);c.advance(10000);assert.equal(c.homeCalls().length,4);
+ c.calls[2].reply(false);c.advance(5200);assert.equal(c.homeCalls().length,4);c.calls[3].reply(false);c.advance(5200);assert.equal(c.homeCalls().length,5);
+ c.calls[4].reply(false);c.advance(5200);assert.equal(c.homeCalls().length,6);c.calls[5].reply(false);c.advance(10000);assert.equal(c.homeCalls().length,6);
 });
 test('disabled Home routing never arms recovery on resume',()=>{
  const c=controller();c.rpc('setHomeControl',false);c.resume();c.fg(LG);c.advance(20000);assert.equal(c.homeCalls().length,1);
@@ -96,7 +104,9 @@ test('app exit retries a late LG takeover with the same bounded recovery',()=>{
  c.advance(4800);assert.equal(c.homeCalls().length,2);
  c.advance(400);assert.equal(c.homeCalls().length,3);
  c.calls[2].reply();c.advance(5200);assert.equal(c.homeCalls().length,4);
- c.calls[3].reply();c.advance(40000);assert.equal(c.homeCalls().length,4);
+ c.calls[3].reply();c.advance(5200);assert.equal(c.homeCalls().length,5);
+ c.calls[4].reply();c.advance(5200);assert.equal(c.homeCalls().length,6);
+ c.calls[5].reply();c.advance(40000);assert.equal(c.homeCalls().length,6);
 });
 test('new Back input cancels app-exit recovery so an intentional LG visit stays open',()=>{
  const c=controller();c.fg('com.example.video');c.fg(LG);c.calls[1].reply();c.fg(HOME);

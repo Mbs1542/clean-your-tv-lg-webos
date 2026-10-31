@@ -17,7 +17,7 @@ assert.equal(x.i.t('Fallback {n}',{n:0}),'Fallback 0');
 assert.equal(x.i.setLanguage('de'),true);assert.equal(x.saved['tvhome.language'],'de');assert.equal(x.reloads(),1);
 assert.equal(x.i.setLanguage('bad'),false);assert.equal(x.reloads(),1);
 assert.equal(load(['en'],null,true).i.setLanguage('de'),false,'blocked storage must not pretend to persist or reload');
-assert.equal(x.i.languages.length,12);
+assert.equal(x.i.languages.length,13);
 for(const [tag,want] of [['zh','zh-Hans'],['zh_CN','zh-Hans'],['zh-SG','zh-Hans'],['zh-TW','zh-Hant'],['zh-HK','zh-Hant'],['zh_MO','zh-Hant'],['zh-Hant-CN','zh-Hant'],['zh-Hans-TW','zh-Hans']]){
  assert.equal(load([tag]).i.language(),want,tag);
 }

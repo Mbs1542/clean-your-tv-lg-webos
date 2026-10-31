@@ -9,6 +9,9 @@ a.equal(p.next(home),false); // One attempt, no launch loop.
 p.next(app);p.next('com.webos.app.hdmi1');a.equal(p.next(home),false);
 p.next(app);p.reset();a.equal(p.next(home),false); // Reconnect loses stale state.
 p.next(app);p.next('com.gathin.tvhome');a.equal(p.next(home),false);
+p=make([app]);p.next('com.example.sideloaded');a.equal(p.next(home),true); // Installed after setup.
+p.next('com.webos.app.hdmi1');a.equal(p.next(home),false);
+p=make([app]);
 console.log('PASS: exit transitions, internal Back, HDMI, reconnect and duplicate events');
 p.reset();p.next(app,100);p.next('',200);a.equal(p.next(home,1300),true);
 p.reset();p.next(app,100);p.next('',200);p.next('',2200);a.equal(p.next(home,2800),false);

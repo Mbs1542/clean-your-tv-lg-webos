@@ -40,6 +40,7 @@ node tests/home-control.cjs
 node tests/home-control-bridge.cjs
 node tests/home-control-jail.cjs
 node tests/resume.cjs
+node tests/idle-policy.cjs
 node tests/controller-resume.cjs
 node --test tests/controller-resume-home.cjs tests/controller-watchdog.cjs
 node tests/controller-home.cjs

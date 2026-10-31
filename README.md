@@ -12,6 +12,9 @@ dock, without sponsored rows in this launcher. It runs on the TV; your computer
 can be switched off after setup. It does not remove advertisements from other
 LG screens or obtain root access.
 
+This fork also has an optional personal layer with media rows, a photo screensaver and
+automatic power-off: see [Personal Home build](docs/PERSONAL-HOME.md).
+
 ## Installation guide in your language
 
 [English](docs/i18n/en.md) · [Deutsch](docs/i18n/de.md) · [Español](docs/i18n/es.md) ·

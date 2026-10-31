@@ -27,6 +27,11 @@ a.equal(JSON.stringify(t.logs).includes('private-test-key'),false);
 t=setup();s=t.WS.last;s.emit('message',JSON.stringify({type:'error',error:'401 insufficient permissions'}));a.equal(t.timers.size,0);
 t=setup();s=t.WS.last;s.terminate();a.equal([...t.timers.values()][0].ms,10000);
 console.log('PASS: local endpoint, registration, subscription, stop, key redaction, permanent error, reconnect');
+t=setup();s=t.WS.last;s.emit('open');a.equal(t.watcher.powerOff(),false,'no power request before registration');
+s.emit('message',JSON.stringify({type:'registered'}));const sentBefore=s.sent.length;a.equal(t.watcher.powerOff(),true);
+a.equal(s.sent.length,sentBefore+1);a.equal(s.sent.at(-1).uri,'ssap://system/turnOff');
+s.terminate();a.equal(t.watcher.powerOff(),false,'no power request on a closed connection');t.watcher.close();
+console.log('PASS: power-off only over a registered connection');
 
 t=setup(true);s=t.WS.last;s.emit('message',JSON.stringify({type:'registered'}));
 a.equal(s.sent[1].id,'power');
