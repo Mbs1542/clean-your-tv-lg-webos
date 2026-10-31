@@ -29,7 +29,6 @@
       var dock = (config.dockApps || []).join(',');
       if (dock && storage.getItem(DOCK_KEY) !== dock) {
         ids = unique(config.dockApps.concat(ids));
-        hidden = hidden.filter(function(id) { return config.dockApps.indexOf(id) < 0; });
         try {
           storage.setItem(KEY, JSON.stringify({version:1, ids:ids, hidden:hidden, catalog:catalog, showAddApp:showAddApp}));
           storage.setItem(DOCK_KEY, dock);

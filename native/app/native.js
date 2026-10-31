@@ -53,6 +53,8 @@ function screenLog(x){
  if(x.event.indexOf('screen-watch-')===0){monitor=x.event;monitorReason=x.reason||null;}
  log(x);diagnostic('monitor');
 }
+// webOS Hub sets show a maker's ad before LG Home on power-on. It is not an app the viewer chose.
+var BOOT_AD='com.webos.app.bootingad';
 function cancelResume(){resumePendingUntil=0;resumeGuardUntil=0;lgHomeSince=null;}
 log({event:'start',pid:process.pid,uid:process.getuid(),automatic:automatic,diagnosticsSchema:1});
 function launch(id,done){var request=++launchSequence;diagnostic('launch-request',{launchSequence:request,id:id});var settled=false;var deadline=setTimeout(function(){if(settled)return;settled=true;lastLaunchSettledAt=monotonic();log({event:'launch-timeout',id:id});diagnostic('launch-timeout',{launchSequence:request,id:id});if(done)done(false);},3000);service.call('luna://com.webos.applicationManager/launch',{id:id},function(m){if(settled)return;settled=true;lastLaunchSettledAt=monotonic();clearTimeout(deadline);log({event:'launch',id:id,result:m.payload});diagnostic('launch-result',{launchSequence:request,id:id,returnValue:!!(m.payload&&m.payload.returnValue===true)});if(done)done(m.payload&&m.payload.returnValue===true);});}
@@ -180,7 +182,7 @@ function start(recovering){
 var timer=setInterval(function(){if(stopping)return;
  if(readStop()){if(child)child.stdin.write('Q');else if(!cleaning)finish(0);}
  if(stopping)return;homeChannels.forEach(readHomeRequest);try{var raw=fs.readFileSync(data+'/control.json','utf8');if(raw!==lastCommand){lastCommand=raw;var command=JSON.parse(raw);diagnosticCommand(command.cmd,command.nonce);if(command.cmd==='startup-status')service.call('luna://com.local.nativehome.service/status',{},function(r){log({event:'startup-status',result:r.payload});});if(command.cmd==='stall-worker'&&child)child.stdin.write('S');if(command.cmd==='stall-controller'){cp.spawn(root+'/resume',[String(process.pid)],{stdio:'ignore'});log({event:'simulate-controller-stall'});process.kill(process.pid,'SIGSTOP');}}}catch(e){}
- if(resumePendingUntil&&ready&&!launching&&!visitingLG&&homeControl.enabled()){
+ if(resumePendingUntil&&ready&&!launching&&!visitingLG&&homeControl.enabled()&&lastForeground!==BOOT_AD){
   var resumeDue=resumePendingUntil;resumePendingUntil=0;
   if(!shouldResumeLaunch(lastForeground)){log({event:'resume-already-foreground'});}
   else if(monotonic()<=resumeDue){launching=true;log({event:'resume-launch'});launch('com.gathin.tvhome',function(ok){launching=false;if(!ok)log({event:'resume-launch-failed'});});}
@@ -190,14 +192,14 @@ var timer=setInterval(function(){if(stopping)return;
  var now=monotonic();
  if(diagnosticUntil&&now>=diagnosticNext){diagnostic('sample');diagnosticNext=now+1000;}
  if(resumeGuardUntil&&now>=resumeGuardUntil)cancelResume();
- if(resumeGuardUntil&&resumeRetries<2&&ready&&!launching&&!visitingLG&&homeControl.enabled()&&
+ if(resumeGuardUntil&&resumeRetries<4&&ready&&!launching&&!visitingLG&&homeControl.enabled()&&
     lastForeground==='com.webos.app.home'&&lgHomeSince!==null&&now-lgHomeSince>=1500&&now-lastLaunchSettledAt>=5000){
   resumeRetries++;launching=true;log({event:'resume-retry',attempt:resumeRetries});
   launch('com.gathin.tvhome',function(ok){launching=false;if(!ok)log({event:'resume-retry-failed'});});
  }
  if(child&&child.reason===undefined&&!child.watchdogKill&&!child.exited){if(policy.expired(lastAck,monotonic())){log({event:'worker-watchdog'});watchdogLatch();child.watchdogKill=true;child.kill('SIGKILL');return;}child.stdin.write('P');}
 },400);
-setTimeout(function(){if(stopping||readStop()){if(!stopping)finish(0);return;}if(!homeControl.enabled()){start();return;}launch('com.gathin.tvhome',function(ok){if(stopping)return;if(ok)start();else {block();process.exit(3);}});},automatic?0:1000);
+setTimeout(function(){if(stopping||readStop()){if(!stopping)finish(0);return;}if(!homeControl.enabled()){start();return;}if(automatic){resumeGuardUntil=monotonic()+45000;resumeRetries=0;}launch('com.gathin.tvhome',function(ok){if(stopping)return;if(ok)start();else {block();process.exit(3);}});},automatic?0:1000);
 
 
 process.on('exit',function(code){log({event:'controller-exit',code:code});});
@@ -216,7 +218,7 @@ var watchedApps=[];try{watchedApps=JSON.parse(fs.readFileSync(data+'/apps.json',
 var screenPolicy=require('./screen-policy')(watchedApps);
 var screenWatch=require('./screen-watch')(data,screenLog,function(id){
  if(id==='com.webos.app.home'){if(lgHomeSince===null)lgHomeSince=monotonic();}
- else {lgHomeSince=null;if(id&&id!=='com.webos.app.cpcover'&&id!=='com.gathin.tvhome')cancelResume();}
+ else {lgHomeSince=null;if(id&&id!=='com.webos.app.cpcover'&&id!==BOOT_AD&&id!=='com.gathin.tvhome')cancelResume();}
  lastForeground=id;lastForegroundAt=monotonic();log({event:'foreground',id:id});diagnostic('foreground');
  var exited=screenPolicy.next(id,monotonic());
  if(exited&&homeControl.enabled()&&!visitingLG&&monotonic()>suppressReturnUntil&&ready&&!stopping&&!launching){
