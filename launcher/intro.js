@@ -23,5 +23,11 @@
   root.document.addEventListener('webOSRelaunch', function (event) {
     if (requested(event.detail) || root.PalmSystem && requested(root.PalmSystem.launchParams)) show();
   });
-  root.document.addEventListener('keydown', hide, true);
+  // A press while the photo shows only dismisses it, so it cannot open the app behind the photo.
+  root.document.addEventListener('keydown', function (event) {
+    if (!element || !element.classList.contains('on')) return;
+    hide();
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
 }(this));

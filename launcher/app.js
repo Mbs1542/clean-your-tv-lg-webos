@@ -252,7 +252,11 @@
     }
     focusTile(nextFocus);
   }
+  // A slow TV queues presses made while Home was loading: they must not open the focused app.
+  var activateAfter = 0;
+  function holdActivation() { activateAfter = Date.now() + 1200; }
   function activateTile(item) {
+    if (Date.now() < activateAfter) return;
     if (item.add) {
       openPicker();
     } else if (item.app.id === 'airplay') {
@@ -1043,6 +1047,7 @@
     dismissUndo();
     moveState && finishMoving(false);
     updateClock();
+    holdActivation();
     if (window.MediaFeed) { MediaFeed.leave(); MediaFeed.refresh(); }
     "inputs" === focusZone && inputsPanel.classList.add("hidden");
     topButtons.forEach(function (e) {
@@ -1231,6 +1236,7 @@
     // Do not reveal a staggered Classic grid beneath a saved theme's preparation.
     tiles.forEach(function (tile) { tile.el.classList.add('shown'); });
     getElement('homeSurface').classList.remove('ctv-starting');
+    holdActivation();
   }
   window.HomeUIReady = (window.ThemeManager ? ThemeManager.start(presentHome) : Promise.resolve().then(presentHome)).then(function () {
     window.RootLauncherRendered = true;

@@ -55,7 +55,7 @@ test('the maker boot ad neither cancels the return to Home nor gets launched ove
  c.fg(LG);c.advance(400);assert.equal(c.homeCalls().length,before+1);
 });
 test('a real app cancels recovery even if LG Home appears later',()=>{
- const c=controller();c.resume();c.fg('netflix');c.calls[1].reply();c.fg(LG);c.advance(20000);assert.equal(c.homeCalls().length,2);
+ const c=controller();c.resume();c.fg('com.webos.app.hdmi1');c.calls[1].reply();c.fg(LG);c.advance(20000);assert.equal(c.homeCalls().length,2);
 });
 test('a real app before the first resume tick cancels the pending launch',()=>{
  const c=controller();c.power({state:'Suspend'});c.fg(COVER);c.power({state:'Active'});c.fg('netflix');c.advance(400);assert.equal(c.homeCalls().length,1);
