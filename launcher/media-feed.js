@@ -85,15 +85,17 @@
     return {
       id: item._id,
       title: item.name,
-      subtitle: label.join(' · '),
+      subtitle: label.length ? label.join(' · ') : item.year ? String(item.year) : '',
       progress: state.duration > 0 ? Math.min(99, Math.round(state.timeOffset / state.duration * 100)) : 0,
       image: /^tt\d+$/.test(item._id) ? 'https://images.metahub.space/background/medium/' + item._id + '/img' : item.background || item.poster || ''
     };
   }
-  // Same test as Stremio's own Continue Watching: not removed, and stopped part way through.
+  // Titles played without adding them to the library come back as removed and temp. Past 90% counts as finished.
   function libraryCards(items) {
     return items.filter(function (item) {
-      return item && item.type !== 'other' && !item.removed && item.state && item.state.timeOffset > 0;
+      var state = item && item.state;
+      if (!state || item.type === 'other' || (item.removed && !item.temp) || !(state.timeOffset > 0)) return false;
+      return !(state.duration > 0) || state.timeOffset / state.duration < 0.9;
     }).sort(function (a, b) {
       return String(b.state.lastWatched || '').localeCompare(String(a.state.lastWatched || ''));
     }).slice(0, 16).map(toLibraryCard);
