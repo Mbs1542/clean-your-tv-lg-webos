@@ -28,3 +28,10 @@
 /* The owner's photo after the TV is switched on. */
 #bootIntro { position: fixed; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 1000; background: #000 center / cover no-repeat; opacity: 0; pointer-events: none; transition: opacity 500ms ease; }
 #bootIntro.on { opacity: 1; }
+
+/* Photos after Home has sat untouched. Below the power-on photo. */
+#photoSaver { position: fixed; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 900; background: #000; opacity: 0; pointer-events: none; transition: opacity 600ms ease; }
+#photoSaver.on { opacity: 1; pointer-events: auto; }
+.saver-layer { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; background: center / cover no-repeat; opacity: 0; transition: opacity 1200ms ease; }
+.saver-layer.shown { opacity: 1; }
+

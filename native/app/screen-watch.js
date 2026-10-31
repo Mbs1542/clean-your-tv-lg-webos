@@ -3,7 +3,7 @@ var fs=require('fs'),os=require('os'),WebSocket=require('./websocket');
 // Local self-connection: the TV rejects loopback, but accepts its own LAN address.
 // Never accepts a remote endpoint or launches anything itself.
 module.exports=function(data,log,onForeground,onReset,onPower){
- var closed=false,socket=null,retry=null,index=0,cleanup=null,backoff=10000;
+ var closed=false,socket=null,registered=null,retry=null,index=0,cleanup=null,backoff=10000;
  function later(){if(!closed){retry=setTimeout(connect,backoff);backoff=Math.min(backoff*2,60000);}}
  function connect(){
   if(closed)return;
@@ -32,6 +32,7 @@ module.exports=function(data,log,onForeground,onReset,onPower){
    if(closed)return;
    var m;try{m=JSON.parse(String(raw));}catch(e){return;}
    if(m.type==='registered'){
+    registered=s;
     s.send(JSON.stringify({type:'subscribe',id:'foreground',uri:'ssap://com.webos.applicationManager/getForegroundAppInfo',payload:{}}));
     if(onPower)s.send(JSON.stringify({type:'subscribe',id:'power',uri:'ssap://com.webos.service.tvpower/power/getPowerState',payload:{}}));
    }else if(m.id==='power'){
@@ -52,8 +53,8 @@ module.exports=function(data,log,onForeground,onReset,onPower){
    }
   });
   s.on('error',function(e){log({event:'screen-watch-error',error:e.code||e.message});});
-  s.on('close',function(code){clearTimeout(deadline);clearInterval(pulse);onReset();log({event:'screen-watch-disconnected',code:code});later();});
+  s.on('close',function(code){if(registered===s)registered=null;clearTimeout(deadline);clearInterval(pulse);onReset();log({event:'screen-watch-disconnected',code:code});later();});
  }
  connect();
- return {close:function(){closed=true;clearTimeout(retry);if(cleanup)cleanup();onReset();if(socket)socket.terminate();}};
+ return {powerOff:function(){if(!registered)return false;registered.send(JSON.stringify({type:'request',id:'power-off',uri:'ssap://system/turnOff',payload:{}}));return true;},close:function(){closed=true;clearTimeout(retry);if(cleanup)cleanup();onReset();if(socket)socket.terminate();}};
 };

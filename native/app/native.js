@@ -93,6 +93,7 @@ function readHomeRequest(channel){
   if(request.method==='homeStatus')respond({returnValue:true,enabled:homeControl.enabled()});
   else if(request.method==='setHomeControl'){homeControl.set(request.enabled);respond({returnValue:true,enabled:homeControl.enabled()});}
   else if(request.method==='openLGHome')visitLG(function(ok){respond({returnValue:ok});});
+  else if(request.method==='powerOff'){var sent=!!(screenWatch&&screenWatch.powerOff());log({event:'idle-power-off',sent:sent});respond({returnValue:sent});}
   else respond({returnValue:false,errorText:'Invalid Home request'});
  }catch(e){respond({returnValue:false,errorText:String(e)});}
 }
