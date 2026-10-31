@@ -45,6 +45,7 @@ helper=$(python3 -c 'import json; a=json.load(open("build/native-app/appinfo.jso
 python3 scripts/fix-package-data.py "$helper"
 fi
 python3 scripts/tv_web_build.py --input launcher --output build/home-app
+if [[ -f launcher/personal-splash.png ]]; then mv build/home-app/personal-splash.png build/home-app/splash.png; fi
 # Stage only public renewal sources, including the paired theme receiver.
 python3 - <<'PYRECEIVER'
 import runpy

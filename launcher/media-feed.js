@@ -2,14 +2,14 @@
  * and nothing here is required: with no data, Home simply has no rows. */
 (function (root) {
   'use strict';
-  var personal = root.TV_PERSONAL || {}, jellyfin = personal.jellyfin, weather = personal.weather;
+  var personal = root.TV_PERSONAL || {}, jellyfin = personal.jellyfin, weather = personal.weather, stremio = personal.stremio;
   var FEED_KEY = 'tvhome.mediafeed.v2', WEATHER_KEY = 'tvhome.weather.v1';
   var FEED_GAP = 5 * 60 * 1000, STREMIO_GAP = 6 * 60 * 60 * 1000, WEATHER_GAP = 30 * 60 * 1000, RETRY = 20 * 1000;
   var CARD_STEP = 278, VISIBLE = 6, ROW_STEP = 240, ROWS_SHOWN = 2;
   var JELLYFIN_APP = 'org.jellyfin.webos', STREMIO_APP = 'io.strem.tv';
   var STREMIO_CATALOG = 'https://cinemeta-catalogs.strem.io/top/catalog/';
-  var rows = [], cards = [], row = 0, column = 0, feedAt = 0, stremioAt = 0, weatherAt = 0, retryTimer = null, hooks = null;
-  var section = null, stack = null, sources = {watching: [], stremio: [], added: []};
+  var rows = [], cards = [], row = 0, column = 0, feedAt = 0, stremioAt = 0, libraryAt = 0, weatherAt = 0, retryTimer = null, hooks = null;
+  var section = null, stack = null, sources = {stremioWatching: [], watching: [], stremio: [], added: []};
 
   function tr(text) { return root.HomeI18n ? root.HomeI18n.t(text) : text; }
   function rtl() { return root.document.documentElement.dir === 'rtl'; }
@@ -29,6 +29,20 @@
     };
     xhr.onerror = xhr.ontimeout = function () { done(null); };
     xhr.send();
+  }
+
+  function postJson(url, body, done) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.timeout = 12000;
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onload = function () {
+      var value = null;
+      if (xhr.status === 200) { try { value = JSON.parse(xhr.responseText); } catch (_) {} }
+      done(value);
+    };
+    xhr.onerror = xhr.ontimeout = function () { done(null); };
+    xhr.send(JSON.stringify(body));
   }
 
   function imageUrl(item) {
@@ -65,6 +79,25 @@
       image: meta.background || meta.poster
     };
   }
+  function toLibraryCard(item) {
+    var state = item.state || {}, parts = /:(\d+):(\d+)$/.exec(state.video_id || ''), label = [];
+    if (item.type === 'series' && parts) label = [tr('Season') + ' ' + parts[1], tr('Episode') + ' ' + parts[2]];
+    return {
+      id: item._id,
+      title: item.name,
+      subtitle: label.join(' · '),
+      progress: state.duration > 0 ? Math.min(99, Math.round(state.timeOffset / state.duration * 100)) : 0,
+      image: /^tt\d+$/.test(item._id) ? 'https://images.metahub.space/background/medium/' + item._id + '/img' : item.background || item.poster || ''
+    };
+  }
+  // Same test as Stremio's own Continue Watching: not removed, and stopped part way through.
+  function libraryCards(items) {
+    return items.filter(function (item) {
+      return item && item.type !== 'other' && !item.removed && item.state && item.state.timeOffset > 0;
+    }).sort(function (a, b) {
+      return String(b.state.lastWatched || '').localeCompare(String(a.state.lastWatched || ''));
+    }).slice(0, 16).map(toLibraryCard);
+  }
   function watchingCards(resume, nextUp) {
     var seen = {}, watching = [];
     resume.concat(nextUp).forEach(function (item) {
@@ -76,7 +109,8 @@
   }
   function buildRows() {
     var result = [];
-    if (sources.watching.length) result.push({title: tr('Continue watching'), app: JELLYFIN_APP, appName: 'Jellyfin', cards: sources.watching});
+    if (sources.stremioWatching.length) result.push({title: tr('Continue on Stremio'), app: STREMIO_APP, appName: 'Stremio', cards: sources.stremioWatching});
+    if (sources.watching.length) result.push({title: tr('Continue on Jellyfin'), app: JELLYFIN_APP, appName: 'Jellyfin', cards: sources.watching});
     if (sources.stremio.length) result.push({title: tr('Popular on Stremio'), app: STREMIO_APP, appName: 'Stremio', cards: sources.stremio});
     if (sources.added.length) result.push({title: tr('Recently added'), app: JELLYFIN_APP, appName: 'Jellyfin', cards: sources.added});
     return result;
@@ -186,6 +220,15 @@
     getJson(jellyfin.url + '/Items/Latest?' + user + '&groupItems=true' + common, headers, collect('latest'));
   }
 
+  function refreshLibrary() {
+    if (!stremio || !stremio.authKey || Date.now() - libraryAt < FEED_GAP) return;
+    libraryAt = Date.now();
+    postJson('https://api.strem.io/api/datastoreGet', {authKey: stremio.authKey, collection: 'libraryItem', ids: [], all: true}, function (value) {
+      if (!value || !Array.isArray(value.result)) { libraryAt = 0; return; }
+      sources.stremioWatching = libraryCards(value.result);
+      publish();
+    });
+  }
   function refreshStremio() {
     if (Date.now() - stremioAt < STREMIO_GAP) return;
     stremioAt = Date.now();
@@ -236,13 +279,16 @@
       hooks = appHooks;
       section = root.document.getElementById('mediaFeed');
       var cached = load(FEED_KEY);
-      if (cached && Array.isArray(cached.watching) && Array.isArray(cached.stremio) && Array.isArray(cached.added)) sources = cached;
+      if (cached && Array.isArray(cached.watching) && Array.isArray(cached.stremio) && Array.isArray(cached.added)) {
+        sources = cached;
+        if (!Array.isArray(sources.stremioWatching)) sources.stremioWatching = [];
+      }
       rows = buildRows();
       render();
       showWeather(load(WEATHER_KEY));
       root.MediaFeed.refresh();
     },
-    refresh: function () { refreshFeed(); refreshStremio(); refreshWeather(); },
+    refresh: function () { refreshFeed(); refreshLibrary(); refreshStremio(); refreshWeather(); },
     hasItems: function () { return rows.length > 0; },
     enter: function (rowIndex, cardIndex) {
       row = Math.min(rowIndex === undefined ? rows.length - 1 : rowIndex, rows.length - 1);

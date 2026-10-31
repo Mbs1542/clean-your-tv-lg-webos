@@ -24,3 +24,7 @@
 [dir="rtl"] #greeting { margin-left: 0; margin-right: 8px; }
 [dir="rtl"] #weather { margin-left: 0; margin-right: 28px; }
 [dir="rtl"] #hero { left: auto; right: 136px; }
+
+/* The owner's photo after the TV is switched on. */
+#bootIntro { position: fixed; left: 0; top: 0; width: 1920px; height: 1080px; z-index: 1000; background: #000 center / cover no-repeat; opacity: 0; pointer-events: none; transition: opacity 500ms ease; }
+#bootIntro.on { opacity: 1; }
